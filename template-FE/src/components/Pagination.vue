@@ -9,6 +9,9 @@
                     <CFormSelect v-model="this.row_per_page" :options="optionsRowPerPage"
                         v-on:change="changeRowPerPage($event)">
                     </CFormSelect>
+                    <div>
+                        
+                    </div>
                 </div>
             </CRow>
         </CCol>

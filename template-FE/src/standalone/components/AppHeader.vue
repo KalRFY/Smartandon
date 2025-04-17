@@ -16,7 +16,9 @@
     </CContainer>
     <CHeaderDivider />
     <CContainer fluid style="height: 19px !important; min-height: 19px; ">
-      <AppBreadcrumb />
+      <div class="breadcrumbs">
+        <AppBreadcrumb />
+      </div>
     </CContainer>
   </CHeader>
 </template>
@@ -43,3 +45,52 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.c-header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#headerLabel1, #headerLabel2 {
+  color: #333333;
+  font-weight: 600;
+  margin: 0;
+}
+
+.c-header-nav {
+  align-items: center;
+}
+
+.c-header-brand {
+  display: flex;
+  align-items: center;
+}
+
+.c-header-divider {
+  margin: 0;
+  opacity: 0.2;
+}
+
+.c-container {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  #headerLabel2 {
+    display: none;
+  }
+  
+  #headerLabel1 {
+    font-size: 1.2rem;
+  }
+}
+</style>

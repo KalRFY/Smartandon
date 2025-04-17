@@ -1,5 +1,6 @@
 <template>
     <CInputGroup>
+        <CButton>testing</CButton>
         <CFormInput
             readonly
             type="text"
