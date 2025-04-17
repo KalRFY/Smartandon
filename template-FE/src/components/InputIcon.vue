@@ -1,9 +1,6 @@
 <template>
     <CInputGroup>
-<<<<<<< HEAD
         <CButton>testing</CButton>
-=======
->>>>>>> 399612856cceb38ca2fc3398b4a07a9db0a3befd
         <CFormInput
             readonly
             type="text"
