@@ -14,6 +14,15 @@ const appRoutes = [
       title: 'Dashboard'
     }
   },
+  {
+    path: '/app/Dashboard2',
+    name: 'Dashboard2',
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/Dashboard2.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'Dashboard2'
+    }
+  },
   // Add the uncommented Quality Operational route
   // {
   //   path: '/qdc/quality-operational',
