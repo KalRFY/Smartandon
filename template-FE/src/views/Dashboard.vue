@@ -16,9 +16,7 @@
   </CRow>
   </div>
 
-  <div class="d-grid gap-2">
-    <CButton class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
-  </div>
+  <CButton style="width: 100%;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
 
   <div>
     <CModal 
@@ -56,13 +54,13 @@
               <option selected="" disabled="" value="">
                 Choose...
               </option>
+              <option>LPDC</option>
               <option>HPDC</option>
-              <option>HPDC</option>
-              <option>HPDC</option>
-              <option>HPDC</option>
-              <option>HPDC</option>
-              <option>HPDC</option>
-              <option>HPDC</option>
+              <option>CRANK SHAFT</option>
+              <option>CYLINDER HEAD</option>
+              <option>CYLINDER BLOCK</option>
+              <option>CAM SHAFT</option>
+              <option>ASSY LINE</option>
             </CFormSelect>
           </CCol>
           <CCol md="6">
@@ -136,7 +134,7 @@
 
   <div>
     <CCard>
-      <CCardBody>
+      <CCardBody class="mb-3">
 
       </CCardBody>
     </CCard>
