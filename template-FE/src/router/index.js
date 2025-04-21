@@ -44,9 +44,9 @@ const appRoutes = [
     }
   },
   {
-    path: '/app/problem-history',
-    name: 'problemHistory',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/problem-history/index.vue'),
+    path: '/app/ProblemHistory',
+    name: 'ProblemHistory',
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/ProblemHistory.vue'),
     meta: {
       requiresAuth: true,
       title: 'Problem History'

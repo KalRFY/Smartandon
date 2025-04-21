@@ -15,9 +15,138 @@
     </CCol>
   </CRow>
   </div>
+
+  <div class="d-grid gap-2">
+    <CButton class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
+  </div>
+
+  <div>
+    <CModal 
+      :visible="visibleLiveDemo"
+      @close="() => { visibleLiveDemo = false }"
+      aria-labelledby="LiveDemoExampleLabel"
+    >
+      <CModalHeader>
+        <CModalTitle id="LiveDemoExampleLabel">Machine Stop Input</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <CForm 
+          class="row g-3 needs-validation" 
+          novalidate 
+          :validated="validatedCustom01" 
+          @submit="handleSubmitCustom01"
+        >
+          <CCol md="8">
+            <CFormInput
+              feedbackValid="Looks good!"
+              id="validationCustom01"
+              label="Machine Name"
+              required
+              value="Mark"
+            />
+          </CCol>
+          <CCol md="4">
+            <CFormSelect
+              aria-describedby="validationCustom04Feedback"
+              feedbackInvalid="Please select a valid state."
+              id="validationCustom04"
+              label="Line"
+              required
+            >
+              <option selected="" disabled="" value="">
+                Choose...
+              </option>
+              <option>HPDC</option>
+              <option>HPDC</option>
+              <option>HPDC</option>
+              <option>HPDC</option>
+              <option>HPDC</option>
+              <option>HPDC</option>
+              <option>HPDC</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="6">
+            <CFormInput 
+              feedbackInvalid="Please provide a valid city."
+              id="validationCustom03"
+              label="City"
+              required
+            />
+          </CCol>
+          <CCol md="3">
+            <CFormSelect
+              aria-describedby="validationCustom04Feedback"
+              feedbackInvalid="Please select a valid state."
+              id="validationCustom04"
+              label="State"
+              required
+            >
+              <option selected="" disabled="" value="">
+                Choose...
+              </option>
+              <option>...</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="3">
+            <CFormInput 
+              feedbackInvalid="Please provide a valid zip."
+              id="validationCustom05"
+              label="Zip"
+              required
+            />
+          </CCol>
+          <CCol md="8">
+            <CDateRangePicker
+              feedbackInvalid="Please select a valid date range."
+              id="validationCustom06"
+              label="Date range"
+              required
+            />
+          </CCol>
+          <CCol md="4">
+            <CTimePicker
+              feedbackInvalid="Please select a valid time."
+              id="validationCustom07"
+              label="Time"
+              required
+            />
+          </CCol>
+          <CCol xs="12">
+            <CFormCheck
+              feedbackInvalid="You must agree before submitting."
+              id="invalidCheck"
+              label="Agree to terms and conditions"
+              required
+              type="checkbox"
+            />
+          </CCol>
+          <CCol xs="12">
+            <CButton color="primary" type="submit">Submit form</CButton>
+          </CCol>
+        </CForm>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" @click="() => { visibleLiveDemo = false }">
+          Close
+        </CButton>
+        <CButton color="primary">Save changes</CButton>
+      </CModalFooter>
+    </CModal>
+  </div>
+
+  <div>
+    <CCard>
+      <CCardBody>
+
+      </CCardBody>
+    </CCard>
+  </div>
+
 </template>
 
 <script>
+import { ref } from 'vue'
+import { CButton, CCard, CCardBody, CContainer } from '@coreui/vue';
 import MainChartExample from './charts/MainChartExample'
 import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
@@ -33,8 +162,19 @@ import {
 } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 
+const visibleStaticBackdropDemo = ref(false);
+
 export default {
   name: 'Dashboard',
+  data() {
+    return {
+    
+      visibleLiveDemo: false,
+
+    }
+
+  },
+
   components: {
     MainChartExample,
     WidgetsStatsA,
@@ -136,7 +276,15 @@ export default {
       dashboardCards,
       navigateTo
     }
+    
   },
+
+  methods: {
+    onClickInput() {
+      this.visibleLiveDemo = true
+    },
+  }
+
 }
 </script>
 
