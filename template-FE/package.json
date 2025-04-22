@@ -28,7 +28,7 @@
     "@vuepic/vue-datepicker": "^5.4.0",
     "@zanmato/vue3-treeselect": "^0.2.0",
     "add": "^2.0.6",
-    "apexcharts": "^4.5.0",
+    "apexcharts": "^4.6.0",
     "axios": "^1.6.8",
     "chart.js": "^4.3.3",
     "core-js": "^3.19.0",
