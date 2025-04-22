@@ -205,6 +205,9 @@
                       ]
                     }"
                   />
+
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
                 </CCardBody>
               </CCard>
             </CCol>
@@ -240,6 +243,9 @@
                       ]
                     }"
                   />
+
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
                 </CCardBody>
               </CCard>
             </CCol>
@@ -275,6 +281,9 @@
                       ]
                     }"
                   />
+
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
                 </CCardBody>
               </CCard>
             </CCol>
@@ -310,6 +319,9 @@
                       ]
                     }"
                   />
+                  
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
                 </CCardBody>
               </CCard>
             </CCol>
@@ -345,6 +357,9 @@
                       ]
                     }"
                   />
+
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
                 </CCardBody>
               </CCard>
             </CCol>
