@@ -40,7 +40,7 @@
               id="validationCustom01"
               label="Machine Name"
               required
-              value="Mark"
+              v-model="saveMachine.machine_nm"
             />
           </CCol>
           <CCol md="4">
@@ -71,44 +71,6 @@
               required
             />
           </CCol>
-          <CCol md="3">
-            <CFormSelect
-              aria-describedby="validationCustom04Feedback"
-              feedbackInvalid="Please select a valid state."
-              id="validationCustom04"
-              label="State"
-              required
-            >
-              <option selected="" disabled="" value="">
-                Choose...
-              </option>
-              <option>...</option>
-            </CFormSelect>
-          </CCol>
-          <CCol md="3">
-            <CFormInput 
-              feedbackInvalid="Please provide a valid zip."
-              id="validationCustom05"
-              label="Zip"
-              required
-            />
-          </CCol>
-          <CCol md="8">
-            <CDateRangePicker
-              feedbackInvalid="Please select a valid date range."
-              id="validationCustom06"
-              label="Date range"
-              required
-            />
-          </CCol>
-          <CCol md="4">
-            <CTimePicker
-              feedbackInvalid="Please select a valid time."
-              id="validationCustom07"
-              label="Time"
-              required
-            />
-          </CCol>
           <CCol xs="12">
             <CFormCheck
               feedbackInvalid="You must agree before submitting."
@@ -130,14 +92,6 @@
         <CButton color="primary">Save changes</CButton>
       </CModalFooter>
     </CModal>
-  </div>
-
-  <div>
-    <CCard>
-      <CCardBody class="mb-3">
-
-      </CCardBody>
-    </CCard>
   </div>
 
 </template>
@@ -281,6 +235,10 @@ export default {
     onClickInput() {
       this.visibleLiveDemo = true
     },
+
+    saveMachine() {
+      
+    }
   }
 
 }
