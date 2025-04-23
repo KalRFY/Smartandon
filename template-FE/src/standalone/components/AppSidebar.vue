@@ -75,38 +75,48 @@ export default {
         },
         {
           component: 'CNavItem',
-          to: '/app/Dashboard2',
-          name: 'SA Dashboard',
-          icon: '',
+          to: '/app/Smartandon',
+          name: 'Smartandon',
+          icon: 'cilFactory',
           parentId: 'ROOT',
-        },
-        {
-          component: 'CNavItem',
-          to: '/app/MTBFMTTR',
-          name: 'MTBF MTTR',
-          icon: '',
-          parentId: 'ROOT',
-        },
-        {
-          component: 'CNavItem',
-          to: '/app/RealtimeParetto',
-          name: 'Realtime Paretto',
-          icon: '',
-          parentId: 'ROOT',
-        },
-        {
-          component: 'CNavItem',
-          to: '/app/LTBReport',
-          name: 'LTB Report',
-          icon: '',
-          parentId: 'ROOT',
-        },
-        {
-          component: 'CNavItem',
-          to: '/app/ProblemHistory',
-          name: 'Problem History',
-          icon: '',
-          parentId: 'ROOT',
+
+          items: [
+            {
+              component: 'CNavItem',
+              to: '/app/Dashboard2',
+              name: 'SA Dashboard',
+              icon: 'cilHome',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/MTBFMTTR',
+              name: 'MTBF MTTR',
+              icon: 'cilBarChart',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/RealtimeParetto',
+              name: 'Realtime Paretto',
+              icon: 'cilChartPie',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/LTBReport',
+              name: 'LTB Report',
+              icon: 'cilFolderOpen',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/ProblemHistory',
+              name: 'Problem History',
+              icon: 'cilClock',
+              parentId: 'ROOT',
+            }
+          ]
         }
         // {
         //   component: 'CNavItem',
