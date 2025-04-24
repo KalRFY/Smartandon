@@ -90,6 +90,13 @@ export default {
             },
             {
               component: 'CNavItem',
+              to: '/app/DashboardDataDisplay',
+              name: 'DashboardDataDisplay',
+              icon: 'cilHome',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
               to: '/app/MTBFMTTR',
               name: 'MTBF MTTR',
               icon: 'cilBarChart',
