@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout'
 import DefaultLayoutStandAlone from '@/standalone/layouts/DefaultLayoutStandAlone'
 
+
 // Route groups
 const appRoutes = [
   {

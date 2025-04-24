@@ -1,4 +1,5 @@
 <template>
+  
   <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="
     (event) =>
       $store.commit({
