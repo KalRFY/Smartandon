@@ -23,6 +23,15 @@ const appRoutes = [
       title: 'Dashboard2'
     }
   },
+  {
+    path: '/app/MTBFMTTR',
+    name: 'MTBFMTTR',
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'MTBFMTTR'
+    }
+  },
   // Add the uncommented Quality Operational route
   // {
   //   path: '/qdc/quality-operational',
