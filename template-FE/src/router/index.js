@@ -32,6 +32,16 @@ const appRoutes = [
       title: 'MTBFMTTR'
     }
   },
+
+  {
+    path: '/app/DashboardDataDisplay',
+    name: 'DashboardDataDisplay',
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/DashboardDataDisplay.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'DashboardDataDisplay'
+    }
+  },
   // Add the uncommented Quality Operational route
   // {
   //   path: '/qdc/quality-operational',

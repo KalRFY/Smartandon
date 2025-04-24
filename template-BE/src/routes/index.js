@@ -22,6 +22,10 @@ const defaultRoutes = [
     path: '/common',
     route: CommonRoute,
   },
+  {
+    path: '/dashboard',
+    route: dashboardRoutes,
+  },
   //===//
 
 /*define other in here*/
