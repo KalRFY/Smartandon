@@ -8,7 +8,6 @@
       </CCard>
     </CCol>
   </CRow>
-
   <CRow>
     <CCol>
       <CCard class="mb-3">
