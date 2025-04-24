@@ -1,13 +1,98 @@
 <template>
+  <div>
   <CRow>
-    <CCol>
-      <CCard class="mb-3">
-        <CCardBody>
-          <CCardTitle>MTBF MTTR</CCardTitle>
+    <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
+      <CCard class="dashboard-card h-100" :color="card.color">
+        <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
+          <div class="icon-container mb-3">
+            <component :is="card.icon" :size="48" :stroke-width="1.5" />
+          </div>
+          <h4>{{ card.title }}</h4>
+          <p class="card-description">{{ card.description }}</p>
+          <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
         </CCardBody>
       </CCard>
     </CCol>
   </CRow>
+  </div>
+
+  <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
+
+  <div>
+    <CModal 
+      :visible="visibleLiveDemo"
+      @close="() => { visibleLiveDemo = false }"
+      aria-labelledby="LiveDemoExampleLabel"
+    >
+      <CModalHeader>
+        <CModalTitle id="LiveDemoExampleLabel">Machine Stop Input</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <CForm 
+          class="row g-3 needs-validation" 
+          novalidate 
+          :validated="validatedCustom01" 
+          @submit="handleSubmitCustom01"
+        >
+          <CCol md="8">
+            <CFormInput
+              feedbackValid="Looks good!"
+              id="machineName"
+              label="Machine Name"
+              required
+              v-model="submit.machineName"
+            />
+          </CCol>
+          <CCol md="4">
+            <CFormSelect
+              aria-describedby="validationCustom04Feedback"
+              feedbackInvalid="Please select the line."
+              id="lineSelect"
+              label="Line"
+              required
+              v-model="submit.line"
+            >
+              <option selected="" disabled="" value="">
+                Choose Line...
+              </option>
+              <option value="LPDC">LPDC</option>
+              <option value="HPDC">HPDC</option>
+              <option value="CRANK SHAFT">CRANK SHAFT</option>
+              <option value="CYLINDER HEAD">CYLINDER HEAD</option>
+              <option value="CYLINDER BLOCK">CYLINDER BLOCK</option>
+              <option value="CAM SHAFT">CAM SHAFT</option>
+              <option value="ASSY LINE">ASSY LINE</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="6">
+            <CFormInput 
+              feedbackInvalid="Please input the problems"
+              id="Problems"
+              label="Problems"
+              required
+              v-model="submit.problems"
+            />
+          </CCol>
+          <CCol xs="12">
+            <CFormCheck
+              feedbackInvalid="You must agree before submitting."
+              id="invalidCheck"
+              label="Agree to terms and conditions"
+              required
+              type="checkbox"
+            />
+          </CCol>
+        </CForm>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" @click="() => { visibleLiveDemo = false }">
+          Close
+        </CButton>
+
+        <CButton color="primary" @click="saveSubmit">Submit</CButton>
+      </CModalFooter>
+    </CModal>
+  </div>
 
   <CRow>
     <CCol>
