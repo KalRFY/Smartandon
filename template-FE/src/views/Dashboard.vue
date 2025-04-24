@@ -1,5 +1,4 @@
 <template>
-  
   <div>
   <CRow>
     <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
@@ -16,7 +15,8 @@
     </CCol>
   </CRow>
   </div>
-
+  
+  
   <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
 
   <div>
