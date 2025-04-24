@@ -1,6 +1,5 @@
 <template>
   <CRow>
-    
     <CCol>
       <CCard class="mb-3">
         <CCardBody>
@@ -8,7 +7,6 @@
         </CCardBody>
       </CCard>
     </CCol>
-
   </CRow>
 
   <CRow>
