@@ -15,6 +15,7 @@ const schedule = require('node-schedule');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
 const app = express();
+const dashboardRoutes = require('./routes/smartandon/dashboard');
 
 global.__basedir = __dirname + "/..";
 
@@ -56,10 +57,26 @@ if (config.env === 'production') {
 // v1 api routes
 app.use('/api', routes);
 
+
+// Add direct access to dashboard routes
+app.use('/dashboard', dashboardRoutes);
+// app.use('/problem', dashboardRoutes);
+
+// Add a welcome route for the root path
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Welcome to Smart Andon API',
+    version: '1.0.0',
+    documentation: '/api/docs',
+    status: 'online'
+  });
+});
+
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
-  console.log(req)
-  next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
+  // Log only essential request information instead of the entire request object
+  console.log(`Unhandled route: ${req.method} ${req.originalUrl}`);
+  next(new ApiError(httpStatus.NOT_FOUND, `Route not found: ${req.originalUrl}`));
 });
 
 // convert error to ApiError, if needed

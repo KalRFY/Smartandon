@@ -4,8 +4,8 @@ const config = require('../config/config');
 
 const PORT = 5432;
 
-const dashboardRoutes = require('./routes/smartandon/dashboard')
-const mtbfmttrRoutes = require('./routes/smartandon/mtbfmttr')
+const dashboardRoutes = require('./smartandon/dashboard');
+const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
