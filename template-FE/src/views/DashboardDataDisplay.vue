@@ -1,5 +1,4 @@
 <template>
-  
   <CCard>
     <CCardHeader>Dashboard Data</CCardHeader>
     <CCardBody>
@@ -31,7 +30,7 @@ export default {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get('/dashboard/data');
+        const response = await axios.get('/api/dashboard/data');
         dataList.value = response.data;
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
