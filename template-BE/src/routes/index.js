@@ -2,6 +2,11 @@ const express = require('express');
 const docsRoute = require('./docs.route');
 const config = require('../config/config');
 
+const PORT = 5432;
+
+const dashboardRoutes = require('./smartandon/dashboard');
+const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
+
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
 /*define const other in here*/
@@ -16,6 +21,10 @@ const defaultRoutes = [
   {
     path: '/common',
     route: CommonRoute,
+  },
+  {
+    path: '/dashboard',
+    route: dashboardRoutes,
   },
   //===//
 

@@ -1,5 +1,5 @@
 <template>
-  <CFooter>
+  <CFooter class="sticky-bottom">
     <div>
       <a href="https://coreui.io" target="_blank">CoreUI</a>
       <span class="ms-1"

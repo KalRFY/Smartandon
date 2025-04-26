@@ -22,8 +22,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.js",
-    "prettier:fix": "prettier --write **/*.js",
-    "prepare": "husky install"
+    "prettier:fix": "prettier --write **/*.js"
   },
   "keywords": [
     "node",
@@ -75,6 +74,7 @@
     "presto-client": "^0.12.2",
     "read-excel-file": "^5.5.3",
     "sequelize": "^6.6.2",
+    "sqlite3": "^5.1.7",
     "swagger-autogen": "^2.22.0",
     "swagger-jsdoc": "^6.0.8",
     "swagger-ui-express": "^4.1.6",
