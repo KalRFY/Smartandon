@@ -102,9 +102,9 @@
 </template>
   
 <script>
-import MainChartExample from '../charts/MainChartExample'
-import WidgetsStatsA from '../widgets/WidgetsStatsTypeA.vue'
-import WidgetsStatsD from '../widgets/WidgetsStatsTypeD.vue'
+import MainChartExample from './charts/MainChartExample'
+import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
+import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
 import {
   AlertTriangle,
   Clock,
