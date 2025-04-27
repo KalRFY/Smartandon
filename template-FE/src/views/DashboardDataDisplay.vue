@@ -15,7 +15,6 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { CCard, CCardHeader, CCardBody, CListGroup, CListGroupItem } from '@coreui/vue';
-
 export default {
   name: 'DashboardDataDisplay',
   components: {

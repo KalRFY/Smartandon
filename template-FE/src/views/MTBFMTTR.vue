@@ -1,5 +1,5 @@
 <template>
-  
+
   <CRow>
     <CCol>
       <CCard class="mb-3">
