@@ -1,4 +1,5 @@
 <template>
+  
   <div>
   <CRow>
     <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
