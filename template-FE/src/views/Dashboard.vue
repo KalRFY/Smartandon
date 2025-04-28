@@ -397,7 +397,7 @@ export default {
   name: 'Dashboard',
   data() {
     return {
-    
+      
       visibleLiveDemo: false,
       submit: {},
 
