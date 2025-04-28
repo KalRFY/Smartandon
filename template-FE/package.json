@@ -36,6 +36,7 @@
     "highcharts-vue": "^1.4.3",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.1",
+    "lucide-vue-next": "^0.503.0",
     "mitt": "^3.0.1",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
