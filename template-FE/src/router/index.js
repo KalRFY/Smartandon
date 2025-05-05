@@ -31,6 +31,15 @@ const appRoutes = [
       title: 'MTBFMTTR'
     }
   },
+  {
+    path: '/app/RealtimeParetto',
+    name: 'MTBFMTTR',
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/RealtimeParetto.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'RealtimeParetto'
+    }
+  },
 
   {
     path: '/app/DashboardDataDisplay',
