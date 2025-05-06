@@ -17,7 +17,7 @@
   </CRow>
   </div>
   
-  <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
+  <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input New Add Smartandon</CButton>
 
   <div>
     <CModal 
