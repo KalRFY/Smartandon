@@ -54,7 +54,6 @@ const vueLifecycles = singleSpaVue({
     app.use(VCalendar, {})
   },
 })
-
 export const bootstrap = vueLifecycles.bootstrap
 export const mount = vueLifecycles.mount
 export const unmount = vueLifecycles.unmount
