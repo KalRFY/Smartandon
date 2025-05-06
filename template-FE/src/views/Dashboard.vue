@@ -1,6 +1,6 @@
 <template>
-
   <div>
+    
   <CRow>
     <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
       <CCard class="dashboard-card h-100" :color="card.color">
@@ -65,7 +65,7 @@
               <option value="ASSY LINE">ASSY LINE</option>
             </CFormSelect>
           </CCol>
-          <CCol md="6">
+          <CCol md="12">
             <CFormInput 
               feedbackInvalid="Please input the problems"
               id="Problems"
@@ -81,6 +81,7 @@
               label="Agree to terms and conditions"
               required
               type="checkbox"
+              v-model="submit.agreeTerms"
             />
           </CCol>
         </CForm>
@@ -94,6 +95,27 @@
       </CModalFooter>
     </CModal>
   </div>
+
+  <CRow>
+    <CCol class="mb-3">
+      <CTable v-if="types.length" bordered hover responsive>
+        <CTableHead>
+          <CTableRow>
+            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
+            <CTableHeaderCell scope="col">Type ID</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Type Name</CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+        <CTableBody>
+          <CTableRow  v-for="type in types" :key="type.type_id">
+            <CTableDataCell>{{ type.type_id }}</CTableDataCell>
+            <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
+          </CTableRow>
+        </CTableBody>
+      </CTable>
+      <p v-else>Loading data...</p>
+    </CCol>
+  </CRow>
 
   <CRow>
     <CCol>
@@ -374,12 +396,14 @@
 
 <script>
 import { ref } from 'vue'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer } from '@coreui/vue';
+import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell } from '@coreui/vue';
+import axios from 'axios';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
 import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
+import api from '../apis/CommonAPI'
 import { 
   AlertTriangle, 
   Clock, 
@@ -394,11 +418,14 @@ import { useRouter } from 'vue-router';
 
 const visibleStaticBackdropDemo = ref(false);
 
+
 export default {
   name: 'Dashboard',
   data() {
     return {
       
+      types: [],
+
       visibleLiveDemo: false,
       submit: {},
 
@@ -485,42 +512,10 @@ export default {
           {
             seriesName: 'Revenue',
             opposite: true,
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#FEB019'
-            },
-            labels: {
-              style: {
-                colors: '#FEB019',
-              },
-            },
-            title: {
-              text: "Revenue (thousand crores)",
-              style: {
-                color: '#FEB019',
-              }
-            }
-          },
+          }
         ],
-        tooltip: {
-          fixed: {
-            enabled: true,
-            position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
-            offsetY: 30,
-            offsetX: 60
-          },
-        },
-        legend: {
-          horizontalAlign: 'left',
-          offsetX: 40
-        }
       },
-      
-    }
-
+    };
   },
 
   components: {
@@ -536,7 +531,13 @@ export default {
     ChartColumnIncreasing,
     BookText,
     CChart,
-    ApexCharts
+    ApexCharts,
+    CTable,
+    CTableHead,
+    CTableBody,
+    CTableRow,
+    CTableHeaderCell,
+    CTableDataCell,
   },
   setup() {
     const router = useRouter();
@@ -634,20 +635,47 @@ export default {
       this.visibleLiveDemo = true
     },
   
-    saveSubmit() {
+    async saveSubmit() {
       if(!this.submit.machineName){
         alert("Please input machine name")
       } else if(!this.submit.line){
         alert("Please input line")
       } else if(!this.submit.problems){
         alert("Please input problems")
+      } else if(!this.submit.agreeTerms){
+        alert("You must agree to terms and conditions before submitting")
       } else {
-        return this.submit
+        try {
+          const payload = {
+            machineName: this.submit.machineName,
+            lineName: this.submit.line,
+            problemDescription: this.submit.problems,
+          };
+          const response = await api.post('/smartandon/dashboard/new-machine-input', payload);
+          if (response.data.status === 'success') {
+            alert('Input saved successfully');
+            this.visibleLiveDemo = false;
+            this.submit = {};
+          } else {
+            alert('Failed to save input');
+          }
+        } catch (error) {
+          console.log(error.message)
+          alert('Error saving input: ' + error.message);
+        }
       }
     }
 
-  }
+  },
 
+  async created() {
+    try {
+      const response = await axios.get('/api/smartandon/qcc-m-types');
+      this.types = response.data;
+    } catch (error) {
+      console.error('Failed to fetch qcc_m_types:', error);
+    }
+  },
 }
 </script>
 
@@ -676,4 +704,16 @@ export default {
   color: rgba(255, 255, 255, 0.8);
   margin-top: 10px;
 }
+
+
+
+
+p {
+  font-style: italic;
+}
+
+
+
+
+
 </style>

@@ -2,11 +2,12 @@ const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
 const seedDashboardData = require('./seeders/dashboardDataSeeder');
-const sequelize = require('./config/sqlite');
+const { sequelize } = require('./models');
 
 const startServer = async () => {
   try {
-    await sequelize.sync();
+    // Sync all models with the database, creating or altering tables as needed
+    await sequelize.sync({ alter: true });
     await seedDashboardData();
     const server = app.listen(config.port, () => {
       logger.info(`Listening to port ${config.port}`);
