@@ -1,52 +1,63 @@
 <template>
-  <CCard>
-    <CCardHeader>Dashboard Data</CCardHeader>
-    <CCardBody>
-      <CListGroup>
-        <CListGroupItem v-for="item in dataList" :key="item.id">
-          {{ item.name }}: {{ item.value }}
-        </CListGroupItem>
-      </CListGroup>
-    </CCardBody>
-  </CCard>
+  <div>
+    <h3>QCC M Types</h3>
+    <CTable v-if="types.length" bordered hover responsive>
+      <CTableHead>
+        <CTableRow>
+          <CTableHeaderCell>Type ID</CTableHeaderCell>
+          <CTableHeaderCell>Type Name</CTableHeaderCell>
+        </CTableRow>
+      </CTableHead>
+      <CTableBody>
+        <CTableRow v-for="type in types" :key="type.type_id">
+          <CTableDataCell>{{ type.type_id }}</CTableDataCell>
+          <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
+        </CTableRow>
+      </CTableBody>
+    </CTable>
+    <p v-else>Loading data...</p>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
-import { CCard, CCardHeader, CCardBody, CListGroup, CListGroupItem } from '@coreui/vue';
+import {
+  CTable,
+  CTableHead,
+  CTableBody,
+  CTableRow,
+  CTableHeaderCell,
+  CTableDataCell,
+} from '@coreui/vue';
 
 export default {
   name: 'DashboardDataDisplay',
   components: {
-    CCard,
-    CCardHeader,
-    CCardBody,
-    CListGroup,
-    CListGroupItem,
+    CTable,
+    CTableHead,
+    CTableBody,
+    CTableRow,
+    CTableHeaderCell,
+    CTableDataCell,
   },
-  setup() {
-    const dataList = ref([]);
-
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/dashboard/data');
-        dataList.value = response.data;
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      }
-    };
-
-    onMounted(() => {
-      fetchData();
-    });
-
+  data() {
     return {
-      dataList,
+      types: [],
     };
+  },
+  async created() {
+    try {
+      const response = await axios.get('/api/smartandon/qcc-m-types');
+      this.types = response.data;
+    } catch (error) {
+      console.error('Failed to fetch qcc_m_types:', error);
+    }
   },
 };
 </script>
 
 <style scoped>
+p {
+  font-style: italic;
+}
 </style>

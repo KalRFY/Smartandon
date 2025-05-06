@@ -3,13 +3,13 @@ const docsRoute = require('./docs.route');
 const config = require('../config/config');
 
 const PORT = 5432;
+const dashboardRoutes = require('./smartandon/dashboard');
+const qccMTypesRoutes = require('./smartandon/qccMTypes');
 
-const dashboardRoutes = require('./smartandon/dashboard')
-// const mtbfmttrRoutes = require('./routes/smartandon/mtbfmttr')
+const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
-/*define const other in here*/
 
 const router = express.Router();
 
@@ -25,6 +25,10 @@ const defaultRoutes = [
   {
     path: '/dashboard',
     route: dashboardRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: qccMTypesRoutes,
   },
   //===//
 
