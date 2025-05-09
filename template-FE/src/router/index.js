@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+
 import DefaultLayout from '@/layouts/DefaultLayout'
 import DefaultLayoutStandAlone from '@/standalone/layouts/DefaultLayoutStandAlone'
 
@@ -34,7 +35,7 @@ const appRoutes = [
   {
     path: '/app/RealtimeParetto',
     name: 'MTBFMTTR',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/RealtimeParetto.vue'),
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/RealtimeParetto/RealtimeParetto.vue'),
     meta: {
       requiresAuth: true,
       title: 'RealtimeParetto'

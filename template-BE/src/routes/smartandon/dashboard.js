@@ -11,12 +11,15 @@ router.get('/', (req, res) => {
       endpoints: [
         '/dashboard',
         '/dashboard/metrics',
-        '/dashboard/data'
+        '/dashboard/data',
+        '/dashboard/machine-stop-input'
       ]
     }
   });
 });
 
 router.get('/data', dashboardController.getDashboardData);
+
+router.post('/machine-stop-input', dashboardController.saveMachineStopInput);
 
 module.exports = router;

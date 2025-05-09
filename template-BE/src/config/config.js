@@ -6,7 +6,7 @@ process.argv.forEach(function(val, index, array) {
     }
 });
 console.log('param_dot_env : ' +(param_dot_env === '' ? '' : (param_dot_env)))
-
+// const pathENV = require('../../.env');
 const dotenv = require('dotenv');
 const path = require('path');
 const Joi = require('joi');
@@ -17,15 +17,14 @@ dotenv.config({ path: path.join(__dirname, '../../.env'+(param_dot_env===''?'':(
 
 const envVarsSchema = Joi.object()
   .keys({
-    // NODE_ENV: Joi.string().valid('production', 'dev' , 'test').required(),
-    NODE_ENV: Joi.string().valid('prod', 'dev', 'local').required(),
+    NODE_ENV: Joi.string().valid('prod', 'dev', 'local').default('dev'),
     PORT: Joi.number().default(3000),
-    QDC_MSSQL_DBUSER: Joi.string().default('sa').description('Database user'),
-    QDC_MSSQL_DBPASSWORD: Joi.string().default('password').description('Database password'),
-    QDC_MSSQL_DBNAME: Joi.string().default('master').description('Database name'),
-    QDC_MSSQL_DBHOST: Joi.string().default('localhost').description('Database host'),
-    QDC_MSSQL_DBPORT: Joi.number().default(1433).description('Database port'),
-    QDC_MSSQL_DBDIALECT: Joi.string().default('mssql').description('Database dialect'),
+    USER_DB_NEW: Joi.string().default('administrator').description('Database user'),
+    PASSWORD_DB_NEW: Joi.string().default('4dm1nComp1teR').description('Database password'),
+    NAME_DB_NEW: Joi.string().default('mt-sys').description('Database name'),
+    HOST_DB_NEW: Joi.string().default('103.190.28.222').description('Database host'),
+    DB_PORT: Joi.number().default(4111).description('Database port'),
+    QDC_MSSQL_DBDIALECT: Joi.string().default('mysql').description('Database dialect'),
     JWT_SECRET: Joi.string().default('secret').description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('minutes after which access tokens expire'),
     JWT_REFRESH_EXPIRATION_DAYS: Joi.number().default(30).description('days after which refresh tokens expire'),
@@ -50,31 +49,50 @@ if (error) {
 }
 
 module.exports = {
-  env: envVars.NODE_ENV,
+  env: envVars.NODE_ENV || process.env.NODE_ENV || 'dev',
   port: envVars.PORT,
 
   scApi: envVars.VUE_APP_SC_API_URL,
   cmnApi: envVars.VUE_APP_CMN_NODE_API_URL,
   commonApi: envVars.VUE_APP_COMMON_API_URL,
   qdc_db: {
-    username: envVars.QDC_MSSQL_DBUSER,
-    password: envVars.QDC_MSSQL_DBPASSWORD,
-    database: envVars.QDC_MSSQL_DBNAME,
-
-    host: envVars.QDC_MSSQL_DBHOST,
-    dialect: envVars.QDC_MSSQL_DBDIALECT,
+    username: envVars.USER_DB_NEW,
+    password: envVars.PASSWORD_DB_NEW,
+    database: envVars.NAME_DB_NEW,
+    host: envVars.HOST_DB_NEW,
+    dialect: 'mysql',
     dialectOptions: {
-      options:{requestTimeout: 450000}
+      // Removed invalid 'options' key to fix warning
+      // requestTimeout: 450000
     },
-    port: envVars.QDC_MSSQL_DBPORT,
+    port: envVars.DB_PORT,
     pool: {
-      max: 500,
+      max: 5,
       min: 0,
       acquire: 30000,
       idle: 10000
     },
-    // instanceName: envVars.QDC_MSSQL_DBINSTANCE
   },
+
+  // New PostgreSQL database config
+  qdc_pg_db: {
+    username: envVars.USER_DB_NEW || 'tpm_user',
+    password: envVars.PASSWORD_DB_NEW || 'postgres',
+    database: envVars.NAME_DB_NEW || 'tpm_system',
+    host: envVars.HOST_DB_NEW || '10.65.12.22',
+    dialect: 'postgres',
+    port: envVars.DB_PORT || 5432,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    },
+    dialectOptions: {
+      // No nested options object here to avoid ERR_INVALID_ARG_TYPE
+    },
+    searchPath: 'mt_sys'
+  },  
   platform_db: {
     username: envVars.PLATFORM_DB_USER ,
     password: envVars.PLATFORM_DB_PASSWORD,
@@ -82,7 +100,6 @@ module.exports = {
     host: envVars.PLATFORM_DB_HOST,
     port: envVars.PLATFORM_DB_PORT,
   },
-  
   jwt: {
     secret: envVars.JWT_SECRET,
     accessExpirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
