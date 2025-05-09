@@ -604,7 +604,7 @@ export default {
         icon: 'BarChart2',
         description: 'Live Pareto analysis of issues',
         color: 'success',
-        route: '/realtime-pareto'
+        route: '/app/RealtimeParetto'
       },
       {
         title: 'LTB Report',
