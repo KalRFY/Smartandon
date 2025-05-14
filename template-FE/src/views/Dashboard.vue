@@ -17,7 +17,7 @@
   </CRow>
   </div>
   
-  <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input New Add Smartandon</CButton>
+  <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
 
   <div>
     <CModal 
@@ -95,6 +95,27 @@
       </CModalFooter>
     </CModal>
   </div>
+
+  <CRow>
+    <CCol class="mb-3">
+      <CTable v-if="types.length" bordered hover responsive>
+        <CTableHead>
+          <CTableRow>
+            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
+            <CTableHeaderCell scope="col">Type ID</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Type Name</CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+        <CTableBody>
+          <CTableRow  v-for="type in types" :key="type.type_id">
+            <CTableDataCell>{{ type.type_id }}</CTableDataCell>
+            <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
+          </CTableRow>
+        </CTableBody>
+      </CTable>
+      <p v-else>Loading data...</p>
+    </CCol>
+  </CRow>
 
   <CRow>
     <CCol class="mb-3">
