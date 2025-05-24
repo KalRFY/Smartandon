@@ -118,6 +118,27 @@
   </CRow>
 
   <CRow>
+    <CCol class="mb-3">
+      <CTable v-if="types.length" bordered hover responsive>
+        <CTableHead>
+          <CTableRow>
+            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
+            <CTableHeaderCell scope="col">Type ID</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Type Name</CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+        <CTableBody>
+          <CTableRow  v-for="type in types" :key="type.type_id">
+            <CTableDataCell>{{ type.type_id }}</CTableDataCell>
+            <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
+          </CTableRow>
+        </CTableBody>
+      </CTable>
+      <p v-else>Loading data...</p>
+    </CCol>
+  </CRow>
+
+  <CRow>
     <CCol>
       <CCard class="mb-3">
         <CCardBody>
@@ -583,14 +604,14 @@ export default {
         icon: 'Clock',
         description: 'Mean Time Between Failures metrics',
         color: 'info',
-        route: '/mtbf'
+        route: '/app/MTBFMTTR'
       },
       {
         title: 'MTTR',
         icon: 'Timer',
         description: 'Mean Time To Repair analytics',
         color: 'warning',
-        route: '/mttr'
+        route: '/app/MTBFMTTR'
       },
       {
         title: 'Problem History',

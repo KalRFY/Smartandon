@@ -1,125 +1,466 @@
 <template>
-    <div class="dashboard-container">
-      <div class="flex justify-between items-center mb-6">
-        <div class="header bg-white p-3 rounded-md shadow flex flex-col items-center justify-center w-24 h-24 flex-shrink-0">
-          <img src="/api/placeholder/40/40" alt="Smart Andon Logo" class="mb-1" />
-          <h1 class="text-xs font-bold text-gray-700 text-center">Smart Andon</h1>
-        </div>
+  <CRow class="mb-3">
+    <CCol>
+      <CCard>
+        <CCardHeader>Search</CCardHeader>
+        <CCardBody>
+          <CRow class="mb-3">
+            <CCol>
+              <CInputGroup>
+                <CInputGroupText id="basic-addon1">Start</CInputGroupText>
+                <CDatePicker label="Date" locale="en-US"/>
+              </CInputGroup>
+            </CCol>
+            <CCol>
+              <CInputGroup>
+                <CInputGroupText id="basic-addon1">Finish</CInputGroupText>
+                <CFormInput placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/>
+              </CInputGroup>
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CCol>
+              <CInputGroup>
+                <CInputGroupText as="label" for="inputGroupSelect01">Line</CInputGroupText>
+                <CFormSelect
+                  aria-describedby="validationCustom04Feedback"
+                  feedbackInvalid="Please select the line."
+                  id="inputGroupSelect01"
+                  required
+                  v-model="submit.line"
+                >
+                  <option selected="" disabled="" value="">
+                    Choose Line...
+                  </option>
+                  <option value="LPDC">LPDC</option>
+                  <option value="HPDC">HPDC</option>
+                  <option value="CRANK SHAFT">CRANK SHAFT</option>
+                  <option value="CYLINDER HEAD">CYLINDER HEAD</option>
+                  <option value="CYLINDER BLOCK">CYLINDER BLOCK</option>
+                  <option value="CAM SHAFT">CAM SHAFT</option>
+                  <option value="ASSY LINE">ASSY LINE</option>
+                </CFormSelect>
+              </CInputGroup>
+            </CCol>
+            <CCol>
+              <CInputGroup>
+                <CInputGroupText id="basic-addon1">Machine</CInputGroupText>
+                <CFormInput placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/>
+              </CInputGroup>
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CInputGroup>
+                <CInputGroupText id="basic-addon1">Problem</CInputGroupText>
+                <CFormInput placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/>
+            </CInputGroup>
+          </CRow>
+        </CCardBody>
+      </CCard>
+    </CCol>
+  </CRow>
 
-        <div class="flex-grow ml-4">
-          <div class="nav-tabs flex flex-row gap-3 overflow-x-auto pb-2">
-            <div @click="navigateTo('/parameter-monitoring')" class="tab-card bg-white rounded-md shadow cursor-pointer hover:bg-gray-50 flex-shrink-0">
-              <div class="p-3 flex flex-col items-center justify-center h-24 w-24">
-                <div class="icon-container mb-1">
-                  <BarChart2 size="20" />
-                </div>
-                <h3 class="text-xs text-center font-medium">Symptom Parameter</h3>
-              </div>
-            </div>
-            <div @click="navigateTo('/qc-analysis')" class="tab-card bg-white rounded-md shadow cursor-pointer hover:bg-gray-50 flex-shrink-0">
-              <div class="p-3 flex flex-col items-center justify-center h-24 w-24">
-                <div class="icon-container mb-1">
-                  <ChartColumnIncreasing size="20" />
-                </div>
-                <h3 class="text-xs text-center font-medium">QC Analysis</h3>
-              </div>
-            </div>
-            <div @click="navigateTo('/symptom-management')" class="tab-card bg-white rounded-md shadow cursor-pointer hover:bg-gray-50 flex-shrink-0">
-              <div class="p-3 flex flex-col items-center justify-center h-24 w-24">
-                <div class="icon-container mb-1">
-                  <FileText size="20" />
-                </div>
-                <h3 class="text-xs text-center font-medium">Symptom Management</h3>
-              </div>
-            </div>
-            <div @click="navigateTo('/runtime-pareto')" class="tab-card bg-white rounded-md shadow cursor-pointer hover:bg-gray-50 flex-shrink-0">
-              <div class="p-3 flex flex-col items-center justify-center h-24 w-24">
-                <div class="icon-container mb-1">
-                  <Clock size="20" />
-                </div>
-                <h3 class="text-xs text-center font-medium">Runtime Pareto</h3>
-              </div>
-            </div>
-            <div @click="navigateTo('/repair-analysis')" class="tab-card bg-white rounded-md shadow cursor-pointer hover:bg-gray-50 flex-shrink-0">
-              <div class="p-3 flex flex-col items-center justify-center h-24 w-24">
-                <div class="icon-container mb-1">
-                  <BookText size="20" />
-                </div>
-                <h3 class="text-xs text-center font-medium">Repair Analysis</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <CRow>
+    <CCol>
+      <CCard class="mb-3">
+        <CCardBody>
+          <CRow>
+            <CCol>
+              <CCard class="mb-3">
+                <CCardBody>
+                  <CCardTitle>LPDC</CCardTitle>
+                  <CChart
+                    height="100px"
+                    type="line"
+                    :wrapper="false"
+                    :data="{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                          borderColor: 'rgba(220, 220, 220, 1)',
+                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                          pointBorderColor: '#fff',
+                          data: [40, 20, 12, 39, 10, 40, 39]
+                        },
+                        {
+                          label: 'My Second dataset',
+                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                          borderColor: 'rgba(151, 187, 205, 1)',
+                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                          pointBorderColor: '#fff',
+                          data: [50, 12, 28, 29, 7, 25, 12]
+                        }
+                      ]
+                    }"
+                  />
 
-      <div class="alert-banner bg-orange-500 text-white p-3 rounded-md mb-6 text-center font-bold">
-        <AlertTriangle class="inline mr-2" size="20" />
-        !!! Machine Stop Input !!!
-      </div>
-  
-      <div class="stats-overview mb-6">
-        <div class="flex justify-between mb-3">
-          <h2 class="text-lg font-semibold">Machine Status</h2>
-          <div class="flex items-center">
-            <span class="mr-2">Filter</span>
-            <button class="bg-white p-1 px-3 rounded-md border flex items-center">
-              <span class="mr-1">All</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </div>
-        </div>
-  
-        <div class="overflow-x-auto bg-white rounded-md shadow">
-          <table class="min-w-full">
-            <thead class="bg-gray-100">
-              <tr>
-                <th class="p-3 text-left text-sm font-medium text-gray-700">No</th>
-                <th class="p-3 text-left text-sm font-medium text-gray-700">Machine Name</th>
-                <th class="p-3 text-left text-sm font-medium text-gray-700">OEE</th>
-                <th class="p-3 text-left text-sm font-medium text-gray-700">Status</th>
-                <th class="p-3 text-left text-sm font-medium text-gray-700">MT Call</th>
-                <th class="p-3 text-left text-sm font-medium text-gray-700">Used</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(machine, index) in machines" :key="index" class="border-t">
-                <td class="p-3 text-sm">{{ machine.id }}</td>
-                <td class="p-3 text-sm">{{ machine.name }}</td>
-                <td class="p-3 text-sm">{{ machine.oee }}</td>
-                <td class="p-3 text-sm">
-                  <span :class="getStatusClass(machine.status)" class="px-3 py-1 rounded-full text-white text-xs">
-                    {{ machine.status }}
-                  </span>
-                </td>
-                <td class="p-3 text-sm">{{ machine.mtCall }}</td>
-                <td class="p-3 text-sm">{{ machine.used }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <CCard class="mb-3">
+                <CCardBody>
+                  <CCardTitle>HPDC</CCardTitle>
+                  <CChart
+                    height="100px"
+                    type="line"
+                    :wrapper="false"
+                    :data="{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                          borderColor: 'rgba(220, 220, 220, 1)',
+                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                          pointBorderColor: '#fff',
+                          data: [40, 20, 12, 39, 10, 40, 39]
+                        },
+                        {
+                          label: 'My Second dataset',
+                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                          borderColor: 'rgba(151, 187, 205, 1)',
+                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                          pointBorderColor: '#fff',
+                          data: [50, 12, 28, 29, 7, 25, 12]
+                        }
+                      ]
+                    }"
+                  />
+                
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+                
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <CCard class="mb-3">
+                <CCardBody>
+                  <CCardTitle>CAM SHAFT</CCardTitle>
+                  <CChart
+                    height="100px"
+                    type="line"
+                    :wrapper="false"
+                    :data="{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                          borderColor: 'rgba(220, 220, 220, 1)',
+                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                          pointBorderColor: '#fff',
+                          data: [40, 20, 12, 39, 10, 40, 39]
+                        },
+                        {
+                          label: 'My Second dataset',
+                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                          borderColor: 'rgba(151, 187, 205, 1)',
+                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                          pointBorderColor: '#fff',
+                          data: [50, 12, 28, 29, 7, 25, 12]
+                        }
+                      ]
+                    }"
+                  />
+
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <CCard class="mb-3">
+                <CCardBody>
+                  <CCardTitle>CRANK SHAFT</CCardTitle>
+                  <CChart
+                    height="100px"
+                    type="line"
+                    :wrapper="false"
+                    :data="{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                          borderColor: 'rgba(220, 220, 220, 1)',
+                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                          pointBorderColor: '#fff',
+                          data: [40, 20, 12, 39, 10, 40, 39]
+                        },
+                        {
+                          label: 'My Second dataset',
+                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                          borderColor: 'rgba(151, 187, 205, 1)',
+                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                          pointBorderColor: '#fff',
+                          data: [50, 12, 28, 29, 7, 25, 12]
+                        }
+                      ]
+                    }"
+                  />
+
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <CCard class="mb-3">
+                <CCardBody>
+                  <CCardTitle>CYLINDER HEAD</CCardTitle>
+                  <CChart
+                    height="100px"
+                    type="line"
+                    :wrapper="false"
+                    :data="{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                          borderColor: 'rgba(220, 220, 220, 1)',
+                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                          pointBorderColor: '#fff',
+                          data: [40, 20, 12, 39, 10, 40, 39]
+                        },
+                        {
+                          label: 'My Second dataset',
+                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                          borderColor: 'rgba(151, 187, 205, 1)',
+                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                          pointBorderColor: '#fff',
+                          data: [50, 12, 28, 29, 7, 25, 12]
+                        }
+                      ]
+                    }"
+                  />
+
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <CCard class="mb-3">
+                <CCardBody>
+                  <CCardTitle>CYLINDER BLOCK</CCardTitle>
+                  <CChart
+                    height="100px"
+                    type="line"
+                    :wrapper="false"
+                    :data="{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                          borderColor: 'rgba(220, 220, 220, 1)',
+                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                          pointBorderColor: '#fff',
+                          data: [40, 20, 12, 39, 10, 40, 39]
+                        },
+                        {
+                          label: 'My Second dataset',
+                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                          borderColor: 'rgba(151, 187, 205, 1)',
+                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                          pointBorderColor: '#fff',
+                          data: [50, 12, 28, 29, 7, 25, 12]
+                        }
+                      ]
+                    }"
+                  />
+                  
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <CCard class="mb-3">
+                <CCardBody>
+                  <CCardTitle>ASSY LINE</CCardTitle>
+                  <CChart
+                    height="100px"
+                    type="line"
+                    :wrapper="false"
+                    :data="{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                          borderColor: 'rgba(220, 220, 220, 1)',
+                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                          pointBorderColor: '#fff',
+                          data: [40, 20, 12, 39, 10, 40, 39]
+                        },
+                        {
+                          label: 'My Second dataset',
+                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                          borderColor: 'rgba(151, 187, 205, 1)',
+                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                          pointBorderColor: '#fff',
+                          data: [50, 12, 28, 29, 7, 25, 12]
+                        }
+                      ]
+                    }"
+                  />
+
+                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
+
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+    </CCol>
+  </CRow>
+
 </template>
-  
+
 <script>
+import { ref } from 'vue'
+import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell } from '@coreui/vue';
+import axios from 'axios';
+import { CChart } from '@coreui/vue-chartjs'
+import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
 import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
-import {
-  AlertTriangle,
-  Clock,
-  Timer,
-  History,
-  BarChart2,
+import api from '../apis/CommonAPI'
+import { 
+  AlertTriangle, 
+  Clock, 
+  Timer, 
+  History, 
+  BarChart2, 
   FileText,
-  ChartColumnIncreasing,
-  BookText
+  ChartColumnIncreasing, 
+  BookText 
 } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+
+const visibleStaticBackdropDemo = ref(false);
+
 
 export default {
   name: 'Dashboard',
+  data() {
+    return {
+      
+      types: [],
+
+      visibleLiveDemo: false,
+      submit: {},
+
+      series: [{
+        name: 'Income',
+        type: 'column',
+        data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+      }, {
+        name: 'Cashflow',
+        type: 'column',
+        data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+      }, {
+        name: 'Revenue',
+        type: 'line',
+        data: [20, 29, 37, 36, 44, 45, 50, 58]
+      }],
+      chartOptions: {
+        chart: {
+          height: 350,
+          type: 'line',
+          stacked: false
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          width: [1, 1, 4]
+        },
+        title: {
+          text: 'XYZ - Stock Analysis (2009 - 2016)',
+          align: 'left',
+          offsetX: 110
+        },
+        xaxis: {
+          categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+        },
+        yaxis: [
+          {
+            seriesName: 'Income',
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#008FFB'
+            },
+            labels: {
+              style: {
+                colors: '#008FFB',
+              }
+            },
+            title: {
+              text: "Income (thousand crores)",
+              style: {
+                color: '#008FFB',
+              }
+            },
+            tooltip: {
+              enabled: true
+            }
+          },
+          {
+            seriesName: 'Cashflow',
+            opposite: true,
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#00E396'
+            },
+            labels: {
+              style: {
+                colors: '#00E396',
+              }
+            },
+            title: {
+              text: "Operating Cashflow (thousand crores)",
+              style: {
+                color: '#00E396',
+              }
+            },
+          },
+          {
+            seriesName: 'Revenue',
+            opposite: true,
+          }
+        ],
+      },
+    };
+  },
+
   components: {
     MainChartExample,
     WidgetsStatsA,
@@ -131,105 +472,191 @@ export default {
     BarChart2,
     FileText,
     ChartColumnIncreasing,
-    BookText
+    BookText,
+    CChart,
+    ApexCharts,
+    CTable,
+    CTableHead,
+    CTableBody,
+    CTableRow,
+    CTableHeaderCell,
+    CTableDataCell,
   },
   setup() {
     const router = useRouter();
     
-    const machines = ref([
-      { id: 1, name: 'LPDC', oee: '95.3%', status: 'Running', mtCall: '0 Min', used: '211/416' },
-      { id: 2, name: 'HPDC', oee: '95.3%', status: 'Alarm', mtCall: '20 Min', used: '211/416' },
-      { id: 3, name: 'Cam Shaft', oee: '95.3%', status: 'Stop', mtCall: '35 Min', used: '211/416' },
-      { id: 4, name: 'Crank Shaft', oee: '95.3%', status: 'Running', mtCall: '0 Min', used: '211/416' },
-      { id: 5, name: 'Cylinder Head', oee: '95.3%', status: 'Running', mtCall: '0 Min', used: '211/416' }
-    ]);
+    const progressGroupExample1 = [
+      { title: 'Monday', value1: 34, value2: 78 },
+      { title: 'Tuesday', value1: 56, value2: 94 },
+      { title: 'Wednesday', value1: 12, value2: 67 },
+      { title: 'Thursday', value1: 43, value2: 91 },
+      { title: 'Friday', value1: 22, value2: 73 },
+      { title: 'Saturday', value1: 53, value2: 82 },
+      { title: 'Sunday', value1: 9, value2: 69 },
+    ]
+    const progressGroupExample2 = [
+      { title: 'Male', icon: 'cil-user', value: 53 },
+      { title: 'Female', icon: 'cil-user-female', value: 43 },
+    ]
+    const progressGroupExample3 = [
+      {
+        title: 'Organic Search',
+        icon: 'cib-google',
+        percent: 56,
+        value: '191,235',
+      },
+      { title: 'Facebook', icon: 'cib-facebook', percent: 15, value: '51,223' },
+      { title: 'Twitter', icon: 'cib-twitter', percent: 11, value: '37,564' },
+      { title: 'LinkedIn', icon: 'cib-linkedin', percent: 8, value: '27,319' },
+    ]
+    const tableExample = [
+      
+    ]
 
-    const recentActivities = ref([
-      { type: 'stop', message: 'Cam Shaft machine stopped', time: '35 min ago' },
-      { type: 'alarm', message: 'HPDC machine alarm triggered', time: '20 min ago' },
-      { type: 'maintenance', message: 'Scheduled maintenance for LPDC', time: '2 hours ago' },
-      { type: 'restart', message: 'HPDC machine restarted', time: '4 hours ago' }
-    ]);
-
-    const maintenanceStats = ref([
-      { title: 'Average Downtime', value: '18 min', percentage: '5%', color: 'green' },
-      { title: 'Response Time', value: '3.2 min', percentage: '10%', color: 'green' },
-      { title: 'Daily Alerts', value: '5', percentage: '15%', color: 'red' }
-    ]);
+    const dashboardCards = [
+      {
+        title: 'Machine Stop Input',
+        icon: 'AlertTriangle',
+        description: 'Record and monitor machine stop events',
+        color: 'danger',
+        route: '/machine-stop'
+      },
+      {
+        title: 'MTBF',
+        icon: 'Clock',
+        description: 'Mean Time Between Failures metrics',
+        color: 'info',
+        route: '/mtbf'
+      },
+      {
+        title: 'MTTR',
+        icon: 'Timer',
+        description: 'Mean Time To Repair analytics',
+        color: 'warning',
+        route: '/mttr'
+      },
+      {
+        title: 'Problem History',
+        icon: 'History',
+        description: 'Historical issues and resolutions',
+        color: 'primary',
+        route: '/app/ProblemHistory'
+      },
+      {
+        title: 'Realtime Pareto',
+        icon: 'BarChart2',
+        description: 'Live Pareto analysis of issues',
+        color: 'success',
+        route: '/app/RealtimeParetto'
+      },
+      {
+        title: 'LTB Report',
+        icon: 'FileText',
+        description: 'Last Time Buy reporting and analysis',
+        color: 'secondary',
+        route: '/ltb-report'
+      }
+    ]
 
     const navigateTo = (route) => {
       router.push(route);
-    };
-
-    const getStatusClass = (status) => {
-      switch (status) {
-        case 'Running':
-          return 'bg-green-500';
-        case 'Alarm':
-          return 'bg-yellow-500';
-        case 'Stop':
-          return 'bg-red-500';
-        default:
-          return 'bg-gray-500';
-      }
-    };
-
-    const getActivityIconClass = (type) => {
-      switch (type) {
-        case 'stop':
-          return 'bg-red-500';
-        case 'alarm':
-          return 'bg-yellow-500';
-        case 'maintenance':
-          return 'bg-blue-500';
-        case 'restart':
-          return 'bg-green-500';
-        default:
-          return 'bg-gray-500';
-      }
-    };
+    }
 
     return {
-      machines,
-      recentActivities,
-      maintenanceStats,
-      navigateTo,
-      getStatusClass,
-      getActivityIconClass
-    };
-  }
-};
-</script>
+      tableExample,
+      progressGroupExample1,
+      progressGroupExample2,
+      progressGroupExample3,
+      dashboardCards,
+      navigateTo
+    }
+    
+  },
+
+  methods: {
+    onClickInput() {
+      this.visibleLiveDemo = true
+    },
   
+    async saveSubmit() {
+      if(!this.submit.machineName){
+        alert("Please input machine name")
+      } else if(!this.submit.line){
+        alert("Please input line")
+      } else if(!this.submit.problems){
+        alert("Please input problems")
+      } else if(!this.submit.agreeTerms){
+        alert("You must agree to terms and conditions before submitting")
+      } else {
+        try {
+          const payload = {
+            machineName: this.submit.machineName,
+            lineName: this.submit.line,
+            problemDescription: this.submit.problems,
+          };
+          const response = await api.post('/smartandon/dashboard/new-machine-input', payload);
+          if (response.data.status === 'success') {
+            alert('Input saved successfully');
+            this.visibleLiveDemo = false;
+            this.submit = {};
+          } else {
+            alert('Failed to save input');
+          }
+        } catch (error) {
+          console.log(error.message)
+          alert('Error saving input: ' + error.message);
+        }
+      }
+    }
+
+  },
+
+  async created() {
+    try {
+      const response = await axios.get('/api/smartandon/qcc-m-types');
+      this.types = response.data;
+    } catch (error) {
+      console.error('Failed to fetch qcc_m_types:', error);
+    }
+  },
+}
+</script>
+
 <style scoped>
-.dashboard-container {
-  padding: 1.5rem;
-  background-color: #f7f9fc;
-  min-height: 100vh;
+.dashboard-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.header {
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.nav-tabs {
-  scrollbar-width: thin;
-}
-
-.tab-card {
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border: 1px solid #eaeaea;
-}
-
-.tab-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  border-color: #ddd;
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .icon-container {
-  color: #4a5568;
+  padding: 15px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.card-description {
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 10px;
+}
+
+
+
+
+p {
+  font-style: italic;
+}
+
+
+
+
+
 </style>

@@ -9,7 +9,7 @@ const appRoutes = [
     path: '/app/dashboard',
     name: 'Dashboard',
     component: () => import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
-    meta: { 
+    meta: {
       requiresAuth: true,
       title: 'Dashboard'
     }
@@ -26,7 +26,7 @@ const appRoutes = [
   {
     path: '/app/MTBFMTTR',
     name: 'MTBFMTTR',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR.vue'),
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR/MTBFMTTR.vue'),
     meta: {
       requiresAuth: true,
       title: 'MTBFMTTR'
@@ -34,7 +34,7 @@ const appRoutes = [
   },
   {
     path: '/app/RealtimeParetto',
-    name: 'MTBFMTTR',
+    name: 'RealtimeParetto',
     component: () => import(/* webpackChunkName: "reports" */ '@/views/RealtimeParetto/RealtimeParetto.vue'),
     meta: {
       requiresAuth: true,
@@ -78,6 +78,24 @@ const appRoutes = [
     meta: {
       requiresAuth: true,
       title: 'Problem History'
+    }
+  },
+  {
+    path: '/app/ltb-report',
+    name: 'LTBReport',
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/LTB/LTBReportScreen.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'LTB Report'
+    }
+  },
+  {
+    path: '/app/ltb-summary',
+    name: 'LTBSummary',
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/LTBSummary.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'LTB Summary'
     }
   },
   /*define other routes in here*/
@@ -140,13 +158,13 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = `Template MFG - ${to.meta.title}`
   }
-  
+
   // Check authentication
   if (to.meta.requiresAuth && !isStandalone && (!localStorage.id_token || localStorage.id_token === '')) {
     window.location.href = process.env.dc + '/#/sc/login'
     return
   }
-  
+
   next()
 })
 
