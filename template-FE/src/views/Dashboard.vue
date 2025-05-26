@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+
   <CRow>
     <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
       <CCard class="dashboard-card h-100" :color="card.color">
@@ -35,7 +35,7 @@
           :validated="validatedCustom01" 
           @submit="handleSubmitCustom01"
         >
-          <CCol md="8">
+          <!-- <CCol md="8">
             <CFormInput
               feedbackValid="Looks good!"
               id="machineName"
@@ -43,28 +43,53 @@
               required
               v-model="submit.machineName"
             />
+          </CCol> -->
+          <CCol md="8">
+            <label for="machineSelect" class="form-label">Machine Name</label>
+            <Treeselect
+              id="machineSelect"
+              v-model="submit.machineName"
+              :options="machineOptions"
+              :searchable="true"
+              :clearable="true"
+              :children="false"
+              placeholder="Select or input machine"
+              @input="onMachineInput"
+              :value-consists-of="['id']"
+              :value-key="'id'"
+              :label-key="'label'"
+            />
           </CCol>
           <CCol md="4">
-            <CFormSelect
-              aria-describedby="validationCustom04Feedback"
-              feedbackInvalid="Please select the line."
+            <label for="machineSelect" class="form-label">Line</label>
+            <Treeselect
               id="lineSelect"
-              label="Line"
-              required
               v-model="submit.line"
-            >
-              <option selected="" disabled="" value="">
-                Choose Line...
-              </option>
-              <option value="LPDC">LPDC</option>
-              <option value="HPDC">HPDC</option>
-              <option value="CRANK SHAFT">CRANK SHAFT</option>
-              <option value="CYLINDER HEAD">CYLINDER HEAD</option>
-              <option value="CYLINDER BLOCK">CYLINDER BLOCK</option>
-              <option value="CAM SHAFT">CAM SHAFT</option>
-              <option value="ASSY LINE">ASSY LINE</option>
-            </CFormSelect>
+              :multiple="false"
+              :flat="true"
+              :options="lineOptions"
+              :searchable="true"
+              :clearable="true"
+              placeholder="Select or input line"
+              @input="onMachineInput"
+              :value-consists-of="['id']"
+              :value-key="'id'"
+              :label-key="'label'"
+            />
           </CCol>
+          <!-- <CCol md="4">
+              <CFormSelect
+                aria-describedby="validationCustom04Feedback"
+                feedbackInvalid="Please select the line."
+                id="lineSelect"
+                label="Line"
+                required
+                v-model="submit.line"
+              >
+                <option selected disabled value="">Choose Line...</option>
+                <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
+              </CFormSelect>
+          </CCol> -->
           <CCol md="12">
             <CFormInput 
               feedbackInvalid="Please input the problems"
@@ -119,18 +144,39 @@
 
   <CRow>
     <CCol class="mb-3">
+      <CTable v-if="lines.length" bordered hover responsive>
+        <CTableHead>
+          <CTableRow>
+            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
+            <CTableHeaderCell scope="col">fid</CTableHeaderCell>
+            <CTableHeaderCell scope="col">fline</CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+        <CTableBody>
+          <CTableRow  v-for="line in lines" :key="line.type_id">
+            <CTableDataCell>{{ line.fid }}</CTableDataCell>
+            <CTableDataCell>{{ line.fline }}</CTableDataCell>
+          </CTableRow>
+        </CTableBody>
+      </CTable>
+      <p v-else>Loading data...</p>
+    </CCol>
+  </CRow>
+
+  <CRow>
+    <CCol class="mb-3">
       <CTable v-if="types.length" bordered hover responsive>
         <CTableHead>
           <CTableRow>
             <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-            <CTableHeaderCell scope="col">Type ID</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Type Name</CTableHeaderCell>
+            <CTableHeaderCell scope="col">fid</CTableHeaderCell>
+            <CTableHeaderCell scope="col">fmc_name</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow  v-for="type in types" :key="type.type_id">
-            <CTableDataCell>{{ type.type_id }}</CTableDataCell>
-            <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
+          <CTableRow  v-for="machine in machines" :key="machine.fid">
+            <CTableDataCell>{{ machine.fid }}</CTableDataCell>
+            <CTableDataCell>{{ machine.fmc_name }}</CTableDataCell>
           </CTableRow>
         </CTableBody>
       </CTable>
@@ -436,9 +482,10 @@ import {
   BookText 
 } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
+import Treeselect from 'vue3-treeselect'
+import 'vue3-treeselect/dist/vue3-treeselect.css'
 
 const visibleStaticBackdropDemo = ref(false);
-
 
 export default {
   name: 'Dashboard',
@@ -446,9 +493,15 @@ export default {
     return {
       
       types: [],
+      lines: [],
+      linesOptions: [],
+      machines: [],
+      machineOptions: [],
 
       visibleLiveDemo: false,
-      submit: {},
+      submit: {
+        machineName: null, // initialize as null to avoid showing [object Object]
+      },
 
       series: [{
         name: 'Income',
@@ -559,6 +612,7 @@ export default {
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
+    Treeselect,
   },
   setup() {
     const router = useRouter();
@@ -657,8 +711,9 @@ export default {
     },
   
     async saveSubmit() {
-      if(!this.submit.machineName){
-        alert("Please input machine name")
+      const machineNameToSubmit = this.submit.machineName && this.submit.machineName.id ? this.submit.machineName.id : null;
+      if(!machineNameToSubmit){
+        alert("Please input or select machine name")
       } else if(!this.submit.line){
         alert("Please input line")
       } else if(!this.submit.problems){
@@ -668,7 +723,7 @@ export default {
       } else {
         try {
           const payload = {
-            machineName: this.submit.machineName,
+            machineName: machineNameToSubmit,
             lineName: this.submit.line,
             problemDescription: this.submit.problems,
           };
@@ -685,8 +740,10 @@ export default {
           alert('Error saving input: ' + error.message);
         }
       }
+    },
+    onMachineInput(value) {
+      this.submit.machineName = value || {};
     }
-
   },
 
   async created() {
@@ -696,8 +753,35 @@ export default {
     } catch (error) {
       console.error('Failed to fetch qcc_m_types:', error);
     }
+    try {
+      const response = await axios.get('/api/smartandon/line');
+      this.lines = response.data;
+    } catch (error) {
+      console.error('Failed to fetch qcc_m_types:', error);
+    }
+    try {
+      const response = await axios.get('/api/smartandon/machine');
+      this.machines = response.data;
+      this.machineOptions = response.data.map(machine => ({
+        id: machine.fid,
+        label: machine.fmc_name
+      }));
+    } catch (error) {
+      console.error('Failed to fetch machines:', error);
+    }
+    try {
+      const response = await axios.get('/api/smartandon/line');
+      this.lines = response.data;
+      this.lineOptions = response.data.map(line => ({
+        id: line.fid,
+        label: line.fline
+      }));
+    } catch (error) {
+      console.error('Failed to fetch lines:', error);
+    }
   },
 }
+
 </script>
 
 <style scoped>

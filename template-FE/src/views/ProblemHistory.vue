@@ -1,4 +1,5 @@
 <template>
+  
   <CRow class="mb-3">
     <CCol>
       <CCard>
@@ -6,20 +7,23 @@
         <CCardBody>
           <CRow class="mb-3">
             <CCol>
+              <CFormLabel for="basic-url">Start</CFormLabel>
               <CInputGroup>
-                <CInputGroupText id="basic-addon1">Start</CInputGroupText>
-                <CDatePicker label="Date" locale="en-US"/>
+                <CInputGroupText id="basic-addon1"><Clock size="16" /></CInputGroupText>
+                <CFormInput placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/>
               </CInputGroup>
             </CCol>
             <CCol>
+              <CFormLabel for="basic-url">Finish</CFormLabel>
               <CInputGroup>
-                <CInputGroupText id="basic-addon1">Finish</CInputGroupText>
+                <CInputGroupText id="basic-addon1"><Clock size="16" /></CInputGroupText>
                 <CFormInput placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/>
               </CInputGroup>
             </CCol>
           </CRow>
           <CRow class="mb-3">
             <CCol>
+              <CFormLabel for="basic-url">Line</CFormLabel>
               <CInputGroup>
                 <CInputGroupText as="label" for="inputGroupSelect01">Line</CInputGroupText>
                 <CFormSelect
@@ -29,20 +33,13 @@
                   required
                   v-model="submit.line"
                 >
-                  <option selected="" disabled="" value="">
-                    Choose Line...
-                  </option>
-                  <option value="LPDC">LPDC</option>
-                  <option value="HPDC">HPDC</option>
-                  <option value="CRANK SHAFT">CRANK SHAFT</option>
-                  <option value="CYLINDER HEAD">CYLINDER HEAD</option>
-                  <option value="CYLINDER BLOCK">CYLINDER BLOCK</option>
-                  <option value="CAM SHAFT">CAM SHAFT</option>
-                  <option value="ASSY LINE">ASSY LINE</option>
+                  <option selected disabled value="">Choose Line...</option>
+                  <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
                 </CFormSelect>
               </CInputGroup>
             </CCol>
             <CCol>
+              <CFormLabel for="basic-url">Machine</CFormLabel>
               <CInputGroup>
                 <CInputGroupText id="basic-addon1">Machine</CInputGroupText>
                 <CFormInput placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/>
@@ -50,10 +47,20 @@
             </CCol>
           </CRow>
           <CRow class="mb-3">
+            <CFormLabel for="basic-url">Problem</CFormLabel>
             <CInputGroup>
                 <CInputGroupText id="basic-addon1">Problem</CInputGroupText>
                 <CFormInput placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/>
             </CInputGroup>
+          </CRow>
+          <hr></hr>
+          <CRow>
+            <CCol sm="2">
+              <CButton style="width: 100%" color="dark" variant="outline" @click="reset">Reset</CButton>
+            </CCol>
+            <CCol sm="10">
+              <CButton style="width: 100%" color="primary" @click="search">Search</CButton>
+            </CCol>
           </CRow>
         </CCardBody>
       </CCard>
@@ -62,272 +69,139 @@
 
   <CRow>
     <CCol>
-      <CCard class="mb-3">
+      <CCard>
+        <CCardHeader>Table History</CCardHeader>
         <CCardBody>
           <CRow>
-            <CCol>
-              <CCard class="mb-3">
-                <CCardBody>
-                  <CCardTitle>LPDC</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
-                </CCardBody>
-              </CCard>
+            <CRow>
+              <CCol>
+                <CFormLabel style="font-weight: bold">Filters</CFormLabel>
+                <CRow>
+                  <CCol sm="3">
+                    <CButton style="width: 100%; font-weight: bold; color: white" color="info" @click="freq">Frequency Problem</CButton>
+                  </CCol>
+                  <CCol sm="7">
+                    <CButton style="width: 50%; font-weight: bold; color: white" color="info" @click="ltb">LTB</CButton>
+                  </CCol>
+                </CRow>
+              </CCol>
+            <CCol sm="2">
+              <CFormLabel style="font-weight: bold;">Download Excel</CFormLabel>
+              <CButton style="width: 100%; font-weight: bold; color: white" color="success" @click="download">Download</CButton>
             </CCol>
           </CRow>
-          <CRow>
-            <CCol>
-              <CCard class="mb-3">
-                <CCardBody>
-                  <CCardTitle>HPDC</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-                
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-                
-                </CCardBody>
-              </CCard>
-            </CCol>
           </CRow>
+
+          <hr></hr>
+
           <CRow>
             <CCol>
-              <CCard class="mb-3">
-                <CCardBody>
-                  <CCardTitle>CAM SHAFT</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol>
-              <CCard class="mb-3">
-                <CCardBody>
-                  <CCardTitle>CRANK SHAFT</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol>
-              <CCard class="mb-3">
-                <CCardBody>
-                  <CCardTitle>CYLINDER HEAD</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol>
-              <CCard class="mb-3">
-                <CCardBody>
-                  <CCardTitle>CYLINDER BLOCK</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-                  
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol>
-              <CCard class="mb-3">
-                <CCardBody>
-                  <CCardTitle>ASSY LINE</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
-                </CCardBody>
-              </CCard>
+              <CTable>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">LTB Reports</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  <CTableRow>
+                    <CTableDataCell>1</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                  <CTableRow>
+                    <CTableDataCell>2</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                  <CTableRow>
+                    <CTableDataCell>3</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                  <CTableRow>
+                    <CTableDataCell>4</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                  <CTableRow>
+                    <CTableDataCell>5</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                  <CTableRow>
+                    <CTableDataCell>6</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                  <CTableRow>
+                    <CTableDataCell>7</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                  <CTableRow>
+                    <CTableDataCell>8</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                  <CTableRow>
+                    <CTableDataCell>9</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                    <CTableDataCell>Cell</CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              </CTable>
             </CCol>
           </CRow>
         </CCardBody>
@@ -610,13 +484,24 @@ export default {
     }
 
   },
-
+  data() {
+    return {
+      lines: [],
+      submit: {},
+    };
+  },
   async created() {
     try {
       const response = await axios.get('/api/smartandon/qcc-m-types');
       this.types = response.data;
     } catch (error) {
       console.error('Failed to fetch qcc_m_types:', error);
+    }
+    try {
+      const response = await axios.get('/api/smartandon/line');
+      this.lines = response.data;
+    } catch (error) {
+      console.error('Failed to fetch lines:', error);
     }
   },
 }
