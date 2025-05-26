@@ -13,12 +13,14 @@ const sequelize = new Sequelize(qdc_db.database, qdc_db.username, qdc_db.passwor
 
 const QccMTypes = require('./QccMTypes')(sequelize);
 const newMachineInput = require('./newMachineInput')(sequelize);
+// const line = require('./line')(sequelize);
 
 const models = {
   sequelize,
   Sequelize,
   QccMTypes,
-  newMachineInput,
+  newMachineInput
+  // line
   // define other models here
 };
 
