@@ -26,7 +26,7 @@ const appRoutes = [
   {
     path: '/app/MTBFMTTR',
     name: 'MTBFMTTR',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR.vue'),
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR/MTBFMTTR.vue'),
     meta: {
       requiresAuth: true,
       title: 'MTBFMTTR'
@@ -34,7 +34,7 @@ const appRoutes = [
   },
   {
     path: '/app/RealtimeParetto',
-    name: 'MTBFMTTR',
+    name: 'RealtimeParetto',
     component: () => import(/* webpackChunkName: "reports" */ '@/views/RealtimeParetto/RealtimeParetto.vue'),
     meta: {
       requiresAuth: true,
