@@ -658,14 +658,14 @@ export default {
         icon: 'Clock',
         description: 'Mean Time Between Failures metrics',
         color: 'info',
-        route: '/mtbf'
+        route: '/app/MTBFMTTR'
       },
       {
         title: 'MTTR',
         icon: 'Timer',
         description: 'Mean Time To Repair analytics',
         color: 'warning',
-        route: '/mttr'
+        route: '/app/MTBFMTTR'
       },
       {
         title: 'Problem History',
