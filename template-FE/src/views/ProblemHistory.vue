@@ -23,7 +23,24 @@
           </CRow>
           <CRow class="mb-3">
             <CCol>
-              <CFormLabel for="basic-url">Line</CFormLabel>
+              <CCol class="md-6">
+                <label for="machineSelect" class="form-label">Line</label>
+                <Treeselect
+                  id="lineSelect"
+                  v-model="submit.line"
+                  :multiple="false"
+                  :flat="true"
+                  :options="lineOptions"
+                  :searchable="true"
+                  :clearable="true"
+                  placeholder="Select or input line"
+                  @input="onMachineInput"
+                  :value-consists-of="['id']"
+                  :value-key="'id'"
+                  :label-key="'label'"
+                />
+              </CCol>
+              <!-- <CFormLabel for="basic-url">Line</CFormLabel>
               <CInputGroup>
                 <CInputGroupText as="label" for="inputGroupSelect01">Line</CInputGroupText>
                 <CFormSelect
@@ -36,15 +53,31 @@
                   <option selected disabled value="">Choose Line...</option>
                   <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
                 </CFormSelect>
-              </CInputGroup>
+              </CInputGroup> -->
             </CCol>
-            <CCol>
+            <CCol md="6">
+              <label for="machineSelect" class="form-label">Machine Name</label>
+              <Treeselect
+                id="machineSelect"
+                v-model="submit.machineName"
+                :options="machineOptions"
+                :searchable="true"
+                :clearable="true"
+                :children="false"
+                placeholder="Select or input machine"
+                @input="onMachineInput"
+                :value-consists-of="['id']"
+                :value-key="'id'"
+                :label-key="'label'"
+              />
+            </CCol>
+            <!-- <CCol>
               <CFormLabel for="basic-url">Machine</CFormLabel>
               <CInputGroup>
                 <CInputGroupText id="basic-addon1">Machine</CInputGroupText>
                 <CFormInput placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/>
               </CInputGroup>
-            </CCol>
+            </CCol> -->
           </CRow>
           <CRow class="mb-3">
             <CFormLabel for="basic-url">Problem</CFormLabel>
@@ -232,6 +265,8 @@ import {
   BookText 
 } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
+import Treeselect from 'vue3-treeselect'
+import 'vue3-treeselect/dist/vue3-treeselect.css'
 
 const visibleStaticBackdropDemo = ref(false);
 
@@ -242,9 +277,15 @@ export default {
     return {
       
       types: [],
+      lines: [],
+      lineOptions: [],
+      machines: [],
+      machineOptions: [],
 
       visibleLiveDemo: false,
-      submit: {},
+      submit: {
+        machineName: null, // initialize as null to avoid showing [object Object]
+      },
 
       series: [{
         name: 'Income',
@@ -355,6 +396,7 @@ export default {
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
+    Treeselect
   },
   setup() {
     const router = useRouter();
@@ -484,12 +526,7 @@ export default {
     }
 
   },
-  data() {
-    return {
-      lines: [],
-      submit: {},
-    };
-  },
+
   async created() {
     try {
       const response = await axios.get('/api/smartandon/qcc-m-types');
@@ -501,10 +538,31 @@ export default {
       const response = await axios.get('/api/smartandon/line');
       this.lines = response.data;
     } catch (error) {
+      console.error('Failed to fetch qcc_m_types:', error);
+    }
+    try {
+      const response = await axios.get('/api/smartandon/machine');
+      this.machines = response.data;
+      this.machineOptions = response.data.map(machine => ({
+        id: machine.fid,
+        label: machine.fmc_name
+      }));
+    } catch (error) {
+      console.error('Failed to fetch machines:', error);
+    }
+    try {
+      const response = await axios.get('/api/smartandon/line');
+      this.lines = response.data;
+      this.lineOptions = response.data.map(line => ({
+        id: line.fid,
+        label: line.fline
+      }));
+    } catch (error) {
       console.error('Failed to fetch lines:', error);
     }
   },
 }
+
 </script>
 
 <style scoped>
