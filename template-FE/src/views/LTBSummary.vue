@@ -25,7 +25,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Date</th>
-                                    <th>Mesin</th>
+                                    <th>Machine</th>
                                     <th>Problem Description</th>
                                     <th>Duration</th>
                                     <th>TL</th>
