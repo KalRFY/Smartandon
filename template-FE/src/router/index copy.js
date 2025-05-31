@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+
 import DefaultLayout from '@/layouts/DefaultLayout'
 import DefaultLayoutStandAlone from '@/standalone/layouts/DefaultLayoutStandAlone'
 
@@ -69,15 +70,6 @@ const appRoutes = [
     meta: {
       requiresAuth: true,
       title: 'Problem History'
-    }
-  },
-  {
-    path: '/app/ltb-report',
-    name: 'LTBReport',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/LTB/LTBReportScreen.vue'),
-    meta: {
-      requiresAuth: true,
-      title: 'LTB Report'
     }
   },
   {

@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+
 import DefaultLayout from '@/layouts/DefaultLayout'
 import DefaultLayoutStandAlone from '@/standalone/layouts/DefaultLayoutStandAlone'
 
@@ -25,10 +26,19 @@ const appRoutes = [
   {
     path: '/app/MTBFMTTR',
     name: 'MTBFMTTR',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR.vue'),
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR/MTBFMTTR.vue'),
     meta: {
       requiresAuth: true,
       title: 'MTBFMTTR'
+    }
+  },
+  {
+    path: '/app/RealtimeParetto',
+    name: 'RealtimeParetto',
+    component: () => import(/* webpackChunkName: "reports" */ '@/views/RealtimeParetto/RealtimeParetto.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'RealtimeParetto'
     }
   },
 
@@ -68,15 +78,6 @@ const appRoutes = [
     meta: {
       requiresAuth: true,
       title: 'Problem History'
-    }
-  },
-  {
-    path: '/app/ltb-report',
-    name: 'LTBReport',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/LTB/LTBReportScreen.vue'),
-    meta: {
-      requiresAuth: true,
-      title: 'LTB Report'
     }
   },
   {
