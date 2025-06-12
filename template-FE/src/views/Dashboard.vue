@@ -1,38 +1,58 @@
 <template>
   <div>
-
-  <CRow>
-    <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
-      <CCard class="dashboard-card h-100" :color="card.color">
-        <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-          <div class="icon-container mb-3">
-            <component :is="card.icon" :size="48" :stroke-width="1.5" />
-          </div>
-          <h4>{{ card.title }}</h4>
-          <p class="card-description">{{ card.description }}</p>
-          <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-        </CCardBody>
-      </CCard>
-    </CCol>
-  </CRow>
+    <CRow>
+      <CCol
+        v-for="(card, index) in dashboardCards"
+        :key="index"
+        sm="6"
+        lg="4"
+        class="mb-4"
+      >
+        <CCard class="dashboard-card h-100" :color="card.color">
+          <CCardBody
+            class="d-flex flex-column align-items-center justify-content-center text-center p-4"
+          >
+            <div class="icon-container mb-3">
+              <component :is="card.icon" :size="48" :stroke-width="1.5" />
+            </div>
+            <h4>{{ card.title }}</h4>
+            <p class="card-description">{{ card.description }}</p>
+            <CButton color="light" class="mt-2" @click="navigateTo(card.route)"
+              >View Details</CButton
+            >
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
   </div>
-  
-  <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
+
+  <CButton
+    style="width: 100%; font-size: 24px; font-weight: bold"
+    class="mb-3"
+    color="primary"
+    shape="rounded-pill"
+    @click="onClickInput"
+    >Machine Stop Input</CButton
+  >
 
   <div>
-    <CModal 
+    <CModal
       :visible="visibleLiveDemo"
-      @close="() => { visibleLiveDemo = false }"
+      @close="
+        () => {
+          visibleLiveDemo = false
+        }
+      "
       aria-labelledby="LiveDemoExampleLabel"
     >
       <CModalHeader>
         <CModalTitle id="LiveDemoExampleLabel">Machine Stop Input</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CForm 
-          class="row g-3 needs-validation" 
-          novalidate 
-          :validated="validatedCustom01" 
+        <CForm
+          class="row g-3 needs-validation"
+          novalidate
+          :validated="validatedCustom01"
           @submit="handleSubmitCustom01"
         >
           <!-- <CCol md="8">
@@ -91,7 +111,7 @@
               </CFormSelect>
           </CCol> -->
           <CCol md="12">
-            <CFormInput 
+            <CFormInput
               feedbackInvalid="Please input the problems"
               id="Problems"
               label="Problems"
@@ -112,7 +132,14 @@
         </CForm>
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" @click="() => { visibleLiveDemo = false }">
+        <CButton
+          color="secondary"
+          @click="
+            () => {
+              visibleLiveDemo = false
+            }
+          "
+        >
           Close
         </CButton>
 
@@ -132,7 +159,7 @@
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow  v-for="type in types" :key="type.type_id">
+          <CTableRow v-for="type in types" :key="type.type_id">
             <CTableDataCell>{{ type.type_id }}</CTableDataCell>
             <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
           </CTableRow>
@@ -153,7 +180,7 @@
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow  v-for="line in lines" :key="line.type_id">
+          <CTableRow v-for="line in lines" :key="line.type_id">
             <CTableDataCell>{{ line.fid }}</CTableDataCell>
             <CTableDataCell>{{ line.fline }}</CTableDataCell>
           </CTableRow>
@@ -174,7 +201,7 @@
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow  v-for="machine in machines" :key="machine.fid">
+          <CTableRow v-for="machine in machines" :key="machine.fid">
             <CTableDataCell>{{ machine.fid }}</CTableDataCell>
             <CTableDataCell>{{ machine.fmc_name }}</CTableDataCell>
           </CTableRow>
@@ -198,7 +225,15 @@
                     type="line"
                     :wrapper="false"
                     :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                      ],
                       datasets: [
                         {
                           label: 'My First dataset',
@@ -206,7 +241,7 @@
                           borderColor: 'rgba(220, 220, 220, 1)',
                           pointBackgroundColor: 'rgba(220, 220, 220, 1)',
                           pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
+                          data: [40, 20, 12, 39, 10, 40, 39],
                         },
                         {
                           label: 'My Second dataset',
@@ -214,14 +249,18 @@
                           borderColor: 'rgba(151, 187, 205, 1)',
                           pointBackgroundColor: 'rgba(151, 187, 205, 1)',
                           pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
+                          data: [50, 12, 28, 29, 7, 25, 12],
+                        },
+                      ],
                     }"
                   />
 
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
+                  <ApexCharts
+                    type="line"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  ></ApexCharts>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -236,7 +275,15 @@
                     type="line"
                     :wrapper="false"
                     :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                      ],
                       datasets: [
                         {
                           label: 'My First dataset',
@@ -244,7 +291,7 @@
                           borderColor: 'rgba(220, 220, 220, 1)',
                           pointBackgroundColor: 'rgba(220, 220, 220, 1)',
                           pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
+                          data: [40, 20, 12, 39, 10, 40, 39],
                         },
                         {
                           label: 'My Second dataset',
@@ -252,14 +299,18 @@
                           borderColor: 'rgba(151, 187, 205, 1)',
                           pointBackgroundColor: 'rgba(151, 187, 205, 1)',
                           pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
+                          data: [50, 12, 28, 29, 7, 25, 12],
+                        },
+                      ],
                     }"
                   />
-                
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-                
+
+                  <ApexCharts
+                    type="line"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  ></ApexCharts>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -274,7 +325,15 @@
                     type="line"
                     :wrapper="false"
                     :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                      ],
                       datasets: [
                         {
                           label: 'My First dataset',
@@ -282,7 +341,7 @@
                           borderColor: 'rgba(220, 220, 220, 1)',
                           pointBackgroundColor: 'rgba(220, 220, 220, 1)',
                           pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
+                          data: [40, 20, 12, 39, 10, 40, 39],
                         },
                         {
                           label: 'My Second dataset',
@@ -290,14 +349,18 @@
                           borderColor: 'rgba(151, 187, 205, 1)',
                           pointBackgroundColor: 'rgba(151, 187, 205, 1)',
                           pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
+                          data: [50, 12, 28, 29, 7, 25, 12],
+                        },
+                      ],
                     }"
                   />
 
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
+                  <ApexCharts
+                    type="line"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  ></ApexCharts>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -312,7 +375,15 @@
                     type="line"
                     :wrapper="false"
                     :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                      ],
                       datasets: [
                         {
                           label: 'My First dataset',
@@ -320,7 +391,7 @@
                           borderColor: 'rgba(220, 220, 220, 1)',
                           pointBackgroundColor: 'rgba(220, 220, 220, 1)',
                           pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
+                          data: [40, 20, 12, 39, 10, 40, 39],
                         },
                         {
                           label: 'My Second dataset',
@@ -328,14 +399,18 @@
                           borderColor: 'rgba(151, 187, 205, 1)',
                           pointBackgroundColor: 'rgba(151, 187, 205, 1)',
                           pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
+                          data: [50, 12, 28, 29, 7, 25, 12],
+                        },
+                      ],
                     }"
                   />
 
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
+                  <ApexCharts
+                    type="line"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  ></ApexCharts>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -350,7 +425,15 @@
                     type="line"
                     :wrapper="false"
                     :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                      ],
                       datasets: [
                         {
                           label: 'My First dataset',
@@ -358,7 +441,7 @@
                           borderColor: 'rgba(220, 220, 220, 1)',
                           pointBackgroundColor: 'rgba(220, 220, 220, 1)',
                           pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
+                          data: [40, 20, 12, 39, 10, 40, 39],
                         },
                         {
                           label: 'My Second dataset',
@@ -366,14 +449,18 @@
                           borderColor: 'rgba(151, 187, 205, 1)',
                           pointBackgroundColor: 'rgba(151, 187, 205, 1)',
                           pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
+                          data: [50, 12, 28, 29, 7, 25, 12],
+                        },
+                      ],
                     }"
                   />
 
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
+                  <ApexCharts
+                    type="line"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  ></ApexCharts>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -388,7 +475,15 @@
                     type="line"
                     :wrapper="false"
                     :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                      ],
                       datasets: [
                         {
                           label: 'My First dataset',
@@ -396,7 +491,7 @@
                           borderColor: 'rgba(220, 220, 220, 1)',
                           pointBackgroundColor: 'rgba(220, 220, 220, 1)',
                           pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
+                          data: [40, 20, 12, 39, 10, 40, 39],
                         },
                         {
                           label: 'My Second dataset',
@@ -404,14 +499,18 @@
                           borderColor: 'rgba(151, 187, 205, 1)',
                           pointBackgroundColor: 'rgba(151, 187, 205, 1)',
                           pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
+                          data: [50, 12, 28, 29, 7, 25, 12],
+                        },
+                      ],
                     }"
                   />
-                  
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
 
+                  <ApexCharts
+                    type="line"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  ></ApexCharts>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -426,7 +525,15 @@
                     type="line"
                     :wrapper="false"
                     :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                      ],
                       datasets: [
                         {
                           label: 'My First dataset',
@@ -434,7 +541,7 @@
                           borderColor: 'rgba(220, 220, 220, 1)',
                           pointBackgroundColor: 'rgba(220, 220, 220, 1)',
                           pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
+                          data: [40, 20, 12, 39, 10, 40, 39],
                         },
                         {
                           label: 'My Second dataset',
@@ -442,14 +549,18 @@
                           borderColor: 'rgba(151, 187, 205, 1)',
                           pointBackgroundColor: 'rgba(151, 187, 205, 1)',
                           pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
+                          data: [50, 12, 28, 29, 7, 25, 12],
+                        },
+                      ],
                     }"
                   />
 
-                  <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-
+                  <ApexCharts
+                    type="line"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  ></ApexCharts>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -458,40 +569,50 @@
       </CCard>
     </CCol>
   </CRow>
-
 </template>
 
 <script>
 import { ref } from 'vue'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell } from '@coreui/vue';
-import axios from 'axios';
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCardTitle,
+  CContainer,
+  CTable,
+  CTableHead,
+  CTableBody,
+  CTableHeaderCell,
+  CTableRow,
+  CTableDataCell,
+} from '@coreui/vue'
+import axios from 'axios'
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
 import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
 import api from '../apis/CommonAPI'
-import { 
-  AlertTriangle, 
-  Clock, 
-  Timer, 
-  History, 
-  BarChart2, 
+import {
+  AlertTriangle,
+  Clock,
+  Timer,
+  History,
+  BarChart2,
   FileText,
-  ChartColumnIncreasing, 
-  BookText 
-} from 'lucide-vue-next';
-import { useRouter } from 'vue-router';
+  ChartColumnIncreasing,
+  BookText,
+} from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
-const visibleStaticBackdropDemo = ref(false);
+const visibleStaticBackdropDemo = ref(false)
 
 export default {
   name: 'Dashboard',
   data() {
     return {
-      
       types: [],
       lines: [],
       linesOptions: [],
@@ -503,35 +624,39 @@ export default {
         machineName: null, // initialize as null to avoid showing [object Object]
       },
 
-      series: [{
-        name: 'Income',
-        type: 'column',
-        data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-      }, {
-        name: 'Cashflow',
-        type: 'column',
-        data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-      }, {
-        name: 'Revenue',
-        type: 'line',
-        data: [20, 29, 37, 36, 44, 45, 50, 58]
-      }],
+      series: [
+        {
+          name: 'Income',
+          type: 'column',
+          data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6],
+        },
+        {
+          name: 'Cashflow',
+          type: 'column',
+          data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5],
+        },
+        {
+          name: 'Revenue',
+          type: 'line',
+          data: [20, 29, 37, 36, 44, 45, 50, 58],
+        },
+      ],
       chartOptions: {
         chart: {
           height: 350,
           type: 'line',
-          stacked: false
+          stacked: false,
         },
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         stroke: {
-          width: [1, 1, 4]
+          width: [1, 1, 4],
         },
         title: {
           text: 'XYZ - Stock Analysis (2009 - 2016)',
           align: 'left',
-          offsetX: 110
+          offsetX: 110,
         },
         xaxis: {
           categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
@@ -544,22 +669,22 @@ export default {
             },
             axisBorder: {
               show: true,
-              color: '#008FFB'
+              color: '#008FFB',
             },
             labels: {
               style: {
                 colors: '#008FFB',
-              }
+              },
             },
             title: {
-              text: "Income (thousand crores)",
+              text: 'Income (thousand crores)',
               style: {
                 color: '#008FFB',
-              }
+              },
             },
             tooltip: {
-              enabled: true
-            }
+              enabled: true,
+            },
           },
           {
             seriesName: 'Cashflow',
@@ -569,27 +694,27 @@ export default {
             },
             axisBorder: {
               show: true,
-              color: '#00E396'
+              color: '#00E396',
             },
             labels: {
               style: {
                 colors: '#00E396',
-              }
+              },
             },
             title: {
-              text: "Operating Cashflow (thousand crores)",
+              text: 'Operating Cashflow (thousand crores)',
               style: {
                 color: '#00E396',
-              }
+              },
             },
           },
           {
             seriesName: 'Revenue',
             opposite: true,
-          }
+          },
         ],
       },
-    };
+    }
   },
 
   components: {
@@ -615,8 +740,8 @@ export default {
     Treeselect,
   },
   setup() {
-    const router = useRouter();
-    
+    const router = useRouter()
+
     const progressGroupExample1 = [
       { title: 'Monday', value1: 34, value2: 78 },
       { title: 'Tuesday', value1: 56, value2: 94 },
@@ -641,9 +766,7 @@ export default {
       { title: 'Twitter', icon: 'cib-twitter', percent: 11, value: '37,564' },
       { title: 'LinkedIn', icon: 'cib-linkedin', percent: 8, value: '27,319' },
     ]
-    const tableExample = [
-      
-    ]
+    const tableExample = []
 
     const dashboardCards = [
       {
@@ -651,47 +774,47 @@ export default {
         icon: 'AlertTriangle',
         description: 'Record and monitor machine stop events',
         color: 'danger',
-        route: '/machine-stop'
+        route: '/machine-stop',
       },
       {
         title: 'MTBF',
         icon: 'Clock',
         description: 'Mean Time Between Failures metrics',
         color: 'info',
-        route: '/app/MTBFMTTR'
+        route: '/app/MTBFMTTR',
       },
       {
         title: 'MTTR',
         icon: 'Timer',
         description: 'Mean Time To Repair analytics',
         color: 'warning',
-        route: '/app/MTBFMTTR'
+        route: '/app/MTBFMTTR',
       },
       {
         title: 'Problem History',
         icon: 'History',
         description: 'Historical issues and resolutions',
         color: 'primary',
-        route: '/app/ProblemHistory'
+        route: '/app/ProblemHistory',
       },
       {
         title: 'Realtime Pareto',
         icon: 'BarChart2',
         description: 'Live Pareto analysis of issues',
         color: 'success',
-        route: '/app/RealtimeParetto'
+        route: '/app/RealtimeParetto',
       },
       {
         title: 'LTB Report',
         icon: 'FileText',
         description: 'Last Time Buy reporting and analysis',
         color: 'secondary',
-        route: '/ltb-report'
-      }
+        route: '/ltb-report',
+      },
     ]
 
     const navigateTo = (route) => {
-      router.push(route);
+      router.push(route)
     }
 
     return {
@@ -700,88 +823,92 @@ export default {
       progressGroupExample2,
       progressGroupExample3,
       dashboardCards,
-      navigateTo
+      navigateTo,
     }
-    
   },
 
   methods: {
     onClickInput() {
       this.visibleLiveDemo = true
     },
-  
+
     async saveSubmit() {
-      const machineNameToSubmit = this.submit.machineName && this.submit.machineName.id ? this.submit.machineName.id : null;
-      if(!machineNameToSubmit){
-        alert("Please input or select machine name")
-      } else if(!this.submit.line){
-        alert("Please input line")
-      } else if(!this.submit.problems){
-        alert("Please input problems")
-      } else if(!this.submit.agreeTerms){
-        alert("You must agree to terms and conditions before submitting")
+      const machineNameToSubmit =
+        this.submit.machineName && this.submit.machineName.id
+          ? this.submit.machineName.id
+          : null
+      if (!machineNameToSubmit) {
+        alert('Please input or select machine name')
+      } else if (!this.submit.line) {
+        alert('Please input line')
+      } else if (!this.submit.problems) {
+        alert('Please input problems')
+      } else if (!this.submit.agreeTerms) {
+        alert('You must agree to terms and conditions before submitting')
       } else {
         try {
           const payload = {
             machineName: machineNameToSubmit,
             lineName: this.submit.line,
             problemDescription: this.submit.problems,
-          };
-          const response = await api.post('/smartandon/dashboard/new-machine-input', payload);
+          }
+          const response = await api.post(
+            '/smartandon/dashboard/new-machine-input',
+            payload,
+          )
           if (response.data.status === 'success') {
-            alert('Input saved successfully');
-            this.visibleLiveDemo = false;
-            this.submit = {};
+            alert('Input saved successfully')
+            this.visibleLiveDemo = false
+            this.submit = {}
           } else {
-            alert('Failed to save input');
+            alert('Failed to save input')
           }
         } catch (error) {
           console.log(error.message)
-          alert('Error saving input: ' + error.message);
+          alert('Error saving input: ' + error.message)
         }
       }
     },
     onMachineInput(value) {
-      this.submit.machineName = value || {};
-    }
+      this.submit.machineName = value || {}
+    },
   },
 
   async created() {
     try {
-      const response = await axios.get('/api/smartandon/qcc-m-types');
-      this.types = response.data;
+      const response = await axios.get('/api/smartandon/qcc-m-types')
+      this.types = response.data
     } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error);
+      console.error('Failed to fetch qcc_m_types:', error)
     }
     try {
-      const response = await axios.get('/api/smartandon/line');
-      this.lines = response.data;
+      const response = await axios.get('/api/smartandon/line')
+      this.lines = response.data
     } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error);
+      console.error('Failed to fetch qcc_m_types:', error)
     }
     try {
-      const response = await axios.get('/api/smartandon/machine');
-      this.machines = response.data;
-      this.machineOptions = response.data.map(machine => ({
+      const response = await axios.get('/api/smartandon/machine')
+      this.machines = response.data
+      this.machineOptions = response.data.map((machine) => ({
         id: machine.fid,
-        label: machine.fmc_name
-      }));
+        label: machine.fmc_name,
+      }))
     } catch (error) {
-      console.error('Failed to fetch machines:', error);
+      console.error('Failed to fetch machines:', error)
     }
     try {
-      const response = await axios.get('/api/smartandon/line');
-      this.lines = response.data;
-      this.lineOptions = response.data.map(line => ({
+      const response = await axios.get('/api/smartandon/line')
+      this.lines = response.data
+      this.lineOptions = response.data.map((line) => ({
         id: line.fid,
-        label: line.fline
-      }));
+        label: line.fline,
+      }))
     } catch (error) {
-      console.error('Failed to fetch lines:', error);
+      console.error('Failed to fetch lines:', error)
     }
   },
 }
-
 </script>
 
 <style scoped>
@@ -810,15 +937,7 @@ export default {
   margin-top: 10px;
 }
 
-
-
-
 p {
   font-style: italic;
 }
-
-
-
-
-
 </style>
