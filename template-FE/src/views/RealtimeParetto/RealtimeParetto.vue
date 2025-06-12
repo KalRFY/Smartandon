@@ -16,11 +16,7 @@
               <CInputGroupText>
                 <Clock size="16" />
               </CInputGroupText>
-              <CFormInput
-                type="date"
-                id="start-date"
-                v-model="startDate"
-              />
+              <CFormInput type="date" id="start-date" v-model="startDate" />
             </CInputGroup>
           </CCol>
 
@@ -30,15 +26,11 @@
               <CInputGroupText>
                 <Clock size="16" />
               </CInputGroupText>
-              <CFormInput
-                type="date"
-                id="end-date"
-                v-model="endDate"
-              />
+              <CFormInput type="date" id="end-date" v-model="endDate" />
             </CInputGroup>
           </CCol>
         </CRow>
-  
+
         <CRow class="mb-3">
           <CCol>
             <CFormLabel for="av-category">AV Category</CFormLabel>
@@ -52,24 +44,63 @@
 
         <CRow>
           <CCol>
-            <CButton color="primary" class="w-100 d-flex align-items-center justify-content-center" @click="search">
+            <CButton
+              color="primary"
+              class="w-100 d-flex align-items-center justify-content-center"
+              @click="search"
+            >
               <SearchIcon class="me-2" size="16" /> Search
             </CButton>
           </CCol>
         </CRow>
-        
+
         <CRow class="mt-3">
           <CCol>
             <div class="quick-filter-section">
               <div class="quick-filter-title mb-2">Quick Filters</div>
               <div class="d-flex flex-wrap gap-2">
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('today')">Today</CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('yesterdayAll')">Yesterday All</CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('yesterdayDay')">Yesterday Day</CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('yesterdayNight')">Yesterday Night</CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('lastNight')">Last Night</CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('thisMonth')">This Month</CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('lastMonth')">Last Month</CBadge>
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('today')"
+                  >Today</CBadge
+                >
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('yesterdayAll')"
+                  >Yesterday All</CBadge
+                >
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('yesterdayDay')"
+                  >Yesterday Day</CBadge
+                >
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('yesterdayNight')"
+                  >Yesterday Night</CBadge
+                >
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('lastNight')"
+                  >Last Night</CBadge
+                >
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('thisMonth')"
+                  >This Month</CBadge
+                >
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('lastMonth')"
+                  >Last Month</CBadge
+                >
               </div>
             </div>
           </CCol>
@@ -98,15 +129,22 @@
               <CCardBody>
                 <h5 class="control-title">View Controls</h5>
                 <div class="d-flex flex-wrap gap-2">
-                  <CButtonGroup role="group" aria-label="Machine or Problem view">
-                    <CButton 
-                      :color="viewMode === 'machines' ? 'primary' : 'outline-primary'" 
+                  <CButtonGroup
+                    role="group"
+                    aria-label="Machine or Problem view"
+                  >
+                    <CButton
+                      :color="
+                        viewMode === 'machines' ? 'primary' : 'outline-primary'
+                      "
                       @click="toggleViewMode('machines')"
                     >
                       <Tool size="16" class="me-1" /> Machine View
                     </CButton>
-                    <CButton 
-                      :color="viewMode === 'problems' ? 'primary' : 'outline-primary'" 
+                    <CButton
+                      :color="
+                        viewMode === 'problems' ? 'primary' : 'outline-primary'
+                      "
                       @click="toggleViewMode('problems')"
                     >
                       <AlertTriangle size="16" class="me-1" /> Problem View
@@ -121,15 +159,26 @@
               <CCardBody>
                 <h5 class="control-title">Metric Controls</h5>
                 <div class="d-flex flex-wrap gap-2">
-                  <CButtonGroup role="group" aria-label="Duration or Frequency view">
-                    <CButton 
-                      :color="metricMode === 'duration' ? 'primary' : 'outline-primary'" 
+                  <CButtonGroup
+                    role="group"
+                    aria-label="Duration or Frequency view"
+                  >
+                    <CButton
+                      :color="
+                        metricMode === 'duration'
+                          ? 'primary'
+                          : 'outline-primary'
+                      "
                       @click="toggleMetricMode('duration')"
                     >
                       <Clock size="16" class="me-1" /> Duration
                     </CButton>
-                    <CButton 
-                      :color="metricMode === 'frequency' ? 'primary' : 'outline-primary'" 
+                    <CButton
+                      :color="
+                        metricMode === 'frequency'
+                          ? 'primary'
+                          : 'outline-primary'
+                      "
                       @click="toggleMetricMode('frequency')"
                     >
                       <BarChart2 size="16" class="me-1" /> Frequency
@@ -143,8 +192,8 @@
 
         <div class="production-lines">
           <template v-for="(line, index) in productionLines" :key="index">
-            <ProductionLineSection 
-              :title="line.title" 
+            <ProductionLineSection
+              :title="line.title"
               :panelId="line.panelId"
               :chartData="getChartData(line)"
               :tableData="getTableData(line)"
@@ -164,30 +213,30 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
-import { 
-  CCard, 
-  CCardHeader, 
-  CCardBody, 
-  CRow, 
-  CCol, 
-  CFormInput, 
-  CFormSelect, 
-  CButton, 
-  CInputGroup, 
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import {
+  CCard,
+  CCardHeader,
+  CCardBody,
+  CRow,
+  CCol,
+  CFormInput,
+  CFormSelect,
+  CButton,
+  CInputGroup,
   CInputGroupText,
   CBadge,
   CButtonGroup,
-  CFormLabel
-} from '@coreui/vue';
-import { 
-  Clock, 
-  Search as SearchIcon, 
-  Tool, 
-  AlertTriangle, 
-  BarChart2
-} from 'lucide-vue-next';
-import ProductionLineSection from './ProductionLineSection.vue';
+  CFormLabel,
+} from '@coreui/vue'
+import {
+  Clock,
+  Search as SearchIcon,
+  Tool,
+  AlertTriangle,
+  BarChart2,
+} from 'lucide-vue-next'
+import ProductionLineSection from './ProductionLineSection.vue'
 
 export default {
   name: 'RealtimePareto',
@@ -210,35 +259,35 @@ export default {
     Tool,
     AlertTriangle,
     BarChart2,
-    ProductionLineSection
+    ProductionLineSection,
   },
   setup() {
-    const startDate = ref('');
-    const endDate = ref('');
-    const selectedCategory = ref('');
-    
+    const startDate = ref('')
+    const endDate = ref('')
+    const selectedCategory = ref('')
+
     const avCategories = [
       { value: '', label: 'Select category' },
       { value: 'audio', label: 'Audio' },
       { value: 'video', label: 'Video' },
       { value: 'streaming', label: 'Streaming' },
       { value: 'recording', label: 'Recording' },
-      { value: 'playback', label: 'Playback' }
-    ];
+      { value: 'playback', label: 'Playback' },
+    ]
 
-    const currentTime = ref('');
-    const currentDate = ref('');
-    const viewMode = ref('machines');
-    const metricMode = ref('duration');
-    let clockInterval = null;
+    const currentTime = ref('')
+    const currentDate = ref('')
+    const viewMode = ref('machines')
+    const metricMode = ref('duration')
+    let clockInterval = null
 
     onMounted(() => {
-      const today = new Date();
-      startDate.value = formatDate(today);
-      endDate.value = formatDate(today);
-      updateDateTime();
-      clockInterval = setInterval(updateDateTime, 1000);
-    });
+      const today = new Date()
+      startDate.value = formatDate(today)
+      endDate.value = formatDate(today)
+      updateDateTime()
+      clockInterval = setInterval(updateDateTime, 1000)
+    })
 
     const productionLines = ref([
       {
@@ -256,7 +305,7 @@ export default {
                 { name: 'Work basa', quantity: 57 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'Pasir ter', quantity: 3 },
                 { name: 'binder ti', quantity: 2 },
@@ -264,19 +313,19 @@ export default {
                 { name: 'Lower tie', quantity: 1 },
                 { name: 'Feeding h', quantity: 1 },
               ],
-            }
+            },
           },
           machines: {
             duration: {
               items: [
-              { name: 'IKDM-003', quantity: 118 },
-              { name: 'IKCM-004', quantity: 104 },
-              { name: 'IKDM-004', quantity: 90 },
-              { name: 'IKMC-001', quantity: 77 },
-              { name: 'IKDM-002', quantity: 70 },
+                { name: 'IKDM-003', quantity: 118 },
+                { name: 'IKCM-004', quantity: 104 },
+                { name: 'IKDM-004', quantity: 90 },
+                { name: 'IKMC-001', quantity: 77 },
+                { name: 'IKDM-002', quantity: 70 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'IKDM-004', quantity: 4 },
                 { name: 'IKDM-003', quantity: 4 },
@@ -284,9 +333,9 @@ export default {
                 { name: 'IKCM-005', quantity: 3 },
                 { name: 'IKCM-001', quantity: 3 },
               ],
-            }
-          }
-        }
+            },
+          },
+        },
       },
       {
         title: 'HPDC Line',
@@ -303,7 +352,7 @@ export default {
                 { name: 'Robot Sed', quantity: 15 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'Enterance', quantity: 1 },
                 { name: 'Enterance', quantity: 1 },
@@ -311,19 +360,19 @@ export default {
                 { name: 'Work OK T', quantity: 1 },
                 { name: 'Part Pass', quantity: 1 },
               ],
-            }
+            },
           },
           machines: {
             duration: {
               items: [
-              { name: 'IKFH-101', quantity: 89 },
-              { name: 'IKZV-003', quantity: 33 },
-              { name: 'IKZV-004', quantity: 25 },
-              { name: 'IKZV-0006', quantity: 15 },
-              { name: 'IKDM-102', quantity: 15 },
+                { name: 'IKFH-101', quantity: 89 },
+                { name: 'IKZV-003', quantity: 33 },
+                { name: 'IKZV-004', quantity: 25 },
+                { name: 'IKZV-0006', quantity: 15 },
+                { name: 'IKDM-102', quantity: 15 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'IKFH-101', quantity: 4 },
                 { name: 'IKZV-003', quantity: 2 },
@@ -331,9 +380,9 @@ export default {
                 { name: 'IKFH-102', quantity: 1 },
                 { name: 'IKZV-0006', quantity: 1 },
               ],
-            }
-          }
-        }
+            },
+          },
+        },
       },
       {
         title: 'CAM SHAFT Line',
@@ -350,7 +399,7 @@ export default {
                 { name: 'Start fau', quantity: 10 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'Part shor', quantity: 2 },
                 { name: 'Spindle n', quantity: 1 },
@@ -358,19 +407,19 @@ export default {
                 { name: 'Spindle u', quantity: 1 },
                 { name: 'Grinding', quantity: 1 },
               ],
-            }
+            },
           },
           machines: {
             duration: {
               items: [
-              { name: 'IMGR-0009', quantity: 95 },
-              { name: 'IMGR-0016', quantity: 48 },
-              { name: 'IMGR-0011', quantity: 38 },
-              { name: 'RAW MATER', quantity: 21 },
-              { name: 'IMSP-0110', quantity: 20 },
+                { name: 'IMGR-0009', quantity: 95 },
+                { name: 'IMGR-0016', quantity: 48 },
+                { name: 'IMGR-0011', quantity: 38 },
+                { name: 'RAW MATER', quantity: 21 },
+                { name: 'IMSP-0110', quantity: 20 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'IMSP-0110', quantity: 2 },
                 { name: 'IMGR-0011', quantity: 2 },
@@ -378,9 +427,9 @@ export default {
                 { name: 'IMAT-0016', quantity: 2 },
                 { name: 'IMMM-0020', quantity: 1 },
               ],
-            }
-          }
-        }
+            },
+          },
+        },
       },
       {
         title: 'CYLINDER HEAD Line',
@@ -397,7 +446,7 @@ export default {
                 { name: 'Jig fault', quantity: 22 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'Touch sen', quantity: 5 },
                 { name: 'A2ax: V R', quantity: 3 },
@@ -405,19 +454,19 @@ export default {
                 { name: 'Dual chec', quantity: 2 },
                 { name: 'Jig fault', quantity: 2 },
               ],
-            }
+            },
           },
           machines: {
             duration: {
               items: [
-              { name: 'IMSP-0014', quantity: 105 },
-              { name: 'Loader fi', quantity: 96 },
-              { name: 'IMAT-0001', quantity: 60 },
-              { name: 'IMSP-0035', quantity: 30 },
-              { name: 'IMSP-0026', quantity: 26 },
+                { name: 'IMSP-0014', quantity: 105 },
+                { name: 'Loader fi', quantity: 96 },
+                { name: 'IMAT-0001', quantity: 60 },
+                { name: 'IMSP-0035', quantity: 30 },
+                { name: 'IMSP-0026', quantity: 26 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'IMSP-0014', quantity: 5 },
                 { name: 'IMSP-0026', quantity: 4 },
@@ -425,9 +474,9 @@ export default {
                 { name: 'IMAT-0001', quantity: 2 },
                 { name: 'IMSP-0052', quantity: 2 },
               ],
-            }
-          }
-        }
+            },
+          },
+        },
       },
       {
         title: 'CYLINDER BLOCK Line',
@@ -437,14 +486,14 @@ export default {
           problems: {
             duration: {
               items: [
-              { name: 'Touch sen', quantity: 73 },
-              { name: 'Lifter ri', quantity: 65 },
-              { name: 'CC det UL', quantity: 30 },
-              { name: 'Low air p', quantity: 25 },
-              { name: '3st Fr Io', quantity: 15 },
+                { name: 'Touch sen', quantity: 73 },
+                { name: 'Lifter ri', quantity: 65 },
+                { name: 'CC det UL', quantity: 30 },
+                { name: 'Low air p', quantity: 25 },
+                { name: '3st Fr Io', quantity: 15 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'Lifter ri', quantity: 3 },
                 { name: 'Low air p', quantity: 2 },
@@ -452,19 +501,19 @@ export default {
                 { name: 'Touch sen', quantity: 2 },
                 { name: 'ZM execes', quantity: 2 },
               ],
-            }
+            },
           },
           machines: {
             duration: {
               items: [
-              { name: 'IMSP-0056', quantity: 75 },
-              { name: 'IMSP-0080', quantity: 50 },
-              { name: 'IMWB-0011', quantity: 32 },
-              { name: 'IMTS-0007', quantity: 20 },
-              { name: 'IMZK-0003', quantity: 15 },
+                { name: 'IMSP-0056', quantity: 75 },
+                { name: 'IMSP-0080', quantity: 50 },
+                { name: 'IMWB-0011', quantity: 32 },
+                { name: 'IMTS-0007', quantity: 20 },
+                { name: 'IMZK-0003', quantity: 15 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'IMWB-0011', quantity: 3 },
                 { name: 'IMSP-0079', quantity: 2 },
@@ -472,9 +521,9 @@ export default {
                 { name: 'IMTS-0007', quantity: 2 },
                 { name: 'IMMM-0027', quantity: 2 },
               ],
-            }
-          }
-        }
+            },
+          },
+        },
       },
       {
         title: 'CRANK SHAFT Line',
@@ -484,33 +533,33 @@ export default {
           problems: {
             duration: {
               items: [
-              { name: 'Servo X f', quantity: 30 },
-              { name: 'Error 24', quantity: 30 },
-              { name: 'Clamp cla', quantity: 20 },
-              { name: 'Spindle u', quantity: 20 },
-              { name: 'Diameter', quantity: 20 },
+                { name: 'Servo X f', quantity: 30 },
+                { name: 'Error 24', quantity: 30 },
+                { name: 'Clamp cla', quantity: 20 },
+                { name: 'Spindle u', quantity: 20 },
+                { name: 'Diameter', quantity: 20 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'Tool chan', quantity: 2 },
                 { name: 'Clamp cla', quantity: 1 },
                 { name: 'Longitudi', quantity: 1 },
                 { name: 'Servo X f', quantity: 1 },
               ],
-            }
+            },
           },
           machines: {
             duration: {
               items: [
-              { name: 'IMLP-0002', quantity: 75 },
-              { name: 'IMGR-0006', quantity: 50 },
-              { name: 'AUTO LOAD', quantity: 50 },
-              { name: 'IMWB-0018', quantity: 30 },
-              { name: 'IMSP-0096', quantity: 20 },
+                { name: 'IMLP-0002', quantity: 75 },
+                { name: 'IMGR-0006', quantity: 50 },
+                { name: 'AUTO LOAD', quantity: 50 },
+                { name: 'IMWB-0018', quantity: 30 },
+                { name: 'IMSP-0096', quantity: 20 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'IMGR-0006', quantity: 4 },
                 { name: 'AUTO LOAD', quantity: 3 },
@@ -518,9 +567,9 @@ export default {
                 { name: 'RAW MATER', quantity: 2 },
                 { name: 'IMCK-0002', quantity: 2 },
               ],
-            }
-          }
-        }
+            },
+          },
+        },
       },
       {
         title: 'ASSY LINE',
@@ -530,14 +579,14 @@ export default {
           problems: {
             duration: {
               items: [
-              { name: 'PLC link', quantity: 10 },
-              { name: 'Loader En', quantity: 9 },
-              { name: 'Cycle tim', quantity: 8 },
-              { name: 'Plc bater', quantity: 5 },
-              { name: 'Water lea', quantity: 5 },
+                { name: 'PLC link', quantity: 10 },
+                { name: 'Loader En', quantity: 9 },
+                { name: 'Cycle tim', quantity: 8 },
+                { name: 'Plc bater', quantity: 5 },
+                { name: 'Water lea', quantity: 5 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'Cycle tim', quantity: 2 },
                 { name: 'PLC link', quantity: 2 },
@@ -545,19 +594,19 @@ export default {
                 { name: 'Plc bater', quantity: 1 },
                 { name: 'Water kea', quantity: 1 },
               ],
-            }
+            },
           },
           machines: {
             duration: {
               items: [
-              { name: 'IMCK 5-1-', quantity: 15 },
-              { name: 'Loader', quantity: 13 },
-              { name: 'Not Runne', quantity: 10 },
-              { name: 'IMTS-0038', quantity: 10 },
-              { name: 'IMTS-0028', quantity: 10 },
+                { name: 'IMCK 5-1-', quantity: 15 },
+                { name: 'Loader', quantity: 13 },
+                { name: 'Not Runne', quantity: 10 },
+                { name: 'IMTS-0038', quantity: 10 },
+                { name: 'IMTS-0028', quantity: 10 },
               ],
             },
-            frequency : {
+            frequency: {
               items: [
                 { name: 'IMCK 5-1-', quantity: 3 },
                 { name: 'Loader', quantity: 3 },
@@ -565,204 +614,222 @@ export default {
                 { name: 'IMAT-0011', quantity: 2 },
                 { name: 'IMTS-0028', quantity: 2 },
               ],
-            }
-          }
-        }
-      }
-    ]);
+            },
+          },
+        },
+      },
+    ])
 
     const formatDate = (date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    };
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
+    }
 
     const selectTimeRange = (range) => {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      
-      switch(range) {
+      const now = new Date()
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const yesterday = new Date(today)
+      yesterday.setDate(yesterday.getDate() - 1)
+
+      switch (range) {
         case 'today':
-          startDate.value = formatDate(today);
-          endDate.value = formatDate(now);
-          break;
+          startDate.value = formatDate(today)
+          endDate.value = formatDate(now)
+          break
         case 'yesterdayAll':
-          startDate.value = formatDate(yesterday);
-          endDate.value = formatDate(yesterday);
-          break;
+          startDate.value = formatDate(yesterday)
+          endDate.value = formatDate(yesterday)
+          break
         case 'yesterdayDay': {
-          startDate.value = formatDate(yesterday);
-          const yesterdayDay = new Date(yesterday);
-          yesterdayDay.setHours(18, 0, 0, 0);
-          endDate.value = formatDate(yesterdayDay);
-          break;
+          startDate.value = formatDate(yesterday)
+          const yesterdayDay = new Date(yesterday)
+          yesterdayDay.setHours(18, 0, 0, 0)
+          endDate.value = formatDate(yesterdayDay)
+          break
         }
         case 'yesterdayNight': {
-          const yesterdayEvening = new Date(yesterday);
-          yesterdayEvening.setHours(18, 0, 0, 0);
-          startDate.value = formatDate(yesterdayEvening);
-          endDate.value = formatDate(yesterday);
-          break;
+          const yesterdayEvening = new Date(yesterday)
+          yesterdayEvening.setHours(18, 0, 0, 0)
+          startDate.value = formatDate(yesterdayEvening)
+          endDate.value = formatDate(yesterday)
+          break
         }
         case 'lastNight': {
-          const lastNightStart = new Date(yesterday);
-          lastNightStart.setHours(18, 0, 0, 0);
-          startDate.value = formatDate(lastNightStart);
-          const lastNightEnd = new Date(today);
-          lastNightEnd.setHours(6, 0, 0, 0);
-          endDate.value = formatDate(lastNightEnd);
-          break;
+          const lastNightStart = new Date(yesterday)
+          lastNightStart.setHours(18, 0, 0, 0)
+          startDate.value = formatDate(lastNightStart)
+          const lastNightEnd = new Date(today)
+          lastNightEnd.setHours(6, 0, 0, 0)
+          endDate.value = formatDate(lastNightEnd)
+          break
         }
         case 'thisMonth':
-          startDate.value = formatDate(new Date(now.getFullYear(), now.getMonth(), 1));
-          endDate.value = formatDate(now);
-          break;
+          startDate.value = formatDate(
+            new Date(now.getFullYear(), now.getMonth(), 1),
+          )
+          endDate.value = formatDate(now)
+          break
         case 'lastMonth':
-          startDate.value = formatDate(new Date(now.getFullYear(), now.getMonth() - 1, 1));
-          endDate.value = formatDate(new Date(now.getFullYear(), now.getMonth(), 0));
-          break;
+          startDate.value = formatDate(
+            new Date(now.getFullYear(), now.getMonth() - 1, 1),
+          )
+          endDate.value = formatDate(
+            new Date(now.getFullYear(), now.getMonth(), 0),
+          )
+          break
       }
-      search();
-    };
+      search()
+    }
 
     const search = () => {
       console.log('Searching with parameters:', {
         startDate: startDate.value,
         endDate: endDate.value,
-        category: selectedCategory.value
-      });
-    };
+        category: selectedCategory.value,
+      })
+    }
 
     const updateDateTime = () => {
-      const now = new Date();
-      currentDate.value = now.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
-      currentTime.value = now.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
-      });
-    };
+      const now = new Date()
+      currentDate.value = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+      currentTime.value = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
+    }
 
     const toggleViewMode = (mode) => {
-      viewMode.value = mode;
-    };
+      viewMode.value = mode
+    }
 
     const toggleMetricMode = (mode) => {
-      metricMode.value = mode;
-    };
+      metricMode.value = mode
+    }
 
     const getChartData = (line) => {
       if (!line || !line.category) {
-        return [];
+        return []
       }
-      
-      const categoryKey = viewMode.value === 'machines' ? 'machines' : 'problems';
+
+      const categoryKey =
+        viewMode.value === 'machines' ? 'machines' : 'problems'
       if (!line.category[categoryKey]) {
-        return [];
+        return []
       }
-      
+
       if (!line.category[categoryKey][metricMode.value]) {
-        return [];
+        return []
       }
-      
-      const items = line.category[categoryKey][metricMode.value].items;
+
+      const items = line.category[categoryKey][metricMode.value].items
       if (!items || !Array.isArray(items)) {
-        return [];
+        return []
       }
-      
+
       try {
-        return items.map(item => ({
+        return items.map((item) => ({
           name: item.name || '',
           quantity: item.quantity || 0,
           value: item.quantity || 0,
-          percentage: calculatePercentage(item.quantity || 0, getTotalQuantity(items))
-        }));
+          percentage: calculatePercentage(
+            item.quantity || 0,
+            getTotalQuantity(items),
+          ),
+        }))
       } catch (err) {
-        console.error('Error mapping chart data:', err);
-        return [];
+        console.error('Error mapping chart data:', err)
+        return []
       }
-    };
-    
+    }
+
     const getTotalQuantity = (items) => {
       try {
-        return items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        return items.reduce((sum, item) => sum + (item.quantity || 0), 0)
       } catch (err) {
-        console.error('Error calculating total quantity:', err);
-        return 0;
+        console.error('Error calculating total quantity:', err)
+        return 0
       }
-    };
-    
+    }
+
     const calculatePercentage = (value, total) => {
-      return total > 0 ? Math.round((value / total) * 100) : 0;
-    };
+      return total > 0 ? Math.round((value / total) * 100) : 0
+    }
 
     const getTableData = (line) => {
       if (!line || !line.category) {
-        return [];
+        return []
       }
-      
-      const categoryKey = viewMode.value === 'machines' ? 'machines' : 'problems';
-      
+
+      const categoryKey =
+        viewMode.value === 'machines' ? 'machines' : 'problems'
+
       if (!line.category[categoryKey]) {
-        return [];
+        return []
       }
-      
+
       if (!line.category[categoryKey][metricMode.value]) {
-        return [];
+        return []
       }
-      
-      const items = line.category[categoryKey][metricMode.value].items;
-      
+
+      const items = line.category[categoryKey][metricMode.value].items
+
       if (!items || !Array.isArray(items)) {
-        return [];
+        return []
       }
-      
+
       try {
         return items.map((item, index) => ({
           no: index + 1,
           date: new Date().toLocaleDateString(),
-          machine: viewMode.value === 'machines' ? item.name : `${line.title.split(' ')[0]}-M${index + 1}`,
-          problem: viewMode.value === 'problems' ? item.name : `Problem ${index + 1}`,
+          machine:
+            viewMode.value === 'machines'
+              ? item.name
+              : `${line.title.split(' ')[0]}-M${index + 1}`,
+          problem:
+            viewMode.value === 'problems' ? item.name : `Problem ${index + 1}`,
           pic: `Operator ${index + 1}`,
-          duration: metricMode.value === 'duration' ? `${item.quantity} min` : `${item.quantity} times`,
+          duration:
+            metricMode.value === 'duration'
+              ? `${item.quantity} min`
+              : `${item.quantity} times`,
           quantity: item.quantity || 0,
-          actions: ['view', 'edit', 'delete']
-        }));
+          actions: ['view', 'edit', 'delete'],
+        }))
       } catch (err) {
-        console.error('Error generating table data:', err);
-        return [];
+        console.error('Error generating table data:', err)
+        return []
       }
-    };
-    
+    }
+
     const handleRefresh = (panelId) => {
-      console.log(`Refreshing panel: ${panelId}`);
-    };
-    
+      console.log(`Refreshing panel: ${panelId}`)
+    }
+
     const viewItem = (item) => {
-      console.log('View item:', item);
-    };
-    
+      console.log('View item:', item)
+    }
+
     const editItem = (item) => {
-      console.log('Edit item:', item);
-    };
-    
+      console.log('Edit item:', item)
+    }
+
     const deleteItem = (item) => {
-      console.log('Delete item:', item);
-    };
+      console.log('Delete item:', item)
+    }
 
     onUnmounted(() => {
       if (clockInterval) {
-        clearInterval(clockInterval);
+        clearInterval(clockInterval)
       }
-    });
+    })
 
     return {
       startDate,
@@ -771,7 +838,7 @@ export default {
       avCategories,
       selectTimeRange,
       search,
-      
+
       currentTime,
       currentDate,
       viewMode,
@@ -779,16 +846,16 @@ export default {
       productionLines,
       toggleViewMode,
       toggleMetricMode,
-      
+
       getChartData,
       getTableData,
-      
+
       handleRefresh,
       viewItem,
       editItem,
-      deleteItem
-    };
-  }
+      deleteItem,
+    }
+  },
 }
 </script>
 
@@ -797,14 +864,16 @@ export default {
   padding: 15px;
 }
 
-.search-card, .pareto-card {
+.search-card,
+.pareto-card {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
   border: none;
 }
 
-.search-card .card-header, .pareto-card .card-header {
+.search-card .card-header,
+.pareto-card .card-header {
   background-color: #3c4b64;
   border-bottom: none;
 }

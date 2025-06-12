@@ -9,6 +9,7 @@ const lineRoutes = require('./smartandon/line');
 const machineRoutes = require('./smartandon/machine');
 const problemRoutes = require('./smartandon/problem');
 const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
+const realtimeParetoRoutes = require('./smartandon/realtimePareto');
 
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
@@ -44,9 +45,10 @@ const defaultRoutes = [
     path: '/smartandon',
     route: problemRoutes,
   },
-  //===//
-
-/*define other in here*/
+  {
+    path: '/realtime-pareto',
+    route: realtimeParetoRoutes,
+  },
 ];
 
 const devRoutes = [
