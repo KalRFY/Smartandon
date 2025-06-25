@@ -3,11 +3,18 @@ const docsRoute = require('./docs.route');
 const config = require('../config/config');
 
 const PORT = 5432;
+
 const dashboardRoutes = require('./smartandon/dashboard');
 const qccMTypesRoutes = require('./smartandon/qccMTypes');
 const lineRoutes = require('./smartandon/line');
 const machineRoutes = require('./smartandon/machine');
+const memberRoutes = require('./smartandon/member');
+
+
+
+
 const problemRoutes = require('./smartandon/problem');
+const oeeRoutes = require('./smartandon/OEE');
 const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 
 const GaugeRoute = require('./qdc/Guage.route');
@@ -44,7 +51,15 @@ const defaultRoutes = [
     path: '/smartandon',
     route: problemRoutes,
   },
-  //===//
+  {
+    path: '/smartandon',
+    route: oeeRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: memberRoutes,
+  },
+  //===
 
 /*define other in here*/
 ];

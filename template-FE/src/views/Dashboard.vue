@@ -1,15 +1,45 @@
 <template>
-  <div>
 
+  <CRow class="mb-3">
+    <CCol sm="11" style="font-size: xx-large; font-weight: bold;">
+      Smartandon
+    </CCol>
+    <CCol sm="1" style="font-size: xx-large; font-weight: bold;">
+
+      <CButton color="dark" class="position-relative" style="font-weight: bold;" @click="() => { visibleEnd = !visibleEnd }">
+        NEW
+        <CBadge color="danger" position="top-end" shape="rounded-pill">
+          99+ <span class="visually-hidden">unread messages</span>
+        </CBadge>
+      </CButton>
+    </CCol>
+  </CRow>
+
+  
+  <COffcanvas placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
+    <COffcanvasHeader>
+      <COffcanvasTitle>Offcanvas</COffcanvasTitle>
+      <CCloseButton class="text-reset" @click="() => { visibleEnd = false }"/>
+    </COffcanvasHeader>
+    <COffcanvasBody>
+      Content for the offcanvas goes here. You can place just about any Bootstrap component or
+      custom elements here.
+    </COffcanvasBody>
+  </COffcanvas>
+
+  <CCol class="mb-3">
+    <CButton variant="outline" style="width: 100%; font-weight: bold;" color="dark" @click="download">Search</CButton>
+  </CCol>
+  <div>
   <CRow>
-    <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
+    <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-4">
       <CCard class="dashboard-card h-100" :color="card.color">
         <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
           <div class="icon-container mb-3">
-            <component :is="card.icon" :size="48" :stroke-width="1.5" />
+            <component :is="card.icon" :size="30" :stroke-width="1" />
           </div>
           <h4>{{ card.title }}</h4>
-          <p class="card-description">{{ card.description }}</p>
+          <!-- <p class="card-description">{{ card.description }}</p> -->
           <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
         </CCardBody>
       </CCard>
@@ -18,6 +48,40 @@
   </div>
   
   <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
+
+  <CRow>
+    <CCol>
+      <CCard class="mb-3">
+        <CCardHeader style="font-size: large; font-weight: bold;">
+          <CRow>
+            <CCol sm="8">
+              <CCardTitle style="font-size: large; font-weight: bold;">
+                OEE
+              </CCardTitle>
+            </CCol>
+            <CCol sm="2">
+              <CButton style="width: 100%; font-weight: bold; color: white" color="success" @click="download">High</CButton>
+            </CCol>
+            <CCol sm="2">
+              <CButton style="width: 100%; font-weight: bold; color: white" color="danger" @click="download">Low</CButton>
+            </CCol>
+          </CRow>
+        </CCardHeader>
+        <CCardBody>
+          <CRow>
+            <CCol v-for="(chartData, index) in chartDataPerLine" :key="index">
+              <CCard class="mb-3" color="dark" variant="outline">
+                <CCardBody style="height: 200px;">
+                  <CCardTitle style="font-size: small; height: 35px;">{{ chartData.label }}</CCardTitle>
+                  <ApexCharts :options="chartData.options" :series="chartData.series" type="radialBar" height="250" width="100"/>
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+    </CCol>
+  </CRow>
 
   <div>
     <CModal 
@@ -122,71 +186,9 @@
   </div>
 
   <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="types.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-            <CTableHeaderCell scope="col">Type ID</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Type Name</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow  v-for="type in types" :key="type.type_id">
-            <CTableDataCell>{{ type.type_id }}</CTableDataCell>
-            <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading data...</p>
-    </CCol>
-  </CRow>
-
-  <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="lines.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-            <CTableHeaderCell scope="col">fid</CTableHeaderCell>
-            <CTableHeaderCell scope="col">fline</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow  v-for="line in lines" :key="line.type_id">
-            <CTableDataCell>{{ line.fid }}</CTableDataCell>
-            <CTableDataCell>{{ line.fline }}</CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading data...</p>
-    </CCol>
-  </CRow>
-
-  <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="types.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-            <CTableHeaderCell scope="col">fid</CTableHeaderCell>
-            <CTableHeaderCell scope="col">fmc_name</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow  v-for="machine in machines" :key="machine.fid">
-            <CTableDataCell>{{ machine.fid }}</CTableDataCell>
-            <CTableDataCell>{{ machine.fmc_name }}</CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading data...</p>
-    </CCol>
-  </CRow>
-
-  <CRow>
     <CCol>
       <CCard class="mb-3">
+        <CCardHeader style="font-size: large; font-weight: bold;">Lines</CCardHeader>
         <CCardBody>
           <CRow>
             <CCol>
@@ -463,7 +465,7 @@
 
 <script>
 import { ref } from 'vue'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell } from '@coreui/vue';
+import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas } from '@coreui/vue';
 import axios from 'axios';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
@@ -486,6 +488,7 @@ import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
 const visibleStaticBackdropDemo = ref(false);
+const visibleEnd = ref(false)
 
 export default {
   name: 'Dashboard',
@@ -497,11 +500,150 @@ export default {
       linesOptions: [],
       machines: [],
       machineOptions: [],
+      oee: [],
+      oeeOption: [],
+      chartDataPerLine: [],
+      visibleEnd: false,
+      
 
       visibleLiveDemo: false,
       submit: {
         machineName: null, // initialize as null to avoid showing [object Object]
       },
+
+      // seriesChart: [95],
+      //     chartRadialOptions: {
+      //       chart: {
+      //         height: 350,
+      //         type: 'radialBar',
+      //       },
+      //       plotOptions: {
+      //         radialBar: {
+      //           hollow: {
+      //             size: '100%',
+      //           }
+      //         },
+      //       },
+      //       labels: ['OEE'],
+      //     },
+          //   plotOptions: {
+          //     radialBar: {
+          //       startAngle: -135,
+          //       endAngle: 225,
+          //        hollow: {
+          //         margin: 0,
+          //         size: '90%',
+          //         background: '#fff',
+          //         image: undefined,
+          //         imageOffsetX: 0,
+          //         imageOffsetY: 0,
+          //         position: 'front',
+          //         dropShadow: {
+          //           enabled: true,
+          //           top: 3,
+          //           left: 0,
+          //           blur: 4,
+          //           opacity: 0.5
+          //         }
+          //       },
+          //       track: {
+          //         background: '#fff',
+          //         strokeWidth: '67%',
+          //         margin: 0, // margin is in pixels
+          //         dropShadow: {
+          //           enabled: true,
+          //           top: -3,
+          //           left: 0,
+          //           blur: 4,
+          //           opacity: 0.7
+          //         }
+          //       },
+            
+          //       dataLabels: {
+          //         show: true,
+          //         name: {
+          //           offsetY: -10,
+          //           show: true,
+          //           color: '#888',
+          //           fontSize: '11px'
+          //         },
+          //         value: {
+          //           formatter: function(val) {
+          //             return parseInt(val);
+          //           },
+          //           color: '#111',
+          //           fontSize: '20px',
+          //           show: true,
+          //         }
+          //       }
+          //     }
+          //   },
+          //   fill: {
+          //     type: 'gradient',
+          //     gradient: {
+          //       shade: 'dark',
+          //       type: 'horizontal',
+          //       shadeIntensity: 0.5,
+          //       gradientToColors: ['#ABE5A1'],
+          //       inverseColors: true,
+          //       opacityFrom: 1,
+          //       opacityTo: 1,
+          //       stops: [0, 100]
+          //     }
+          //   },
+          //   stroke: {
+          //     lineCap: 'round'
+          //   },
+          //   labels: ['Percent'],
+          // },
+      seriesChart: [],
+      chartRadialOptions: {
+      chart: {
+        height: 350,
+        type: 'radialBar',
+      },
+      plotOptions: {
+        radialBar: {
+          hollow: {
+            size: '70%',
+          },
+          dataLabels: {
+            name: {
+              fontSize: '22px',
+            },
+            value: {
+              fontSize: '16px',
+              formatter: function (val) {
+                if (typeof val === 'string') {
+                  if(val === '1000' || val === '100') {
+                    return '99.9%';
+                  }
+                  const numVal = parseFloat(val);
+                  if (!isNaN(numVal)) {
+                    let displayVal = numVal;
+                    if(displayVal >= 100) {
+                      displayVal = 99.9;
+                    }
+                    return displayVal.toFixed(2) + '%';
+                  }
+                } else if (typeof val === 'number' && !isNaN(val)) {
+                  if(val === 1000 || val === 100) {
+                    return '99.9%';
+                  }
+                  let displayVal = val;
+                  if(displayVal >= 100) {
+                    displayVal = 99.9;
+                  }
+                  return displayVal.toFixed(2) + '%';
+                }
+                return val;
+              }
+            }
+          }
+        }
+      },
+      labels: [],
+    },
 
       series: [{
         name: 'Income',
@@ -612,6 +754,7 @@ export default {
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
+    CoffCanvas,
     Treeselect,
   },
   setup() {
@@ -778,6 +921,67 @@ export default {
       }));
     } catch (error) {
       console.error('Failed to fetch lines:', error);
+    }
+    try {
+      const response = await axios.get('/api/smartandon/oee');
+      this.oee = response.data;
+      this.oeeOption = response.data.map(oeeValue => ({
+        id: oeeValue.GROUP_NAME,
+        label: oeeValue.TAG_NAME,
+        labelOee: oeeValue.REG_VALUE
+      }));
+      // Group OEE data by DEV_NAME and prepare chart data per line
+      const uniqueOee = {};
+      this.oee.forEach(item => {
+        if (!uniqueOee[item.DEV_NAME]) {
+          uniqueOee[item.DEV_NAME] = parseFloat(item.REG_VALUE) * 10;
+        }
+      });
+      this.chartDataPerLine = Object.entries(uniqueOee).map(([devName, value]) => ({
+        label: devName,
+        series: [value],
+        options: {
+          chart: {
+            height: 250,
+            type: 'radialBar',
+          },
+          plotOptions: {
+            radialBar: {
+              hollow: {
+                size: '100%',
+              },
+              dataLabels: {
+                name: {
+                  fontSize: '12px',
+                },
+                value: {
+                  fontSize: '16px',
+                  formatter: function (val) {
+                    if (typeof val === 'string') {
+                      if(val === '10000') {
+                        return '99.99%';
+                      }
+                      const numVal = parseFloat(val);
+                      if (!isNaN(numVal)) {
+                        return (numVal / 100).toFixed(2) + '%';
+                      }
+                    } else if (typeof val === 'number' && !isNaN(val)) {
+                      if(val === 10000) {
+                        return '99.99%';
+                      }
+                      return (val / 100).toFixed(2) + '%';
+                    }
+                    return val;
+                  }
+                }
+              },
+            }
+          },
+          labels: [devName],
+        }
+      }));
+    } catch (error) {
+      console.error('Failed to fetch or process OEE data:', error);
     }
   },
 }
