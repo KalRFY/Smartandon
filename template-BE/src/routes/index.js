@@ -3,11 +3,15 @@ const docsRoute = require('./docs.route');
 const config = require('../config/config');
 
 const PORT = 5432;
+
 const dashboardRoutes = require('./smartandon/dashboard');
 const qccMTypesRoutes = require('./smartandon/qccMTypes');
 const lineRoutes = require('./smartandon/line');
 const machineRoutes = require('./smartandon/machine');
+const memberRoutes = require('./smartandon/member');
+
 const problemRoutes = require('./smartandon/problem');
+const oeeRoutes = require('./smartandon/OEE');
 const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 const realtimeParetoRoutes = require('./smartandon/realtimePareto');
 
@@ -49,6 +53,14 @@ const defaultRoutes = [
   {
     path: '/realtime-pareto',
     route: realtimeParetoRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: oeeRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: memberRoutes,
   },
 ];
 
