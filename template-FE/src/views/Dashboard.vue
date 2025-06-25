@@ -825,12 +825,12 @@ export default {
         route: '/app/RealtimeParetto'
       },
       {
-        title: 'LTB Report',
+        title: 'LTB Report Status',
         icon: 'FileText',
         description: 'Last Time Buy reporting and analysis',
         color: 'secondary',
-        route: '/ltb-report'
-      }
+        route: '/app/ltb-summary'
+      },
     ]
 
     const navigateTo = (route) => {
@@ -1001,16 +1001,18 @@ export default {
 }
 
 .icon-container {
+  width: 60px;
+  height: 60px;
   padding: 15px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .card-description {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgb(80, 106, 113);
   margin-top: 10px;
 }
 

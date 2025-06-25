@@ -27,10 +27,10 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .legend-wrapper {
   width: 100%;
-  border-radius: 9px;
+  border-radius: 6px;
 }
 
 .legend-item {

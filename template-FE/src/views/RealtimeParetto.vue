@@ -173,13 +173,6 @@
             description: 'Live Pareto analysis of issues',
             color: 'success',
             route: '/realtime-pareto'
-            },
-            {
-            title: 'LTB Report',
-            icon: 'FileText',
-            description: 'Last Time Buy reporting and analysis',
-            color: 'secondary',
-            route: '/ltb-report'
             }
         ]
     
