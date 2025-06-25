@@ -11,6 +11,7 @@ const problemRoutes = require('./smartandon/problem');
 const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 const realtimeParetoRoutes = require('./smartandon/realtimePareto');
 
+
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
 
