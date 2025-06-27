@@ -196,7 +196,6 @@
           </CCol>
         </CRow>
 
-        <!-- Loading State -->
         <div v-if="isLoading" class="loading-container">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -204,7 +203,6 @@
           <p class="mt-3">Loading production data...</p>
         </div>
 
-        <!-- Data Loaded State -->
         <div
           v-else-if="dataLoaded && productionLines.length > 0"
           class="production-lines"
@@ -229,7 +227,6 @@
           </template>
         </div>
 
-        <!-- No Data State -->
         <div v-else class="no-data-container">
           <div class="text-center py-5">
             <AlertTriangle size="48" class="text-muted mb-3" />
@@ -302,23 +299,20 @@ export default {
     ProductionLineSection,
   },
   setup() {
-    // Form data
-    const startDate = ref(new Date (
-      new Date().getFullYear(),
-        new Date().getMonth(),
-        1
-    ))
-    const startDateFetch = ref(new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      1
-    ))
-    const endDate = ref(new Date())
-    const endDateFetch = ref(new Date())
+    const todayStr = (() => {
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = String(today.getMonth() + 1).padStart(2, '0')
+      const day = String(today.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
+    })()
+    const startDate = ref('2019-01-01')
+    const startDateFetch = ref('2019-01-01')
+    const endDate = ref(todayStr)
+    const endDateFetch = ref(todayStr)
     const selectedCategory = ref('')
     const avCategories = ref([{ value: '', label: 'Select category' }])
 
-    // UI state
     const currentTime = ref('')
     const currentDate = ref('')
     const viewMode = ref('machines')
@@ -326,43 +320,26 @@ export default {
     const isLoading = ref(true)
     const dataLoaded = ref(false)
 
-    // Data
     const productionLines = ref([])
-    const lines = ref([
-        "LPDC",
-        "HPDC",
-        "CAM SHAFT",
-        "CYLINDER HEAD",
-        "CYLINDER BLOCK",
-        "CRANK SHAFT",
-        "ASSY LINE",
-      ])
     const isFilterMc = ref(true)
     const isFilterProblem = ref(false)
     const isOrderFreq = ref(false)
-    const isOrderDur = ref(true)
     let clockInterval = null
 
-    // Initialize component
     onMounted(async () => {
-      const today = new Date()
-      startDate.value = formatDate(today)
-      endDate.value = formatDate(today)
+      console.log('RealtimePareto component mounted')
       updateDateTime()
       clockInterval = setInterval(updateDateTime, 1000)
-
       await fetchAvCategories()
       await fetchAllData()
     })
 
-    // Cleanup
     onUnmounted(() => {
       if (clockInterface) {
         clearInterval(clockInterval)
       }
     })
 
-    // Fetch AV Categories
     const fetchAvCategories = async () => {
       try {
         const response = await axios.get('api/realtime-pareto/av-category')
@@ -379,70 +356,77 @@ export default {
         console.error('Error fetching AV categories:', err)
       }
     }
-    // Fetch all production line data
+
     const fetchAllData = async () => {
       isLoading.value = true
       dataLoaded.value = false
       productionLines.value = []
-      let avCategoty = "";
-      let fline = "";
-      let group = ``;
-      let order = "sum(fdur)";
-      const state = "yesterdayDay";
-      let startDateParam = "";
-      let endDateParam = "";
+      let avCategoty = ''
+      let fline = ''
+      let group = ``
+      let order = 'sum(fdur)'
+      const state = 'yesterdayDay'
+      let startDateParam = ''
+      let endDateParam = ''
       if (selectedCategory.value) {
         avCategoty = `fav_categoty = '${selectedCategory.value} AND'`
-      } 
+      }
       if (isFilterMc.value) {
-        group = "fmc_name";
+        group = 'fmc_name'
       }
       if (isFilterProblem.value) {
-        group = "ferror_name";
+        group = 'ferror_name'
       }
       if (isOrderFreq.value) {
-        order = "count(fid)";
+        order = 'count(fid)'
       }
       if (startDate.value) {
-        startDateParam = formatDate2(startDate.value);
-      } 
+        startDateParam = formatDate2(startDate.value)
+      }
       if (endDate.value) {
-        endDateParam = formatDate2(endDate.value);
+        endDateParam = formatDate2(endDate.value)
       }
       if (viewMode.value === 'machines') {
-        group = "fmc_name";
+        group = 'fmc_name'
       } else {
-        group = "ferror_name";
+        group = 'ferror_name'
       }
       if (metricMode.value === 'duration') {
-        order = "sum(fdur)";
+        order = 'sum(fdur)'
       } else {
-        order = "count(fid)";
+        order = 'count(fid)'
       }
-      let d = new Date(endDateParam);
-      let offSetTimeEndDate = d.setDate(d.getDate() + 1);
-      let offSetEndDate = formatDate2(new Date(offSetTimeEndDate));
+      let d = new Date(endDateParam)
+      let offSetTimeEndDate = d.setDate(d.getDate() + 1)
+      let offSetEndDate = formatDate2(new Date(offSetTimeEndDate))
 
-      if (state == "yesterdayDay") {
-        startDateParam = `${startDateParam} 07:00:00`;
-        endDateParam = `${endDateParam} 19:59:59`;
-        startDateFetch.value = startDateParam;
-        endDateFetch.value = endDateParam;
-      } else if (state == "yesterdayNight") {
-        startDateParam = `${startDateParam} 20:00:00`;
-        endDateParam = `${offSetEndDate} 06:59:59`;
-        startDateFetch.value = startDateParam;
-        endDateFetch.value = endDateParam;
+      if (state == 'yesterdayDay') {
+        startDateParam = `${startDateParam} 07:00:00`
+        endDateParam = `${endDateParam} 19:59:59`
+        startDateFetch.value = startDateParam
+        endDateFetch.value = endDateParam
+      } else if (state == 'yesterdayNight') {
+        startDateParam = `${startDateParam} 20:00:00`
+        endDateParam = `${offSetEndDate} 06:59:59`
+        startDateFetch.value = startDateParam
+        endDateFetch.value = endDateParam
       } else {
-        startDateParam = `${startDateParam} 07:00:00`;
-        endDateParam = `${endDateParam} 06:59:59`;
-        startDateFetch.value = startDateParam;
-        endDateFetch.value = endDateParam;
+        startDateParam = `${startDateParam} 07:00:00`
+        endDateParam = `${endDateParam} 06:59:59`
+        startDateFetch.value = startDateParam
+        endDateFetch.value = endDateParam
       }
       try {
         const result = await axios.get(
-          `api/realtime-pareto/realtime-pareto?group=${group}&order=${order}&avCategory=${avCategoty}&fline=${fline}&startDate=${startDateParam}&endDate=${endDateParam}`
-        );
+          `api/realtime-pareto/realtime-pareto?group=${group}&order=${order}&avCategory=${avCategoty}&fline=${fline}&startDate=${startDateParam}&endDate=${endDateParam}`,
+        )
+        console.log('Fetched production lines:', result.data)
+        productionLines.value = result.data.data
+        console.log(
+          'Production lines:',
+          JSON.stringify(productionLines.value, null, 2),
+        )
+        dataLoaded.value = false
         setTimeout(() => {
           dataLoaded.value = true
         }, 200)
@@ -453,19 +437,18 @@ export default {
       }
     }
 
-    const formatDate2 = (date) =>  {
+    const formatDate2 = (date) => {
       var d = new Date(date),
-        month = "" + (d.getMonth() + 1),
-        day = "" + d.getDate(),
-        year = d.getFullYear();
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear()
 
-      if (month.length < 2) month = "0" + month;
-      if (day.length < 2) day = "0" + day;
+      if (month.length < 2) month = '0' + month
+      if (day.length < 2) day = '0' + day
 
-      return [year, month, day].join("-");
+      return [year, month, day].join('-')
     }
 
-    // Date formatting
     const formatDate = (date) => {
       const year = date.getFullYear()
       const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -473,7 +456,6 @@ export default {
       return `${year}-${month}-${day}`
     }
 
-    // Time range selection
     const selectTimeRange = (range) => {
       const now = new Date()
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
@@ -530,7 +512,6 @@ export default {
       search()
     }
 
-    // Search function
     const search = async () => {
       console.log('Searching with parameters:', {
         startDate: startDate.value,
@@ -540,7 +521,6 @@ export default {
       await fetchAllData()
     }
 
-    // Update date and time
     const updateDateTime = () => {
       const now = new Date()
       currentDate.value = now.toLocaleDateString('en-US', {
@@ -556,130 +536,49 @@ export default {
       })
     }
 
-    // Mode toggles
-    const toggleViewMode = (mode) => {
+    const toggleViewMode = async (mode) => {
       if (!isLoading.value) {
         viewMode.value = mode
+        isLoading.value = true
+        await fetchAllData()
+        isLoading.value = false
       }
     }
 
-    const toggleMetricMode = (mode) => {
+    const toggleMetricMode = async (mode) => {
       if (!isLoading.value) {
         metricMode.value = mode
+        isLoading.value = true
+        await fetchAllData()
+        isLoading.value = false
       }
-    }
-
-    // Data processing functions
-    const getTotalQuantity = (items) => {
-      try {
-        return items.reduce((sum, item) => sum + (item.quantity || 0), 0)
-      } catch (err) {
-        console.error('Error calculating total quantity:', err)
-        return 0
-      }
-    }
-
-    const calculatePercentage = (value, total) => {
-      return total > 0 ? Math.round((value / total) * 100) : 0
     }
 
     const getChartData = (line) => {
-      try {
-        if (!line?.category) {
-          console.warn('Line missing category data:', line)
-          return []
-        }
+      console.log('Getting chart data for line:', line)
+      if (!Array.isArray(line.problems) || line.problems.length === 0) return []
 
-        const categoryKey =
-          viewMode.value === 'machines' ? 'machines' : 'problems'
-        const categoryData = line.category[categoryKey]
+      let data = line.problems.map((problem, idx) => ({
+        name: problem.metric || `Problem ${idx + 1}`,
+        quantity: Number(problem.fdur) || 0,
+      }))
 
-        if (!categoryData) {
-          console.warn(`Missing ${categoryKey} data for line:`, line.title)
-          return []
-        }
-
-        const metricData = categoryData[metricMode.value]
-        if (!metricData?.items || !Array.isArray(metricData.items)) {
-          console.warn(
-            `Missing ${metricMode.value} items for ${categoryKey}:`,
-            line.title,
-          )
-          return []
-        }
-
-        const items = metricData.items
-        const totalQuantity = getTotalQuantity(items)
-
-        return items
-          .filter(
-            (item) =>
-              item && typeof item.quantity === 'number' && item.quantity > 0,
-          )
-          .map((item, index) => ({
-            id: `${line.title}-${categoryKey}-${index}`,
-            name: item.name || `Item ${index + 1}`,
-            quantity: item.quantity,
-            value: item.quantity,
-            percentage: calculatePercentage(item.quantity, totalQuantity),
-          }))
-      } catch (err) {
-        console.error('Error in getChartData:', err, line)
-        return []
+      if (typeof line.minQuantity === 'number') {
+        data = data.filter((item) => item.quantity >= line.minQuantity)
       }
+      return data
     }
 
     const getTableData = (line) => {
-      try {
-        if (!line?.category) {
-          return []
-        }
-
-        const categoryKey =
-          viewMode.value === 'machines' ? 'machines' : 'problems'
-        const categoryData = line.category[categoryKey]
-
-        if (!categoryData) {
-          return []
-        }
-
-        const metricData = categoryData[metricMode.value]
-        if (!metricData?.items || !Array.isArray(metricData.items)) {
-          return []
-        }
-
-        return metricData.items
-          .filter(
-            (item) =>
-              item && typeof item.quantity === 'number' && item.quantity > 0,
-          )
-          .map((item, index) => ({
-            id: `${line.title}-${categoryKey}-${index}`,
-            no: index + 1,
-            date: new Date().toLocaleDateString(),
-            machine:
-              viewMode.value === 'machines'
-                ? item.name || `Machine ${index + 1}`
-                : `${line.title.split(' ')[0]}-M${index + 1}`,
-            problem:
-              viewMode.value === 'problems'
-                ? item.name || `Problem ${index + 1}`
-                : `Problem ${index + 1}`,
-            pic: `Operator ${index + 1}`,
-            duration:
-              metricMode.value === 'duration'
-                ? `${item.quantity} min`
-                : `${item.quantity} times`,
-            quantity: item.quantity,
-            actions: ['view', 'edit', 'delete'],
-          }))
-      } catch (err) {
-        console.error('Error in getTableData:', err)
-        return []
-      }
+      console.log('Getting table data for line:', line)
+      if (!Array.isArray(line.problems) || line.problems.length === 0) return []
+      return line.problems.map((problem, idx) => ({
+        no: idx + 1,
+        problem: problem.metric,
+        duration: `${problem.fdur} min`,
+      }))
     }
 
-    // Event handlers
     const handleRefresh = async (panelId) => {
       console.log(`Refreshing panel: ${panelId}`)
       await fetchAllData()
@@ -698,13 +597,11 @@ export default {
     }
 
     return {
-      // Form data
       startDate,
       endDate,
       selectedCategory,
       avCategories,
 
-      // UI state
       currentTime,
       currentDate,
       viewMode,
@@ -712,10 +609,8 @@ export default {
       isLoading,
       dataLoaded,
 
-      // Data
       productionLines,
 
-      // Functions
       selectTimeRange,
       search,
       toggleViewMode,
@@ -724,7 +619,6 @@ export default {
       getTableData,
       fetchAllData,
 
-      // Event handlers
       handleRefresh,
       viewItem,
       editItem,
