@@ -42,7 +42,11 @@
                   <CTableHead>
                     <CTableRow>
                       <CTableHeaderCell scope="col">#</CTableHeaderCell>
+                      <CTableHeaderCell scope="col"
+                        >Start Date</CTableHeaderCell
+                      >
                       <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Operator</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
@@ -51,7 +55,11 @@
                       <CTableHeaderCell scope="row">{{
                         row.no
                       }}</CTableHeaderCell>
+                      <CTableDataCell>{{
+                        formatDateTime(row.startTime)
+                      }}</CTableDataCell>
                       <CTableDataCell>{{ row.problem }}</CTableDataCell>
+                      <CTableDataCell>{{ row.operator }}</CTableDataCell>
                       <CTableDataCell>{{ row.duration }}</CTableDataCell>
                     </CTableRow>
                   </CTableBody>
@@ -275,6 +283,19 @@ export default {
       destroyChart()
     })
 
+    const formatDateTime = (dateStr) => {
+      if (!dateStr) return ''
+      const d = new Date(dateStr)
+      if (isNaN(d)) return dateStr
+      return d.toLocaleString('en-GB', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    }
+
     return {
       isExpanded,
       loading,
@@ -284,6 +305,7 @@ export default {
       refreshData,
       exportData,
       panelIcon,
+      formatDateTime,
     }
   },
 }

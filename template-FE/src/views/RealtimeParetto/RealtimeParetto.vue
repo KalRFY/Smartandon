@@ -575,6 +575,8 @@ export default {
       return line.problems.map((problem, idx) => ({
         no: idx + 1,
         problem: problem.metric,
+        operator: problem.operator || 'N/A',
+        startTime: problem.fstart_time,
         duration: `${problem.fdur} min`,
       }))
     }
