@@ -21,6 +21,7 @@
             :class="['toggle-btn', { active: chartViewMode === mode.value }]"
             @click="() => setChartViewMode(mode.value)"
             type="button"
+            :disabled="isLoading"
           >
             {{ mode.label }}
           </button>
@@ -37,6 +38,7 @@
             ]"
             @click="() => setFilterType(type.value)"
             type="button"
+            :disabled="isLoading"
           >
             {{ type.label }}
           </button>
@@ -55,13 +57,12 @@
           <div v-if="!hasData(lineId)" class="empty-message">
             No data available for {{ getLineTitle(lineId) }}
           </div>
-          <LineChart
+          <apexchart
             v-else
-            :lineId="lineId"
-            :lineTitle="getLineTitle(lineId)"
-            :chartOptions="getChartOptions(lineId)"
-            :chartSeries="getChartSeries(lineId)"
-            @refresh="refreshData"
+            :options="getChartOptions(lineId)"
+            :series="getChartSeries(lineId)"
+            :height="350"
+            :type="getChartOptions(lineId).chart.type"
           />
         </div>
       </template>
@@ -71,9 +72,9 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import ApexChart from 'vue3-apexcharts'
 import DashboardHeader from './components/DashboardHeader.vue'
 import SearchPanel from './components/SearchPanel.vue'
-import LineChart from './components/LineChart.vue'
 
 const chartModes = [
   { value: 'mtbf', label: 'MTBF' },
@@ -168,7 +169,7 @@ const fetchAllData = async () => {
 
           mapped[id] = {
             mtbf,
-            mttr
+            mttr,
           }
         }
       })
@@ -223,14 +224,35 @@ const colorMTBFBar = '#008FFB'
 const colorMTTRLine = '#FF2D55'
 const colorMTBFLine = '#00F0FF'
 
+const chartBg = '#fff'
+
 const getChartOptions = (lineId) => {
   const data = safeArray(apiData.value[lineId])
   const title = getLineTitle(lineId)
 
-  // PATCH: total mode for mtbf or mttr only
-  if ((chartViewMode.value === 'mtbf' || chartViewMode.value === 'mttr') && filterType.value === 'total') {
+  if (
+    (chartViewMode.value === 'mtbf' || chartViewMode.value === 'mttr') &&
+    filterType.value === 'total'
+  ) {
     return {
-      chart: { height: 350, type: 'bar', toolbar: { show: true } },
+      chart: {
+        background: chartBg,
+        height: 350,
+        type: 'bar',
+        toolbar: {
+          show: true,
+          tools: {
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            download: true,
+          },
+          autoSelected: 'zoom',
+        },
+        zoom: { enabled: true },
+      },
       dataLabels: {
         enabled: true,
         formatter: (val) => val,
@@ -238,7 +260,10 @@ const getChartOptions = (lineId) => {
       },
       title: { text: title, align: 'left' },
       xaxis: { categories: [chartViewMode.value.toUpperCase()] },
-      yaxis: { title: { text: chartViewMode.value.toUpperCase() + ' (Minutes)' }, min: 0 },
+      yaxis: {
+        title: { text: chartViewMode.value.toUpperCase() + ' (Minutes)' },
+        min: 0,
+      },
       tooltip: { theme: 'dark' },
       colors: [chartViewMode.value === 'mtbf' ? colorMTBFBar : colorMTTRBar],
       plotOptions: {
@@ -247,14 +272,30 @@ const getChartOptions = (lineId) => {
           dataLabels: { position: 'top' },
         },
       },
-      legend: { show: false }
+      legend: { show: false },
     }
   }
 
-  // PATCH: comparison total mode
   if (chartViewMode.value === 'comparison' && filterType.value === 'total') {
     return {
-      chart: { height: 350, type: 'bar', toolbar: { show: true } },
+      chart: {
+        background: chartBg,
+        height: 350,
+        type: 'bar',
+        toolbar: {
+          show: true,
+          tools: {
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            download: true,
+          },
+          autoSelected: 'zoom',
+        },
+        zoom: { enabled: true },
+      },
       dataLabels: {
         enabled: true,
         formatter: (val) => val,
@@ -264,18 +305,17 @@ const getChartOptions = (lineId) => {
       xaxis: { categories: ['Total'] },
       yaxis: { title: { text: 'Value (Minutes)' }, min: 0 },
       tooltip: { theme: 'dark' },
-      colors: [colorMTBFBar, colorMTTRBar], // biru, merah
+      colors: [colorMTBFBar, colorMTTRBar],
       plotOptions: {
         bar: {
           columnWidth: '50%',
           dataLabels: { position: 'top' },
         },
       },
-      legend: { show: true }
+      legend: { show: true },
     }
   }
 
-  // Bar+line tracking untuk mode MTBF atau MTTR per hari/bulan
   if (
     (chartViewMode.value === 'mtbf' || chartViewMode.value === 'mttr') &&
     (filterType.value === 'daily' || filterType.value === 'monthly')
@@ -283,7 +323,24 @@ const getChartOptions = (lineId) => {
     const highlightLineColor =
       chartViewMode.value === 'mtbf' ? colorMTBFLine : colorMTTRLine
     return {
-      chart: { type: 'line', height: 350, toolbar: { show: true } },
+      chart: {
+        background: chartBg,
+        type: 'line',
+        height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            download: true,
+          },
+          autoSelected: 'zoom',
+        },
+        zoom: { enabled: true },
+      },
       stroke: {
         width: [0, 4],
         curve: 'smooth',
@@ -322,15 +379,33 @@ const getChartOptions = (lineId) => {
           dataLabels: { position: 'top' },
         },
       },
+      legend: { show: false },
     }
   }
-  // Comparison mode: 2 bar chart + 2 line chart + legend jelas, dot kecil dan presisi
+
   if (
     chartViewMode.value === 'comparison' &&
     (filterType.value === 'daily' || filterType.value === 'monthly')
   ) {
     return {
-      chart: { type: 'line', height: 350, toolbar: { show: true } },
+      chart: {
+        background: chartBg,
+        type: 'line',
+        height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            download: true,
+          },
+          autoSelected: 'zoom',
+        },
+        zoom: { enabled: true },
+      },
       stroke: {
         width: [0, 0, 3, 3],
         curve: 'smooth',
@@ -385,7 +460,6 @@ const getChartOptions = (lineId) => {
     }
   }
 
-  // Mode total tunggal (fallback)
   let categories = []
   let ytitle = chartViewMode.value.toUpperCase() + ' (Minutes)'
   if (Array.isArray(data) && data.length > 0) {
@@ -396,7 +470,24 @@ const getChartOptions = (lineId) => {
     categories = []
   }
   return {
-    chart: { height: 350, type: 'bar', toolbar: { show: true } },
+    chart: {
+      background: chartBg,
+      height: 350,
+      type: 'bar',
+      toolbar: {
+        show: true,
+        tools: {
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+          download: true,
+        },
+        autoSelected: 'zoom',
+      },
+      zoom: { enabled: true },
+    },
     dataLabels: {
       enabled: true,
       formatter: (val) => val,
@@ -422,13 +513,13 @@ const getChartOptions = (lineId) => {
       },
     },
     colors: [chartViewMode.value === 'mtbf' ? colorMTBFBar : colorMTTRBar],
+    legend: { show: false },
   }
 }
 
 const getChartSeries = (lineId) => {
   const data = safeArray(apiData.value[lineId])
 
-  // PATCH: total mode for all chart types
   if (filterType.value === 'total') {
     const d = apiData.value[lineId] || {}
     if (chartViewMode.value === 'mtbf') {
@@ -437,13 +528,12 @@ const getChartSeries = (lineId) => {
       return [{ name: 'MTTR', data: [parseFloat(d.mttr) || 0] }]
     } else if (chartViewMode.value === 'comparison') {
       return [
-        { name: 'MTBF', data: [parseFloat(d.mtbf) || 0] }, // biru
-        { name: 'MTTR', data: [parseFloat(d.mttr) || 0] }  // merah
+        { name: 'MTBF', data: [parseFloat(d.mtbf) || 0] },
+        { name: 'MTTR', data: [parseFloat(d.mttr) || 0] },
       ]
     }
   }
 
-  // Tracking line for MTBF or MTTR per day/month
   if (
     (chartViewMode.value === 'mtbf' || chartViewMode.value === 'mttr') &&
     (filterType.value === 'daily' || filterType.value === 'monthly')
@@ -462,7 +552,7 @@ const getChartSeries = (lineId) => {
       ]
     }
   }
-  // Comparison mode: 2 bar chart + 2 line chart
+
   if (
     chartViewMode.value === 'comparison' &&
     (filterType.value === 'daily' || filterType.value === 'monthly')
@@ -491,7 +581,6 @@ const getChartSeries = (lineId) => {
     ]
   }
 
-  // MTBF/MTTR mode total (fallback)
   if (Array.isArray(data) && data.length > 0) {
     if (chartViewMode.value === 'mtbf') {
       return [{ name: 'MTBF', data: data.map((d) => parseFloat(d.mtbf) || 0) }]
@@ -566,9 +655,15 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`
 }
 
-const refreshData = () => fetchAllData()
-
 onMounted(() => fetchAllData())
+</script>
+
+<script>
+export default {
+  components: {
+    apexchart: ApexChart,
+  },
+}
 </script>
 
 <style scoped>
@@ -611,6 +706,14 @@ onMounted(() => fetchAllData())
   font-size: 14px;
   padding: 8px 16px;
   margin-left: 2px;
+}
+.toggle-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.toggle-btn-filter:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 .divider {
   display: inline-block;

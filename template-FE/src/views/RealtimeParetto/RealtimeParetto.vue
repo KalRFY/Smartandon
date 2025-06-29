@@ -249,7 +249,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import {
   CCard,
   CCardHeader,
@@ -700,7 +700,6 @@ export default {
   height: 3rem;
 }
 
-/* Quick filters */
 .quick-filter-section {
   margin-top: 15px;
   padding-top: 15px;
