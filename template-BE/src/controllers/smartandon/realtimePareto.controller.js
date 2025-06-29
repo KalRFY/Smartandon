@@ -47,7 +47,6 @@ const getRealtimeParetoController = async (req, res, next) => {
       avCategory,
       group,
       order,
-      fline,
       startDate,
       endDate
     } = req.query;
@@ -77,7 +76,6 @@ const getRealtimeParetoController = async (req, res, next) => {
       MAX(foperator) AS operator,
       MAX(fstart_time) AS fstart_time
       FROM v_current_error_2 WHERE ${whereClause} GROUP BY ${group} ORDER BY fdur DESC`;
-      console.log(`Generated Query for ${line}:`, q);
 
       try {
         const lineResults = await sequelize.query(q, {

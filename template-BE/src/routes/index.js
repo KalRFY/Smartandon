@@ -55,6 +55,10 @@ const defaultRoutes = [
     route: realtimeParetoRoutes,
   },
   {
+    path: '/mtbfmttr',
+    route: mtbfmttrRoutes,
+  },
+  {
     path: '/smartandon',
     route: oeeRoutes,
   },
