@@ -3,6 +3,16 @@
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
 
+const LINES = [
+    "LPDC",
+    "HPDC",
+    "CAM SHAFT",
+    "CYLINDER HEAD",
+    "CYLINDER BLOCK",
+    "CRANK SHAFT",
+    "ASSY LINE",
+  ];
+
 const defaultController = async (req, res) => {
   return res.status(httpStatus.OK).json({
     message: 'Welcome to the Realtime Pareto Controller',
@@ -32,16 +42,6 @@ const getAvCategoryController = async (req, res, next) => {
 };
 
 const getRealtimeParetoController = async (req, res, next) => {
-  const lines = [
-    "LPDC",
-    "HPDC",
-    "CAM SHAFT",
-    "CYLINDER HEAD",
-    "CYLINDER BLOCK",
-    "CRANK SHAFT",
-    "ASSY LINE",
-  ];
-
   try {
     const { 
       avCategory,
@@ -59,7 +59,6 @@ const getRealtimeParetoController = async (req, res, next) => {
     }
 
     let baseWhereClause = `fstart_time BETWEEN '${startDate}' AND '${endDate}'`;
-    
     if (avCategory) {
       const cleanAvCategory = avCategory.replace(/fav_categoty\s*=\s*'/, '').replace(/\s*AND'$/, '');
       if (cleanAvCategory) {
@@ -68,7 +67,7 @@ const getRealtimeParetoController = async (req, res, next) => {
     }
     const allResults = [];
 
-    const lineQueries = lines.map(async (line) => {
+    const lineQueries = LINES.map(async (line) => {
       const whereClause = `${baseWhereClause} AND fline = '${line}'`;
       const q = `SELECT 
       ${group} AS metric, 
@@ -89,7 +88,6 @@ const getRealtimeParetoController = async (req, res, next) => {
     });
 
     const queryResults = await Promise.all(lineQueries);
-    
     queryResults.forEach(({ line, results }) => {
       allResults.push({
         title: line,
