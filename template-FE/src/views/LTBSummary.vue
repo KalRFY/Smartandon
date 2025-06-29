@@ -94,9 +94,8 @@ export default {
     CRow,
     CCol,
     CCard,
+    CCardHeader,
     CCardBody,
-    CTabs,
-    CTab,
     CInputGroup,
     CInputGroupText,
     CFormInput,
@@ -178,7 +177,6 @@ export default {
   async mounted() {
     window.addEventListener('resize', this.onResize)
     this.onResize()
-
     this.isLoading = true
     try {
       const result = await axios.get(
