@@ -3,24 +3,14 @@
     <CCardHeader>
       <div class="d-flex justify-content-between align-items-center">
         <h4 class="mb-0">{{ lineTitle }}</h4>
-        <div class="d-flex align-items-center">
-          <CButton 
-            variant="ghost" 
-            color="primary" 
-            size="sm" 
-            @click="$emit('refresh', lineId)"
-          >
-            <RefreshCw size="16" />
-          </CButton>
-        </div>
       </div>
     </CCardHeader>
     <CCardBody>
       <div class="chart-container">
-        <ApexCharts 
-          type="line" 
-          height="350" 
-          :options="chartOptions" 
+        <ApexCharts
+          type="bar"
+          height="350"
+          :options="chartOptions"
           :series="chartSeries"
         />
       </div>
@@ -29,14 +19,9 @@
 </template>
 
 <script>
-import { 
-  CCard, 
-  CCardHeader, 
-  CCardBody,
-  CButton
-} from '@coreui/vue';
-import ApexCharts from 'vue3-apexcharts';
-import { RefreshCw } from 'lucide-vue-next';
+import { CCard, CCardHeader, CCardBody, CButton } from '@coreui/vue'
+import ApexCharts from 'vue3-apexcharts'
+import { RefreshCw } from 'lucide-vue-next'
 
 export default {
   name: 'LineChart',
@@ -46,27 +31,27 @@ export default {
     CCardBody,
     CButton,
     ApexCharts,
-    RefreshCw
+    RefreshCw,
   },
   props: {
     lineId: {
       type: String,
-      required: true
+      required: true,
     },
     lineTitle: {
       type: String,
-      required: true
+      required: true,
     },
     chartOptions: {
       type: Object,
-      required: true
+      required: true,
     },
     chartSeries: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
-  emits: ['refresh']
+  emits: ['refresh'],
 }
 </script>
 
