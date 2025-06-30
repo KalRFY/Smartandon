@@ -1215,13 +1215,6 @@ export default {
         color: 'success',
         route: '/app/RealtimeParetto'
       },
-      {
-        title: 'LTB Report',
-        icon: 'FileText',
-        description: 'Last Time Buy reporting and analysis',
-        color: 'secondary',
-        route: '/ltb-report'
-      }
     ]
 
     const navigateTo = (route) => {
