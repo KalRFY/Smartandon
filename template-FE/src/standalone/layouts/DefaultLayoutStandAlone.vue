@@ -4,7 +4,7 @@
     <div class="wrapper d-flex flex-column min-vh-100 bg-blurred">
       <AppHeader />
       <div class="body flex-grow-1 px-3">
-        <CContainer lg>
+        <CContainer fluid>
           <router-view />
         </CContainer>
       </div>
