@@ -623,6 +623,7 @@
                     <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
                     <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Line</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     <CTableHeaderCell scope="col">LTB Reports</CTableHeaderCell>
@@ -635,6 +636,7 @@
                     <CTableDataCell>{{ problem.fmc_name || '' }}</CTableDataCell>
                     <CTableDataCell>{{ problem.ferror_name || '' }}</CTableDataCell>
                     <CTableDataCell>{{ problem.foperator || '' }}</CTableDataCell>
+                    <CTableDataCell>{{ problem.fline }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fdur || '' }}</CTableDataCell>
                     <CTableDataCell>
                       <CButton class="mb-3" shape="rounder-pill" color="success" style="font-size: small; font-weight: bold; color: white;" @click="onClickInput(problem)">
@@ -1284,7 +1286,7 @@ export default {
       this.selectedProblem = '';
       // this.$refs.machineSelect.clear();
       // this.$refs.lineSelect.clear();
-      this.fetchProblems(1);
+      // this.fetchProblems(1);
     },
 
     async onClickInput(problem) {
