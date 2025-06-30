@@ -19,7 +19,7 @@ const models = {
   sequelize,
   Sequelize,
   QccMTypes,
-  newMachineInput
+  newMachineInput,
   // line
   // define other models here
 };
@@ -31,4 +31,3 @@ Object.keys(models).forEach((modelName) => {
 });
 
 module.exports = models;
-
