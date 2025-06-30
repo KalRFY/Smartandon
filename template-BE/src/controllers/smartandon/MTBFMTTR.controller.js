@@ -87,7 +87,7 @@ const getMTBFController = async (req, res, next) => {
             const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
             return {
               fline: line,
-              month: row.month,
+              date: row.month,
               totalFdur: downtime,
               totalRows: totalProblem,
               uptime: uptime.toFixed(2),
@@ -209,7 +209,7 @@ const getMTTRController = async (req, res, next) => {
             const mttr = totalProblem > 0 ? Math.abs(downtime / totalProblem) : 0;
             return {
               fline: line,
-              month: row.month,
+              date: row.month,
               totalFdur: downtime,
               totalRows: totalProblem,
               downtime: downtime.toFixed(2),
@@ -339,7 +339,7 @@ const getMtBFMTTRController = async (req, res, next) => {
             const mttr = totalProblem > 0 ? Math.abs(downtime / totalProblem) : 0;
             return {
               fline: line,
-              month: row.month,
+              date: row.month,
               totalFdur: downtime,
               totalRows: totalProblem,
               uptime: uptime.toFixed(2),
