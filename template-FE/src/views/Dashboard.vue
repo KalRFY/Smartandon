@@ -1,40 +1,34 @@
 <template>
   <div>
 
-  <CRow>
-    <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
-      <CCard class="dashboard-card h-100" :color="card.color">
-        <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-          <div class="icon-container mb-3">
-            <component :is="card.icon" :size="48" :stroke-width="1.5" />
-          </div>
-          <h4>{{ card.title }}</h4>
-          <p class="card-description">{{ card.description }}</p>
-          <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-        </CCardBody>
-      </CCard>
-    </CCol>
-  </CRow>
+    <CRow>
+      <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="4" class="mb-4">
+        <CCard class="dashboard-card h-100" :color="card.color">
+          <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
+            <div class="icon-container mb-3">
+              <component :is="card.icon" :size="48" :stroke-width="1.5" />
+            </div>
+            <h4>{{ card.title }}</h4>
+            <p class="card-description">{{ card.description }}</p>
+            <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
   </div>
-  
-  <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill" @click="onClickInput">Machine Stop Input</CButton>
+
+  <CButton style="width: 100%; font-size: 24px; font-weight: bold;" class="mb-3" color="primary" shape="rounded-pill"
+    @click="onClickInput">Machine Stop Input</CButton>
 
   <div>
-    <CModal 
-      :visible="visibleLiveDemo"
-      @close="() => { visibleLiveDemo = false }"
-      aria-labelledby="LiveDemoExampleLabel"
-    >
+    <CModal :visible="visibleLiveDemo" @close="() => { visibleLiveDemo = false }"
+      aria-labelledby="LiveDemoExampleLabel">
       <CModalHeader>
         <CModalTitle id="LiveDemoExampleLabel">Machine Stop Input</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CForm 
-          class="row g-3 needs-validation" 
-          novalidate 
-          :validated="validatedCustom01" 
-          @submit="handleSubmitCustom01"
-        >
+        <CForm class="row g-3 needs-validation" novalidate :validated="validatedCustom01"
+          @submit="handleSubmitCustom01">
           <!-- <CCol md="8">
             <CFormInput
               feedbackValid="Looks good!"
@@ -46,36 +40,15 @@
           </CCol> -->
           <CCol md="8">
             <label for="machineSelect" class="form-label">Machine Name</label>
-            <Treeselect
-              id="machineSelect"
-              v-model="submit.machineName"
-              :options="machineOptions"
-              :searchable="true"
-              :clearable="true"
-              :children="false"
-              placeholder="Select or input machine"
-              @input="onMachineInput"
-              :value-consists-of="['id']"
-              :value-key="'id'"
-              :label-key="'label'"
-            />
+            <Treeselect id="machineSelect" v-model="submit.machineName" :options="machineOptions" :searchable="true"
+              :clearable="true" :children="false" placeholder="Select or input machine" @input="onMachineInput"
+              :value-consists-of="['id']" :value-key="'id'" :label-key="'label'" />
           </CCol>
           <CCol md="4">
             <label for="machineSelect" class="form-label">Line</label>
-            <Treeselect
-              id="lineSelect"
-              v-model="submit.line"
-              :multiple="false"
-              :flat="true"
-              :options="lineOptions"
-              :searchable="true"
-              :clearable="true"
-              placeholder="Select or input line"
-              @input="onMachineInput"
-              :value-consists-of="['id']"
-              :value-key="'id'"
-              :label-key="'label'"
-            />
+            <Treeselect id="lineSelect" v-model="submit.line" :multiple="false" :flat="true" :options="lineOptions"
+              :searchable="true" :clearable="true" placeholder="Select or input line" @input="onMachineInput"
+              :value-consists-of="['id']" :value-key="'id'" :label-key="'label'" />
           </CCol>
           <!-- <CCol md="4">
               <CFormSelect
@@ -91,23 +64,12 @@
               </CFormSelect>
           </CCol> -->
           <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Problems"
-              required
-              v-model="submit.problems"
-            />
+            <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Problems" required
+              v-model="submit.problems" />
           </CCol>
           <CCol xs="12">
-            <CFormCheck
-              feedbackInvalid="You must agree before submitting."
-              id="invalidCheck"
-              label="Agree to terms and conditions"
-              required
-              type="checkbox"
-              v-model="submit.agreeTerms"
-            />
+            <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
+              label="Agree to terms and conditions" required type="checkbox" v-model="submit.agreeTerms" />
           </CCol>
         </CForm>
       </CModalBody>
@@ -132,7 +94,7 @@
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow  v-for="type in types" :key="type.type_id">
+          <CTableRow v-for="type in types" :key="type.type_id">
             <CTableDataCell>{{ type.type_id }}</CTableDataCell>
             <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
           </CTableRow>
@@ -153,7 +115,7 @@
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow  v-for="line in lines" :key="line.type_id">
+          <CTableRow v-for="line in lines" :key="line.type_id">
             <CTableDataCell>{{ line.fid }}</CTableDataCell>
             <CTableDataCell>{{ line.fline }}</CTableDataCell>
           </CTableRow>
@@ -174,7 +136,7 @@
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow  v-for="machine in machines" :key="machine.fid">
+          <CTableRow v-for="machine in machines" :key="machine.fid">
             <CTableDataCell>{{ machine.fid }}</CTableDataCell>
             <CTableDataCell>{{ machine.fmc_name }}</CTableDataCell>
           </CTableRow>
@@ -193,32 +155,27 @@
               <CCard class="mb-3">
                 <CCardBody>
                   <CCardTitle>LPDC</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
+                  <CChart height="100px" type="line" :wrapper="false" :data="{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                      {
+                        label: 'My First dataset',
+                        backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                        borderColor: 'rgba(220, 220, 220, 1)',
+                        pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                        pointBorderColor: '#fff',
+                        data: [40, 20, 12, 39, 10, 40, 39]
+                      },
+                      {
+                        label: 'My Second dataset',
+                        backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                        borderColor: 'rgba(151, 187, 205, 1)',
+                        pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                        pointBorderColor: '#fff',
+                        data: [50, 12, 28, 29, 7, 25, 12]
+                      }
+                    ]
+                  }" />
 
                   <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
 
@@ -231,35 +188,30 @@
               <CCard class="mb-3">
                 <CCardBody>
                   <CCardTitle>HPDC</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-                
+                  <CChart height="100px" type="line" :wrapper="false" :data="{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                      {
+                        label: 'My First dataset',
+                        backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                        borderColor: 'rgba(220, 220, 220, 1)',
+                        pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                        pointBorderColor: '#fff',
+                        data: [40, 20, 12, 39, 10, 40, 39]
+                      },
+                      {
+                        label: 'My Second dataset',
+                        backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                        borderColor: 'rgba(151, 187, 205, 1)',
+                        pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                        pointBorderColor: '#fff',
+                        data: [50, 12, 28, 29, 7, 25, 12]
+                      }
+                    ]
+                  }" />
+
                   <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
-                
+
                 </CCardBody>
               </CCard>
             </CCol>
@@ -269,32 +221,27 @@
               <CCard class="mb-3">
                 <CCardBody>
                   <CCardTitle>CAM SHAFT</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
+                  <CChart height="100px" type="line" :wrapper="false" :data="{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                      {
+                        label: 'My First dataset',
+                        backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                        borderColor: 'rgba(220, 220, 220, 1)',
+                        pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                        pointBorderColor: '#fff',
+                        data: [40, 20, 12, 39, 10, 40, 39]
+                      },
+                      {
+                        label: 'My Second dataset',
+                        backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                        borderColor: 'rgba(151, 187, 205, 1)',
+                        pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                        pointBorderColor: '#fff',
+                        data: [50, 12, 28, 29, 7, 25, 12]
+                      }
+                    ]
+                  }" />
 
                   <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
 
@@ -307,32 +254,27 @@
               <CCard class="mb-3">
                 <CCardBody>
                   <CCardTitle>CRANK SHAFT</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
+                  <CChart height="100px" type="line" :wrapper="false" :data="{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                      {
+                        label: 'My First dataset',
+                        backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                        borderColor: 'rgba(220, 220, 220, 1)',
+                        pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                        pointBorderColor: '#fff',
+                        data: [40, 20, 12, 39, 10, 40, 39]
+                      },
+                      {
+                        label: 'My Second dataset',
+                        backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                        borderColor: 'rgba(151, 187, 205, 1)',
+                        pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                        pointBorderColor: '#fff',
+                        data: [50, 12, 28, 29, 7, 25, 12]
+                      }
+                    ]
+                  }" />
 
                   <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
 
@@ -345,32 +287,27 @@
               <CCard class="mb-3">
                 <CCardBody>
                   <CCardTitle>CYLINDER HEAD</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
+                  <CChart height="100px" type="line" :wrapper="false" :data="{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                      {
+                        label: 'My First dataset',
+                        backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                        borderColor: 'rgba(220, 220, 220, 1)',
+                        pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                        pointBorderColor: '#fff',
+                        data: [40, 20, 12, 39, 10, 40, 39]
+                      },
+                      {
+                        label: 'My Second dataset',
+                        backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                        borderColor: 'rgba(151, 187, 205, 1)',
+                        pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                        pointBorderColor: '#fff',
+                        data: [50, 12, 28, 29, 7, 25, 12]
+                      }
+                    ]
+                  }" />
 
                   <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
 
@@ -383,33 +320,28 @@
               <CCard class="mb-3">
                 <CCardBody>
                   <CCardTitle>CYLINDER BLOCK</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
-                  
+                  <CChart height="100px" type="line" :wrapper="false" :data="{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                      {
+                        label: 'My First dataset',
+                        backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                        borderColor: 'rgba(220, 220, 220, 1)',
+                        pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                        pointBorderColor: '#fff',
+                        data: [40, 20, 12, 39, 10, 40, 39]
+                      },
+                      {
+                        label: 'My Second dataset',
+                        backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                        borderColor: 'rgba(151, 187, 205, 1)',
+                        pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                        pointBorderColor: '#fff',
+                        data: [50, 12, 28, 29, 7, 25, 12]
+                      }
+                    ]
+                  }" />
+
                   <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
 
                 </CCardBody>
@@ -421,32 +353,27 @@
               <CCard class="mb-3">
                 <CCardBody>
                   <CCardTitle>ASSY LINE</CCardTitle>
-                  <CChart
-                    height="100px"
-                    type="line"
-                    :wrapper="false"
-                    :data="{
-                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                      datasets: [
-                        {
-                          label: 'My First dataset',
-                          backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                          borderColor: 'rgba(220, 220, 220, 1)',
-                          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                          pointBorderColor: '#fff',
-                          data: [40, 20, 12, 39, 10, 40, 39]
-                        },
-                        {
-                          label: 'My Second dataset',
-                          backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                          borderColor: 'rgba(151, 187, 205, 1)',
-                          pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                          pointBorderColor: '#fff',
-                          data: [50, 12, 28, 29, 7, 25, 12]
-                        }
-                      ]
-                    }"
-                  />
+                  <CChart height="100px" type="line" :wrapper="false" :data="{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                      {
+                        label: 'My First dataset',
+                        backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                        borderColor: 'rgba(220, 220, 220, 1)',
+                        pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                        pointBorderColor: '#fff',
+                        data: [40, 20, 12, 39, 10, 40, 39]
+                      },
+                      {
+                        label: 'My Second dataset',
+                        backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                        borderColor: 'rgba(151, 187, 205, 1)',
+                        pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                        pointBorderColor: '#fff',
+                        data: [50, 12, 28, 29, 7, 25, 12]
+                      }
+                    ]
+                  }" />
 
                   <ApexCharts type="line" height="350" :options="chartOptions" :series="series"></ApexCharts>
 
@@ -471,15 +398,15 @@ import MainChartExample from './charts/MainChartExample'
 import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
 import api from '../apis/CommonAPI'
-import { 
-  AlertTriangle, 
-  Clock, 
-  Timer, 
-  History, 
-  BarChart2, 
+import {
+  AlertTriangle,
+  Clock,
+  Timer,
+  History,
+  BarChart2,
   FileText,
-  ChartColumnIncreasing, 
-  BookText 
+  ChartColumnIncreasing,
+  BookText
 } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import Treeselect from 'vue3-treeselect'
@@ -491,7 +418,7 @@ export default {
   name: 'Dashboard',
   data() {
     return {
-      
+
       types: [],
       lines: [],
       linesOptions: [],
@@ -616,7 +543,7 @@ export default {
   },
   setup() {
     const router = useRouter();
-    
+
     const progressGroupExample1 = [
       { title: 'Monday', value1: 34, value2: 78 },
       { title: 'Tuesday', value1: 56, value2: 94 },
@@ -642,7 +569,7 @@ export default {
       { title: 'LinkedIn', icon: 'cib-linkedin', percent: 8, value: '27,319' },
     ]
     const tableExample = [
-      
+
     ]
 
     const dashboardCards = [
@@ -702,23 +629,23 @@ export default {
       dashboardCards,
       navigateTo
     }
-    
+
   },
 
   methods: {
     onClickInput() {
       this.visibleLiveDemo = true
     },
-  
+
     async saveSubmit() {
       const machineNameToSubmit = this.submit.machineName && this.submit.machineName.id ? this.submit.machineName.id : null;
-      if(!machineNameToSubmit){
+      if (!machineNameToSubmit) {
         alert("Please input or select machine name")
-      } else if(!this.submit.line){
+      } else if (!this.submit.line) {
         alert("Please input line")
-      } else if(!this.submit.problems){
+      } else if (!this.submit.problems) {
         alert("Please input problems")
-      } else if(!this.submit.agreeTerms){
+      } else if (!this.submit.agreeTerms) {
         alert("You must agree to terms and conditions before submitting")
       } else {
         try {
@@ -818,9 +745,4 @@ export default {
 p {
   font-style: italic;
 }
-
-
-
-
-
 </style>
