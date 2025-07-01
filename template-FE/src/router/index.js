@@ -8,48 +8,57 @@ const appRoutes = [
   {
     path: '/app/dashboard',
     name: 'Dashboard',
-    component: () => import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
+    component: () =>
+      import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
     meta: {
       requiresAuth: true,
-      title: 'Dashboard'
-    }
+      title: 'Dashboard',
+    },
   },
   {
     path: '/app/Dashboard2',
     name: 'Dashboard2',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/Dashboard2.vue'),
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/Dashboard2.vue'),
     meta: {
       requiresAuth: true,
-      title: 'Dashboard2'
-    }
+      title: 'Dashboard2',
+    },
   },
   {
     path: '/app/MTBFMTTR',
     name: 'MTBFMTTR',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR/MTBFMTTR.vue'),
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR/MTBFMTTR.vue'),
     meta: {
       requiresAuth: true,
-      title: 'MTBFMTTR'
-    }
+      title: 'MTBFMTTR',
+    },
   },
   {
     path: '/app/RealtimeParetto',
     name: 'RealtimeParetto',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/RealtimeParetto/RealtimeParetto.vue'),
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/RealtimeParetto/RealtimeParetto.vue'
+      ),
     meta: {
       requiresAuth: true,
-      title: 'RealtimeParetto'
-    }
+      title: 'RealtimeParetto',
+    },
   },
 
   {
     path: '/app/DashboardDataDisplay',
     name: 'DashboardDataDisplay',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/DashboardDataDisplay.vue'),
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/DashboardDataDisplay.vue'
+      ),
     meta: {
       requiresAuth: true,
-      title: 'DashboardDataDisplay'
-    }
+      title: 'DashboardDataDisplay',
+    },
   },
   // Add the uncommented Quality Operational route
   // {
@@ -65,31 +74,55 @@ const appRoutes = [
   {
     path: '/dc/dashboard',
     name: 'dcDashboard',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/Dashboard.vue'),
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/Dashboard.vue'),
     meta: {
       requiresAuth: true,
-      title: 'dcDashboard'
-    }
+      title: 'dcDashboard',
+    },
   },
   {
     path: '/app/ProblemHistory',
     name: 'ProblemHistory',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/ProblemHistory.vue'),
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/ProblemHistory.vue'),
     meta: {
       requiresAuth: true,
-      title: 'Problem History'
-    }
+      title: 'Problem History',
+    },
   },
   {
     path: '/app/LtbSummary',
     name: 'LTBSummary',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/LTBSummary.vue'),
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/LTBSummary.vue'),
     meta: {
       requiresAuth: true,
-      title: 'LTB Summary'
-    }
+      title: 'LTB Summary',
+    },
   },
   /*define other routes in here*/
+]
+
+const authRoutes = [
+  {
+    path: '/auth/register',
+    name: 'Register',
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/Register/Register.vue'),
+    meta: {
+      title: 'Register',
+    },
+  },
+  {
+    path: '/auth/login',
+    name: 'Login',
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/Login/Login.vue'),
+    meta: {
+      title: 'Login',
+    },
+  },
 ]
 
 // Error pages
@@ -97,23 +130,25 @@ const errorRoutes = [
   {
     path: '/404',
     name: 'Page404',
-    component: () => import(/* webpackChunkName: "error-404" */ '@/views/pages/Page404'),
-    meta: { title: 'Page Not Found' }
+    component: () =>
+      import(/* webpackChunkName: "error-404" */ '@/views/pages/Page404'),
+    meta: { title: 'Page Not Found' },
   },
   {
     path: '/500',
     name: 'Page500',
-    component: () => import(/* webpackChunkName: "error-500" */ '@/views/pages/Page500'),
-    meta: { title: 'Server Error' }
+    component: () =>
+      import(/* webpackChunkName: "error-500" */ '@/views/pages/Page500'),
+    meta: { title: 'Server Error' },
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/404'
-  }
+    redirect: '/404',
+  },
 ]
 
 const isStandalone = process.env.VUE_APP_STANDALONE_SINGLE_SPA === 'true'
-console.log("Stand alone single SPA: ", isStandalone)
+console.log('Stand alone single SPA: ', isStandalone)
 
 const routes = [
   {
@@ -121,18 +156,28 @@ const routes = [
     name: 'Home',
     component: isStandalone ? DefaultLayoutStandAlone : DefaultLayout,
     redirect: () => {
-      if (!isStandalone && (!localStorage.id_token || localStorage.id_token === '')) {
-        window.location.href = process.env.dc + '/#/sc/login'
+      if (!isStandalone && (!localStorage.token || localStorage.token === '')) {
+        window.location.href = process.env.dc + '/#/auth/login'
         return
       }
       return '/app/dashboard'
     },
-    children: [
-      ...appRoutes
-    ],
+    children: [...appRoutes],
   },
-  ...errorRoutes
+  ...authRoutes,
+  ...errorRoutes,
 ]
+
+const isTokenExpired = (token) => {
+  if (!token) return true
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    if (!payload.exp) return false
+    return Date.now() >= payload.exp * 1000
+  } catch (e) {
+    return true
+  }
+}
 
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
@@ -150,12 +195,21 @@ router.beforeEach((to, from, next) => {
     document.title = `Template MFG - ${to.meta.title}`
   }
 
-  // Check authentication
-  if (to.meta.requiresAuth && !isStandalone && (!localStorage.id_token || localStorage.id_token === '')) {
-    window.location.href = process.env.dc + '/#/sc/login'
+  const token = localStorage.token
+  const isLoggedIn = !!token && token !== '' && !isTokenExpired(token)
+  if (token && isTokenExpired(token)) {
+    localStorage.removeItem('token')
+  }
+  // Redirect to login only if route requires auth and not logged in
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next({ name: 'Login' })
     return
   }
-
+  // Prevent logged in user from accessing login/register
+  if ((to.name === 'Login' || to.name === 'Register') && isLoggedIn) {
+    next({ name: 'Dashboard' })
+    return
+  }
   next()
 })
 

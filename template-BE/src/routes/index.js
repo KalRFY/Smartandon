@@ -2,8 +2,6 @@ const express = require('express');
 const docsRoute = require('./docs.route');
 const config = require('../config/config');
 
-const PORT = 5432;
-
 const dashboardRoutes = require('./smartandon/dashboard');
 const qccMTypesRoutes = require('./smartandon/qccMTypes');
 const lineRoutes = require('./smartandon/line');
@@ -16,9 +14,12 @@ const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 const realtimeParetoRoutes = require('./smartandon/realtimePareto');
 const summaryRoutes = require('./smartandon/summary');
 
+const authRoutes = require('./smartandon/auth');
+const userRoutes = require('./smartandon/user');
 
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
+const { path } = require('../app');
 
 const router = express.Router();
 
@@ -70,6 +71,13 @@ const defaultRoutes = [
   {
     path: '/summary',
     route: summaryRoutes,
+  },
+    path: '/auth',
+    route: authRoutes,
+  },
+  {
+    path: '/user',
+    route: userRoutes,
   },
 ];
 
