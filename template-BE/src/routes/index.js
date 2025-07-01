@@ -14,6 +14,7 @@ const problemRoutes = require('./smartandon/problem');
 const oeeRoutes = require('./smartandon/OEE');
 const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 const realtimeParetoRoutes = require('./smartandon/realtimePareto');
+const summaryRoutes = require('./smartandon/summary');
 
 
 const GaugeRoute = require('./qdc/Guage.route');
@@ -66,6 +67,10 @@ const defaultRoutes = [
     path: '/smartandon',
     route: memberRoutes,
   },
+  {
+    path: '/summary',
+    route: summaryRoutes,
+  },
 ];
 
 const devRoutes = [
@@ -81,7 +86,7 @@ defaultRoutes.forEach((route) => {
 });
 
 /* istanbul ignore next */
-if (config.env === 'dev' || config.env === 'local' ) {
+if (config.env === 'dev' || config.env === 'local') {
   devRoutes.forEach((route) => {
     router.use(route.path, route.route);
   });

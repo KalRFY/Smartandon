@@ -899,7 +899,7 @@ export default {
         icon: 'FileText',
         description: 'Last Time Buy reporting and analysis',
         color: 'secondary',
-        route: '/ltb-report',
+        route: '/app/LtbSummary',
       },
     ]
 

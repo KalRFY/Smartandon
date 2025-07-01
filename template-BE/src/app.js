@@ -28,10 +28,10 @@ if (config.env !== 'test') {
 app.use(helmet());
 
 // parse json request body
-app.use(express.json({limit: '50mb'}));
+app.use(express.json({ limit: '50mb' }));
 
 // parse urlencoded request body
-app.use(express.urlencoded({ limit: '50mb',extended: true }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(fileUpload());
 
@@ -42,7 +42,7 @@ app.use(xss());
 app.use(compression());
 
 // enable cors
-app.use(cors({ exposedHeaders: ['Content-Disposition']}));
+app.use(cors({ exposedHeaders: ['Content-Disposition'] }));
 app.options('*', cors());
 
 // jwt authentication

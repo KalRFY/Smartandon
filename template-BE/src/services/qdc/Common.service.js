@@ -9,20 +9,38 @@ module.exports = (sequelize, Sequelize) => {
      * Get Line
      */
     static searchLine = async () => {
-      return new Promise(async(resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         await sequelize.query(
-          "qdc_common_line_data"
-          ,Sequelize.QueryTypes.SELECT
-          )
-          .then(result => {
-            resolve(result);
-          })
-          .catch(error => {
-            reject(error);
-          });
-      })
+          "qdc_common_line_data",
+          Sequelize.QueryTypes.SELECT
+        )
+          .then(result => resolve(result))
+          .catch(error => reject(error));
+      });
     };
 
+    static fetchColorDash = async () => {
+      return new Promise(async (resolve, reject) => {
+        await sequelize.query(
+          "SELECT * FROM v_color_dash",
+          Sequelize.QueryTypes.SELECT
+        )
+          .then(result => resolve(result))
+          .catch(error => reject(error));
+      });
+    };
+
+    static fetchDelayProblemCm = async () => {
+      return new Promise(async (resolve, reject) => {
+        await sequelize.query(
+          "SELECT * FROM v_current_error_2 WHERE fdur >= 120",
+          Sequelize.QueryTypes.SELECT
+        )
+          .then(result => resolve([result]))
+          .catch(error => reject(error));
+      });
+    };
   }
+
   return CommonService;
 };

@@ -8,8 +8,8 @@
       })
   ">
     <CSidebarBrand>
-      <img src="../assets/brand/Toyota_logo.png" class="img-fluid sidebar-brand-full" width="200" height="200" />
-      <img src="../assets/brand/Toyota_logo.png" class="sidebar-brand-narrow" width="36" height="10" />
+      <!-- <img src="../assets/brand/Toyota_logo.png" class="img-fluid sidebar-brand-full" width="200" height="200" />
+      <img src="../assets/brand/Toyota_logo.png" class="sidebar-brand-narrow" width="36" height="10" /> -->
     </CSidebarBrand>
     <AppSidebarNav v-bind:nav="nav" />
     <CSidebarToggler id="SidebarToggler" class="d-none d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
@@ -112,7 +112,7 @@ export default {
             },
             {
               component: 'CNavItem',
-              to: '/app/ltb-summary',
+              to: '/app/LtbSummary',
               name: 'LTB Summary',
               icon: 'cilFolderOpen',
               parentId: 'ROOT',
