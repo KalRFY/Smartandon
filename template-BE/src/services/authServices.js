@@ -11,9 +11,8 @@ const registerService = async ({ name, noreg, phone, isAdmin }) => {
   if (existingUser.length > 0) {
     throw new Error('User with this Noreg already exists');
   }
-  const last2Digit = phone.slice(-2);
-  const first2Digit = phone.slice(0, 2);
-  const password = `${first2Digit}${last2Digit}`;
+  const first4Digit = phone.slice(0, 4);
+  const password = `${first4Digit}`;
 
   const newId = (await getLastId()) + 1;
   const insertUserQuery = `INSERT INTO qcc_m_users (id, name, password, noreg, instance, is_admin) VALUES (:id, :name, :password, :noreg, :instance, :isAdmin)`;
@@ -28,36 +27,32 @@ const registerService = async ({ name, noreg, phone, isAdmin }) => {
 };
 
 const loginService = async ({ noreg, password }) => {
-    const first2Digit = password.slice(0, 2);
-    const last2Digit = password.slice(-2);
-    const passwordCombination = `${first2Digit}${last2Digit}`;
-    const query = `SELECT id, name, noreg, password FROM qcc_m_users WHERE noreg = :noreg LIMIT 1`;
-    const user = await sequelize.query(query, {
-      replacements: { noreg },
-      type: sequelize.QueryTypes.SELECT,
-    });
-    
-    if (user.length === 0) {
-      throw new Error('Invalid Noreg');
-    }
+  const query = `SELECT id, name, noreg, password FROM qcc_m_users WHERE noreg = :noreg LIMIT 1`;
+  const user = await sequelize.query(query, {
+    replacements: { noreg },
+    type: sequelize.QueryTypes.SELECT,
+  });
 
-    const isPasswordValid = comparePassword(passwordCombination, user[0].password);
-    if (!isPasswordValid) {
-      throw new Error('Invalid password');
-    }
+  if (user.length === 0) {
+    throw new Error('Invalid Noreg');
+  }
+  const isPasswordValid = comparePassword(password, user[0].password);
+  if (!isPasswordValid) {
+    throw new Error('Invalid password');
+  }
 
-    const jwtToken = generateLoginToken({
-        id: user[0].id,
-        noreg: user[0].noreg,
-        name: user[0].name,
-    })
+  const jwtToken = generateLoginToken({
+    id: user[0].id,
+    noreg: user[0].noreg,
+    name: user[0].name,
+  });
 
-    return {
-      name: user[0].name,
-      noreg: user[0].noreg,
-      token: jwtToken,
-    };
-}
+  return {
+    name: user[0].name,
+    noreg: user[0].noreg,
+    token: jwtToken,
+  };
+};
 
 const getLastId = async () => {
   const query = `SELECT MAX(id) AS lastId FROM qcc_m_users`;
@@ -69,5 +64,5 @@ const getLastId = async () => {
 
 module.exports = {
   registerService,
-  loginService
+  loginService,
 };

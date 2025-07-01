@@ -27,9 +27,9 @@ const loginSchema = Joi.object({
     'any.required': 'Noreg is required',
   }),
 
-  password: Joi.string().min(10).required().messages({
+  password: Joi.string().min(4).required().messages({
     'string.empty': 'Password is required',
-    'string.min': 'Password must be at least 10 characters long',
+    'string.min': 'Password must be at least 4 characters long',
     'any.required': 'Password is required',
   }),
 });
