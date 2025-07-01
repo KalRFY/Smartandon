@@ -11,7 +11,7 @@
         <h4 class="mb-0 text-accent">Login</h4>
       </div>
 
-      <form @submit.prevent="onRegister">
+      <form @submit.prevent="onLogin">
         <div class="mb-3">
           <label for="noreg" class="form-label">Noreg</label>
           <div class="input-wrapper">
@@ -89,7 +89,7 @@ const error = ref('')
 const noreg = ref('')
 const success = ref('')
 
-const onRegister = async () => {
+const onLogin = async () => {
   error.value = ''
   success.value = ''
 
@@ -125,6 +125,12 @@ const onRegister = async () => {
     }, 1000)
   } catch (e) {
     error.value = e.message || 'Registration failed. Please try again.'
+    if (e.errors) {
+      console.error('Login validation errors:', e.errors)
+      error.value = e.errors.map((err) => err.message).join(', ')
+    } else {
+      console.error('Login error:', e)
+    }
   } finally {
     isLoading.value = false
   }

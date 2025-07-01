@@ -43,6 +43,7 @@ const loginController = async (req, res, next) => {
     if (error) {
       return res.status(httpStatus.BAD_REQUEST).json({
         errors: error.details.map((detail) => detail.message),
+        message: 'Validation error',
       });
     }
 
