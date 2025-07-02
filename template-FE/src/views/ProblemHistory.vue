@@ -454,9 +454,11 @@ export default {
 
     async onClickInput(problem) {
       try {
+        console.log("1=================================================================");
         this.modalLoading = true;
         // Fetch full problem data from backend API by problem ID
         const response = await axios.get(`/api/smartandon/problemId/${problem.fid}`);
+        console.log("=================================================================");
         const problemData = response.data;
 
         // Helper function to convert date to yyyy-mm-dd format for input type date
@@ -470,9 +472,14 @@ export default {
         }
 
         // Populate submit object with fetched data based on modal labels
+        // Find machine object in machineOptions matching problemData.fmc_name
+        const selectedMachine = this.machineOptions.find(
+          (machine) => machine.label === problemData.fmc_name
+        ) || null;
+
         this.submit = {
-          machineName: problemData.fmc_name || '',
-          line: problemData.fline || '',
+          machineName: problemData.fmc_name || null,
+          line: problemData.fline || null,
           fidProblem: problemData.fid || '',
           fmaker: problemData.fmaker || '',
           problems: problemData.ferror_name || '',
@@ -499,7 +506,7 @@ export default {
           pilihO6: problemData.pilih_o6 || '',
           stepRepair: problemData.step_repair || '',
           partChange: problemData.part_change || '',
-          countermeasureKenkaTerjadi: problemData.countermeasure_kenka_terjadi || '',
+          countermeasureKenapaTerjadi: problemData.countermeasure_kenapa_terjadi || '',
           yokoten: problemData.yokoten || '',
           rootcause5WhyKenkaLama: problemData.rootcause_5_why_kenka_lama || '',
           tambahAnalisisLama: problemData.tambah_analisis_lama || '',
@@ -514,263 +521,185 @@ export default {
           agreeTerms: false,
         };
 
+        this.machineName = problemData.fmc_name || null,
+        this.line = problemData.fline || null,
+        this.fidProblem = problemData.fid || '';
+        this.fmaker = problemData.fmaker || '';
+        this.problems = problemData.ferror_name || '';
+        this.uraianKejadian = problemData.ferror_detail || '';
+        this.uploadImage = problemData.upload_image || '';
+        this.standartImage = problemData.standart_image || '';
+        this.ilustrasiStandart = problemData.ilustrasi_standart || '';
+        this.ilustrasiActual = problemData.ilustrasi_actual || '';
+        this.actualImage = problemData.actual_image || '';
+        this.gapBetweenStandarAndActual = problemData.gap_between_standar_and_actual || "No data for gap between standar and actual";
+        this.pilihFocusThemaMember = problemData.pilih_focus_thema_member || '';
+        this.pilihTaskforce = problemData.pilih_taskforce || '';
+        this.operator = problemData.foperator || '';
+        this.avCategory = problemData.fav_categoty || '';
+        this.shift = problemData.fshift || '';
+
+        if(this.shift == "r"){
+          this.shiftName = "Red";
+        } else if (this.shift == "w"){
+          this.shiftName = "White";
+        } else {
+          this.shiftName = "Not yet inputted"
+        }
+
+        this.startDate = formatDateToISO(problemData.fstart_time || '');
+        this.finishDate = formatDateToISO(problemData.fend_time || '');
+        console.log("YESS");
+        console.log("Start Date: " + this.startDate);
+        console.log("Finish Date: " + this.finishDate);
+
+        console.log("Start Date1: " + problemData.fstart_time);
+        console.log("Finish Date1: " + problemData.fend_time);
+
+        this.startDateProblem = formatDateToISO(problemData.fstart_time || '');
+        this.finishDateProblem = formatDateToISO(problemData.fend_time || '');
+
+        // this.startDate = this.formatDate(problemData.fstart_time || '');
+        // this.finishDate = this.formatDate(problemData.fend_time || '');
+        
+        console.log("YESSS");
+        console.log("Start Date: " + this.startDateProblem);
+        console.log("Finish Date: " + this.finishDateProblem);
+
+        console.log("Start Date2: " + problemData.fstart_time);
+        console.log("Finish Date2: " + problemData.fend_time);
+
+        this.durationMin = problemData.fdur || '';
+        this.problemCategory = problemData.problemCategory || null;
+
+        if (this.problemCategory == 1) {
+          this.problemCategoryName = "Small";
+        } else if (this.problemCategory == 2) {
+          this.problemCategoryName = "Chokotei";
+        } else if (this.problemCategory == 3) {
+          this.problemCategoryName = "LTB";
+        } else {
+          this.problemCategoryName = "";
+        }
+
+        this.itemTemporaryAction = problemData.temporaryAction || "No item temporary action";
+        this.rootcauses5Why = problemData.froot_cause || "No root cause 5 why";
+        this.tambahAnalysisTerjadi = problemData.tambah_analysis_terjadi || "No analysis terjadi";
+        this.whyImage = problemData.why_image || '';
+
+        this.pilihO6 = problemData.oCategory || '';
+        if (this.pilihO6 == 1) {
+          this.oCategoryName = "O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))";
+        } else if (this.pilihO6 == 2) {
+          this.oCategoryName = "O2: Henkaten Issue (No Enough Trial, No Confirm (others team))";
+        } else if (this.pilihO6 == 3) {
+          this.oCategoryName = "O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)";
+        } else if (this.pilihO6 == 4) {
+          this.oCategoryName = "O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)";
+        } else if (this.pilihO6 == 5) {
+          this.oCategoryName = "O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible Area, Unpredictable (water leak / crush))";
+        } else if (this.pilihO6 == 6) {
+          this.oCategoryName = "o6: Lifetime Issue (Out of Standard Running, Over Capacity)";
+        } else {
+          this.oCategoryName = "";
+        }
+
+        this.stepRepair = problemData.fstep_repair || '';
+        this.partChange = problemData.fpart_change || '';
+        this.countermeasureKenapaTerjadi = problemData.countermeasure_kenapa_terjadi || '';
+        this.yokoten = problemData.fyokoten || '';
+        this.rootcause5WhyKenapaLama = problemData.rootcause_5_why_kenapa_lama || '';
+        this.tambahAnalisisLama = problemData.tambah_analisis_lama || '';
+
+        this.pilihQ6 = problemData.qCategory || '';
+        if (this.pilihQ6 == 1) {
+          this.qCategoryName = "Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))";
+        } else if (this.pilihQ6 == 2) {
+          this.qCategoryName = "Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)";
+        } else if (this.pilihQ6 == 3) {
+          this.qCategoryName = "Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)";
+        } else if (this.pilihQ6 == 4) {
+          this.qCategoryName = "Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)";
+        } else if (this.pilihQ6 == 5) {
+          this.qCategoryName = "Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))";
+        } else if (this.pilihQ6 == 6) {
+          this.qCategoryName = "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)";
+        } else {
+          this.qCategoryName = " ";
+        }
+
+        console.log("YES");
+        console.log("================================================" + this.qCategoryName + "====================================================");
+
+        this.whyLamaImage = problemData.why_lama_image || '';
+        this.countermeasureKenapaLama = problemData.countermeasure_kenapa_lama || '';
+        this.attachmentMeeting = problemData.attachment_meeting || '';
+        this.comments5Why = problemData.fiveWhyLhFeedback || problemData.fiveWhyShFeedback || '';
+        this.commentsCountermeasure = problemData.comments_countermeasure || '';
+        this.lastReportFile = problemData.last_report_file || '';
+        this.uploadFile = problemData.upload_file || '';
+        this.agreeTerms = false,
+        this.fidProblem = problem.fid; // store problem id if needed
+        this.maker = problem.fmaker;
         this.visibleLiveDemo = true;
       } catch (error) {
         alert('Failed to load problem data: ' + error.message);
-      } finally {
         this.modalLoading = false;
+        console.error(error);
       }
     },
 
+    onClickLtbReport(problem) {
+      // Placeholder for LTB Report button click handler
+      // For example, navigate to LTB report page or show modal with report details
+      alert(`LTB Report clicked for problem ID: ${problem.fid}`);
+    },
 
-    // async onClickInput(problem) {
-    //   try {
-    //     console.log("1=================================================================");
-    //     this.modalLoading = true;
-    //     // Fetch full problem data from backend API by problem ID
-    //     const response = await axios.get(`/api/smartandon/problemId/${problem.fid}`);
-    //     console.log("=================================================================");
-    //     const problemData = response.data;
+    formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
 
-    //     // Helper function to convert date to yyyy-mm-dd format for input type date
-    //     function formatDateToISO(dateStr) {
-    //       if (!dateStr) return '';
-    //       const date = new Date(dateStr);
-    //       const year = date.getFullYear();
-    //       const month = String(date.getMonth() + 1).padStart(2, '0');
-    //       const day = String(date.getDate()).padStart(2, '0');
-    //       return `${year}-${month}-${day}`;
-    //     }
-
-    //     // Populate submit object with fetched data based on modal labels
-    //     // Find machine object in machineOptions matching problemData.fmc_name
-    //     const selectedMachine = this.machineOptions.find(
-    //       (machine) => machine.label === problemData.fmc_name
-    //     ) || null;
-
-    //     this.submit = {
-    //       machineName: problemData.fmc_name || null,
-    //       line: problemData.fline || null,
-    //       fidProblem: problemData.fid || '',
-    //       fmaker: problemData.fmaker || '',
-    //       problems: problemData.ferror_name || '',
-    //       uraianKejadian: problemData.uraian_kejadian || '',
-    //       uploadImage: problemData.upload_image || '',
-    //       standartImage: problemData.standart_image || '',
-    //       ilustrasiStandart: problemData.ilustrasi_standart || '',
-    //       ilustrasiActual: problemData.ilustrasi_actual || '',
-    //       actualImage: problemData.actual_image || '',
-    //       gapBetweenStandarAndActual: problemData.gap_between_standar_and_actual || '',
-    //       pilihFocusThemaMember: problemData.pilih_focus_thema_member || '',
-    //       pilihTaskforce: problemData.pilih_taskforce || '',
-    //       operator: problemData.foperator ? problemData.foperator.split(',') : [],
-    //       avCategory: problemData.fav_categoty || '',
-    //       shift: problemData.shift || '',
-    //       startDate: formatDateToISO(problemData.start_date) || '',
-    //       finishDate: formatDateToISO(problemData.finish_date) || '',
-    //       durationMin: problemData.duration_min || '',
-    //       problemCategory: problemData.problemCategory || null,
-    //       itemTemporaryAction: problemData.item_temporary_action || '',
-    //       rootcauses5Why: problemData.rootcauses_5_why || '',
-    //       tambahAnalysisTerjadi: problemData.tambah_analysis_terjadi || '',
-    //       whyImage: problemData.why_image || '',
-    //       pilihO6: problemData.pilih_o6 || '',
-    //       stepRepair: problemData.step_repair || '',
-    //       partChange: problemData.part_change || '',
-    //       countermeasureKenapaTerjadi: problemData.countermeasure_kenapa_terjadi || '',
-    //       yokoten: problemData.yokoten || '',
-    //       rootcause5WhyKenkaLama: problemData.rootcause_5_why_kenka_lama || '',
-    //       tambahAnalisisLama: problemData.tambah_analisis_lama || '',
-    //       pilihQ6: problemData.pilih_q6 || '',
-    //       whyLamaImage: problemData.why_lama_image || '',
-    //       countermeasureKenkaLama: problemData.countermeasure_kenka_lama || '',
-    //       attachmentMeeting: problemData.attachment_meeting || '',
-    //       comments5Why: problemData.comments_5_why || '',
-    //       commentsCountermeasure: problemData.comments_countermeasure || '',
-    //       lastReportFile: problemData.last_report_file || '',
-    //       uploadFile: problemData.upload_file || '',
-    //       agreeTerms: false,
-    //     };
-
-    //     this.machineName = problemData.fmc_name || null,
-    //     this.line = problemData.fline || null,
-    //     this.fidProblem = problemData.fid || '';
-    //     this.fmaker = problemData.fmaker || '';
-    //     this.problems = problemData.ferror_name || '';
-    //     this.uraianKejadian = problemData.ferror_detail || '';
-    //     this.uploadImage = problemData.upload_image || '';
-    //     this.standartImage = problemData.standart_image || '';
-    //     this.ilustrasiStandart = problemData.ilustrasi_standart || '';
-    //     this.ilustrasiActual = problemData.ilustrasi_actual || '';
-    //     this.actualImage = problemData.actual_image || '';
-    //     this.gapBetweenStandarAndActual = problemData.gap_between_standar_and_actual || "No data for gap between standar and actual";
-    //     this.pilihFocusThemaMember = problemData.pilih_focus_thema_member || '';
-    //     this.pilihTaskforce = problemData.pilih_taskforce || '';
-    //     this.operator = problemData.foperator || '';
-    //     this.avCategory = problemData.fav_categoty || '';
-    //     this.shift = problemData.fshift || '';
-
-    //     if(this.shift == "r"){
-    //       this.shiftName = "Red";
-    //     } else if (this.shift == "w"){
-    //       this.shiftName = "White";
-    //     } else {
-    //       this.shiftName = "Not yet inputted"
-    //     }
-
-    //     this.startDate = formatDateToISO(problemData.fstart_time || '');
-    //     this.finishDate = formatDateToISO(problemData.fend_time || '');
-    //     console.log("YESS");
-    //     console.log("Start Date: " + this.startDate);
-    //     console.log("Finish Date: " + this.finishDate);
-
-    //     console.log("Start Date1: " + problemData.fstart_time);
-    //     console.log("Finish Date1: " + problemData.fend_time);
-
-    //     this.startDateProblem = formatDateToISO(problemData.fstart_time || '');
-    //     this.finishDateProblem = formatDateToISO(problemData.fend_time || '');
-
-    //     // this.startDate = this.formatDate(problemData.fstart_time || '');
-    //     // this.finishDate = this.formatDate(problemData.fend_time || '');
-        
-    //     console.log("YESSS");
-    //     console.log("Start Date: " + this.startDateProblem);
-    //     console.log("Finish Date: " + this.finishDateProblem);
-
-    //     console.log("Start Date2: " + problemData.fstart_time);
-    //     console.log("Finish Date2: " + problemData.fend_time);
-
-    //     this.durationMin = problemData.fdur || '';
-    //     this.problemCategory = problemData.problemCategory || null;
-
-    //     if (this.problemCategory == 1) {
-    //       this.problemCategoryName = "Small";
-    //     } else if (this.problemCategory == 2) {
-    //       this.problemCategoryName = "Chokotei";
-    //     } else if (this.problemCategory == 3) {
-    //       this.problemCategoryName = "LTB";
-    //     } else {
-    //       this.problemCategoryName = "";
-    //     }
-
-    //     this.itemTemporaryAction = problemData.temporaryAction || "No item temporary action";
-    //     this.rootcauses5Why = problemData.froot_cause || "No root cause 5 why";
-    //     this.tambahAnalysisTerjadi = problemData.tambah_analysis_terjadi || "No analysis terjadi";
-    //     this.whyImage = problemData.why_image || '';
-
-    //     this.pilihO6 = problemData.oCategory || '';
-    //     if (this.pilihO6 == 1) {
-    //       this.oCategoryName = "O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))";
-    //     } else if (this.pilihO6 == 2) {
-    //       this.oCategoryName = "O2: Henkaten Issue (No Enough Trial, No Confirm (others team))";
-    //     } else if (this.pilihO6 == 3) {
-    //       this.oCategoryName = "O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)";
-    //     } else if (this.pilihO6 == 4) {
-    //       this.oCategoryName = "O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)";
-    //     } else if (this.pilihO6 == 5) {
-    //       this.oCategoryName = "O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible Area, Unpredictable (water leak / crush))";
-    //     } else if (this.pilihO6 == 6) {
-    //       this.oCategoryName = "o6: Lifetime Issue (Out of Standard Running, Over Capacity)";
-    //     } else {
-    //       this.oCategoryName = "";
-    //     }
-
-    //     this.stepRepair = problemData.fstep_repair || '';
-    //     this.partChange = problemData.fpart_change || '';
-    //     this.countermeasureKenapaTerjadi = problemData.countermeasure_kenapa_terjadi || '';
-    //     this.yokoten = problemData.fyokoten || '';
-    //     this.rootcause5WhyKenapaLama = problemData.rootcause_5_why_kenapa_lama || '';
-    //     this.tambahAnalisisLama = problemData.tambah_analisis_lama || '';
-
-    //     this.pilihQ6 = problemData.qCategory || '';
-    //     if (this.pilihQ6 == 1) {
-    //       this.qCategoryName = "Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))";
-    //     } else if (this.pilihQ6 == 2) {
-    //       this.qCategoryName = "Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)";
-    //     } else if (this.pilihQ6 == 3) {
-    //       this.qCategoryName = "Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)";
-    //     } else if (this.pilihQ6 == 4) {
-    //       this.qCategoryName = "Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)";
-    //     } else if (this.pilihQ6 == 5) {
-    //       this.qCategoryName = "Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))";
-    //     } else if (this.pilihQ6 == 6) {
-    //       this.qCategoryName = "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)";
-    //     } else {
-    //       this.qCategoryName = " ";
-    //     }
-
-    //     console.log("YES");
-    //     console.log("================================================" + this.qCategoryName + "====================================================");
-
-    //     this.whyLamaImage = problemData.why_lama_image || '';
-    //     this.countermeasureKenapaLama = problemData.countermeasure_kenapa_lama || '';
-    //     this.attachmentMeeting = problemData.attachment_meeting || '';
-    //     this.comments5Why = problemData.fiveWhyLhFeedback || problemData.fiveWhyShFeedback || '';
-    //     this.commentsCountermeasure = problemData.comments_countermeasure || '';
-    //     this.lastReportFile = problemData.last_report_file || '';
-    //     this.uploadFile = problemData.upload_file || '';
-    //     this.agreeTerms = false,
-    //     this.fidProblem = problem.fid; // store problem id if needed
-    //     this.maker = problem.fmaker;
-    //     this.visibleLiveDemo = true;
-    //   } catch (error) {
-    //     alert('Failed to load problem data: ' + error.message);
-    //     this.modalLoading = false;
-    //     console.error(error);
-    //   }
-    // },
-
-    // onClickLtbReport(problem) {
-    //   // Placeholder for LTB Report button click handler
-    //   // For example, navigate to LTB report page or show modal with report details
-    //   alert(`LTB Report clicked for problem ID: ${problem.fid}`);
-    // },
-
-    // formatDate(dateString) {
-    //   if (!dateString) return '';
-    //   const date = new Date(dateString);
-    //   const year = date.getFullYear();
-    //   const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    //   const day = date.getDate().toString().padStart(2, '0');
-    //   return `${year}-${month}-${day}`;
-    // },
-
-    // async saveSubmit(submitData) {
-    //   if(!submitData.machineName){
-    //     alert("Please input machine name");
-    //   } else if(!submitData.line){
-    //     alert("Please input line");
-    //   } else if(!submitData.problems){
-    //     alert("Please input problems");
-    //   } else if(!submitData.agreeTerms){
-    //     alert("You must agree to terms and conditions before submitting");
-    //   } else {
-    //     try {
-    //       const payload = {
-    //         machineName: submitData.machineName,
-    //         lineName: submitData.line,
-    //         problemDescription: submitData.problems,
-    //         operator: submitData.operator.join(','), // join array to string
-    //         // Include problem ID for update
-    //         fid: submitData.fidProblem,
-    //       };
-    //       // Use PUT or PATCH for update endpoint if available
-    //       const response = await api.put('/smartandon/problem/update', payload);
-    //       if (response.data.status === 'success') {
-    //         alert('Input updated successfully');
-    //         this.visibleLiveDemo = false;
-    //         this.submit = {};
-    //         // Refresh problem list
-    //         this.fetchProblems(this.currentPage);
-    //       } else {
-    //         alert('Failed to update input');
-    //       }
-    //     } catch (error) {
-    //       console.log(error.message);
-    //       alert('Error updating input: ' + error.message);
-    //     }
-    //   }
-    // },
+    async saveSubmit(submitData) {
+      if(!submitData.machineName){
+        alert("Please input machine name");
+      } else if(!submitData.line){
+        alert("Please input line");
+      } else if(!submitData.problems){
+        alert("Please input problems");
+      } else if(!submitData.agreeTerms){
+        alert("You must agree to terms and conditions before submitting");
+      } else {
+        try {
+          const payload = {
+            machineName: submitData.machineName,
+            lineName: submitData.line,
+            problemDescription: submitData.problems,
+            operator: submitData.operator.join(','), // join array to string
+            // Include problem ID for update
+            fid: submitData.fidProblem,
+          };
+          // Use PUT or PATCH for update endpoint if available
+          const response = await api.put('/smartandon/problem/update', payload);
+          if (response.data.status === 'success') {
+            alert('Input updated successfully');
+            this.visibleLiveDemo = false;
+            this.submit = {};
+            // Refresh problem list
+            this.fetchProblems(this.currentPage);
+          } else {
+            alert('Failed to update input');
+          }
+        } catch (error) {
+          console.log(error.message);
+          alert('Error updating input: ' + error.message);
+        }
+      }
+    },
 
     goToPage(page) {
       if (page >= 1 && page <= this.totalPages) {
@@ -850,6 +779,11 @@ export default {
 }
 
 </script>
+
+
+
+
+
 
 <style scoped>
 .dashboard-card {
