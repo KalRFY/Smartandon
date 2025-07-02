@@ -72,6 +72,7 @@ const defaultRoutes = [
     path: '/summary',
     route: summaryRoutes,
   },
+  {
     path: '/auth',
     route: authRoutes,
   },
