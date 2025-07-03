@@ -1,486 +1,14 @@
 <template>
-  <div>
-    <CModal 
+  <EditProblemModal
+    v-if="visible"
+    :visible="visibleLiveDemo"
+    :submitData="submit"
+    :machineOptions="machineOptions"
+    :lineOptions="lineOptions"
+    @close="visibleLiveDemo = false"
+    @submit="saveSubmit"
+  />
 
-      :visible="visibleLiveDemo"
-      @close="() => { visibleLiveDemo = false }"
-      fullscreen
-      aria-labelledby="LiveDemoExampleLabel"
-    >
-      <CModalHeader>
-        <CModalTitle id="LiveDemoExampleLabel">Edit Problem</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        <CForm 
-          class="row g-3 needs-validation" 
-          novalidate 
-          :validated="validatedCustom01" 
-          @submit="handleSubmitCustom01"
-        >
-          <!-- <CCol md="8">
-            <CFormInput
-              feedbackValid="Looks good!"
-              id="machineName"
-              label="Machine Name"
-              required
-              v-model="submit.machineName"
-            />
-          </CCol> -->
-          <CCol md="6">
-            <label for="machineSelect" class="form-label">Machine Name</label>
-            <Treeselect
-              id="machineSelect"
-              v-model="submit.machineName"
-              :options="machineOptions"
-              :searchable="true"
-              :clearable="true"
-              :children="false"
-              placeholder="Select or input machine"
-              @input="onMachineInput"
-            :value-consists-of="['id']"
-            :value-key="'id'"
-            :label-key="'label'"
-            />
-          </CCol>
-          <CCol md="6">
-            <label for="lineSelect" class="form-label">Line</label>
-            <Treeselect
-              id="lineSelect"
-              v-model="submit.line"
-              :multiple="false"
-              :flat="true"
-              :options="lineOptions"
-              :searchable="true"
-              :clearable="true"
-              placeholder="Select or input line"
-              @input="onMachineInput"
-              :value-consists-of="['id']"
-              :value-key="'id'"
-              :label-key="'label'"
-            />
-          </CCol>
-          <!-- <CCol md="4">
-              <CFormSelect
-                aria-describedby="validationCustom04Feedback"
-                feedbackInvalid="Please select the line."
-                id="lineSelect"
-                label="Line"
-                required
-                v-model="submit.line"
-              >
-                <option selected disabled value="">Choose Line...</option>
-                <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
-              </CFormSelect>
-          </CCol> -->
-          <CCol md="6">
-            <CFormInput 
-              feedbackInvalid="Operation No."
-              id="Problems"
-              label="Operation No."
-              required
-              v-model="fidProblem"
-            />
-          </CCol>
-          <CCol md="6">
-            <CFormInput 
-              feedbackInvalid="Maker"
-              id="Problems"
-              label="Maker"
-              required
-              v-model="maker"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Problems"
-              required
-              v-model="problems"
-            />
-          </CCol>
-          <CCol md="8">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Uraian Kejadian"
-              required
-              v-model="uraianKejadian"
-            />
-          </CCol>
-          <CCol md="4">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Upload Image"
-              required
-              v-model="uploadImage"
-            />
-          </CCol>
-          <CCol md="8">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Ilustrasi Standart"
-              required
-              v-model="ilustrasiStandart"
-            />
-          </CCol>
-          <CCol md="4">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Standart Image"
-              required
-              v-model="standartImage"
-            />
-          </CCol>
-          <CCol md="8">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Ilustrasi Actual"
-              required
-              v-model="ilustrasiActual"
-            />
-          </CCol>
-          <CCol md="4">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Actual Image"
-              required
-              v-model="actualImage"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Gap Between Standar and Actual"
-              required
-              v-model="gapBetweenStandarAndActual"
-            />
-          </CCol>
-          <CCol md="8">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Pilih Focus Thema Member"
-              required
-              v-model="pilihFocusThemaMember"
-            />
-          </CCol>
-          <CCol md="4">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Pilih Taskforce"
-              required
-              v-model="pilihTaskforce"
-            />
-          </CCol>
-          <CCol md="12">
-            <label for="operatorSelect" class="form-label">Operator</label>
-            <Treeselect
-              id="operatorSelect"
-              v-model="submit.operator"
-              :multiple="true"
-              :flat="true"
-              :options="memberOption"
-              :searchable="true"
-              :clearable="true"
-              placeholder="Select or input member"
-              @input="onMachineInput"
-              :value-consists-of="['id']"
-              :value-key="'id'"
-              :label-key="'label'"
-            />
-          </CCol>
-          <CCol md="6">
-            <CFormSelect
-                aria-describedby="avCategory"
-                feedbackInvalid="Please select the AV Category."
-                id="avCategorySelect"
-                label="AV Category"
-                required
-                v-model="avCategory"
-              >
-                <option :value="avCategory" selected>{{ avCategory }}</option>
-                <option disabled value="">Choose AV Category...</option>
-                <option value="1">MESIN</option>
-                <option value="2">DIES</option>
-                <option value="3">TOOL</option>
-                <option value="4">COOLANT</option>
-            </CFormSelect>
-          </CCol>
-          <CCol md="6">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Shift"
-              required
-              v-model="shift"
-            />
-          </CCol>
-          <CCol md="6">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Start Date"
-              required
-              v-model="startDate"
-            />
-          </CCol>
-          <CCol md="6">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Finish Date"
-              required
-              v-model="finishDate"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Duration (min)"
-              required
-              v-model="durationMin"
-            />
-          </CCol>
-
-          <CCol md="12">
-            <CFormSelect
-                aria-describedby="problemCategory"
-                feedbackInvalid="Please select the problem category."
-                id="problemCategorySelect"
-                label="Problem Category:"
-                required
-                v-model="problemCategory"
-              >
-                <option :value="problemCategory" selected>{{ problemCategoryName }}</option>
-                <option disabled value="">Choose problem Category...</option>
-                <option :value="1">Small</option>
-                <option :value="2">Chokotei</option>
-                <option :value="3">LTB</option>
-            </CFormSelect>
-          </CCol>
-
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Item Temporary Action"
-              required
-              v-model="itemTemporaryAction"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Rootcauses 5 Why (Kenapa Terjadi)"
-              required
-              v-model="rootcauses5Why"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Tambah Analysis TERJADI"
-              required
-              v-model="tambahAnalysisTerjadi"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="5 Why (Kenapa Terjadi) Image"
-              required
-              v-model="whyImage"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormSelect
-                aria-describedby="O6 Category"
-                feedbackInvalid="Please select the O6 Category."
-                id="o6CategorySelect"
-                label="O6 Category:"
-                required
-                v-model="oCategory"
-              >
-                <option :value="oCategory" selected>{{ oCategoryName }}</option>
-                <option disabled value="">Choose problem 06 Category...</option>
-                <option :value="1">O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))</option>
-                <option :value="2">O2: Henkaten Issue (No Enough Trial, No Confirm (others team))</option>
-                <option :value="3">O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)</option>
-                <option :value="4">O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)</option>
-                <option :value="5">O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible Area, Unpredictable (water leak / crush))</option>
-                <option :value="6">O6: Lifetime Issue (Out of Standard Running, Over Capacity)</option>
-            </CFormSelect>
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Step Repair"
-              required
-              v-model="stepRepair"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Part Change"
-              required
-              v-model="partChange"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Countermeasure (kenapa terjadi)"
-              required
-              v-model="countermeasureKenapaTerjadi"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Yokoten"
-              required
-              v-model="yokoten"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Rootcause 5 Why (kenapa lama)"
-              required
-              v-model="rootcause5WhyKenapaLama"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Tambah Analisis LAMA"
-              required
-              v-model="tambahAnalisisLama"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormSelect
-                aria-describedby="Q6 Category"
-                feedbackInvalid="Please select the Q6 Category."
-                id="q6CategorySelect"
-                label="Q6 Category:"
-                required
-                v-model="qCategory"
-              >
-                <option :value="qCategory" selected>{{ qCategoryName }}</option>
-                <option disabled value="">Choose problem Q6 Category...</option>
-                <option :value="1">Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))</option>
-                <option :value="2">Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)</option>
-                <option :value="3">Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)</option>
-                <option :value="4">Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)</option>
-                <option :value="5">Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))</option>
-                <option :value="6">Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)</option>
-            </CFormSelect>
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="5 Why (Kenapa Lama) Image"
-              required
-              v-model="whyLamaImage"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Countermeasure (kenapa Lama)"
-              required
-              v-model="countermeasureKenapaLama"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Attachment Meeting"
-              required
-              v-model="attachmentMeeting"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Comments 5 Why"
-              required
-              v-model="comments5Why"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Comments Countermeasure"
-              required
-              v-model="commentsCountermeasure"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Last Report File"
-              required
-              v-model="lastReportFile"
-            />
-          </CCol>
-          <CCol md="12">
-            <CFormInput 
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Upload File"
-              required
-              v-model="uploadFile"
-            />
-          </CCol>
-          <CCol xs="12">
-            <CFormCheck
-              feedbackInvalid="You must agree before submitting."
-              id="invalidCheck"
-              label="Agree to terms and conditions"
-              required
-              type="checkbox"
-              v-model="agreeTerms"
-            />
-          </CCol>
-        </CForm>
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="secondary" @click="() => { visibleLiveDemo = false }">
-          Close
-        </CButton>
-  
-        <CButton color="primary" @click="saveSubmit">Submit</CButton>
-      </CModalFooter>
-    </CModal>
-  </div>
-  
   <CRow class="mb-3">
     <CCol>
 
@@ -623,6 +151,7 @@
                     <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
                     <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Line</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     <CTableHeaderCell scope="col">LTB Reports</CTableHeaderCell>
@@ -635,6 +164,7 @@
                     <CTableDataCell>{{ problem.fmc_name || '' }}</CTableDataCell>
                     <CTableDataCell>{{ problem.ferror_name || '' }}</CTableDataCell>
                     <CTableDataCell>{{ problem.foperator || '' }}</CTableDataCell>
+                    <CTableDataCell>{{ problem.fline }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fdur || '' }}</CTableDataCell>
                     <CTableDataCell>
                       <CButton class="mb-3" shape="rounder-pill" color="success" style="font-size: small; font-weight: bold; color: white;" @click="onClickInput(problem)">
@@ -705,217 +235,6 @@
               </CPagination>
             </CCol>
           </CRow>
-
-          <!-- <CRow>
-            <CCol>
-              <CTable>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">LTB Reports</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  <CTableRow>
-                    <CTableDataCell>1</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>2</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>3</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>4</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>5</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>6</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>7</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>8</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>9</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                </CTableBody>
-              </CTable>
-            </CCol>
-          </CRow> -->
-          <!-- <CRow>
-            <CCol>
-              <CTable>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">LTB Reports</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  <CTableRow>
-                    <CTableDataCell>1</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>2</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>3</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>4</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>5</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>6</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>7</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow>
-                    <CTableDataCell>8</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                    <CTableDataCell>Cell</CTableDataCell>
-                  </CTableRow>
-                </CTableBody>
-              </CTable>
-            </CCol>
-          </CRow> -->
         </CCardBody>
       </CCard>
     </CCol>
@@ -946,6 +265,7 @@ import { useRouter } from 'vue-router';
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 import PaginationControls from '../components/PaginationControls.vue'
+import EditProblemModal from '../components/EditProblemModal.vue'
 
 const visibleStaticBackdropDemo = ref(false);
 
@@ -987,10 +307,11 @@ export default {
       fidProblem: "",
 
       visibleLiveDemo: false,
+
       modalLoading: false,
       submit: {
-        machineName: null,
-        line: null,
+        machineName: '',
+        line: '',
         operationNo: '',
         maker: '',
         fmaker: '',
@@ -1010,7 +331,7 @@ export default {
         startDate: '',
         finishDate: '',
         durationMin: '',
-        problemCategory: null,
+        problemCategory: '',
         itemTemporaryAction: '',
         rootcauses5Why: '',
         tambahAnalysisTerjadi: '',
@@ -1033,92 +354,6 @@ export default {
         agreeTerms: false,
       },
 
-      series: [{
-        name: 'Income',
-        type: 'column',
-        data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-      }, {
-        name: 'Cashflow',
-        type: 'column',
-        data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-      }, {
-        name: 'Revenue',
-        type: 'line',
-        data: [20, 29, 37, 36, 44, 45, 50, 58]
-      }],
-      chartOptions: {
-        chart: {
-          height: 350,
-          type: 'line',
-          stacked: false
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          width: [1, 1, 4]
-        },
-        title: {
-          text: 'XYZ - Stock Analysis (2009 - 2016)',
-          align: 'left',
-          offsetX: 110
-        },
-        xaxis: {
-          categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-        },
-        yaxis: [
-          {
-            seriesName: 'Income',
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#008FFB'
-            },
-            labels: {
-              style: {
-                colors: '#008FFB',
-              }
-            },
-            title: {
-              text: "Income (thousand crores)",
-              style: {
-                color: '#008FFB',
-              }
-            },
-            tooltip: {
-              enabled: true
-            }
-          },
-          {
-            seriesName: 'Cashflow',
-            opposite: true,
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#00E396'
-            },
-            labels: {
-              style: {
-                colors: '#00E396',
-              }
-            },
-            title: {
-              text: "Operating Cashflow (thousand crores)",
-              style: {
-                color: '#00E396',
-              }
-            },
-          },
-          {
-            seriesName: 'Revenue',
-            opposite: true,
-          }
-        ],
-      },
     };
   },
 
@@ -1144,96 +379,19 @@ export default {
     CTableDataCell,
     Treeselect,
     CPagination,
-    CPaginationItem
+    CPaginationItem,
+    EditProblemModal
   },
 
   setup() {
 
     const router = useRouter();
-    
-    const progressGroupExample1 = [
-      { title: 'Monday', value1: 34, value2: 78 },
-      { title: 'Tuesday', value1: 56, value2: 94 },
-      { title: 'Wednesday', value1: 12, value2: 67 },
-      { title: 'Thursday', value1: 43, value2: 91 },
-      { title: 'Friday', value1: 22, value2: 73 },
-      { title: 'Saturday', value1: 53, value2: 82 },
-      { title: 'Sunday', value1: 9, value2: 69 },
-    ]
-    const progressGroupExample2 = [
-      { title: 'Male', icon: 'cil-user', value: 53 },
-      { title: 'Female', icon: 'cil-user-female', value: 43 },
-    ]
-    const progressGroupExample3 = [
-      {
-        title: 'Organic Search',
-        icon: 'cib-google',
-        percent: 56,
-        value: '191,235',
-      },
-      { title: 'Facebook', icon: 'cib-facebook', percent: 15, value: '51,223' },
-      { title: 'Twitter', icon: 'cib-twitter', percent: 11, value: '37,564' },
-      { title: 'LinkedIn', icon: 'cib-linkedin', percent: 8, value: '27,319' },
-    ]
-    const tableExample = [
-      
-    ]
-
-    const dashboardCards = [
-      {
-        title: 'Machine Stop Input',
-        icon: 'AlertTriangle',
-        description: 'Record and monitor machine stop events',
-        color: 'danger',
-        route: '/machine-stop'
-      },
-      {
-        title: 'MTBF',
-        icon: 'Clock',
-        description: 'Mean Time Between Failures metrics',
-        color: 'info',
-        route: '/mtbf'
-      },
-      {
-        title: 'MTTR',
-        icon: 'Timer',
-        description: 'Mean Time To Repair analytics',
-        color: 'warning',
-        route: '/mttr'
-      },
-      {
-        title: 'Problem History',
-        icon: 'History',
-        description: 'Historical issues and resolutions',
-        color: 'primary',
-        route: '/app/ProblemHistory'
-      },
-      {
-        title: 'Realtime Pareto',
-        icon: 'BarChart2',
-        description: 'Live Pareto analysis of issues',
-        color: 'success',
-        route: '/app/RealtimeParetto'
-      },
-      {
-        title: 'LTB Report',
-        icon: 'FileText',
-        description: 'Last Time Buy reporting and analysis',
-        color: 'secondary',
-        route: '/ltb-report'
-      }
-    ]
 
     const navigateTo = (route) => {
       router.push(route);
     }
 
     return {
-      tableExample,
-      progressGroupExample1,
-      progressGroupExample2,
-      progressGroupExample3,
-      dashboardCards,
       navigateTo
     }
 
@@ -1291,18 +449,27 @@ export default {
       this.selectedProblem = '';
       // this.$refs.machineSelect.clear();
       // this.$refs.lineSelect.clear();
-      this.fetchProblems(1);
+      // this.fetchProblems(1);
     },
 
     async onClickInput(problem) {
       try {
         console.log("1=================================================================");
         this.modalLoading = true;
-        this.visibleLiveDemo = true;
         // Fetch full problem data from backend API by problem ID
         const response = await axios.get(`/api/smartandon/problemId/${problem.fid}`);
         console.log("=================================================================");
         const problemData = response.data;
+
+        // Helper function to convert date to yyyy-mm-dd format for input type date
+        function formatDateToISO(dateStr) {
+          if (!dateStr) return '';
+          const date = new Date(dateStr);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        }
 
         // Populate submit object with fetched data based on modal labels
         // Find machine object in machineOptions matching problemData.fmc_name
@@ -1328,8 +495,8 @@ export default {
           operator: problemData.foperator ? problemData.foperator.split(',') : [],
           avCategory: problemData.fav_categoty || '',
           shift: problemData.shift || '',
-          startDate: problemData.start_date || '',
-          finishDate: problemData.finish_date || '',
+          startDate: formatDateToISO(problemData.start_date) || '',
+          finishDate: formatDateToISO(problemData.finish_date) || '',
           durationMin: problemData.duration_min || '',
           problemCategory: problemData.problemCategory || null,
           itemTemporaryAction: problemData.item_temporary_action || '',
@@ -1341,11 +508,11 @@ export default {
           partChange: problemData.part_change || '',
           countermeasureKenapaTerjadi: problemData.countermeasure_kenapa_terjadi || '',
           yokoten: problemData.yokoten || '',
-          rootcause5WhyKenapaLama: problemData.rootcause_5_why_kenapa_lama || '',
+          rootcause5WhyKenkaLama: problemData.rootcause_5_why_kenka_lama || '',
           tambahAnalisisLama: problemData.tambah_analisis_lama || '',
           pilihQ6: problemData.pilih_q6 || '',
           whyLamaImage: problemData.why_lama_image || '',
-          countermeasureKenapaLama: problemData.countermeasure_kenapa_lama || '',
+          countermeasureKenkaLama: problemData.countermeasure_kenka_lama || '',
           attachmentMeeting: problemData.attachment_meeting || '',
           comments5Why: problemData.comments_5_why || '',
           commentsCountermeasure: problemData.comments_countermeasure || '',
@@ -1371,8 +538,37 @@ export default {
         this.operator = problemData.foperator || '';
         this.avCategory = problemData.fav_categoty || '';
         this.shift = problemData.fshift || '';
-        this.startDate = problemData.fstart_time || '';
-        this.finishDate = problemData.fend_time || '';
+
+        if(this.shift == "r"){
+          this.shiftName = "Red";
+        } else if (this.shift == "w"){
+          this.shiftName = "White";
+        } else {
+          this.shiftName = "Not yet inputted"
+        }
+
+        this.startDate = formatDateToISO(problemData.fstart_time || '');
+        this.finishDate = formatDateToISO(problemData.fend_time || '');
+        console.log("YESS");
+        console.log("Start Date: " + this.startDate);
+        console.log("Finish Date: " + this.finishDate);
+
+        console.log("Start Date1: " + problemData.fstart_time);
+        console.log("Finish Date1: " + problemData.fend_time);
+
+        this.startDateProblem = formatDateToISO(problemData.fstart_time || '');
+        this.finishDateProblem = formatDateToISO(problemData.fend_time || '');
+
+        // this.startDate = this.formatDate(problemData.fstart_time || '');
+        // this.finishDate = this.formatDate(problemData.fend_time || '');
+        
+        console.log("YESSS");
+        console.log("Start Date: " + this.startDateProblem);
+        console.log("Finish Date: " + this.finishDateProblem);
+
+        console.log("Start Date2: " + problemData.fstart_time);
+        console.log("Finish Date2: " + problemData.fend_time);
+
         this.durationMin = problemData.fdur || '';
         this.problemCategory = problemData.problemCategory || null;
 
@@ -1417,18 +613,23 @@ export default {
 
         this.pilihQ6 = problemData.qCategory || '';
         if (this.pilihQ6 == 1) {
-          this.qCategoryName = "Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))"
+          this.qCategoryName = "Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))";
         } else if (this.pilihQ6 == 2) {
-          this.qCategoryName = "Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)"
+          this.qCategoryName = "Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)";
         } else if (this.pilihQ6 == 3) {
-          this.qCategoryName = "Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)"
+          this.qCategoryName = "Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)";
         } else if (this.pilihQ6 == 4) {
-          this.qCategoryName = "Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)"
+          this.qCategoryName = "Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)";
         } else if (this.pilihQ6 == 5) {
-          this.qCategoryName = "Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))"
+          this.qCategoryName = "Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))";
         } else if (this.pilihQ6 == 6) {
-          this.qCategoryName = "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)"
+          this.qCategoryName = "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)";
+        } else {
+          this.qCategoryName = " ";
         }
+
+        console.log("YES");
+        console.log("================================================" + this.qCategoryName + "====================================================");
 
         this.whyLamaImage = problemData.why_lama_image || '';
         this.countermeasureKenapaLama = problemData.countermeasure_kenapa_lama || '';
@@ -1463,24 +664,24 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
-    async saveSubmit() {
-      if(!this.submit.machineName){
+    async saveSubmit(submitData) {
+      if(!submitData.machineName){
         alert("Please input machine name");
-      } else if(!this.submit.line){
+      } else if(!submitData.line){
         alert("Please input line");
-      } else if(!this.submit.problems){
+      } else if(!submitData.problems){
         alert("Please input problems");
-      } else if(!this.submit.agreeTerms){
+      } else if(!submitData.agreeTerms){
         alert("You must agree to terms and conditions before submitting");
       } else {
         try {
           const payload = {
-            machineName: this.submit.machineName,
-            lineName: this.submit.line,
-            problemDescription: this.submit.problems,
-            operator: this.submit.operator.join(','), // join array to string
+            machineName: submitData.machineName,
+            lineName: submitData.line,
+            problemDescription: submitData.problems,
+            operator: submitData.operator.join(','), // join array to string
             // Include problem ID for update
-            fid: this.fidProblem,
+            fid: submitData.fidProblem,
           };
           // Use PUT or PATCH for update endpoint if available
           const response = await api.put('/smartandon/problem/update', payload);
@@ -1531,18 +732,6 @@ export default {
     this.loading = true;
     this.error = null;
     try {
-      const response = await axios.get('/api/smartandon/qcc-m-types');
-      this.types = response.data;
-    } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error);
-    }
-    try {
-      const response = await axios.get('/api/smartandon/line');
-      this.lines = response.data;
-    } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error);
-    }
-    try {
       const response = await axios.get('/api/smartandon/machine');
       this.machines = response.data;
       this.machineOptions = response.data.map(machine => ({
@@ -1590,6 +779,11 @@ export default {
 }
 
 </script>
+
+
+
+
+
 
 <style scoped>
 .dashboard-card {

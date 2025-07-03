@@ -31,6 +31,7 @@ export default {
     }
   },
   async created(){
+    this.getUser();
     // let dataUser = await api.scQueryApi('/api/common/user-info','POST' );
     // this.photo = dataUser.data.photo
     // this.initial = dataUser.data.firstName.toUpperCase().charAt(0);
@@ -48,7 +49,24 @@ export default {
   methods:{
     logout(){      
       localStorage.id_token = '';
-      window.location.href=process.env.VUE_APP_CONTAINER_URL+'/';
+      localStorage.removeItem("token");
+      window.location.href="/#/auth/login";
+    },
+    async getUser() {
+      try {
+        const response = await fetch('http://localhost:3000/api/user/user', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (!response.ok) throw new Error('Failed to fetch user');
+        const data = await response.json();
+        this.userName = (data.user.name || '');
+      } catch (e) {
+        this.userName = 'User Name 1';
+      }
     }
   }
 }

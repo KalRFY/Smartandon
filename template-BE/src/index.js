@@ -6,8 +6,16 @@ const { sequelize } = require('./models');
 
 const startServer = async () => {
   try {
+    // Test database connection first
+    logger.info('Testing database connection...');
+    await sequelize.authenticate();
+    logger.info('Database connection established successfully.');
+    
     // Sync all models with the database, creating or altering tables as needed
+    logger.info('Syncing database models...');
     await sequelize.sync({ alter: true });
+    logger.info('Database models synced successfully.');
+    
     await seedDashboardData();
     const server = app.listen(config.port, () => {
       logger.info(`Listening to port ${config.port}`);

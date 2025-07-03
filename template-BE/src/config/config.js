@@ -62,8 +62,9 @@ module.exports = {
     host: envVars.HOST_DB_NEW,
     dialect: 'mysql',
     dialectOptions: {
-      // Removed invalid 'options' key to fix warning
-      // requestTimeout: 450000
+      connectTimeout: 60000,
+      acquireTimeout: 60000,
+      timeout: 60000,
     },
     port: envVars.DB_PORT,
     pool: {
