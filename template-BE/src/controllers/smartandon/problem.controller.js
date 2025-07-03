@@ -103,7 +103,7 @@ const getProblemView = async (req, res, next) => {
       whereClause += ` AND fmc_name LIKE '%${machineName}%'`;
     }
     if (line) {
-      whereClause += ` AND fline LIKE '%${line}%'`;
+      whereClause += ` AND line_id = ${line}`;
     }
     if (problem) {
       whereClause += ` AND ferror_name LIKE '%${problem}%'`;
