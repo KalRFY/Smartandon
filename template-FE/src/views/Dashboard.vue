@@ -121,15 +121,36 @@
           </CCol> -->
           <CCol md="8">
             <label for="machineSelect" class="form-label">Machine Name</label>
-            <Treeselect id="machineSelect" v-model="submit.machineName" :options="machineOptions" :searchable="true"
-              :clearable="true" :children="false" placeholder="Select or input machine" @input="onMachineInput"
-              :value-consists-of="['id']" :value-key="'id'" :label-key="'label'" />
+            <Treeselect
+              id="machineSelect"
+              v-model="submit.machineName"
+              :options="machineOptions"
+              :searchable="true"
+              :clearable="true"
+              :children="false"
+              placeholder="Select or input machine"
+              @input="onMachineInput"
+              :value-consists-of="['id']"
+              :value-key="'id'"
+              :label-key="'label'"
+            />
           </CCol>
           <CCol md="4">
             <label for="machineSelect" class="form-label">Line</label>
-            <Treeselect id="lineSelect" v-model="submit.line" :multiple="false" :flat="true" :options="lineOptions"
-              :searchable="true" :clearable="true" placeholder="Select or input line" @input="onMachineInput"
-              :value-consists-of="['id']" :value-key="'id'" :label-key="'label'" />
+            <Treeselect
+              id="lineSelect"
+              v-model="submit.line"
+              :multiple="false"
+              :flat="true"
+              :options="lineOptions"
+              :searchable="true"
+              :clearable="true"
+              placeholder="Select or input line"
+              @input="onMachineInput"
+              :value-consists-of="['id']"
+              :value-key="'id'"
+              :label-key="'label'"
+            />
           </CCol>
           <!-- <CCol md="4">
               <CFormSelect
@@ -154,8 +175,14 @@
             />
           </CCol>
           <CCol xs="12">
-            <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
-              label="Agree to terms and conditions" required type="checkbox" v-model="submit.agreeTerms" />
+            <CFormCheck
+              feedbackInvalid="You must agree before submitting."
+              id="invalidCheck"
+              label="Agree to terms and conditions"
+              required
+              type="checkbox"
+              v-model="submit.agreeTerms"
+            />
           </CCol>
         </CForm>
       </CModalBody>
@@ -899,7 +926,7 @@ export default {
         icon: 'FileText',
         description: 'Last Time Buy reporting and analysis',
         color: 'secondary',
-        route: '/app/LtbSummary',
+        route: '/ltb-report',
       },
     ]
 
