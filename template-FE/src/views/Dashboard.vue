@@ -15,6 +15,30 @@
     </CCol>
   </CRow>
 
+  <CRow>
+    <CCol sm="3">
+      <CCol sm="11" style="font-size: xx-large; font-weight: bold;">
+        Smartandon
+      </CCol>
+    </CCol>
+    <CCol sm="9">
+      <CRow>
+        <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-4">
+          <CCard class="dashboard-card h-100" :color="card.color">
+            <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
+              <div class="icon-container mb-3">
+                <component :is="card.icon" :size="30" :stroke-width="1" />
+              </div>
+              <h4>{{ card.title }}</h4>
+              <!-- <p class="card-description">{{ card.description }}</p> -->
+              <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+    </CCol>
+  </CRow>
+
   
   <COffcanvas placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
     <COffcanvasHeader>
@@ -27,24 +51,24 @@
     </COffcanvasBody>
   </COffcanvas>
 
-  <CCol class="mb-3">
+  <!-- <CCol class="mb-3">
     <CButton variant="outline" style="width: 100%; font-weight: bold;" color="dark" @click="download">Search</CButton>
-  </CCol>
+  </CCol> -->
   <div>
-  <CRow>
-    <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-4">
-      <CCard class="dashboard-card h-100" :color="card.color">
-        <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-          <div class="icon-container mb-3">
-            <component :is="card.icon" :size="30" :stroke-width="1" />
-          </div>
-          <h4>{{ card.title }}</h4>
-          <!-- <p class="card-description">{{ card.description }}</p> -->
-          <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-        </CCardBody>
-      </CCard>
-    </CCol>
-  </CRow>
+    <!-- <CRow>
+      <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-4">
+        <CCard class="dashboard-card h-100" :color="card.color">
+          <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
+            <div class="icon-container mb-3">
+              <component :is="card.icon" :size="30" :stroke-width="1" />
+            </div>
+            <h4>{{ card.title }}</h4> -->
+            <!-- <p class="card-description">{{ card.description }}</p> -->
+            <!-- <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow> -->
   </div>
 
   <CButton
@@ -59,7 +83,7 @@
   <CRow>
     <CCol>
       <CCard class="mb-3">
-        <CCardHeader style="font-size: large; font-weight: bold;">
+        <!-- <CCardHeader style="font-size: large; font-weight: bold;">
           <CRow>
             <CCol sm="8">
               <CCardTitle style="font-size: large; font-weight: bold;">
@@ -73,11 +97,11 @@
               <CButton style="width: 100%; font-weight: bold; color: white" color="danger" @click="download">Low</CButton>
             </CCol>
           </CRow>
-        </CCardHeader>
+        </CCardHeader> -->
         <CCardBody>
           <CRow>
             <CCol v-for="(chartData, index) in chartDataPerLine" :key="index">
-              <CCard class="mb-3" color="dark" variant="outline">
+              <CCard color="dark" variant="outline">
                 <CCardBody style="height: 200px;">
                   <CCardTitle style="font-size: small; height: 35px;">{{ chartData.label }}</CCardTitle>
                   <ApexCharts :options="chartData.options" :series="chartData.series" type="radialBar" height="250" width="100"/>
@@ -152,19 +176,6 @@
               :label-key="'label'"
             />
           </CCol>
-          <!-- <CCol md="4">
-              <CFormSelect
-                aria-describedby="validationCustom04Feedback"
-                feedbackInvalid="Please select the line."
-                id="lineSelect"
-                label="Line"
-                required
-                v-model="submit.line"
-              >
-                <option selected disabled value="">Choose Line...</option>
-                <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
-              </CFormSelect>
-          </CCol> -->
           <CCol md="12">
             <CFormInput
               feedbackInvalid="Please input the problems"
@@ -607,94 +618,9 @@ export default {
 
       visibleLiveDemo: false,
       submit: {
-        machineName: null, // initialize as null to avoid showing [object Object]
+        machineName: null,
       },
 
-      // seriesChart: [95],
-      //     chartRadialOptions: {
-      //       chart: {
-      //         height: 350,
-      //         type: 'radialBar',
-      //       },
-      //       plotOptions: {
-      //         radialBar: {
-      //           hollow: {
-      //             size: '100%',
-      //           }
-      //         },
-      //       },
-      //       labels: ['OEE'],
-      //     },
-          //   plotOptions: {
-          //     radialBar: {
-          //       startAngle: -135,
-          //       endAngle: 225,
-          //        hollow: {
-          //         margin: 0,
-          //         size: '90%',
-          //         background: '#fff',
-          //         image: undefined,
-          //         imageOffsetX: 0,
-          //         imageOffsetY: 0,
-          //         position: 'front',
-          //         dropShadow: {
-          //           enabled: true,
-          //           top: 3,
-          //           left: 0,
-          //           blur: 4,
-          //           opacity: 0.5
-          //         }
-          //       },
-          //       track: {
-          //         background: '#fff',
-          //         strokeWidth: '67%',
-          //         margin: 0, // margin is in pixels
-          //         dropShadow: {
-          //           enabled: true,
-          //           top: -3,
-          //           left: 0,
-          //           blur: 4,
-          //           opacity: 0.7
-          //         }
-          //       },
-            
-          //       dataLabels: {
-          //         show: true,
-          //         name: {
-          //           offsetY: -10,
-          //           show: true,
-          //           color: '#888',
-          //           fontSize: '11px'
-          //         },
-          //         value: {
-          //           formatter: function(val) {
-          //             return parseInt(val);
-          //           },
-          //           color: '#111',
-          //           fontSize: '20px',
-          //           show: true,
-          //         }
-          //       }
-          //     }
-          //   },
-          //   fill: {
-          //     type: 'gradient',
-          //     gradient: {
-          //       shade: 'dark',
-          //       type: 'horizontal',
-          //       shadeIntensity: 0.5,
-          //       gradientToColors: ['#ABE5A1'],
-          //       inverseColors: true,
-          //       opacityFrom: 1,
-          //       opacityTo: 1,
-          //       stops: [0, 100]
-          //     }
-          //   },
-          //   stroke: {
-          //     lineCap: 'round'
-          //   },
-          //   labels: ['Percent'],
-          // },
       seriesChart: [],
       chartRadialOptions: {
       chart: {
