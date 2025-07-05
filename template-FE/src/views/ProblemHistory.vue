@@ -1,6 +1,5 @@
 <template>
   <EditProblemModal
-    v-if="visible"
     :visible="visibleLiveDemo"
     :submitData="submit"
     :machineOptions="machineOptions"
@@ -512,7 +511,7 @@ export default {
           tambahAnalisisLama: problemData.tambah_analisis_lama || '',
           pilihQ6: problemData.pilih_q6 || '',
           whyLamaImage: problemData.why_lama_image || '',
-          countermeasureKenkaLama: problemData.countermeasure_kenka_lama || '',
+          countermeasureKenapaLama: problemData.countermeasure_kenapa_lama || '',
           attachmentMeeting: problemData.attachment_meeting || '',
           comments5Why: problemData.comments_5_why || '',
           commentsCountermeasure: problemData.comments_countermeasure || '',
