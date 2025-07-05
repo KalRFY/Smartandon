@@ -12,61 +12,71 @@
       @selectTimeRange="selectTimeRange"
     />
 
-    <div class="d-flex align-items-center mb-3">
-      <div class="toggle-group">
-        <div class="toggle-mode">
-          <button
-            v-for="mode in chartModes"
-            :key="mode.value"
-            :class="['toggle-btn', { active: chartViewMode === mode.value }]"
-            @click="() => setChartViewMode(mode.value)"
-            type="button"
-            :disabled="isLoading"
+    <CRow class="mb-3 justify-content-center">
+      <CCol md="10" lg="8" class="w-100">
+        <CCard class="w-100 mb-3">
+          <CCardBody
+            class="d-flex justify-content-center align-items-center p-2"
           >
-            {{ mode.label }}
-          </button>
-        </div>
-        <span class="divider" />
-        <div class="toggle-filter">
-          <button
-            v-for="type in filterTypes"
-            :key="type.value"
-            :class="[
-              'toggle-btn',
-              'toggle-btn-filter',
-              { active: filterType === type.value },
-            ]"
-            @click="() => setFilterType(type.value)"
-            type="button"
-            :disabled="isLoading"
-          >
-            {{ type.label }}
-          </button>
-        </div>
-      </div>
-    </div>
+            <CButtonGroup class="me-3" role="group" aria-label="Chart mode">
+              <CButton
+                v-for="mode in chartModes"
+                :key="mode.value"
+                :color="
+                  chartViewMode === mode.value ? 'primary' : 'outline-primary'
+                "
+                @click="setChartViewMode(mode.value)"
+                :disabled="isLoading"
+              >
+                {{ mode.label }}
+              </CButton>
+            </CButtonGroup>
+            <CButtonGroup role="group" aria-label="Filter type">
+              <CButton
+                v-for="type in filterTypes"
+                :key="type.value"
+                :color="
+                  filterType === type.value ? 'primary' : 'outline-primary'
+                "
+                @click="setFilterType(type.value)"
+                :disabled="isLoading"
+              >
+                {{ type.label }}
+              </CButton>
+            </CButtonGroup>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
 
-    <div class="production-lines-container">
-      <div v-if="isLoading" class="loading-message">Loading data...</div>
-      <template v-else>
-        <div
-          v-for="lineId in lineIds"
-          :key="lineId"
-          class="line-chart-container"
-        >
-          <div v-if="!hasData(lineId)" class="empty-message">
-            No data available for {{ getLineTitle(lineId) }}
-          </div>
-          <apexchart
-            v-else
-            :options="getChartOptions(lineId)"
-            :series="getChartSeries(lineId)"
-            :height="350"
-            :type="getChartOptions(lineId).chart.type"
-          />
-        </div>
-      </template>
-    </div>
+    <CRow class="production-lines-container flex flex-column">
+      <CCol
+        v-for="lineId in lineIds"
+        :key="lineId"
+        cols="12"
+        class="line-chart-container w-100"
+      >
+        <CCard class="w-100">
+          <CCardBody>
+            <template v-if="isLoading">
+              <div class="loading-message">Loading data...</div>
+            </template>
+            <template v-else>
+              <div v-if="!hasData(lineId)" class="empty-message">
+                No data available for {{ getLineTitle(lineId) }}
+              </div>
+              <apexchart
+                v-else
+                :options="getChartOptions(lineId)"
+                :series="getChartSeries(lineId)"
+                :height="350"
+                :type="getChartOptions(lineId).chart.type"
+              />
+            </template>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
   </div>
 </template>
 
@@ -75,6 +85,14 @@ import { ref, onMounted, watch } from 'vue'
 import ApexChart from 'vue3-apexcharts'
 import DashboardHeader from './components/DashboardHeader.vue'
 import SearchPanel from './components/SearchPanel.vue'
+import {
+  CButtonGroup,
+  CButton,
+  CCard,
+  CCardBody,
+  CRow,
+  CCol,
+} from '@coreui/vue'
 
 const chartModes = [
   { value: 'mtbf', label: 'MTBF' },
@@ -88,10 +106,44 @@ const filterTypes = [
 ]
 
 const username = ref('AndreanDjabbar')
-const currentTime = ref('2025-05-24 07:14:29')
-const currentDate = ref('Saturday, May 24, 2025')
-const startDate = ref('2025-05-01')
-const endDate = ref('2025-05-24')
+const currentTime = ref('')
+const now = new Date()
+const days = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+]
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+const currentDate = ref(
+  `${days[now.getDay()]}, ${
+    months[now.getMonth()]
+  } ${now.getDate()}, ${now.getFullYear()}`,
+)
+const startDate = ref(
+  `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`,
+)
+const endDate = ref(
+  `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+    now.getDate(),
+  ).padStart(2, '0')}`,
+)
 const chartViewMode = ref('mtbf')
 const filterType = ref('daily')
 const lineIds = [
@@ -603,7 +655,7 @@ const search = async () => {
 watch([chartViewMode, filterType], fetchAllData)
 
 const selectTimeRange = async (range) => {
-  const now = new Date('2025-05-24')
+  const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   switch (range) {
     case 'today':
@@ -655,7 +707,13 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`
 }
 
-onMounted(() => fetchAllData())
+onMounted(() => {
+  setInterval(() => {
+    const now = new Date()
+    currentTime.value = now.toLocaleString()
+  }, 1000)
+  fetchAllData()
+})
 </script>
 
 <script>
