@@ -6,7 +6,7 @@
         <span class="label">none</span>
       </div>
       <div class="legend-item">
-        <div class="dot bg-warning"></div>
+        <div class="dot bg-info"></div>
         <span class="label">comment</span>
       </div>
       <div class="legend-item">
