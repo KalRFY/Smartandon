@@ -99,6 +99,12 @@ import LegendStatus from '@/components/LegendStatus.vue'
 import BarChart from '@/components/BarChart.vue'
 import axios from 'axios'
 
+const monthNames = [
+  'January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December'
+];
+
 export default {
   name: 'LTBSummary',
   components: {
@@ -129,16 +135,28 @@ export default {
       return Array.from(new Set(this.problems.map(p => new Date(p.fstart_time).getFullYear()))).sort((a, b) => b - a)
     },
     yearlyGraphData() {
-      if (!this.selectedYear) return this.graphData
-      const counts = {}
-      this.problems.filter(p => new Date(p.fstart_time).getFullYear() === +this.selectedYear)
+      if (!this.selectedYear) return this.graphData;
+
+      const counts = {};
+      this.problems
+        .filter(p => new Date(p.fstart_time).getFullYear() === +this.selectedYear)
         .forEach(p => {
-          const d = new Date(p.fstart_time)
-          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-          counts[key] = (counts[key] || 0) + 1
-        })
-      const labels = Object.keys(counts).sort()
-      return { labels, datasets: [{ label: `Total LTB ${this.selectedYear}`, backgroundColor: '#5954f7', data: labels.map(l => counts[l]) }] }
+          const d = new Date(p.fstart_time);
+          const month = d.getMonth();
+          counts[month] = (counts[month] || 0) + 1;
+        });
+
+      const labels = monthNames;
+      const data = Array.from({ length: 12 }, (_, i) => counts[i] || 0);
+
+      return {
+        labels,
+        datasets: [{
+          label: `Total LTB ${this.selectedYear}`,
+          backgroundColor: '#5954f7',
+          data
+        }]
+      };
     }
   },
   methods: {
@@ -228,7 +246,7 @@ export default {
   background-color: #47a0fc;
 }
 
-::v-deep .nav-link {
+:deep(.nav-link) {
   cursor: pointer;
 }
 </style>
