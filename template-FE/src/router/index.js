@@ -94,7 +94,7 @@ const appRoutes = [
     },
   },
   {
-    path: '/app/LtbSummary',
+    path: '/app/LTBSummary',
     name: 'LTBSummary',
     component: () =>
       import(/* webpackChunkName: "reports" */ '@/views/LTBSummary.vue'),

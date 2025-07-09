@@ -5,10 +5,12 @@ const getLTBSummary = async (req, res, next) => {
   try {
     const raw = await sequelize.query(
       `SELECT 
-         fid, fline, fmc_name, ferror_name, fstart_time, fdur,
-         cmTlApprove, cmLhApprove, cmShApprove, cmDhApprove
-       FROM v_current_error_2
-       WHERE fdur >= 120`,
+     fid, fline, fmc_name, ferror_name, fstart_time, fdur,
+     cmTlApprove, cmLhApprove, cmShApprove, cmDhApprove,
+     cmTlFeedback, cmLhFeedback, cmShFeedback, cmDhFeedback
+   FROM v_current_error_2
+   WHERE (fline = 'ASSY LINE' AND fdur >= 15)
+   OR (fline <> 'ASSY LINE' AND fdur >= 120)`,
       { type: sequelize.QueryTypes.SELECT }
     );
 

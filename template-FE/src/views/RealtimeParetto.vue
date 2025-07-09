@@ -542,7 +542,7 @@ export default {
         icon: 'FileText',
         description: 'Last Time Buy reporting and analysis',
         color: 'secondary',
-        route: '/app/LtbSummary',
+        route: '/app/LTBSummary',
       },
     ]
 
