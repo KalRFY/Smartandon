@@ -13,6 +13,7 @@
         <CSpinner color="primary" style="width: 3rem; height: 3rem" />
         <div style="margin-top: 10px">Loading data...</div>
       </div>
+      
       <CForm
         v-else
         class="row g-3 needs-validation"
@@ -20,15 +21,6 @@
         :validated="validatedCustom01"
         @submit="handleSubmitCustom01"
       >
-        <!-- <CCol md="8">
-          <CFormInput
-            feedbackValid="Looks good!"
-            id="machineName"
-            label="Machine Name"
-            required
-            v-model="submit.machineName"
-          />
-        </CCol> -->
         <CCol md="6">
           <label for="machineSelect" class="form-label">Machine Name</label>
           <Treeselect
@@ -62,19 +54,6 @@
             :label-key="'label'"
           />
         </CCol>
-        <!-- <CCol md="4">
-            <CFormSelect
-              aria-describedby="validationCustom04Feedback"
-              feedbackInvalid="Please select the line."
-              id="lineSelect"
-              label="Line"
-              required
-              v-model="submit.line"
-            >
-              <option selected disabled value="">Choose Line...</option>
-              <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
-            </CFormSelect>
-        </CCol> -->
         <CCol md="6">
           <CFormInput
             feedbackInvalid="Operation No."
@@ -224,7 +203,7 @@
             aria-describedby="shift"
             feedbackInvalid="Please select the shift."
             id="shiftSelect"
-            label="O6 Category:"
+            label="Shift"
             required
             v-model="localSubmit.shift"
           >
@@ -238,14 +217,12 @@
         <CCol md="6">
           <label for="startDateModal" class="form-label">Start Date</label>
           <CInputGroup>
-            <CInputGroupText id="basic-addon1"
-              ><Clock size="16"
-            /></CInputGroupText>
+            <CInputGroupText id="basic-addon1"><CIcon icon="cilClock" size="l"/></CInputGroupText>
             <CFormInput
               id="startDateModal"
-              type="date"
+              type="datetime-local"
               required
-              v-model="localSubmit.startDateProblem"
+              v-model="localSubmit.startDate"
               aria-label="Start Date"
               aria-describedby="basic-addon1"
             />
@@ -254,14 +231,12 @@
         <CCol md="6">
           <label for="finishDateModal" class="form-label">Finish Date</label>
           <CInputGroup>
-            <CInputGroupText id="basic-addon2"
-              ><Clock size="16"
-            /></CInputGroupText>
+            <CInputGroupText id="basic-addon2"><CIcon icon="cilClock" size="l"/></CInputGroupText>
             <CFormInput
               id="finishDateModal"
-              type="date"
+              type="datetime-local"
               required
-              v-model="localSubmit.finishDateProblem"
+              v-model="localSubmit.finishDate"
               aria-label="Finish Date"
               aria-describedby="basic-addon2"
             />
@@ -295,7 +270,6 @@
             <option :value="3">LTB</option>
           </CFormSelect>
         </CCol>
-
         <CCol md="12">
           <CFormInput
             feedbackInvalid="Please input the problems"
@@ -568,6 +542,8 @@ import {
   CSpinner,
 } from '@coreui/vue'
 import Treeselect from 'vue3-treeselect'
+import { cilClock } from '@coreui/icons'
+import { CIcon } from '@coreui/icons-vue'
 
 export default {
   name: 'EditProblemModal',
@@ -584,6 +560,7 @@ export default {
     CButton,
     CSpinner,
     Treeselect,
+    cilClock,
   },
   props: {
     visible: {
@@ -609,9 +586,17 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const { submitData } = toRefs(props)
-    console.log('EditProblemModal props:', props)
-    const localSubmit = ref({ ...(submitData.value || {}) })
+    const { submitData } = toRefs(props);
+    console.log('EditProblemModal props:', JSON.stringify(props, null, 2));
+    
+    const localSubmit = ref({ ...(submitData.value || {}) });
+
+    console.log('Local submit data 1:', JSON.stringify(localSubmit.value, null, 2));
+
+    console.log('Check fstart_time: ', localSubmit.value.startDate);
+    console.log('Check fend_time: ', localSubmit.value.finishDate);
+
+    console.log("ANJING:", localSubmit.value);
 
     watch(submitData, (newVal) => {
       localSubmit.value = { ...(newVal || {}) }
@@ -622,7 +607,7 @@ export default {
     const onMachineInput = () => {
       console.log('Machine input changed:', localSubmit.value.machineName)
     }
-
+    console.log("ANJING 1: " + localSubmit.value);
     const handleSubmit = () => {
       validatedCustom01.value = true
       saveSubmit()
@@ -647,12 +632,92 @@ export default {
       }
       emit('submit', localSubmit.value)
     }
+
+    // Add reactive state for option labels
+    const shiftName = ref('')
+    const oCategoryName = ref('')
+    const qCategoryName = ref('')
+    const problemCategoryName = ref('')
+
+    // Watch localSubmit to update option labels accordingly
+    watch(
+      () => localSubmit.value.shift,
+      (newShift) => {
+        if (newShift === 'r') shiftName.value = 'Red'
+        else if (newShift === 'w') shiftName.value = 'White'
+        else shiftName.value = 'Not yet inputted'
+      },
+      { immediate: true }
+    )
+
+    watch(
+      () => localSubmit.value.pilihO6,
+      (newO6) => {
+        console.log('O6 ini:', localSubmit.value.pilihO6);
+        const o6Map = {
+          1: 'O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))',
+          2: 'O2: Henkaten Issue (No Enough Trial, No Confirm (others team))',
+          3: 'O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)',
+          4: 'O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)',
+          5: 'O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible Area, Unpredictable (water leak / crush))',
+          6: 'O6: Lifetime Issue (Out of Standard Running, Over Capacity)',
+        }
+        oCategoryName.value = o6Map[newO6] || ''
+        console.log('O6 ini 1:', localSubmit.value.pilihO6);
+      },
+      { immediate: true }
+    )
+
+    watch(
+      () => localSubmit.value.problemCategory,
+      (newCategory) => {
+        console.log('Problem Category changed:', localSubmit.value.problemCategory);
+        const categoryMap = {
+          1: 'Small',
+          2: 'Chokotei',
+          3: 'LTB',
+        }
+        problemCategoryName.value = categoryMap[newCategory] || '';
+        console.log('Problem Category changed 1:', localSubmit.value.problemCategory)
+      },
+      { immediate: true }
+    )
+
+    watch(
+      () => localSubmit.value.pilihQ6,
+      (newQ6) => {
+        console.log('Q6 ini:', localSubmit.value.pilihQ6);
+        const q6Map = {
+          1: "Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))",
+          2: "Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)",
+          3: "Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)",
+          4: "Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)",
+          5: "Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))",
+          6: "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)",
+        }
+        qCategoryName.value = q6Map[newQ6] || ' '
+        console.log('Q6 ini 1:', localSubmit.value.pilihQ6);
+      },
+      { immediate: true }
+    )
+    console.log("ANJING 2: " + localSubmit.value);
+    console.log('Local submit data 2:', JSON.stringify(localSubmit.value, null, 2));
+
+
+
+
+
+    
     return {
       localSubmit,
       validatedCustom01,
       onMachineInput,
       handleSubmit,
       saveSubmit,
+      shiftName,
+      oCategoryName,
+      qCategoryName,
+      problemCategoryName,
     }
   },
 }

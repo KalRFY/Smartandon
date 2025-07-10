@@ -1,7 +1,6 @@
 <template>
-
   <CRow class="mb-3">
-    <CCol sm="11" style="font-size: xx-large; font-weight: bold;">
+    <!-- <CCol sm="11" style="font-size: xx-large; font-weight: bold;">
       Smartandon
     </CCol>
     <CCol sm="1" style="font-size: xx-large; font-weight: bold;">
@@ -12,30 +11,60 @@
           99+ <span class="visually-hidden">unread messages</span>
         </CBadge>
       </CButton>
-    </CCol>
+    </CCol> -->
   </CRow>
 
-  <CRow>
-    <CCol sm="3">
-      <CCol sm="11" style="font-size: xx-large; font-weight: bold;">
-        Smartandon
-      </CCol>
-    </CCol>
-    <CCol sm="9">
-      <CRow>
-        <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-4">
-          <CCard class="dashboard-card h-100" :color="card.color">
-            <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-              <div class="icon-container mb-3">
-                <component :is="card.icon" :size="30" :stroke-width="1" />
-              </div>
-              <h4>{{ card.title }}</h4>
-              <!-- <p class="card-description">{{ card.description }}</p> -->
-              <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
+  <CRow class="mb-3">
+    <!-- <CCol sm="3">
+      <CCard>
+        <CCardBody>
+          <div class="text-center mt-3">
+            <img
+            alt="Smartandon Image"
+            src="../standalone/assets/images/icon.png"
+            style="max-width: 50%; height: auto;"
+            />
+          </div>
+          <CCol sm="11" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif; text-align: center;">
+            Smartandon
+          </CCol>
+        </CCardBody>
+      </CCard>
+    </CCol> -->
+    <CCol sm="12">
+      <CCard>
+        <CCardBody>
+          <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif;">
+            Smartandon
+          </CRow>
+          <CRow>
+            <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-3">
+              <CCard class="dashboard-card h-100" :color="card.color">
+                <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
+                  <div class="icon-container mb-3">
+                    <component :is="card.icon" :size="30" :stroke-width="1" />
+                  </div>
+                  <h4>{{ card.title }}</h4>
+                  <!-- <p class="card-description">{{ card.description }}</p> -->
+                  <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <CButton
+                style="width: 100%; font-size: 18px; font-weight: bold"
+                color="primary"
+                @click="onClickInput"
+                shape="rounded-pill"
+                >
+                Machine Stop Input
+              </CButton>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
     </CCol>
   </CRow>
 
@@ -70,15 +99,6 @@
       </CCol>
     </CRow> -->
   </div>
-
-  <CButton
-    style="width: 100%; font-size: 24px; font-weight: bold"
-    class="mb-3"
-    color="primary"
-    shape="rounded-pill"
-    @click="onClickInput"
-    >Machine Stop Input</CButton
-  >
 
   <CRow>
     <CCol>
@@ -134,15 +154,6 @@
           :validated="validatedCustom01"
           @submit="handleSubmitCustom01"
         >
-          <!-- <CCol md="8">
-            <CFormInput
-              feedbackValid="Looks good!"
-              id="machineName"
-              label="Machine Name"
-              required
-              v-model="submit.machineName"
-            />
-          </CCol> -->
           <CCol md="8">
             <label for="machineSelect" class="form-label">Machine Name</label>
             <Treeselect
@@ -174,6 +185,17 @@
               :value-consists-of="['id']"
               :value-key="'id'"
               :label-key="'label'"
+            />
+          </CCol>
+          <CCol md="12">
+            <CFormInput
+              feedbackInvalid="Operators"
+              id="Operators"
+              label="Operators"
+              required
+              disabled
+              v-model="submit.operatorName"
+              placeholder="Operator name will be fetched automatically"
             />
           </CCol>
           <CCol md="12">
@@ -619,6 +641,9 @@ export default {
       visibleLiveDemo: false,
       submit: {
         machineName: null,
+        lineName: null,
+        operatorName: null,
+        problems: null,
       },
 
       seriesChart: [],
@@ -871,44 +896,66 @@ export default {
   },
 
   methods: {
-    onClickInput() {
-      this.visibleLiveDemo = true
+    async onClickInput() {
+      try {
+        const response = await fetch('http://localhost:3000/api/user/user', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (!response.ok) throw new Error('Failed to fetch user');
+        const data = await response.json();
+        this.submit.operatorName = data.user.name || '';
+      } catch (error) {
+        console.error('Failed to fetch current user info:', error);
+      }
+      this.visibleLiveDemo = true;
+      console.log("User: " + this.submit.operatorName);
     },
 
     async saveSubmit() {
-      const machineNameToSubmit =
-        this.submit.machineName && this.submit.machineName.id
-          ? this.submit.machineName.id
-          : null
+      console.log('Submitting data:', this.submit);
+      let machineNameToSubmit = null;
+      if (this.submit.machineName) {
+        if (typeof this.submit.machineName === 'object' && this.submit.machineName.id) {
+          machineNameToSubmit = this.submit.machineName.id;
+        } else if (typeof this.submit.machineName === 'number') {
+          machineNameToSubmit = this.submit.machineName;
+        }
+      }
       if (!machineNameToSubmit) {
-        alert('Please input or select machine name')
+        alert('Please input or select machine name');
       } else if (!this.submit.line) {
-        alert('Please input line')
+        alert('Please input line');
       } else if (!this.submit.problems) {
-        alert('Please input problems')
+        alert('Please input problems');
       } else if (!this.submit.agreeTerms) {
-        alert('You must agree to terms and conditions before submitting')
+        alert('You must agree to terms and conditions before submitting');
       } else {
         try {
           const payload = {
-            machineName: machineNameToSubmit,
-            lineName: this.submit.line,
-            problemDescription: this.submit.problems,
-          }
-          const response = await api.post(
-            '/smartandon/dashboard/new-machine-input',
+            fmc_id: machineNameToSubmit,
+            lineName: this.submit.lineName,
+            ferror_name: this.submit.problems,
+            operatorName: this.submit.operatorName
+          };
+          console.log('Payload to send:', payload);
+          const response = await axios.put(
+            '/api/smartandon/problemMachine',
             payload,
-          )
+          );
           if (response.data.status === 'success') {
-            alert('Input saved successfully')
-            this.visibleLiveDemo = false
-            this.submit = {}
+            alert('Input saved successfully');
+            this.visibleLiveDemo = false;
+            this.submit = {};
           } else {
-            alert('Failed to save input')
+            alert('Failed to save input');
           }
         } catch (error) {
-          console.log(error.message)
-          alert('Error saving input: ' + error.message)
+          console.log(error.message);
+          alert('Error saving input: ' + error.message);
         }
       }
     },
@@ -918,18 +965,6 @@ export default {
   },
 
   async created() {
-    try {
-      const response = await axios.get('/api/smartandon/qcc-m-types')
-      this.types = response.data
-    } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error)
-    }
-    try {
-      const response = await axios.get('/api/smartandon/line')
-      this.lines = response.data
-    } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error)
-    }
     try {
       const response = await axios.get('/api/smartandon/machine')
       this.machines = response.data
@@ -1011,6 +1046,15 @@ export default {
     } catch (error) {
       console.error('Failed to fetch or process OEE data:', error);
     }
+    // Fetch current logged-in user info and set operatorName
+    // try {
+    //   const userResponse = await axios.get('/api/user/user');
+    //   if (userResponse.data && userResponse.data.user && userResponse.data.user.fname) {
+    //     this.submit.operatorName = userResponse.data.user.fname;
+    //   }
+    // } catch (error) {
+    //   console.error('Failed to fetch current user info:', error);
+    // }
   },
 }
 </script>
@@ -1046,4 +1090,5 @@ export default {
 p {
   font-style: italic;
 }
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 </style>

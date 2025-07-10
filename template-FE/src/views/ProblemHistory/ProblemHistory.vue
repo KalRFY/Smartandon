@@ -63,6 +63,7 @@ import { useRouter } from 'vue-router'
 import EditProblemModal from './EditProblemModal.vue'
 import SearchFilters from './components/SearchFilters.vue'
 import ProblemsTable from './components/ProblemsTable.vue'
+import PaginationControls from './components/PaginationControls.vue'
 
 export default {
   name: 'ProblemDashboard',
@@ -70,6 +71,7 @@ export default {
     EditProblemModal,
     SearchFilters,
     ProblemsTable,
+    PaginationControls,
   },
 
   setup() {
@@ -85,28 +87,50 @@ export default {
       lineOptions: [],
       machineOptions: [],
       memberOption: [],
-
       filterStartDate: '',
       filterFinishDate: '',
       selectedLine: null,
       selectedMachineName: null,
       selectedProblem: '',
-
       problemsView: [],
-
       currentPage: 1,
       pageSize: 50,
       pages: 5,
       totalRecords: 0,
       totalPages: 0,
-
       loading: false,
       error: null,
       visibleLiveDemo: false,
       modalLoading: false,
       tableLoading: false,
-
       submit: this.getInitialSubmitData(),
+      qCategoryName: '',
+      o6Options: [
+        { id: 1, label: 'O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))' },
+        { id: 2, label: 'O2: Henkaten Issue (No Enough Trial, No Confirm (others team))' },
+        { id: 3, label: 'O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)' },
+        { id: 4, label: 'O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)' },
+        { id: 5, label: 'O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible Area, Unpredictable (water leak / crush))' },
+        { id: 6, label: 'O6: Lifetime Issue (Out of Standard Running, Over Capacity)' },
+      ],
+      shiftOptions: [
+        { id: 'r', label: 'Red' },
+        { id: 'w', label: 'White' },
+        { id: '', label: 'No Shift' },
+      ],
+      problemCategoryOptions: [
+        { id: 1, label: 'Small' },
+        { id: 2, label: 'Chokotei' },
+        { id: 3, label: 'LTB' },
+      ],
+      q6Options: [
+        { id: 1, label: 'Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))' },
+        { id: 2, label: 'Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)' },
+        { id: 3, label: 'Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)' },
+        { id: 4, label: 'Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)' },
+        { id: 5, label: 'Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))' },
+        { id: 6, label: 'Q6: Back-Up (Back-Up MC\'s Preparation, Back-Up MC\'s dandori)' },
+      ],
     }
   },
 
@@ -114,19 +138,21 @@ export default {
     visiblePages() {
       const total = this.totalPages
       const current = this.currentPage
-      const maxVisible = this.pages || 5
+      const maxVisible = 5
       let start = Math.max(1, current - Math.floor(maxVisible / 2))
       let end = start + maxVisible - 1
+
       if (end > total) {
         end = total
         start = Math.max(1, end - maxVisible + 1)
       }
+
       const pages = []
       for (let i = start; i <= end; i++) {
         pages.push(i)
       }
       return pages
-    },
+    }
   },
 
   methods: {
@@ -158,14 +184,14 @@ export default {
         rootcauses5Why: '',
         tambahAnalysisTerjadi: '',
         whyImage: '',
-        pilihO6: '',
+        oCategory: '',
         stepRepair: '',
         partChange: '',
         countermeasureKenapaTerjadi: '',
         yokoten: '',
         rootcause5WhyKenapaLama: '',
         tambahAnalisisLama: '',
-        pilihQ6: '',
+        qCategory: '',
         whyLamaImage: '',
         countermeasureKenapaLama: '',
         attachmentMeeting: '',
@@ -233,12 +259,27 @@ export default {
       try {
         this.tableLoading = true
         this.modalLoading = true
-        const response = await axios.get(
-          `/api/smartandon/problemId/${problem.fid}`,
-        )
+        const response = await axios.get(`/api/smartandon/problemId/${problem.fid}`);
         const problemData = response.data
-        console.log('Problem data:', problemData)
+        console.log('Problem data:', problemData);
         this.submit = this.mapProblemDataToSubmit(problemData)
+        console.log('Submit data sent to EditProblemModal:', JSON.stringify(this.submit, null, 2))
+
+        // Map option labels for O6, Shift, Problem Category, and Q6
+        const o6Option = this.o6Options.find(opt => opt.id === this.submit.pilihO6)
+        this.oCategoryName = o6Option ? o6Option.label : ''
+
+        const shiftOption = this.shiftOptions.find(opt => opt.id === this.submit.shift)
+        this.shiftName = shiftOption ? shiftOption.label : ''
+
+        const problemCategoryOption = this.problemCategoryOptions.find(
+          opt => opt.id === this.submit.problemCategory,
+        )
+        this.problemCategoryName = problemCategoryOption ? problemCategoryOption.label : ''
+
+        const q6Option = this.q6Options.find(opt => opt.id === this.submit.qCategory)
+        this.qCategoryName = q6Option ? q6Option.label : ''
+
         this.visibleLiveDemo = true
       } catch (error) {
         alert('Failed to load problem data: ' + error.message)
@@ -256,24 +297,26 @@ export default {
         const year = date.getFullYear()
         const month = String(date.getMonth() + 1).padStart(2, '0')
         const day = String(date.getDate()).padStart(2, '0')
-        return `${year}-${month}-${day}`
+        const hours = String(date.getHours()).padStart(2, '0')
+        const minutes = String(date.getMinutes()).padStart(2, '0')
+        return `${year}-${month}-${day}T${hours}:${minutes}`
       }
 
       return {
-        machineName: problemData.fmc_name || '',
-        line: problemData.fline || '',
+        machineName: problemData.fmc_name || "Not yet inputted",
+        line: problemData.fline || "Not yet inputted",
         fidProblem: problemData.fid || '',
         maker: problemData.fmaker || '',
         operationNo: problemData.foperation_no || '',
         problems: problemData.ferror_name || '',
-        uraianKejadian: problemData.freal_prob || '',
+        uraianKejadian: problemData.freal_prob || "Not yet inputted",
         uploadImage: problemData.uploadImage || '',
-        ilustrasiStandart: problemData.ilustrasiStandart || '',
+        ilustrasiStandart: problemData.ilustrasiStandart || "Not yet inputted",
         standartImage: problemData.fDescImage || '',
-        ilustrasiActual: problemData.ilustrasiActual || '',
+        ilustrasiActual: problemData.ilustrasiActual || "Not yet inputted",
         actualImage: problemData.fimage || '',
         gapBetweenStandarAndActual:
-          problemData.gapBetweenStandarAndActual || '',
+        problemData.gapBetweenStandarAndActual || "Not yet inputted",
         pilihFocusThemaMember: problemData.pilihFocusThemaMember || '',
         pilihTaskforce: problemData.pilihTaskforce || '',
         operator: problemData.foperator
@@ -285,25 +328,25 @@ export default {
         finishDate: formatDateToISO(problemData.fend_time) || '',
         durationMin: problemData.fdur || '',
         problemCategory: problemData.problemCategory || '',
-        itemTemporaryAction: problemData.temporaryAction || '',
-        rootcauses5Why: problemData.froot_cause || '',
-        tambahAnalysisTerjadi: problemData.tambahAnalysisTerjadi || '',
-        whyImage: problemData.why1_img || '',
-        pilihO6: problemData.pilihO6 || '',
-        stepRepair: problemData.fstep_repair || '',
-        partChange: problemData.fpart_change || '',
+        itemTemporaryAction: problemData.temporaryAction || "Not yet inputted",
+        rootcauses5Why: problemData.froot_cause || "Not yet inputted",
+        tambahAnalysisTerjadi: problemData.tambahAnalysisTerjadi || "Not yet inputted",
+        whyImage: problemData.why1_img || "Not yet inputted",
+        pilihO6: problemData.oCategory || '',
+        stepRepair: problemData.fstep_repair || "Not yet inputted",
+        partChange: problemData.fpart_change || "Not yet inputted",
         countermeasureKenapaTerjadi:
-          problemData.countermeasureKenapaTerjadi || '',
-        yokoten: problemData.fyokoten || '',
-        rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
-        tambahAnalisisLama: problemData.tambahAnalisisLama || '',
-        pilihQ6: problemData.pilihQ6 || '',
+        problemData.countermeasureKenapaTerjadi || "Not yet inputted",
+        yokoten: problemData.fyokoten || "Not yet inputted",
+        rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || "Not yet inputted",
+        tambahAnalisisLama: problemData.tambahAnalisisLama || "Not yet inputted",
+        pilihQ6: problemData.qCategory || '',
         whyLamaImage: problemData.why2_img || '',
-        countermeasureKenapaLama: problemData.countermeasureKenapaLama || '',
-        attachmentMeeting: problemData.attachmentMeeting || '',
-        comments5Why: problemData.comments5Why || '',
-        commentsCountermeasure: problemData.commentsCountermeasure || '',
-        lastReportFile: problemData.lastReportFile || '',
+        countermeasureKenapaLama: problemData.countermeasureKenapaLama || "Not yet inputted",
+        attachmentMeeting: problemData.attachmentMeeting || "Not yet inputted",
+        comments5Why: problemData.comments5Why || "Not yet inputted",
+        commentsCountermeasure: problemData.commentsCountermeasure || "Not yet inputted",
+        lastReportFile: problemData.file_report || '',
         uploadFile: problemData.uploadFile || '',
         agreeTerms: false,
       }
@@ -338,6 +381,7 @@ export default {
           problemDescription: submitData.problems,
           operator: submitData.operator.join(','),
           fid: submitData.fidProblem,
+          lastReportFile: submitData.lastReportFile,  // Added lastReportFile to payload
         }
 
         const response = await api.put('/smartandon/problem/update', payload)
@@ -380,6 +424,7 @@ export default {
     },
 
     async loadInitialData() {
+
       this.loading = true
       this.error = null
 
@@ -419,6 +464,11 @@ export default {
 </script>
 
 <style scoped>
+
+
+
+
+
 .dashboard-card {
   transition: transform 0.3s, box-shadow 0.3s;
   border-radius: 10px;

@@ -7,6 +7,7 @@ const qccMTypesRoutes = require('./smartandon/qccMTypes');
 const lineRoutes = require('./smartandon/line');
 const machineRoutes = require('./smartandon/machine');
 const memberRoutes = require('./smartandon/member');
+const machineStopInputRoutes = require('./smartandon/machineStopInput.controller');
 
 const problemRoutes = require('./smartandon/problem');
 const oeeRoutes = require('./smartandon/OEE');
@@ -79,6 +80,10 @@ const defaultRoutes = [
   {
     path: '/user',
     route: userRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: machineStopInputRoutes,
   },
 ];
 
