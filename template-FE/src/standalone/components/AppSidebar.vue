@@ -112,7 +112,7 @@ export default {
             },
             {
               component: 'CNavItem',
-              to: '/app/LtbSummary',
+              to: '/app/LTBSummary',
               name: 'LTB Summary',
               icon: 'cilFolderOpen',
               parentId: 'ROOT',
