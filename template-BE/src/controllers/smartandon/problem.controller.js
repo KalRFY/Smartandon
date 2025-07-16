@@ -79,6 +79,7 @@ const getProblemView = async (req, res, next) => {
     const machineName = req.query.machineName;
     const line = req.query.line;
     const problem = req.query.problem;
+    const problemCategory = req.query.problemCategory;
 
     // Build where clause for date filtering
     let whereClause = 'WHERE fid IS NOT NULL';
@@ -108,6 +109,43 @@ const getProblemView = async (req, res, next) => {
     if (problem) {
       whereClause += ` AND ferror_name LIKE '%${problem}%'`;
     }
+
+
+
+
+    
+    if (problemCategory) {
+      whereClause += ` AND (problemCategory = ${problemCategory}`;
+      if (problemCategory == 3) {
+        whereClause += ` 
+          OR (
+            ((fdur >= 120 AND fdur < 659) AND (line_id = 1 OR line_id = 2)) OR
+            ((fdur >= 120 AND fdur < 359) AND (line_id IN (3,4,5,6))) OR
+            (fdur >= 15 AND fdur < 179 AND line_id = 7)
+          )
+        `;
+      } else if (problemCategory == 4) {
+        whereClause += ` 
+          OR (
+          ((fdur >= 659) AND (line_id = 1 OR line_id = 2)) OR
+          ((fdur >= 359) AND (line_id IN (3,4,5,6))) OR
+          (fdur >= 179 AND line_id = 7)
+        )
+        `;
+      }
+      whereClause += `)`;
+    }
+
+    // if (problemCategory == 4) {
+    //   whereClause += ` 
+    //     OR (
+    //       ((fdur >= 659) AND (line_id = 1 OR line_id = 2)) OR
+    //       ((fdur >= 359) AND (line_id IN (3,4,5,6))) OR
+    //       (fdur >= 179 AND line_id = 7)
+    //     )
+    //   `;
+    //   whereClause += `)`;
+    // }
     
     console.log("KONTOL");
     console.log(whereClause);

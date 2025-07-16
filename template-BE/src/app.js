@@ -46,6 +46,10 @@ app.use(compression());
 app.use(cors({ exposedHeaders: ['Content-Disposition'] }));
 app.options('*', cors());
 
+// Serve static files from reports/uploads directory
+const path = require('path');
+app.use('/reports/uploads', express.static(path.join(__dirname, '../reports/uploads')));
+
 // jwt authentication
 app.use(passport.initialize());
 passport.use('jwt', jwtStrategy);
