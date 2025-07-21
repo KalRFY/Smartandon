@@ -34,23 +34,25 @@
     <CCol sm="12">
       <CCard>
         <CCardBody>
-          <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif;">
-            Smartandon
-          </CRow>
-          <CRow>
-            <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-3">
-              <CCard class="dashboard-card h-100" :color="card.color">
-                <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-                  <div class="icon-container mb-3">
-                    <component :is="card.icon" :size="30" :stroke-width="1" />
-                  </div>
-                  <h4>{{ card.title }}</h4>
-                  <!-- <p class="card-description">{{ card.description }}</p> -->
-                  <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
+          <CCol>
+            <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif;">
+              Smartandon
+            </CRow>
+            <CRow>
+              <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-3">
+                <CCard class="dashboard-card h-100" :color="card.color">
+                  <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
+                    <div class="icon-container mb-3">
+                      <component :is="card.icon" :size="30" :stroke-width="1" />
+                    </div>
+                    <h4>{{ card.title }}</h4>
+                    <!-- <p class="card-description">{{ card.description }}</p> -->
+                    <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </CRow>
+          </CCol>
           <CRow>
             <CCol>
               <CButton

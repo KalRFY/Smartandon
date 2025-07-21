@@ -14,6 +14,9 @@ const oeeRoutes = require('./smartandon/OEE');
 const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 const realtimeParetoRoutes = require('./smartandon/realtimePareto');
 const summaryRoutes = require('./smartandon/summary');
+const downloadRoutes = require('./smartandon/download.route');
+
+const tambahAnalysis = require('./smartandon/tambahAnalysis');
 
 const authRoutes = require('./smartandon/auth');
 const userRoutes = require('./smartandon/user');
@@ -54,6 +57,10 @@ const defaultRoutes = [
     route: problemRoutes,
   },
   {
+    path: '/smartandon',
+    route: downloadRoutes,
+  },
+  {
     path: '/realtime-pareto',
     route: realtimeParetoRoutes,
   },
@@ -84,6 +91,10 @@ const defaultRoutes = [
   {
     path: '/smartandon',
     route: machineStopInputRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: tambahAnalysis,
   },
 ];
 
