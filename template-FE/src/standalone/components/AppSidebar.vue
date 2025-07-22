@@ -1,5 +1,5 @@
 <template>
-  
+
   <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="
     (event) =>
       $store.commit({
@@ -85,45 +85,52 @@ export default {
             {
               component: 'CNavItem',
               to: '/app/Dashboard2',
-              name: 'SA Dashboard',
+              name: 'Dashboard',
               icon: 'cilHome',
               parentId: 'ROOT',
             },
             {
               component: 'CNavItem',
               to: '/app/DashboardDataDisplay',
-              name: 'DashboardDataDisplay',
-              icon: 'cilHome',
+              name: 'Dashboard Data Display',
+              icon: 'cilListNumbered',
               parentId: 'ROOT',
             },
             {
               component: 'CNavItem',
               to: '/app/MTBFMTTR',
-              name: 'MTBF MTTR',
-              icon: 'cilBarChart',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/RealtimeParetto',
-              name: 'Realtime Paretto',
-              icon: 'cilChartPie',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/LTBSummary',
-              name: 'LTB Summary',
-              icon: 'cilFolderOpen',
+              name: 'MTBF-MTTR',
+              icon: 'cilSpeedometer',
               parentId: 'ROOT',
             },
             {
               component: 'CNavItem',
               to: '/app/ProblemHistory',
               name: 'Problem History',
-              icon: 'cilClock',
+              icon: 'cilHistory',
               parentId: 'ROOT',
-            }
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/RealtimeParetto',
+              name: 'Realtime Paretto',
+              icon: 'cilChart',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/LTBSummary',
+              name: 'LTB Report Status',
+              icon: 'cilDescription',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/CMFollowup',
+              name: 'CM Followup',
+              icon: 'cilCalendar',
+              parentId: 'ROOT',
+            },
           ]
         }
         // {

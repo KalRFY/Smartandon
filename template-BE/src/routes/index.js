@@ -13,6 +13,7 @@ const oeeRoutes = require('./smartandon/OEE');
 const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 const realtimeParetoRoutes = require('./smartandon/realtimePareto');
 const summaryRoutes = require('./smartandon/summary');
+const cmFollowupRoutes = require('./smartandon/cmFollowup');
 
 const authRoutes = require('./smartandon/auth');
 const userRoutes = require('./smartandon/user');
@@ -71,6 +72,10 @@ const defaultRoutes = [
   {
     path: '/summary',
     route: summaryRoutes,
+  },
+  {
+    path: '/cm-followup',
+    route: cmFollowupRoutes,
   },
   {
     path: '/auth',

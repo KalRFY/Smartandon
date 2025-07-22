@@ -1,87 +1,92 @@
 <template>
-  <div
-    class="register-page d-flex align-items-center justify-content-center min-vh-100 bg-light bg-blurred"
-  >
-    <div
-      class="register-card card shadow p-4"
-      style="min-width: 240px; max-width: 550px; width: 100%"
-    >
-      <div class="register-header text-center mb-4">
-        <h2 class="register-title mb-1">Smartandon</h2>
-        <h4 class="mb-0 text-accent">Login</h4>
-      </div>
+  <div class="login-page d-flex align-items-center justify-content-center min-vh-100 bg-light bg-blurred">
+    <div class="login-header text-center mb-4">
+    </div>
 
-      <form @submit.prevent="onLogin">
-        <div class="mb-3">
-          <label for="noreg" class="form-label">Noreg</label>
-          <div class="input-wrapper">
-            <input
-              v-model="noreg"
-              type="text"
-              class="form-control"
-              id="noreg"
-              placeholder="Enter your Noreg"
-              required
-            />
+    <div class="login-card card shadow">
+      <div class="card-content d-flex">
+        <div class="form-side p-4">
+          <h2 class="form-title mt-1 mb-2">Login</h2>
+           <div class="form-subtitle mb-4">Enter your credentials</div>
+
+          <form @submit.prevent="onLogin">
+            <div class="mb-3">
+              <label for="noreg" class="form-label ms-3">Noreg</label>
+              <div class="input-wrapper">
+                <input
+                  v-model="noreg"
+                  type="text"
+                  class="form-control ms-3"
+                  id="noreg"
+                  placeholder="Enter your noreg"
+                  required
+                />
+              </div>  
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="form-label ms-3">Password</label>
+               <div class="input-wrapper">
+                <input
+                  v-model="password"
+                  type="password"
+                  class="form-control ms-3"
+                  id="password"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div> 
+            </div>
+
+            <button 
+              type="submit" 
+              class="btn btn-accent w-100 ms-3" 
+              :disabled="isLoading"
+            >
+              <span 
+                v-if="isLoading" 
+                class="spinner-border spinner-border-sm me-2"
+              ></span>
+              <span v-else>Login</span>
+            </button>
+          </form>
+
+          <div class="text-center mt-3 ms-4">
+            <span>Don't have an account?</span>
+            <a 
+              href="./#/auth/register/" 
+              class="register-link ms-1"
+            >Register</a>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label for="phone" class="form-label">Password</label>
-          <div class="input-wrapper">
-            <input
-              v-model="password"
-              type="password"
-              class="form-control"
-              id="password"
-              placeholder="Enter your password"
-              required
+        <div class="image-side">
+           <div class="image-wrapper">
+            <img 
+              :src="loginPhoto" 
+              alt="Plant 1" 
+              class="login-image" 
             />
-          </div>
+           </div>
         </div>
-
-        <button
-          type="submit"
-          class="btn btn-accent w-100"
-          :disabled="isLoading"
-        >
-          <span
-            v-if="isLoading"
-            class="spinner-border spinner-border-sm me-2"
-          ></span>
-          <span v-else>Login</span>
-        </button>
-      </form>
-
-      <div v-if="error" class="alert alert-danger mt-3" role="alert">
-        <div class="alert-icon">⚠</div>
-        <span>{{ error }}</span>
       </div>
+    </div>
 
-      <div v-if="success" class="alert alert-success mt-3" role="alert">
-        <div class="alert-icon">✓</div>
-        <span>{{ success }}</span>
-      </div>
-      <div class="text-center mt-3">
-        <span>Don't have an account?</span>
-        <a
-          href="./#/auth/register/"
-          class="ms-1"
-          style="
-            text-decoration: underline;
-            cursor: pointer;
-            color: #dc2626;
-            font-weight: bold;
-          "
-          >Register</a
-        >
-      </div>
+    <div v-if="error" class="alert alert-danger mt-3" role="alert">
+      <div class="alert-icon">❌</div>
+      <span>{{ error }}</span>
+    </div>
+
+    <div v-if="success" class="alert alert-success mt-3" role="alert">
+      <div class="alert-icon">✓</div>
+      <span>{{ success }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import loginPhoto from '@/assets/images/plant_1.jpg';
 
 const password = ref('')
 const isLoading = ref(false)
@@ -113,9 +118,13 @@ const onLogin = async () => {
     })
     if (!response.ok) {
       const data = await response.json().catch(() => ({}))
-      throw new Error(data.message || 'Registration failed. Please try again.')
+      throw new Error(data.message || 'Login failed. Please try again.')
     }
     success.value = 'Login successful!'
+    setTimeout(() => {
+      success.value = ''
+      window.location.href = '/#/app/dashboard'
+    }, 3000)
     const data = await response.json()
     localStorage.setItem('token', data.token)
     noreg.value = ''
@@ -124,13 +133,11 @@ const onLogin = async () => {
       window.location.href = '/#/app/dashboard'
     }, 1000)
   } catch (e) {
-    error.value = e.message || 'Registration failed. Please try again.'
-    if (e.errors) {
-      console.error('Login validation errors:', e.errors)
-      error.value = e.errors.map((err) => err.message).join(', ')
-    } else {
-      console.error('Login error:', e)
-    }
+    error.value = e.message || 'Login failed. Please try again.'
+    console.error('Login error:', e)
+    setTimeout(() => {
+      error.value = ''
+    }, 3000)
   } finally {
     isLoading.value = false
   }
@@ -138,33 +145,26 @@ const onLogin = async () => {
 </script>
 
 <style scoped>
-.register-page {
-  background: #fbeaec;
+.login-page {
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
 }
 
-.register-card {
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 8px 16px -4px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  position: relative;
-  z-index: 1;
-}
-
-.register-header {
-  background: linear-gradient(135deg, #dc2626 0%, #a61b1b 100%);
-  border-radius: 16px 16px 0 0;
-  padding: 32px 24px 24px;
-  margin: -24px -24px 24px -24px;
-  color: #fff;
-  box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.3);
-  position: relative;
+.login-card {
+  max-width: 1100px;
+  width: 100%;
+  border-radius: 16px;
   overflow: hidden;
 }
 
-.register-header::before {
+.login-header {
+  max-width: 550px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.login-header::before {
   content: '';
   position: absolute;
   top: 0;
@@ -173,55 +173,58 @@ const onLogin = async () => {
   bottom: 0;
 }
 
-.brand-logo {
-  position: relative;
-  z-index: 1;
+.card-content {
+  display: flex;
 }
 
-.logo-icon {
-  display: inline-flex;
+.form-side {
+  flex: 1;
+}
+
+.image-side {
+  flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 50%;
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
-.logo-icon:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.05);
+.image-wrapper {
+  width: 100%;
+  max-width: 476px;
+  height: 320px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.register-title {
-  position: relative;
-  z-index: 1;
-  font-size: 2.2rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  margin-bottom: 0.25rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.login-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
-.text-accent {
-  position: relative;
-  z-index: 1;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-  font-size: 1.1rem;
+.form-title {
+  font-size: 26px;
+  font-weight: 600;
+  margin-left: 12.2vw;
+}
+
+.form-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  margin-left: 10vw;
 }
 
 .form-label {
-  font-weight: 600;
-  color: #4a5568;
-  margin-bottom: 8px;
+  font-weight: 500;
   font-size: 0.9rem;
+  margin-bottom: 4px;
 }
 
 .input-wrapper {
@@ -229,13 +232,11 @@ const onLogin = async () => {
 }
 
 .form-control {
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 14px 16px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px 14px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-control:focus {
@@ -255,11 +256,11 @@ const onLogin = async () => {
   border: none;
   color: #fff;
   font-weight: 600;
-  padding: 16px 24px;
-  border-radius: 12px;
+  padding: 12px;
+  border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 4px 15px rgba(229, 83, 83, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -278,7 +279,7 @@ const onLogin = async () => {
 
 .btn-accent:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+  box-shadow: 0 8px 25px rgba(229, 83, 83, 0.4);
 }
 
 .btn-accent:hover:not(:disabled)::before {
@@ -325,15 +326,29 @@ const onLogin = async () => {
 }
 
 .alert-danger {
-  background: rgba(248, 113, 113, 0.1);
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: #f8d7d7;
   color: #dc2626;
-  border: 1px solid rgba(248, 113, 113, 0.2);
+  z-index: 9999;
+  border: 1px solid #dc2626;
+  animation: fadeInOut 3s ease-in-out;
 }
 
 .alert-success {
-  background: rgba(34, 197, 94, 0.1);
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: #ddf8daac;
   color: #16a34a;
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  z-index: 9999;
+  border: 1px solid #16a34a;
+  animation: fadeInOut 3s ease-in-out;
 }
 
 .alert-icon {
@@ -346,65 +361,100 @@ const onLogin = async () => {
   height: 24px;
 }
 
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  10%, 90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+}
+
+.register-link {
+  text-decoration: underline;
+  color: #dc2626;
+  font-weight: 600;
+}
+
 .d-flex {
   display: flex;
 }
+
 .align-items-center {
   align-items: center;
 }
+
 .justify-content-center {
   justify-content: center;
 }
+
 .min-vh-100 {
   min-height: 100vh;
 }
+
 .bg-light {
   background-color: #f8f9fa;
 }
-.text-center {
-  text-align: center;
-}
-.mb-1 {
-  margin-bottom: 0.25rem;
-}
+
 .mb-3 {
   margin-bottom: 1rem;
 }
+
 .mb-4 {
   margin-bottom: 1.5rem;
 }
+
+.ms-1 {
+  margin-left: 0.25rem;
+}
+
 .mt-3 {
   margin-top: 1rem;
 }
+
 .me-2 {
   margin-right: 0.5rem;
 }
+
 .w-100 {
   width: 100%;
 }
+
 .p-4 {
   padding: 1.5rem;
 }
+
 .card {
   border: 1px solid rgba(0, 0, 0, 0.125);
 }
+
 .shadow {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
-@media (max-width: 480px) {
-  .register-card {
+@media (max-width: 768px) {
+  .login-card {
     margin: 16px;
     min-width: auto !important;
   }
 
-  .register-header {
+  .login-header {
     padding: 24px 20px 20px;
     margin: -24px -24px 20px -24px;
   }
 
-  .register-title {
-    font-size: 1.8rem;
+  .card-content {
+    flex-direction: column;
+  }
+
+  .image-side {
+    display: none;
   }
 
   .form-control {
