@@ -3,7 +3,7 @@
   <CRow class="mb-3">
     <CCol>
       <CCard>
-        <CCardHeader>Search</CCardHeader>
+        <CCardHeader style="font-weight: bold; font-size: medium;">Search</CCardHeader>
         <CCardBody>
           <CRow>
             <CCol>

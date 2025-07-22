@@ -3,12 +3,13 @@
   <CRow>
     <CCol>
       <CCard>
-        <CCardHeader>Table History</CCardHeader>
+        <CCardHeader style="font-weight: bold; font-size: medium;">Table History</CCardHeader>
         <CCardBody>
           <TableActions
             @freq="$emit('freq')"
             @ltb="$emit('ltb')"
             @download="$emit('download')"
+            @filterCategory="onFilterCategory"
           />
 
           <hr />
@@ -174,6 +175,9 @@ export default {
     'freq',
     'ltb',
     'download',
+    'repeat',
+    'ltr',
+    'filterCategory',
   ],
 
   methods: {
@@ -184,6 +188,10 @@ export default {
       const month = (date.getMonth() + 1).toString().padStart(2, '0')
       const day = date.getDate().toString().padStart(2, '0')
       return `${year}-${month}-${day}`
+    },
+    onFilterCategory(category) {
+      console.log(`ProblemsTable emitted filterCategory with category: ${category}`)
+      this.$emit('filterCategory', category)
     },
   },
 }

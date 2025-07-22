@@ -7,6 +7,7 @@ const qccMTypesRoutes = require('./smartandon/qccMTypes');
 const lineRoutes = require('./smartandon/line');
 const machineRoutes = require('./smartandon/machine');
 const memberRoutes = require('./smartandon/member');
+const machineStopInputRoutes = require('./smartandon/machineStopInput.controller');
 
 const problemRoutes = require('./smartandon/problem');
 const oeeRoutes = require('./smartandon/OEE');
@@ -14,6 +15,9 @@ const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
 const realtimeParetoRoutes = require('./smartandon/realtimePareto');
 const summaryRoutes = require('./smartandon/summary');
 const cmFollowupRoutes = require('./smartandon/cmFollowup');
+const downloadRoutes = require('./smartandon/download.route');
+
+const tambahAnalysis = require('./smartandon/tambahAnalysis');
 
 const authRoutes = require('./smartandon/auth');
 const userRoutes = require('./smartandon/user');
@@ -54,6 +58,10 @@ const defaultRoutes = [
     route: problemRoutes,
   },
   {
+    path: '/smartandon',
+    route: downloadRoutes,
+  },
+  {
     path: '/realtime-pareto',
     route: realtimeParetoRoutes,
   },
@@ -84,6 +92,14 @@ const defaultRoutes = [
   {
     path: '/user',
     route: userRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: machineStopInputRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: tambahAnalysis,
   },
 ];
 

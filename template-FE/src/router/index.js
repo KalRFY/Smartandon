@@ -114,6 +114,26 @@ const appRoutes = [
     },
   },
   /*define other routes in here*/
+  {
+    path: '/app/tpm-redirect',
+    name: 'RedirectTPM',
+    component: () =>
+      import(/* webpackChunkName: "redirect-tpm" */ '@/views/RedirectTPM.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Redirect TPM',
+    },
+  },
+  {
+    path: '/app/order-spareparts-redirect',
+    name: 'RedirectOrderSpareparts',
+    component: () =>
+      import(/* webpackChunkName: "redirect-order-spareparts" */ '@/views/RedirectOrderSpareparts.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Redirect Order Spareparts',
+    },
+  }
 ]
 
 const authRoutes = [

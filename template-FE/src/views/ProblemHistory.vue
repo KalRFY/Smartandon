@@ -537,7 +537,6 @@ export default {
         this.operator = problemData.foperator || '';
         this.avCategory = problemData.fav_categoty || '';
         this.shift = problemData.fshift || '';
-
         if(this.shift == "r"){
           this.shiftName = "Red";
         } else if (this.shift == "w"){

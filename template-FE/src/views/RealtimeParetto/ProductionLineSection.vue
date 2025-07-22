@@ -235,7 +235,7 @@ export default {
           plugins: {
             title: {
               display: true,
-              text: `${props.title} - Problem Duration Chart`,
+              text: `${props.title} - Problem Duration Chart Target Line: 1000min`,
               font: { size: 16, weight: 'bold' },
             },
             legend: { position: 'top' },
