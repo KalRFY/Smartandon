@@ -16,60 +16,74 @@
   </CRow>
 
   <CRow class="mb-3">
-    <!-- <CCol sm="3">
-      <CCard>
-        <CCardBody>
-          <div class="text-center mt-3">
-            <img
-            alt="Smartandon Image"
-            src="../standalone/assets/images/icon.png"
-            style="max-width: 50%; height: auto;"
-            />
-          </div>
-          <CCol sm="11" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif; text-align: center;">
+    <CCol sm="3">
+      <CCard style="width: 100%; height: 100%;">
+        <CCardBody class="d-flex flex-column align-items-center justify-content-center">
+          <CRow class="mb-3">
+            <div style="text-align: center;">
+              <img
+              alt="Smartandon Image"
+              src="../standalone/assets/images/icon.png"
+              style="max-width: 50%; height: auto; display: inline-block;"
+              />
+            </div>
+          </CRow>
+          <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif; text-align: center;">
             Smartandon
-          </CCol>
-        </CCardBody>
-      </CCard>
-    </CCol> -->
-    <CCol sm="12">
-      <CCard>
-        <CCardBody>
-          <CCol>
-            <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif;">
-              Smartandon
-            </CRow>
-            <CRow>
-              <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-3">
-                <CCard class="dashboard-card h-100" :color="card.color">
-                  <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-                    <div class="icon-container mb-3">
-                      <component :is="card.icon" :size="30" :stroke-width="1" />
-                    </div>
-                    <h4>{{ card.title }}</h4>
-                    <!-- <p class="card-description">{{ card.description }}</p> -->
-                    <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-                  </CCardBody>
-                </CCard>
-              </CCol>
-            </CRow>
-          </CCol>
+          </CRow>
+        
+          <CRow style="width: 100%;">
+            <hr style="width: 100%;" />
+          </CRow>
           <CRow>
-            <CCol>
-              <CButton
-                style="width: 100%; font-size: 18px; font-weight: bold"
-                color="primary"
-                @click="onClickInput"
-                shape="rounded-pill"
-                >
-                Machine Stop Input
-              </CButton>
-            </CCol>
+            Welcome to Smartandon
           </CRow>
         </CCardBody>
       </CCard>
     </CCol>
+    <CCol sm="9">
+      <div class="dashboard-cards-container">
+        <div
+          v-for="(card, index) in dashboardCards"
+          :key="index"
+          class="dashboard-card-wrapper"
+        >
+          <CCard class="dashboard-card h-100" :color="card.color">
+            <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
+              <div class="icon-container mb-3">
+                <component :is="card.icon" :size="30" :stroke-width="1" />
+              </div>
+              <h4>{{ card.title }}</h4>
+              <!-- <p class="card-description">{{ card.description }}</p> -->
+              <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
+            </CCardBody>
+          </CCard>
+        </div>
+      </div>
+      <!-- <CCard>
+        <CCardBody>
+          <CCol class="mb-3">
+             <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif;">
+              Smartandon
+            </CRow>
+          </CCol>
+          <CRow>
+            <CCol>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard> -->
+    </CCol>
   </CRow>
+  <CButton
+    class="mb-3"
+    style="width: 100%; font-size: 18px; font-weight: bold"
+    color="primary"
+    @click="onClickInput"
+    shape="rounded-pill"
+    >
+    Machine Stop Input
+  </CButton>
 
 
   <COffcanvas placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
@@ -123,19 +137,31 @@
             </CCol>
           </CRow>
         </CCardHeader> -->
-        <CCardBody>
-          <CRow>
-            <CCol v-for="(chartData, index) in chartDataPerLine" :key="index">
-              <CCard color="dark" variant="outline">
-                <CCardBody style="height: 200px;">
-                  <CCardTitle style="font-size: small; height: 35px;">{{ chartData.label }}</CCardTitle>
-                  <ApexCharts :options="chartData.options" :series="chartData.series" type="radialBar" height="250"
-                    width="100" />
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-        </CCardBody>
+      <CCardBody>
+        <CRow md="12">
+          <CCol md="6">
+            <CRow>
+              <CCol sm="3" class="mb-3" v-for="(chartData, index) in chartDataPerLine" :key="index">
+                <CCard color="dark" variant="outline">
+                  <CCardBody style="height: 100%;">
+                    <CCardTitle style="font-size: small; height: 35px;">{{ chartData.label }}</CCardTitle>
+                    <ApexCharts :options="chartData.options" :series="chartData.series" type="radialBar" height="250"
+                      width="120" />
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol md="6">
+            <CCard color="dark" variant="outline">
+              <CCardBody style="height: 350px;">
+                <CCardTitle style="font-size: medium; height: 35px;">Cumulative OEE per Line</CCardTitle>
+                <ApexCharts :options="cumulativeOeeOptions" :series="cumulativeOeeSeries" type="polarArea" height="300" />
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+      </CCardBody>
       </CCard>
     </CCol>
   </CRow>
@@ -544,6 +570,8 @@ export default {
       oee: [],
       oeeOption: [],
       chartDataPerLine: [],
+      cumulativeOeeSeries: [],
+      cumulativeOeeOptions: {},
       visibleEnd: false,
 
 
@@ -716,6 +744,7 @@ export default {
     CTableDataCell,
     CoffCanvas,
     Treeselect,
+    ApexCharts,
   },
   setup() {
     const router = useRouter()
@@ -924,42 +953,105 @@ export default {
           chart: {
             height: 250,
             type: 'radialBar',
+            offsetY: 0,
+            sparkline: {
+              enabled: true
+            }
           },
           plotOptions: {
             radialBar: {
+              startAngle: -90,
+              endAngle: 90,
+              track: {
+                background: '#e7e7e7',
+                strokeWidth: '97%',
+                margin: 5, // margin is in pixels
+                dropShadow: {
+                  enabled: true,
+                  top: 2,
+                  left: 0,
+                  color: '#999',
+                  opacity: 1,
+                  blur: 2
+                }
+              },
               hollow: {
-                size: '100%',
+                size: '50%',
               },
               dataLabels: {
                 name: {
-                  fontSize: '12px',
+                  show: false
                 },
                 value: {
-                  fontSize: '16px',
+                  offsetY: -2,
+                  fontSize: '22px',
                   formatter: function (val) {
-                    if (typeof val === 'string') {
-                      if (val === '10000') {
-                        return '99.99%';
-                      }
-                      const numVal = parseFloat(val);
-                      if (!isNaN(numVal)) {
-                        return (numVal / 100).toFixed(2) + '%';
-                      }
-                    } else if (typeof val === 'number' && !isNaN(val)) {
-                      if (val === 10000) {
-                        return '99.99%';
-                      }
-                      return (val / 100).toFixed(2) + '%';
-                    }
-                    return val;
+                    return val.toFixed(2) + '%';
                   }
                 }
-              },
+              }
             }
           },
+          fill: {
+            type: 'gradient',
+            gradient: {
+              shade: 'light',
+              shadeIntensity: 0.4,
+              inverseColors: false,
+              opacityFrom: 1,
+              opacityTo: 1,
+              stops: [0, 50, 53, 91]
+            },
+          },
           labels: [devName],
+          yaxis: {
+            max: 100
+          }
         }
       }));
+
+      // New cumulative OEE polar area chart data
+      const cumulativeOeeData = {};
+      this.oee.forEach(item => {
+        if (!cumulativeOeeData[item.DEV_NAME]) {
+          cumulativeOeeData[item.DEV_NAME] = 0;
+        }
+        cumulativeOeeData[item.DEV_NAME] += parseFloat(item.REG_VALUE);
+      });
+      this.cumulativeOeeSeries = Object.values(cumulativeOeeData);
+      this.cumulativeOeeOptions = {
+        chart: {
+          type: 'polarArea',
+          height: 350,
+        },
+        labels: Object.keys(cumulativeOeeData),
+        fill: {
+          opacity: 0.8
+        },
+        stroke: {
+          width: 1,
+          colors: undefined
+        },
+        yaxis: {
+          show: true,
+          min: 0,
+          max: Math.max(...Object.values(cumulativeOeeData)) * 1.1
+        },
+        legend: {
+          position: 'right'
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              height: 300
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }]
+      };
     } catch (error) {
       console.error('Failed to fetch or process OEE data:', error);
     }
@@ -1008,4 +1100,31 @@ p {
   font-style: italic;
 }
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+.dashboard-cards-container {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.dashboard-cards-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.dashboard-cards-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.dashboard-card-wrapper {
+  flex: 0 0 auto;
+  width: calc((100% - 40px) / 5); /* 5 cards visible with some margin */
+  margin-right: 10px;
+}
+
+.dashboard-card-wrapper:last-child {
+  margin-right: 0;
+}
 </style>

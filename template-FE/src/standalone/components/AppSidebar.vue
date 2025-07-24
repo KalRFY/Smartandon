@@ -105,13 +105,6 @@ export default {
             },
             {
               component: 'CNavItem',
-              to: '/app/ProblemHistory',
-              name: 'Problem History',
-              icon: 'cilHistory',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
               to: '/app/RealtimeParetto',
               name: 'Realtime Paretto',
               icon: 'cilChart',
@@ -122,6 +115,13 @@ export default {
               to: '/app/LTBSummary',
               name: 'LTB Report Status',
               icon: 'cilDescription',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/ProblemHistory',
+              name: 'Problem History',
+              icon: 'cilHistory',
               parentId: 'ROOT',
             },
             {
