@@ -68,18 +68,18 @@ const getProblem = async (req, res, next) => {
 
 const getProblemView = async (req, res, next) => {
   try {
-    console.log("===============================" + req + "===============================");
+    console.log(`===============================${req}===============================`);
     console.log(req);
-    let page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 100;
-    let offset = (page - 1) * limit;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = (page - 1) * limit;
 
-    const startDate = req.query.startDate;
-    const finishDate = req.query.finishDate;
-    const machineName = req.query.machineName;
-    const line = req.query.line;
-    const problem = req.query.problem;
-    const problemCategory = req.query.problemCategory;
+    const { startDate } = req.query;
+    const { finishDate } = req.query;
+    const { machineName } = req.query;
+    const { line } = req.query;
+    const { problem } = req.query;
+    const { problemCategory } = req.query;
 
     // Build where clause for date filtering
     let whereClause = 'WHERE fid IS NOT NULL';
@@ -110,10 +110,6 @@ const getProblemView = async (req, res, next) => {
       whereClause += ` AND ferror_name LIKE '%${problem}%'`;
     }
 
-
-
-
-    
     if (problemCategory) {
       whereClause += ` AND (problemCategory = ${problemCategory}`;
       if (problemCategory == 3) {
@@ -137,7 +133,7 @@ const getProblemView = async (req, res, next) => {
     }
 
     // if (problemCategory == 4) {
-    //   whereClause += ` 
+    //   whereClause += `
     //     OR (
     //       ((fdur >= 659) AND (line_id = 1 OR line_id = 2)) OR
     //       ((fdur >= 359) AND (line_id IN (3,4,5,6))) OR
@@ -146,8 +142,8 @@ const getProblemView = async (req, res, next) => {
     //   `;
     //   whereClause += `)`;
     // }
-    
-    console.log("KONTOL");
+
+    console.log('KONTOL');
     console.log(whereClause);
 
     // Query total count
@@ -157,7 +153,7 @@ const getProblemView = async (req, res, next) => {
       ${whereClause}
     `;
     const [countResult] = await sequelize.query(countQuery, { replacements });
-    const total = countResult[0].total;
+    const { total } = countResult[0];
 
     // Query paginated data
     const dataQuery = `
@@ -245,7 +241,7 @@ const getProblemView = async (req, res, next) => {
 
 const getProblemById = async (req, res, next) => {
   try {
-    const fid = req.params.fid;
+    const { fid } = req.params;
     const query = `
       SELECT
         fid,
@@ -325,20 +321,13 @@ const getProblemById = async (req, res, next) => {
 const updateProblem = async (req, res, next) => {
   try {
     const {
-      fid,
       machineName,
       lineName,
       problemDescription,
-      uraianKejadian,
-      uploadImage,
-      standartImage,
-      ilustrasiStandart,
-      ilustrasiActual,
-      actualImage,
-      gapBetweenStandarAndActual,
-      pilihFocusThemaMember,
-      pilihTaskforce,
       operator,
+      fid,
+      maker,
+      operationNo,
       avCategory,
       shift,
       startDate,
@@ -347,195 +336,272 @@ const updateProblem = async (req, res, next) => {
       problemCategory,
       itemTemporaryAction,
       rootcauses5Why,
-      tambahAnalysisTerjadi,
-      whyImage,
-      pilihO6,
       stepRepair,
       partChange,
       countermeasureKenapaTerjadi,
       yokoten,
-      rootcause5WhyKenkaLama,
+      rootcause5WhyKenapaLama,
       tambahAnalisisLama,
-      pilihQ6,
+      tambahAnalysisTerjadi,
+      whyImage,
       whyLamaImage,
-      countermeasureKenkaLama,
-      attachmentMeeting,
-      comments5Why,
+      comments5WhySH,
+      comments5WhyLH,
       commentsCountermeasure,
-      lastReportFile,
+      attachmentMeeting,
+      file_report,
       uploadFile,
+      actualImage,
+      uploadImage,
+      ilustrasiActual,
+      ilustrasiStandart,
+      standartImage,
+      gapBetweenStandarAndActual,
+      uraianKejadian,
+      agreeTerms,
+      countermeasureKenapaLama,
+      pilihFocusThemaMember,
+      pilihTaskforce,
+      pilihO6,
+      pilihQ6,
+      comments5Why,
+      lastReportFile,
+      oCategory,
+      qCategory,
     } = req.body;
+    console.log('UPDATE PROBLEM BODY:', req.body);
 
     if (!fid) {
       return res.status(httpStatus.BAD_REQUEST).json({ message: 'Problem ID (fid) is required' });
     }
 
     const updateFields = [];
-    const replacements = { fid };
+    const replacements = {
+      machineName,
+      lineName,
+      problemDescription,
+      operator,
+      fid,
+      maker,
+      operationNo,
+      avCategory,
+      shift,
+      startDate,
+      finishDate,
+      durationMin,
+      problemCategory,
+      itemTemporaryAction,
+      rootcauses5Why,
+      stepRepair,
+      partChange,
+      countermeasureKenapaTerjadi,
+      yokoten,
+      rootcause5WhyKenapaLama,
+      tambahAnalisisLama,
+      tambahAnalysisTerjadi,
+      whyImage,
+      whyLamaImage,
+      comments5WhySH,
+      comments5WhyLH,
+      commentsCountermeasure,
+      attachmentMeeting,
+      file_report,
+      uploadFile,
+      actualImage,
+      uploadImage,
+      ilustrasiActual,
+      ilustrasiStandart,
+      standartImage,
+      gapBetweenStandarAndActual,
+      uraianKejadian,
+      agreeTerms,
+      countermeasureKenapaLama,
+      pilihFocusThemaMember,
+      pilihTaskforce,
+      pilihO6,
+      pilihQ6,
+      oCategory,
+      qCategory,
+      comments5Why,
+      lastReportFile,
+    };
 
-    if (machineName !== undefined) {
-      updateFields.push('fmc_name = :machineName');
-      replacements.machineName = machineName;
-    }
-    if (lineName !== undefined) {
-      updateFields.push('fline = :lineName');
-      replacements.lineName = lineName;
-    }
-    if (problemDescription !== undefined) {
-      updateFields.push('ferror_name = :problemDescription');
-      replacements.problemDescription = problemDescription;
-    }
-    if (uraianKejadian !== undefined) {
-      updateFields.push('ferror_detail = :uraianKejadian');
-      replacements.uraianKejadian = uraianKejadian;
-    }
-    if (uploadImage !== undefined) {
-      updateFields.push('fupload_image = :uploadImage');
-      replacements.uploadImage = uploadImage;
-    }
-    if (standartImage !== undefined) {
-      updateFields.push('fstandart_image = :standartImage');
-      replacements.standartImage = standartImage;
-    }
-    if (ilustrasiStandart !== undefined) {
-      updateFields.push('filustrasi_standart = :ilustrasiStandart');
-      replacements.ilustrasiStandart = ilustrasiStandart;
-    }
-    if (ilustrasiActual !== undefined) {
-      updateFields.push('filustrasi_actual = :ilustrasiActual');
-      replacements.ilustrasiActual = ilustrasiActual;
-    }
-    if (actualImage !== undefined) {
-      updateFields.push('factual_image = :actualImage');
-      replacements.actualImage = actualImage;
-    }
-    if (gapBetweenStandarAndActual !== undefined) {
-      updateFields.push('fgap_between_standar_and_actual = :gapBetweenStandarAndActual');
-      replacements.gapBetweenStandarAndActual = gapBetweenStandarAndActual;
-    }
-    if (pilihFocusThemaMember !== undefined) {
-      updateFields.push('fpilih_focus_thema_member = :pilihFocusThemaMember');
-      replacements.pilihFocusThemaMember = pilihFocusThemaMember;
-    }
-    if (pilihTaskforce !== undefined) {
-      updateFields.push('fpilih_taskforce = :pilihTaskforce');
-      replacements.pilihTaskforce = pilihTaskforce;
-    }
-    if (operator !== undefined) {
-      updateFields.push('foperator = :operator');
-      replacements.operator = operator;
-    }
-    if (avCategory !== undefined) {
-      updateFields.push('fav_category = :avCategory');
-      replacements.avCategory = avCategory;
-    }
-    if (shift !== undefined) {
-      updateFields.push('fshift = :shift');
-      replacements.shift = shift;
-    }
-    if (startDate !== undefined) {
-      updateFields.push('fstart_time = :startDate');
-      replacements.startDate = startDate;
-    }
-    if (finishDate !== undefined) {
-      updateFields.push('fend_time = :finishDate');
-      replacements.finishDate = finishDate;
-    }
-    if (durationMin !== undefined) {
-      updateFields.push('fdur = :durationMin');
-      replacements.durationMin = durationMin;
-    }
-    if (problemCategory !== undefined) {
-      updateFields.push('fproblem_category = :problemCategory');
-      replacements.problemCategory = problemCategory;
-    }
-    if (itemTemporaryAction !== undefined) {
-      updateFields.push('ftemporary_action = :itemTemporaryAction');
-      replacements.itemTemporaryAction = itemTemporaryAction;
-    }
-    if (rootcauses5Why !== undefined) {
-      updateFields.push('frootcauses_5_why = :rootcauses5Why');
-      replacements.rootcauses5Why = rootcauses5Why;
-    }
-    if (tambahAnalysisTerjadi !== undefined) {
-      updateFields.push('ftambah_analysis_terjadi = :tambahAnalysisTerjadi');
-      replacements.tambahAnalysisTerjadi = tambahAnalysisTerjadi;
-    }
-    if (whyImage !== undefined) {
-      updateFields.push('fwhy_image = :whyImage');
-      replacements.whyImage = whyImage;
-    }
-    if (pilihO6 !== undefined) {
-      updateFields.push('fpilih_o6 = :pilihO6');
-      replacements.pilihO6 = pilihO6;
-    }
-    if (stepRepair !== undefined) {
-      updateFields.push('fstep_repair = :stepRepair');
-      replacements.stepRepair = stepRepair;
-    }
-    if (partChange !== undefined) {
-      updateFields.push('fpart_change = :partChange');
-      replacements.partChange = partChange;
-    }
-    if (countermeasureKenapaTerjadi !== undefined) {
-      updateFields.push('fcountermeasure_kenapa_terjadi = :countermeasureKenapaTerjadi');
-      replacements.countermeasureKenapaTerjadi = countermeasureKenapaTerjadi;
-    }
-    if (yokoten !== undefined) {
-      updateFields.push('fyokoten = :yokoten');
-      replacements.yokoten = yokoten;
-    }
-    if (rootcause5WhyKenkaLama !== undefined) {
-      updateFields.push('frootcause_5_why_kenka_lama = :rootcause5WhyKenkaLama');
-      replacements.rootcause5WhyKenkaLama = rootcause5WhyKenkaLama;
-    }
-    if (tambahAnalisisLama !== undefined) {
-      updateFields.push('ftambah_analisis_lama = :tambahAnalisisLama');
-      replacements.tambahAnalisisLama = tambahAnalisisLama;
-    }
-    if (pilihQ6 !== undefined) {
-      updateFields.push('fpilih_q6 = :pilihQ6');
-      replacements.pilihQ6 = pilihQ6;
-    }
-    if (whyLamaImage !== undefined) {
-      updateFields.push('fwhy_lama_image = :whyLamaImage');
-      replacements.whyLamaImage = whyLamaImage;
-    }
-    if (countermeasureKenkaLama !== undefined) {
-      updateFields.push('fcountermeasure_kenka_lama = :countermeasureKenkaLama');
-      replacements.countermeasureKenkaLama = countermeasureKenkaLama;
-    }
-    if (attachmentMeeting !== undefined) {
-      updateFields.push('fattachment_meeting = :attachmentMeeting');
-      replacements.attachmentMeeting = attachmentMeeting;
-    }
-    if (comments5Why !== undefined) {
-      updateFields.push('fcomments_5_why = :comments5Why');
-      replacements.comments5Why = comments5Why;
-    }
-    if (commentsCountermeasure !== undefined) {
-      updateFields.push('fcomments_countermeasure = :commentsCountermeasure');
-      replacements.commentsCountermeasure = commentsCountermeasure;
-    }
-    if (lastReportFile !== undefined) {
-      updateFields.push('flast_report_file = :lastReportFile');
-      replacements.lastReportFile = lastReportFile;
-    }
-    if (uploadFile !== undefined) {
-      updateFields.push('fupload_file = :uploadFile');
-      replacements.uploadFile = uploadFile;
-    }
+    // if (machineName !== undefined) {
+    //   updateFields.push('fmc_name = :machineName');
+    //   replacements.machineName = machineName;
+    // }
+    // if (lineName !== undefined) {
+    //   updateFields.push('fline = :lineName');
+    //   replacements.lineName = lineName;
+    // }
+    // if (problemDescription !== undefined) {
+    //   updateFields.push('ferror_name = :problemDescription');
+    //   replacements.problemDescription = problemDescription;
+    // }
+    // if (uraianKejadian !== undefined) {
+    //   updateFields.push('ferror_detail = :uraianKejadian');
+    //   replacements.uraianKejadian = uraianKejadian;
+    // }
+    // if (uploadImage !== undefined) {
+    //   updateFields.push('fupload_image = :uploadImage');
+    //   replacements.uploadImage = uploadImage;
+    // }
+    // if (standartImage !== undefined) {
+    //   updateFields.push('fstandart_image = :standartImage');
+    //   replacements.standartImage = standartImage;
+    // }
+    // if (ilustrasiStandart !== undefined) {
+    //   updateFields.push('filustrasi_standart = :ilustrasiStandart');
+    //   replacements.ilustrasiStandart = ilustrasiStandart;
+    // }
+    // if (ilustrasiActual !== undefined) {
+    //   updateFields.push('filustrasi_actual = :ilustrasiActual');
+    //   replacements.ilustrasiActual = ilustrasiActual;
+    // }
+    // if (actualImage !== undefined) {
+    //   updateFields.push('factual_image = :actualImage');
+    //   replacements.actualImage = actualImage;
+    // }
+    // if (gapBetweenStandarAndActual !== undefined) {
+    //   updateFields.push('fgap_between_standar_and_actual = :gapBetweenStandarAndActual');
+    //   replacements.gapBetweenStandarAndActual = gapBetweenStandarAndActual;
+    // }
+    // if (pilihFocusThemaMember !== undefined) {
+    //   updateFields.push('fpilih_focus_thema_member = :pilihFocusThemaMember');
+    //   replacements.pilihFocusThemaMember = pilihFocusThemaMember;
+    // }
+    // if (pilihTaskforce !== undefined) {
+    //   updateFields.push('fpilih_taskforce = :pilihTaskforce');
+    //   replacements.pilihTaskforce = pilihTaskforce;
+    // }
+    // if (operator !== undefined) {
+    //   updateFields.push('foperator = :operator');
+    //   replacements.operator = operator;
+    // }
+    // if (avCategory !== undefined) {
+    //   updateFields.push('fav_category = :avCategory');
+    //   replacements.avCategory = avCategory;
+    // }
+    // if (shift !== undefined) {
+    //   updateFields.push('fshift = :shift');
+    //   replacements.shift = shift;
+    // }
+    // if (startDate !== undefined) {
+    //   updateFields.push('fstart_time = :startDate');
+    //   replacements.startDate = startDate;
+    // }
+    // if (finishDate !== undefined) {
+    //   updateFields.push('fend_time = :finishDate');
+    //   replacements.finishDate = finishDate;
+    // }
+    // if (durationMin !== undefined) {
+    //   updateFields.push('fdur = :durationMin');
+    //   replacements.durationMin = durationMin;
+    // }
+    // if (problemCategory !== undefined) {
+    //   updateFields.push('fproblem_category = :problemCategory');
+    //   replacements.problemCategory = problemCategory;
+    // }
+    // if (itemTemporaryAction !== undefined) {
+    //   updateFields.push('ftemporary_action = :itemTemporaryAction');
+    //   replacements.itemTemporaryAction = itemTemporaryAction;
+    // }
+    // if (rootcauses5Why !== undefined) {
+    //   updateFields.push('frootcauses_5_why = :rootcauses5Why');
+    //   replacements.rootcauses5Why = rootcauses5Why;
+    // }
+    // if (tambahAnalysisTerjadi !== undefined) {
+    //   updateFields.push('ftambah_analysis_terjadi = :tambahAnalysisTerjadi');
+    //   replacements.tambahAnalysisTerjadi = tambahAnalysisTerjadi;
+    // }
+    // if (whyImage !== undefined) {
+    //   updateFields.push('fwhy_image = :whyImage');
+    //   replacements.whyImage = whyImage;
+    // }
+    // if (pilihO6 !== undefined) {
+    //   updateFields.push('fpilih_o6 = :pilihO6');
+    //   replacements.pilihO6 = pilihO6;
+    // }
+    // if (stepRepair !== undefined) {
+    //   updateFields.push('fstep_repair = :stepRepair');
+    //   replacements.stepRepair = stepRepair;
+    // }
+    // if (partChange !== undefined) {
+    //   updateFields.push('fpart_change = :partChange');
+    //   replacements.partChange = partChange;
+    // }
+    // if (countermeasureKenapaTerjadi !== undefined) {
+    //   updateFields.push('fcountermeasure_kenapa_terjadi = :countermeasureKenapaTerjadi');
+    //   replacements.countermeasureKenapaTerjadi = countermeasureKenapaTerjadi;
+    // }
+    // if (yokoten !== undefined) {
+    //   updateFields.push('fyokoten = :yokoten');
+    //   replacements.yokoten = yokoten;
+    // }
+    // if (rootcause5WhyKenapaLama !== undefined) {
+    //   updateFields.push('frootcause_5_why_kenka_lama = :rootcause5WhyKenapaLama');
+    //   replacements.rootcause5WhyKenkaLama = rootcause5WhyKenapaLama;
+    // }
+    // if (tambahAnalisisLama !== undefined) {
+    //   updateFields.push('ftambah_analisis_lama = :tambahAnalisisLama');
+    //   replacements.tambahAnalisisLama = tambahAnalisisLama;
+    // }
+    // if (pilihQ6 !== undefined) {
+    //   updateFields.push('fpilih_q6 = :pilihQ6');
+    //   replacements.pilihQ6 = pilihQ6;
+    // }
+    // if (whyLamaImage !== undefined) {
+    //   updateFields.push('fwhy_lama_image = :whyLamaImage');
+    //   replacements.whyLamaImage = whyLamaImage;
+    // }
+    // if (countermeasureKenapaLama !== undefined) {
+    //   updateFields.push('fcountermeasure_kenka_lama = :countermeasureKenapaLama');
+    //   replacements.countermeasureKenkaLama = countermeasureKenapaLama;
+    // }
+    // if (attachmentMeeting !== undefined) {
+    //   updateFields.push('fattachment_meeting = :attachmentMeeting');
+    //   replacements.attachmentMeeting = attachmentMeeting;
+    // }
+    // if (comments5Why !== undefined) {
+    //   updateFields.push('fcomments_5_why = :comments5Why');
+    //   replacements.comments5Why = comments5Why;
+    // }
+    // if (commentsCountermeasure !== undefined) {
+    //   updateFields.push('fcomments_countermeasure = :commentsCountermeasure');
+    //   replacements.commentsCountermeasure = commentsCountermeasure;
+    // }
+    // if (lastReportFile !== undefined) {
+    //   updateFields.push('flast_report_file = :lastReportFile');
+    //   replacements.lastReportFile = lastReportFile;
+    // }
+    // if (uploadFile !== undefined) {
+    //   updateFields.push('fupload_file = :uploadFile');
+    //   replacements.uploadFile = uploadFile;
+    // }
 
-    if (updateFields.length === 0) {
-      return res.status(httpStatus.BAD_REQUEST).json({ message: 'No fields to update' });
-    }
-
+    // if (updateFields.length === 0) {
+    //   return res.status(httpStatus.BAD_REQUEST).json({ message: 'No fields to update' });
+    // }
+    console.log('Update Fields:', updateFields);
     const updateQuery = `
-      UPDATE tb_error_log_2
-      SET ${updateFields.join(', ')}
-      WHERE fid = :fid
+      UPDATE tb_error_log_2 t1
+      JOIN tb_mc t2 ON t1.fmc_id = t2.fid
+      LEFT JOIN m_problem_member mpm ON t1.fid = mpm.id_m_problem
+      LEFT JOIN tb_mt_member tmm ON tmm.fid = mpm.id_m_member
+      SET 
+        t1.fmc_id = t2.fid,
+        t1.ferror_name = :problemDescription,
+        t1.foperator = :operator,
+        t1.fiveWhyShFeedback = :comments5WhySH,
+        t1.fiveWhyLhFeedback = :comments5WhyLH,
+        t1.temporaryAction = :itemTemporaryAction,
+        t1.fpart_change = :partChange,
+        t1.oCategory = :oCategory,
+        t1.qCategory = :qCategory,
+        t1.fyokoten = :yokoten,
+        t1.problemCategory = :problemCategory
+      WHERE t1.fid = :fid;
     `;
-
     await sequelize.query(updateQuery, { replacements });
 
     res.status(httpStatus.OK).json({ status: 'success', message: 'Problem updated successfully' });
@@ -543,7 +609,6 @@ const updateProblem = async (req, res, next) => {
     next(error);
   }
 };
-
 
 module.exports = {
   getProblem,
