@@ -112,14 +112,7 @@ export default {
             },
             {
               component: 'CNavItem',
-              to: '/app/ltb-report',
-              name: 'LTB Report',
-              icon: 'cilFolderOpen',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/ltb-summary',
+              to: '/app/LTBSummary',
               name: 'LTB Summary',
               icon: 'cilFolderOpen',
               parentId: 'ROOT',
@@ -131,6 +124,30 @@ export default {
               icon: 'cilClock',
               parentId: 'ROOT',
             }
+          ]
+        },
+        {
+          component: 'CNavItem',
+          to: '/app/Others',
+          name: 'Others',
+          icon: 'cilApps',
+          parentId: 'ROOT',
+
+          items: [
+            {
+              component: 'CNavItem',
+              to: '/app/tpm-redirect',
+              name: 'TPM System',
+              icon: 'cilFactory',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/order-spareparts-redirect',
+              name: 'Order Spareparts',
+              icon: 'cilRoom',
+              parentId: 'ROOT',
+            },
           ]
         }
         // {

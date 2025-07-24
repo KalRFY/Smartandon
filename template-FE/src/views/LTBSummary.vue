@@ -1,272 +1,252 @@
 <template>
-    <CContainer fluid class="mt-4">
-        <CRow>
-            <CCol>
-                <h3>LTB Report Status</h3>
-                <p>Problem (>= 120 min)</p>
-            </CCol>
-        </CRow>
-        <CCard class="mt-2 mb-3 px-0 custom-card">
-            <CRow class="mt-3 mb-3 px-3">
-                <CCol xs="12">
-                    <LegendStatus class="d-flex justify-content-between align-items-center w-100 mb-2" />
-                    <CInputGroup size="lg" class="mt-5 w-100">
-                        <CInputGroupText>Name</CInputGroupText>
-                        <CFormInput placeholder="name TL/GL" v-model="findLeader" />
-                    </CInputGroup>
-                </CCol>
-            </CRow>
+  <CContainer fluid class="mt-4 mb-4">
+    <CRow>
+      <CCol>
+        <h3>LTB Report Status</h3>
+        <p>Problem (≥ 120 min, ASSY LINE ≥ 15 min)</p>
+      </CCol>
+    </CRow>
 
-            <CRow class="px-3">
-                <CCol xs="12">
-                    <div class="tableFixHead w-100 custom-table">
-                        <table class="table table-bordered w-100">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Date</th>
-                                    <th>Mesin</th>
-                                    <th>Problem Description</th>
-                                    <th>Duration</th>
-                                    <th>TL</th>
-                                    <th>GL</th>
-                                    <th>TL<br />Check</th>
-                                    <th>GL<br />Check</th>
-                                    <th>SH<br />Check</th>
-                                    <th>Mgr<br />Check</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, i) in tableProblemFup" :key="item.fid">
-                                    <td>{{ i + 1 }}</td>
-                                    <td>{{ item.fstart_time }}</td>
-                                    <td>{{ item.fmc_name }}</td>
-                                    <td class="text-left">{{ item.ferror_name }}</td>
-                                    <td>{{ item.fdur }}</td>
-                                    <td>{{ item.tlName }}</td>
-                                    <td>{{ item.glName }}</td>
-                                    <td>
-                                        <div :class="item.tlCheck" />
-                                    </td>
-                                    <td>
-                                        <div :class="item.lhCheck" />
-                                    </td>
-                                    <td>
-                                        <div :class="item.shCheck" />
-                                    </td>
-                                    <td>
-                                        <div :class="item.dhCheck" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </CCol>
+    <CCard class="mt-3 custom-card">
+      <CCardHeader class="d-flex justify-content-between align-items-center custom-card">
+        <!-- Tabs -->
+        <CNav variant="tabs">
+          <CNavItem>
+            <CNavLink :active="currentTab === 0" @click="currentTab = 0">
+              Table Summary
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink :active="currentTab === 1" @click="currentTab = 1">
+              Graph Summary
+            </CNavLink>
+          </CNavItem>
+        </CNav>
+        <CFormSelect v-if="currentTab === 1 && yearOptions.length" v-model="selectedYear" class="w-auto">
+          <option v-for="y in yearOptions" :key="y" :value="y">{{ y }}</option>
+        </CFormSelect>
+      </CCardHeader>
+    </CCard>
+
+    <CCard class="mt-3 custom-card">
+      <CCardBody>
+        <CRow v-show="currentTab === 0">
+          <CCol>
+            <LegendStatus class="mb-3" />
+
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Name</CInputGroupText>
+              <CFormInput v-model="findDescription" placeholder="Search Problem" />
+            </CInputGroup>
+
+            <CCol class="tableFixHead">
+              <CTable bordered hover class="text-center w-100">
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Mesin</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Problem Description</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">TL Check</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">GL Check</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">SH Check</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Mgr Check</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  <CTableRow v-for="(item, i) in filteredProblems" :key="item.fid || i">
+                    <CTableDataCell>{{ i + 1 }}</CTableDataCell>
+                    <CTableDataCell>{{ formatDate(item.fstart_time) }}</CTableDataCell>
+                    <CTableDataCell>{{ item.fmc_name }}</CTableDataCell>
+                    <CTableDataCell class="text-left">{{ item.ferror_name }}</CTableDataCell>
+                    <CTableDataCell>{{ item.fdur }} min</CTableDataCell>
+                    <CTableDataCell><span :class="['indicator', item.tlCheck]" /></CTableDataCell>
+                    <CTableDataCell><span :class="['indicator', item.lhCheck]" /></CTableDataCell>
+                    <CTableDataCell><span :class="['indicator', item.shCheck]" /></CTableDataCell>
+                    <CTableDataCell><span :class="['indicator', item.dhCheck]" /></CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              </CTable>
+            </CCol>
+
+            <CRow v-if="isLoading" class="text-center mt-3">
+              <CCol>
+                <CSpinner /> Loading...
+              </CCol>
             </CRow>
-        </CCard>
-    </CContainer>
+          </CCol>
+        </CRow>
+
+        <CRow v-show="currentTab === 1">
+          <CCol>
+            <BarChart :data="yearlyGraphData" :options="graphOptions" />
+          </CCol>
+        </CRow>
+      </CCardBody>
+    </CCard>
+  </CContainer>
 </template>
 
 <script>
 import {
-    CContainer,
-    CRow,
-    CCol,
-    CCard,
-    CCardBody,
-    CTabs,
-    CTab,
-    CInputGroup,
-    CInputGroupText,
-    CFormInput,
-    CSpinner
+  CContainer, CRow, CCol, CCard, CCardHeader, CCardBody,
+  CNav, CNavItem, CNavLink, CFormSelect,
+  CInputGroup, CInputGroupText, CFormInput, CSpinner,
+  CTable, CTableHead, CTableBody, CTableRow, CTableHeaderCell, CTableDataCell
 } from '@coreui/vue'
-import BarChart from '@/components/BarChart.vue'
 import LegendStatus from '@/components/LegendStatus.vue'
+import BarChart from '@/components/BarChart.vue'
 import axios from 'axios'
 
+const monthNames = [
+  'January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December'
+];
+
 export default {
-    name: 'SummaryWeekly',
-    components: {
-        CContainer,
-        CRow,
-        CCol,
-        CCard,
-        CCardBody,
-        CTabs,
-        CTab,
-        CInputGroup,
-        CInputGroupText,
-        CFormInput,
-        CSpinner,
-        BarChart,
-        LegendStatus
-    },
-    data() {
-        return {
-            containerDataA: [],
-            containerDataB: [],
-            containerDataC: [],
-            containerProblemFup: [],
-            datacollection: {
-                labels: ['A', 'B', 'C', 'D'],
-                datasets: [
-                    { label: 'Blm Close', backgroundColor: '#f75492', data: [0, 0, 0, 0] },
-                    { label: 'Sudah Close', backgroundColor: '#5954f7', data: [0, 0, 0, 0] }
-                ]
-            },
-            options: {
-                responsive: true,
-                legend: { display: true },
-                scales: {
-                    yAxes: [{
-                        ticks: { fontSize: 12, min: 0 },
-                        stacked: true,
-                        scaleLabel: { display: true, labelString: 'Jumlah' }
-                    }],
-                    xAxes: [{
-                        ticks: { fontSize: 12, min: 0 },
-                        stacked: true
-                    }]
-                }
-            },
-            containerTl: [],
-            containerGl: [],
-            tableProblemFup: [],
-            isLoading: false,
-            findLeader: null,
-            windowWidth: window.innerWidth,
-            isMobile: false
-        }
-    },
-    watch: {
-        findLeader(val) {
-            const leader = val ? val.toUpperCase() : ''
-            this.tableProblemFup = this.containerProblemFup.filter(item =>
-                (item.glName || '').toUpperCase().includes(leader) ||
-                (item.tlName || '').toUpperCase().includes(leader)
-            )
-        }
-    },
-    methods: {
-        onResize() {
-            this.windowWidth = window.innerWidth
-            this.isMobile = this.windowWidth < 650
-        },
-        checkStatus(state) {
-            if (state === 1) return 'dotApprove'
-            if (state === 2) return 'dotDelay'
-            if (state === 3) return 'dotComment'
-            return 'dot'
-        }
-    },
-    async mounted() {
-        window.addEventListener('resize', this.onResize)
-        this.onResize()
-
-        this.isLoading = true
-        try {
-            const result = await axios.get(`${process.env.VUE_APP_HOST}/delayProblemCm`)
-            const data = result.data.data
-
-            this.containerDataA = data[0]
-            this.containerDataB = data[1]
-            this.containerDataC = data[2]
-
-            const combine = [...data[8], ...data[9]].sort((a, b) =>
-                new Date(a.fstart_time) - new Date(b.fstart_time)
-            )
-            const mapped = combine.map(item => {
-                const idxTl = this.containerTl.findIndex(x =>
-                    x.line.toUpperCase() === item.fline.toUpperCase() && x.shift === item.fshift
-                )
-                const idxGl = this.containerGl.findIndex(x =>
-                    x.line.toUpperCase() === item.fline.toUpperCase() && x.shift === item.fshift
-                )
-                item.tlName = this.containerTl[idxTl]?.name || ''
-                item.glName = this.containerGl[idxGl]?.name || ''
-
-                item.tlCheck = this.checkStatus(
-                    item.fpermanet_cm === '[]' && item.fpermanet_cm_lama === '[]' ? 2 : 1
-                )
-                const daysSince = d => (Date.now() - new Date(d).getTime()) / (1000 * 3600 * 24)
-                if (item.cmLhApprove === 0) {
-                    item.lhCheck = daysSince(item.fstart_time) >= 1 && !item.cmLhFeedback
-                        ? this.checkStatus(2)
-                        : item.cmLhFeedback
-                            ? this.checkStatus(3)
-                            : this.checkStatus(4)
-                } else item.lhCheck = this.checkStatus(1)
-                if (item.cmShApprove === 0) {
-                    item.shCheck = daysSince(item.fstart_time) >= 2 && !item.cmShFeedback
-                        ? this.checkStatus(2)
-                        : item.cmShFeedback
-                            ? this.checkStatus(3)
-                            : this.checkStatus(4)
-                } else item.shCheck = this.checkStatus(1)
-                if (item.cmDhApprove === 'null') item.cmDhApprove = 0
-                if (item.cmDhApprove === 0) {
-                    item.dhCheck = daysSince(item.fstart_time) >= 3 && !item.cmDhFeedback
-                        ? this.checkStatus(2)
-                        : item.cmDhFeedback
-                            ? this.checkStatus(3)
-                            : this.checkStatus(4)
-                } else item.dhCheck = this.checkStatus(1)
-
-                return item
-            })
-
-            this.containerProblemFup = mapped
-            this.tableProblemFup = mapped
-            this.datacollection = {
-                labels: ['A', 'B', 'C', 'D'],
-                datasets: [
-                    { label: 'Blm Close', backgroundColor: '#f75492', data: result.data.count },
-                    { label: 'Sudah Close', backgroundColor: '#5954f7', data: result.data.countFin }
-                ]
-            }
-        } catch (err) {
-            console.error('Error fetching data:', err)
-        } finally {
-            this.isLoading = false
-        }
-    },
-    beforeDestroy() {
-        window.removeEventListener('resize', this.onResize)
+  name: 'LTBSummary',
+  components: {
+    CContainer, CRow, CCol, CCard, CCardHeader, CCardBody,
+    CNav, CNavItem, CNavLink, CFormSelect,
+    CInputGroup, CInputGroupText, CFormInput, CSpinner,
+    CTable, CTableHead, CTableBody, CTableRow, CTableHeaderCell, CTableDataCell,
+    LegendStatus, BarChart
+  },
+  data() {
+    return {
+      problems: [],
+      findDescription: '',
+      isLoading: false,
+      currentTab: 0,
+      selectedYear: null,
+      graphData: { labels: [], datasets: [] },
+      graphOptions: { responsive: true, scales: { yAxes: [{ ticks: { beginAtZero: true }, scaleLabel: { display: true, labelString: 'Total LTB' } }], xAxes: [{ scaleLabel: { display: true, labelString: 'Bulan' } }] } }
     }
+  },
+  computed: {
+    filteredProblems() {
+      if (!this.findDescription) return this.problems
+      const key = this.findDescription.toLowerCase().trim()
+      return this.problems.filter(p => p.ferror_name.toLowerCase().includes(key))
+    },
+    yearOptions() {
+      return Array.from(new Set(this.problems.map(p => new Date(p.fstart_time).getFullYear()))).sort((a, b) => b - a)
+    },
+    yearlyGraphData() {
+      if (!this.selectedYear) return this.graphData;
+
+      const counts = {};
+      this.problems
+        .filter(p => new Date(p.fstart_time).getFullYear() === +this.selectedYear)
+        .forEach(p => {
+          const d = new Date(p.fstart_time);
+          const month = d.getMonth();
+          counts[month] = (counts[month] || 0) + 1;
+        });
+
+      const labels = monthNames;
+      const data = Array.from({ length: 12 }, (_, i) => counts[i] || 0);
+
+      return {
+        labels,
+        datasets: [{
+          label: `Total LTB ${this.selectedYear}`,
+          backgroundColor: '#5954f7',
+          data
+        }]
+      };
+    }
+  },
+  methods: {
+    async fetchData() {
+      this.isLoading = true
+      try {
+        const res = await axios.get(`${process.env.VUE_APP_HOST}/api/summary/ltb-summary`)
+        const raw = res.data.data.delayProblems
+        const arr = Array.isArray(raw[0]) ? raw[0] : raw
+        this.problems = arr.map(item => ({
+          ...item,
+          tlCheck: this.getClass(item.cmTlApprove, item.cmTlFeedback),
+          lhCheck: this.getClass(item.cmLhApprove, item.cmLhFeedback),
+          shCheck: this.getClass(item.cmShApprove, item.cmShFeedback),
+          dhCheck: this.getClass(+item.cmDhApprove, item.cmDhFeedback)
+        }))
+        const counts = {}
+        this.problems.forEach(p => {
+          const d = new Date(p.fstart_time)
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+          counts[key] = (counts[key] || 0) + 1
+        })
+        const labels = Object.keys(counts).sort()
+        this.graphData = { labels, datasets: [{ label: 'Total LTB', backgroundColor: '#5954f7', data: labels.map(l => counts[l]) }] }
+        if (this.yearOptions.length) this.selectedYear = this.yearOptions[0]
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.isLoading = false
+      }
+    },
+    getClass(state, feedback) {
+      if (state === 1) return 'approved'
+      if (feedback) return 'commented'
+      return 'delayed'
+    },
+    formatDate(dt) {
+      return new Date(dt).toLocaleString()
+    }
+  },
+  mounted() { this.fetchData() }
 }
 </script>
 
 <style scoped>
 .custom-card {
-    border-radius: 12px;
+  border-radius: 12px;
 }
 
-.custom-table {
-    border-radius: 12px;
+.card-header {
+  background: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .tableFixHead {
-    overflow: auto;
-    max-height: 70vh;
+  max-height: 70vh;
+  overflow-y: auto;
+  width: 100%;
 }
 
 .tableFixHead thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background: white;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
 }
 
-.table {
-    border-collapse: collapse;
-    width: 100%;
+.indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: auto;
 }
 
-th,
-td {
-    font-size: 12px;
-    text-align: center;
-    white-space: nowrap;
+.indicator.delayed {
+  background-color: #e55353;
+}
+
+.indicator.approved {
+  background-color: #2eb85c;
+}
+
+.indicator.commented {
+  background-color: #47a0fc;
+}
+
+:deep(.nav-link) {
+  cursor: pointer;
 }
 </style>

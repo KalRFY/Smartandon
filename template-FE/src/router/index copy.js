@@ -73,16 +73,7 @@ const appRoutes = [
     }
   },
   {
-    path: '/app/ltb-report',
-    name: 'LTBReport',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/LTB/LTBReportScreen.vue'),
-    meta: {
-      requiresAuth: true,
-      title: 'LTB Report'
-    }
-  },
-  {
-    path: '/app/ltb-summary',
+    path: '/app/LTBSummary',
     name: 'LTBSummary',
     component: () => import(/* webpackChunkName: "reports" */ '@/views/LTBSummary.vue'),
     meta: {

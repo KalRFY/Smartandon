@@ -303,12 +303,12 @@ export default {
         route: '/realtime-pareto'
       },
       {
-        title: 'LTB Report',
+        title: 'LTB Report Status',
         icon: 'FileText',
         description: 'Last Time Buy reporting and analysis',
         color: 'secondary',
-        route: '/ltb-report'
-      }
+        route: '/app/LTBSummary'
+      },
     ]
 
     const navigateTo = (route) => {

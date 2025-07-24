@@ -1,22 +1,22 @@
 <template>
   <div class="production-line-section">
     <CCard>
-      <CCardHeader class="bg-light d-flex justify-content-between align-items-center">
+      <CCardHeader
+        class="bg-light d-flex justify-content-between align-items-center"
+      >
         <h5 class="m-0 line-title">{{ title }}</h5>
         <div>
-          <CButton size="sm" variant="ghost" color="success" @click="refreshData" class="me-2">
-            <RefreshCw size="16" class="me-1" /> Refresh
-          </CButton>
-          <CButton size="sm" variant="ghost" color="primary" @click="exportData" class="me-2">
+          <CButton
+            size="sm"
+            variant="ghost"
+            color="primary"
+            @click="exportData"
+            class="me-2"
+          >
             <Download size="16" class="me-1" /> Export
-          </CButton>
-          <CButton size="sm" variant="ghost" color="secondary" @click="toggleExpanded">
-            {{ isExpanded ? 'Collapse' : 'Expand' }}
-            <component :is="isExpanded ? 'ChevronUp' : 'ChevronDown'" size="16" />
           </CButton>
         </div>
       </CCardHeader>
-  
       <CCardBody v-if="isExpanded">
         <div v-if="loading" class="text-center p-5">
           <CSpinner />
@@ -29,7 +29,6 @@
           <div class="chart-container" ref="chartContainer">
             <canvas ref="chartCanvas"></canvas>
           </div>
-  
           <CAccordion :active-item-key="1">
             <CAccordionItem :item-key="1">
               <CAccordionHeader>
@@ -43,35 +42,25 @@
                   <CTableHead>
                     <CTableRow>
                       <CTableHeaderCell scope="col">#</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Date</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
+                      <CTableHeaderCell scope="col"
+                        >Start Date</CTableHeaderCell
+                      >
                       <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Operator</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
                     <CTableRow v-for="(row, index) in tableData" :key="index">
-                      <CTableHeaderCell scope="row">{{ row.no }}</CTableHeaderCell>
-                      <CTableDataCell>{{ row.date }}</CTableDataCell>
-                      <CTableDataCell>{{ row.machine }}</CTableDataCell>
+                      <CTableHeaderCell scope="row">{{
+                        row.no
+                      }}</CTableHeaderCell>
+                      <CTableDataCell>{{
+                        formatDateTime(row.startTime)
+                      }}</CTableDataCell>
                       <CTableDataCell>{{ row.problem }}</CTableDataCell>
-                      <CTableDataCell>{{ row.pic }}</CTableDataCell>
+                      <CTableDataCell>{{ row.operator }}</CTableDataCell>
                       <CTableDataCell>{{ row.duration }}</CTableDataCell>
-                      <CTableDataCell>
-                        <CButtonGroup size="sm">
-                          <CButton color="info" variant="ghost" @click="viewItem(row)">
-                            <Eye size="16" />
-                          </CButton>
-                          <CButton color="warning" variant="ghost" @click="editItem(row)">
-                            <Edit size="16" />
-                          </CButton>
-                          <CButton color="danger" variant="ghost" @click="confirmDelete(row)">
-                            <Trash2 size="16" />
-                          </CButton>
-                        </CButtonGroup>
-                      </CTableDataCell>
                     </CTableRow>
                   </CTableBody>
                 </CTable>
@@ -83,9 +72,9 @@
     </CCard>
   </div>
 </template>
-  
+
 <script>
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import {
   CCard,
   CCardHeader,
@@ -101,22 +90,18 @@ import {
   CTableRow,
   CTableHeaderCell,
   CTableDataCell,
-  CButtonGroup,
-  CSpinner
-} from '@coreui/vue';
+  CSpinner,
+} from '@coreui/vue'
 import {
   ChevronDown,
   ChevronUp,
-  Eye,
-  Edit,
-  Trash2,
   FileSpreadsheet,
   BarChart,
   BarChart2,
   RefreshCw,
-  Download
-} from 'lucide-vue-next';
-import Chart from 'chart.js/auto';
+  Download,
+} from 'lucide-vue-next'
+import Chart from 'chart.js/auto'
 
 export default {
   name: 'ProductionLineSection',
@@ -135,273 +120,197 @@ export default {
     CTableRow,
     CTableHeaderCell,
     CTableDataCell,
-    CButtonGroup,
     CSpinner,
     ChevronDown,
     ChevronUp,
-    Eye,
-    Edit,
-    Trash2,
     FileSpreadsheet,
     BarChart,
     BarChart2,
     RefreshCw,
-    Download
+    Download,
   },
   props: {
-    title: {
-      type: String,
-      required: true
-    },
-    panelId: {
-      type: String,
-      required: true
-    },
-    chartData: {
-      type: Array,
-      required: true
-    },
-    tableData: {
-      type: Array,
-      required: true
-    },
-    viewMode: {
-      type: String,
-      default: 'machine'
-    },
-    metricMode: {
-      type: String,
-      default: 'duration'
-    },
-    minQuantity: {
-      type: Number,
-      default: 0
-    }
+    title: { type: String, required: true },
+    panelId: { type: String, required: true },
+    chartData: { type: Array, required: true },
+    tableData: { type: Array, required: true },
+    viewMode: { type: String, default: 'problems' },
+    metricMode: { type: String, default: 'duration' },
+    minQuantity: { type: Number, default: 0 },
   },
   emits: ['refresh', 'view-item', 'edit-item', 'delete-item'],
   setup(props, { emit }) {
-    const isExpanded = ref(true);
-    const loading = ref(false);
-    const error = ref(null);
-    const chartCanvas = ref(null);
-    const chartContainer = ref(null);
-    const chartInstance = ref(null);
+    console.log('ProductionLineSection mounted with props:', props)
+    const isExpanded = ref(true)
+    const loading = ref(false)
+    const error = ref(null)
+    const chartCanvas = ref(null)
+    const chartInstance = ref(null)
+
+    const destroyChart = () => {
+      if (chartInstance.value) {
+        try {
+          if (
+            chartInstance.value.options &&
+            chartInstance.value.options.animation
+          ) {
+            chartInstance.value.options.animation = false
+          }
+          chartInstance.value.destroy()
+        } catch (e) {
+          console.error('Error destroying chart:', e)
+          error.value = 'Failed to destroy chart: ' + e.message
+        }
+        chartInstance.value = null
+      }
+    }
 
     const toggleExpanded = () => {
-      isExpanded.value = !isExpanded.value;
+      isExpanded.value = !isExpanded.value
       if (isExpanded.value) {
-        nextTick(() => {
-          renderChart();
-        });
+        nextTick(renderChart)
+      } else {
+        destroyChart()
       }
-    };
-
+    }
     const refreshData = () => {
-      loading.value = true;
-      error.value = null;
-      
+      loading.value = true
+      error.value = null
       setTimeout(() => {
-        loading.value = false;
-        emit('refresh', props.panelId);
-        nextTick(() => {
-          renderChart();
-        });
-      }, 1000);
-    };
-    
+        loading.value = false
+        emit('refresh', props.panelId)
+        nextTick(renderChart)
+      }, 1000)
+    }
     const exportData = () => {
-      const dataStr = JSON.stringify(props.chartData);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      
-      const exportFileDefaultName = `${props.title}_${props.viewMode}_${props.metricMode}_${new Date().toISOString()}.json`;
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-    };
-    
-    const viewItem = (item) => {
-      emit('view-item', item);
-    };
-    
-    const editItem = (item) => {
-      emit('edit-item', item);
-    };
-    
-    const confirmDelete = (item) => {
-      if (confirm(`Are you sure you want to delete this item?`)) {
-        emit('delete-item', item);
-      }
-    };
+      const dataStr = JSON.stringify(props.chartData)
+      const dataUri =
+        'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
+      const exportFileDefaultName = `${props.title}_${props.viewMode}_${
+        props.metricMode
+      }_${new Date().toISOString()}.json`
+      const linkElement = document.createElement('a')
+      linkElement.setAttribute('href', dataUri)
+      linkElement.setAttribute('download', exportFileDefaultName)
+      linkElement.click()
+    }
 
-    const panelIcon = computed(() => {
-      if (props.panelId.includes('PANEL')) {
-        return FileSpreadsheet;
-      }
-      return props.metricMode === 'duration' ? BarChart : BarChart2;
-    });
+    const panelIcon = computed(() =>
+      props.panelId.includes('PANEL')
+        ? FileSpreadsheet
+        : props.metricMode === 'duration'
+        ? BarChart
+        : BarChart2,
+    )
 
     const getChartConfig = () => {
       if (!props.chartData || props.chartData.length === 0) {
-        console.warn('No chart data available for', props.title);
         return {
           type: 'bar',
-          data: {
-            labels: [],
-            datasets: [{
-              label: 'No Data',
-              data: []
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false
-          }
-        };
+          data: { labels: [], datasets: [{ label: 'No Data', data: [] }] },
+          options: { responsive: true, maintainAspectRatio: false },
+        }
       }
-
-      const dataLabel = props.metricMode === 'duration' ? 'Duration (mins)' : 'Frequency';
-      const sortedData = [...props.chartData].sort((a, b) => b.quantity - a.quantity);
-      
+      const dataLabel = 'Duration (mins)'
+      const sortedData = [...props.chartData].sort(
+        (a, b) => b.quantity - a.quantity,
+      )
       return {
         type: 'bar',
         data: {
-          labels: sortedData.map(item => item.name),
+          labels: sortedData.map((item) => item.name),
           datasets: [
             {
               label: dataLabel,
               backgroundColor: '#4dabf7',
-              data: sortedData.map(item => item.quantity),
-              order: 1
-            }
-          ]
+              data: sortedData.map((item) => item.quantity),
+              order: 1,
+            },
+          ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          layout: {
-            padding: {
-              left: 10,
-              right: 25,
-              top: 25,
-              bottom: 10
-            }
-          },
+          layout: { padding: { left: 10, right: 25, top: 25, bottom: 10 } },
           plugins: {
             title: {
               display: true,
-              text: `${props.title} - ${props.viewMode === 'machine' ? 'Machine' : 'Problem'} ${props.metricMode === 'duration' ? 'Duration' : 'Frequency'} Chart`,
-              font: {
-                size: 16,
-                weight: 'bold'
-              }
+              text: `${props.title} - Problem Duration Chart Target Line: 1000min`,
+              font: { size: 16, weight: 'bold' },
             },
-            legend: {
-              position: 'top'
-            },
-            tooltip: {
-              mode: 'index',
-              intersect: false
-            }
+            legend: { position: 'top' },
+            tooltip: { mode: 'index', intersect: false },
           },
           scales: {
-            x: {
-              title: {
-                display: true,
-                text: props.viewMode === 'machine' ? 'Machines' : 'Problems'
-              }
-            },
+            x: { title: { display: true, text: 'Problems' } },
             y: {
               display: true,
               position: 'left',
-              title: {
-                display: true,
-                text: dataLabel
-              },
-              beginAtZero: true
-            }
-          }
-        }
-      };
-    };
-
+              title: { display: true, text: dataLabel },
+              beginAtZero: true,
+            },
+          },
+        },
+      }
+    }
     const renderChart = async () => {
-      if (chartInstance.value) {
-        chartInstance.value.destroy();
-        chartInstance.value = null;
-      }
-      
-      await nextTick();
-      if (!chartCanvas.value) {
-        console.error('Chart canvas element not found');
-        return;
-      }
-      
+      await nextTick()
+      destroyChart()
+      if (!chartCanvas.value) return
+      const ctx = chartCanvas.value.getContext('2d')
+      if (!ctx) return
       try {
-        const ctx = chartCanvas.value.getContext('2d');
-        if (!ctx) {
-          console.error('Could not get 2D context for canvas');
-          return;
-        }
-        
-        chartInstance.value = new Chart(ctx, getChartConfig());
+        chartInstance.value = new Chart(ctx, getChartConfig())
       } catch (err) {
-        console.error('Error creating chart:', err);
-        error.value = 'Failed to render chart: ' + err.message;
+        error.value = 'Failed to render chart: ' + err.message
       }
-    };
-
-    watch(() => [props.chartData, props.viewMode, props.metricMode], () => {
-      if (isExpanded.value) {
-        nextTick(() => {
-          renderChart();
-        });
-      }
-    }, { deep: true });
-
-    watch(isExpanded, (newVal) => {
-      if (newVal) {
-        nextTick(() => {
-          renderChart();
-        });
-      }
-    });
-
-    onMounted(async () => {
-      await nextTick();
-      if (isExpanded.value) {
-        setTimeout(() => {
-          renderChart();
-        }, 100);
-      }
-    });
-
+    }
+    watch(
+      () => [props.chartData],
+      () => {
+        if (isExpanded.value) nextTick(renderChart)
+      },
+      { deep: true },
+    )
+    watch(isExpanded, (val) => {
+      if (val) nextTick(renderChart)
+      else destroyChart()
+    })
+    onMounted(() => {
+      if (isExpanded.value) setTimeout(renderChart, 100)
+    })
     onUnmounted(() => {
-      if (chartInstance.value) {
-        chartInstance.value.destroy();
-        chartInstance.value = null;
-      }
-    });
+      destroyChart()
+    })
+
+    const formatDateTime = (dateStr) => {
+      if (!dateStr) return ''
+      const d = new Date(dateStr)
+      if (isNaN(d)) return dateStr
+      return d.toLocaleString('en-GB', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    }
 
     return {
       isExpanded,
       loading,
       error,
       chartCanvas,
-      chartContainer,
       toggleExpanded,
       refreshData,
       exportData,
-      viewItem,
-      editItem,
-      confirmDelete,
-      panelIcon
-    };
-  }
-};
+      panelIcon,
+      formatDateTime,
+    }
+  },
+}
 </script>
-  
+
 <style scoped>
 .production-line-section {
   margin-bottom: 15px;
