@@ -109,8 +109,8 @@
               <component :is="card.icon" :size="30" :stroke-width="1" />
             </div>
             <h4>{{ card.title }}</h4> -->
-            <!-- <p class="card-description">{{ card.description }}</p> -->
-            <!-- <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
+    <!-- <p class="card-description">{{ card.description }}</p> -->
+    <!-- <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
           </CCardBody>
         </CCard>
       </CCol>
@@ -176,12 +176,8 @@
         <CModalTitle id="LiveDemoExampleLabel">Machine Stop Input</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CForm
-          class="row g-3 needs-validation"
-          novalidate
-          :validated="validatedCustom01"
-          @submit="handleSubmitCustom01"
-        >
+        <CForm class="row g-3 needs-validation" novalidate :validated="validatedCustom01"
+          @submit="handleSubmitCustom01">
           <CCol md="8">
             <label for="machineSelect" class="form-label">Machine Name</label>
             <Treeselect id="machineSelect" v-model="submit.machineName" :options="machineOptions" :searchable="true"
@@ -207,15 +203,6 @@
                 <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
               </CFormSelect>
           </CCol> -->
-          <CCol md="12">
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Problems"
-              required
-              v-model="submit.problems"
-            />
-          </CCol>
           <CCol md="12">
             <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Problems" required
               v-model="submit.problems" />
@@ -892,7 +879,7 @@ export default {
             '/api/smartandon/problemMachine',
             payload,
           );
-          if (response.data.status === 'success') {
+          if (response && response.status >= 200 && response.status < 300) {
             alert('Input saved successfully');
             this.visibleLiveDemo = false;
             this.submit = {};
@@ -1099,6 +1086,7 @@ export default {
 p {
   font-style: italic;
 }
+
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 .dashboard-cards-container {
   display: flex;
