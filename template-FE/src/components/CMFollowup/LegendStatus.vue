@@ -6,11 +6,11 @@
         <span class="label">finished</span>
       </div>
       <div class="legend-item">
-        <div class="dot bg-info"></div>
+        <div class="dot custom-progress"></div>
         <span class="label">on progress</span>
       </div>
       <div class="legend-item">
-        <div class="dot bg-danger"></div>
+        <div class="dot custom-delay"></div>
         <span class="label">delay</span>
       </div>
     </div>
@@ -24,6 +24,14 @@ export default {
 </script>
 
 <style>
+.custom-progress {
+  background-color: #5bf1ff;
+}
+
+.custom-delay {
+  background-color: #fe9999;
+}
+
 .legend-wrapper {
   width: 100%;
   border-radius: 6px;

@@ -6,8 +6,8 @@
       <CAvatar v-else color="danger" text-color="white">{{ initials }}
       </CAvatar>
     </CDropdownToggle>
-    <CDropdownMenu class="pt-0">
-      <CDropdownHeader component="h6" class="fw-semibold py-2">
+    <CDropdownMenu class="pt-0 mt-2">
+      <CDropdownHeader component="h6" class="fw-semibold py-2 mt-2 mb-2">
         Account
       </CDropdownHeader>
       <CDropdownItem href="/#/sc/profile">
@@ -32,7 +32,6 @@ export default {
     const photo = ref(null)
     const userName = ref('User Name 1')
 
-    // Fetch user info once mounted
     onMounted(async () => {
       try {
         const response = await fetch('http://localhost:3000/api/user/user', {
@@ -51,20 +50,9 @@ export default {
       }
     })
 
-    // Computed: two-letter initials from username
     const initials = computed(() => {
       const name = (userName.value || '').trim()
-      if (!name) {
-        return ''
-      }
-      const parts = name.split(/\s+/)
-      if (parts.length === 1) {
-        // Single word: take first two letters
-        return parts[0].slice(0, 2).toUpperCase()
-      } else {
-        // Multiple words: first letters of first two words
-        return (parts[0][0] + parts[1][0]).toUpperCase()
-      }
+      return name ? name.charAt(0).toUpperCase() : ''
     })
 
     const logout = () => {
@@ -82,7 +70,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .avatar-avatar,
 .CAvatar {
   display: inline-flex;

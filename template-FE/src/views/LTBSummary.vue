@@ -8,7 +8,7 @@
     </CRow>
 
     <CCard class="mt-3 custom-card">
-      <CCardHeader class="d-flex justify-content-between align-items-center custom-card">
+      <CCardBody class="d-flex justify-content-between align-items-center custom-card p-2">
         <CNav variant="tabs">
           <CNavItem>
             <CNavLink :active="currentTab === 0" @click="selectTab(0)">
@@ -26,7 +26,7 @@
             {{ year }}
           </option>
         </CFormSelect>
-      </CCardHeader>
+      </CCardBody>
     </CCard>
 
     <CCard class="mt-3 custom-card">

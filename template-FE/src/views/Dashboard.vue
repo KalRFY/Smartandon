@@ -36,7 +36,7 @@
       <CCard>
         <CCardBody>
           <CCol>
-            <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif;">
+            <CRow class="mb-3 ms-2" style="font-size: x-large; font-weight: 500;">
               Smartandon
             </CRow>
             <CRow>

@@ -6,8 +6,8 @@
     <div class="login-card card shadow">
       <div class="card-content d-flex">
         <div class="form-side p-4">
-          <h2 class="form-title mt-1 mb-2">Login</h2>
-           <div class="form-subtitle mb-4">Enter your credentials</div>
+          <h2 class="form-title mb-2">Login</h2>
+          <div class="form-subtitle mb-4">Enter your credentials</div>
 
           <form @submit.prevent="onLogin">
             <div class="mb-3">
@@ -175,10 +175,28 @@ const onLogin = async () => {
 
 .card-content {
   display: flex;
+  height: 100%;
 }
 
 .form-side {
   flex: 1;
+}
+
+.form-title {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.form-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.form-title,
+.form-subtitle {
+  text-align: center;
+  width: 100%;
+  margin-left: 13px;
 }
 
 .image-side {
@@ -207,18 +225,6 @@ const onLogin = async () => {
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
-}
-
-.form-title {
-  font-size: 26px;
-  font-weight: 600;
-  margin-left: 12.2vw;
-}
-
-.form-subtitle {
-  font-size: 16px;
-  font-weight: 400;
-  margin-left: 10vw;
 }
 
 .form-label {
