@@ -7,6 +7,5 @@ router.get('/', authMiddleware, MTBFMTTRController.defaultController);
 router.get('/mtbf', MTBFMTTRController.getMTBFController);
 router.get('/mttr', MTBFMTTRController.getMTTRController);
 router.get('/mtbfmttr', MTBFMTTRController.getMtBFMTTRController);
-router.get('/machines', MTBFMTTRController.getMachinesController);
 
 module.exports = router;
