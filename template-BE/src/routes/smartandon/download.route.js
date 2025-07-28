@@ -4,5 +4,6 @@ const downloadController = require('../../controllers/smartandon/download.contro
 const router = express.Router();
 
 router.get('/download-report', downloadController.downloadReport);
+router.get('/download-template', downloadController.downloadTemplate);
 
 module.exports = router;
