@@ -6,6 +6,7 @@
       :machineOptions="machineOptions"
       :lineOptions="lineOptions"
       :modalLoading="modalLoading"
+      :memberOption="memberOption"
       @close="visibleLiveDemo = false"
       @submit="saveSubmit"
     />

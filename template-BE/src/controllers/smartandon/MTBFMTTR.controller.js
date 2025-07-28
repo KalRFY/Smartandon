@@ -1,6 +1,5 @@
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
-
 const LINES = ['LPDC', 'HPDC', 'CAM SHAFT', 'CYLINDER HEAD', 'CYLINDER BLOCK', 'CRANK SHAFT', 'ASSY LINE'];
 
 const defaultController = async (req, res) => {
@@ -74,6 +73,43 @@ const getMTBFController = async (req, res, next) => {
             AND fstart_time BETWEEN '${fstartTime}' AND '${fendTime}'
             GROUP BY DATE_FORMAT(fstart_time, '%Y-%m')
             ORDER BY DATE_FORMAT(fstart_time, '%Y-%m')
+          `;
+          const results = await sequelize.query(query, {
+            type: sequelize.QueryTypes.SELECT,
+          });
+          return results.map((row) => {
+            const [year, month] = row.month.split('-');
+            const daysInMonth = new Date(year, month, 0).getDate();
+            const uptime = daysInMonth * 24;
+            const downtime = Number(row.total_fdur) || 0;
+            const totalProblem = Number(row.total_rows) || 0;
+            const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
+            return {
+              fline: line,
+              date: row.month,
+              totalFdur: downtime,
+              totalRows: totalProblem,
+              uptime: uptime.toFixed(2),
+              downtime: downtime.toFixed(2),
+              mtbf: mtbf.toFixed(2),
+            };
+          });
+        })
+      );
+      resultsArray = resultsArray.flat();
+    } else if (type === 'machines') {
+      resultsArray = await Promise.all(
+        LINES.filter(Boolean).map(async (line) => {
+          const query = `
+            SELECT 
+                DATE_FORMAT(fstart_time, '%Y-%m') as month,
+                SUM(fdur) AS total_fdur,
+                COUNT(*) AS total_rows
+            FROM v_current_error_2
+            WHERE fline = '${line}'
+            AND fstart_time BETWEEN '${fstartTime}' AND '${fendTime}'
+            GROUP BY fmc_name
+            ORDER BY fmc_name
           `;
           const results = await sequelize.query(query, {
             type: sequelize.QueryTypes.SELECT,

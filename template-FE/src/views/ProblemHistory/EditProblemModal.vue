@@ -824,6 +824,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    memberOption: {
+      type: Array,
+      default: () => [],
+    },
     modalLoading: {
       type: Boolean,
       default: false,
