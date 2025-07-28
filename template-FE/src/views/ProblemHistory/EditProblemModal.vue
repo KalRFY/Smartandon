@@ -13,7 +13,7 @@
         <CSpinner color="primary" style="width: 3rem; height: 3rem" />
         <div style="margin-top: 10px">Loading data...</div>
       </div>
-      
+
       <CForm
         v-else
         class="row g-3 needs-validation"
@@ -240,7 +240,9 @@
               required
               v-model="localSubmit.shift"
             >
-              <option :value="localSubmit.shift" selected>{{ shiftName }}</option>
+              <option :value="localSubmit.shift" selected>
+                {{ shiftName }}
+              </option>
               <option disabled value="">Choose shift</option>
               <option value="r">Red</option>
               <option value="w">White</option>
@@ -252,7 +254,9 @@
           <CCol md="6">
             <label for="startDateModal" class="form-label">Start Date</label>
             <CInputGroup>
-              <CInputGroupText id="basic-addon1"><CIcon icon="cilClock" size="l"/></CInputGroupText>
+              <CInputGroupText id="basic-addon1"
+                ><CIcon icon="cilClock" size="l"
+              /></CInputGroupText>
               <CFormInput
                 id="startDateModal"
                 type="datetime-local"
@@ -266,7 +270,9 @@
           <CCol md="6">
             <label for="finishDateModal" class="form-label">Finish Date</label>
             <CInputGroup>
-              <CInputGroupText id="basic-addon2"><CIcon icon="cilClock" size="l"/></CInputGroupText>
+              <CInputGroupText id="basic-addon2"
+                ><CIcon icon="cilClock" size="l"
+              /></CInputGroupText>
               <CFormInput
                 id="finishDateModal"
                 type="datetime-local"
@@ -330,20 +336,28 @@
             <CTable bordered>
               <CTableHead>
                 <CTableRow>
-                  <CTableHeaderCell style="width: 50px;">No</CTableHeaderCell>
+                  <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
                   <CTableHeaderCell>Description</CTableHeaderCell>
-                  <CTableHeaderCell style="width: 120px;">Actions</CTableHeaderCell>
+                  <CTableHeaderCell style="width: 120px"
+                    >Actions</CTableHeaderCell
+                  >
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                <CTableRow v-for="(item, index) in localSubmit.rootcauses5Why" :key="item.id">
+                <CTableRow
+                  v-for="(item, index) in localSubmit.rootcauses5Why"
+                  :key="item.id"
+                >
                   <CTableDataCell>{{ index + 1 }}</CTableDataCell>
                   <CTableDataCell>
                     <CFormInput
                       type="text"
                       v-model="item.description"
                       placeholder="Enter description"
-                      :disabled="editingRootcauses?.[item.id] === 'locked' || !editingRootcauses?.[item.id]"
+                      :disabled="
+                        editingRootcauses?.[item.id] === 'locked' ||
+                        !editingRootcauses?.[item.id]
+                      "
                     />
                   </CTableDataCell>
                   <CTableDataCell>
@@ -353,7 +367,13 @@
                       class="me-2"
                       @click="editRootcause(index)"
                     >
-                      <CIcon :icon="editingRootcauses?.[item.id] ? 'cil-paper-plane' : 'cil-pencil'" />
+                      <CIcon
+                        :icon="
+                          editingRootcauses?.[item.id]
+                            ? 'cil-paper-plane'
+                            : 'cil-pencil'
+                        "
+                      />
                     </CButton>
                     <CButton
                       color="danger"
@@ -370,7 +390,7 @@
               color="success"
               size="sm"
               class="mt-2"
-              style="color: white;"
+              style="color: white"
               @click="addRootcause"
               v-if="localSubmit.rootcauses5Why.length < 5"
             >
@@ -385,7 +405,7 @@
               color="primary"
               sm="12"
               class="mb-3"
-              style="color: white; width: 100%;"
+              style="color: white; width: 100%"
               @click="toggleTambahAnalysis"
             >
               Tambah Analysis TERJADI
@@ -393,7 +413,7 @@
             <div v-if="showTambahAnalysis" class="analysis-list">
               <TreeList
                 :model="treeModel || { id: 1, description: '', subItems: [] }"
-                @update:model="val => treeModel = val"
+                @update:model="(val) => (treeModel = val)"
               />
             </div>
           </CCol>
@@ -425,18 +445,19 @@
               </option>
               <option disabled value="">Choose problem 06 Category...</option>
               <option :value="1">
-                O1: Design & Installation (Design / Installation Not Good (Refers
-                to Function Check / Eng. Memo))
+                O1: Design & Installation (Design / Installation Not Good
+                (Refers to Function Check / Eng. Memo))
               </option>
               <option :value="2">
                 O2: Henkaten Issue (No Enough Trial, No Confirm (others team))
               </option>
               <option :value="3">
-                O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible,
-                Out of Periode, No Have Time, Lack of Skill)
+                O3: PM Issue (No Have/Unclear, Unclear Methode,
+                Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)
               </option>
               <option :value="4">
-                O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)
+                O4: Symptom (No Have Symptom, Have Symptom but Unfollow
+                Activity)
               </option>
               <option :value="5">
                 O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible
@@ -454,20 +475,28 @@
             <CTable bordered>
               <CTableHead>
                 <CTableRow>
-                  <CTableHeaderCell style="width: 50px;">No</CTableHeaderCell>
+                  <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
                   <CTableHeaderCell>Description</CTableHeaderCell>
-                  <CTableHeaderCell style="width: 120px;">Actions</CTableHeaderCell>
+                  <CTableHeaderCell style="width: 120px"
+                    >Actions</CTableHeaderCell
+                  >
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                <CTableRow v-for="(item, index) in localSubmit.stepRepair" :key="item.id">
+                <CTableRow
+                  v-for="(item, index) in localSubmit.stepRepair"
+                  :key="item.id"
+                >
                   <CTableDataCell>{{ index + 1 }}</CTableDataCell>
                   <CTableDataCell>
                     <CFormInput
                       type="text"
                       v-model="item.description"
                       placeholder="Enter description"
-                      :disabled="editingStepRepair?.[item.id] === 'locked' || !editingStepRepair?.[item.id]"
+                      :disabled="
+                        editingStepRepair?.[item.id] === 'locked' ||
+                        !editingStepRepair?.[item.id]
+                      "
                     />
                   </CTableDataCell>
                   <CTableDataCell>
@@ -477,7 +506,13 @@
                       class="me-2"
                       @click="editStepRepair(index)"
                     >
-                      <CIcon :icon="editingStepRepair?.[item.id] ? 'cil-paper-plane' : 'cil-pencil'" />
+                      <CIcon
+                        :icon="
+                          editingStepRepair?.[item.id]
+                            ? 'cil-paper-plane'
+                            : 'cil-pencil'
+                        "
+                      />
                     </CButton>
                     <CButton
                       color="danger"
@@ -494,7 +529,7 @@
               color="success"
               size="sm"
               class="mt-2"
-              style="color: white;"
+              style="color: white"
               @click="addStepRepair"
               v-if="localSubmit.stepRepair.length < 5"
             >
@@ -591,10 +626,10 @@
                 Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
               </option>
               <option :value="5">
-                Q5: Setting Ability (Quality checking, program adjustment, program
-                zeroing, position memory set, autosizer setting & amp, PSW set,
-                backlash adjustment (slide gib / kamisori, parameter set,
-                centering, etc))
+                Q5: Setting Ability (Quality checking, program adjustment,
+                program zeroing, position memory set, autosizer setting & amp,
+                PSW set, backlash adjustment (slide gib / kamisori, parameter
+                set, centering, etc))
               </option>
               <option :value="6">
                 Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
@@ -639,16 +674,16 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <CFormInput
-              label="No Comments"
-            />
+            <CFormInput label="No Comments" />
             <CFormInput
               feedbackInvalid="Please input the problems"
               id="ProblemsSH"
               label="Comments 5 Why SH"
               required
               v-model="localSubmit.comments5WhySH"
-              :placeholder="localSubmit.comments5WhySH ? 'SH: isi comment' : 'kosong'"
+              :placeholder="
+                localSubmit.comments5WhySH ? 'SH: isi comment' : 'kosong'
+              "
             />
             <CFormInput
               feedbackInvalid="Please input the problems"
@@ -656,7 +691,9 @@
               label="Comments 5 Why LH"
               required
               v-model="localSubmit.comments5WhyLH"
-              :placeholder="localSubmit.comments5WhyLH ? 'LH: isi comment' : 'kosong'"
+              :placeholder="
+                localSubmit.comments5WhyLH ? 'LH: isi comment' : 'kosong'
+              "
             />
           </CCol>
         </CRow>
@@ -678,7 +715,7 @@
             </CCol>
             <CCol md="12">
               <CButton
-                style="width: 100%;"
+                style="width: 100%"
                 :color="localSubmit.file_report ? 'primary' : 'secondary'"
                 @click="downloadLastReportFile"
                 :disabled="!localSubmit.file_report"
@@ -686,17 +723,12 @@
               >
                 Download Last Report File
               </CButton>
-              <CButton
-                style="width: 100%;"
-                color="warning"
-                disabled
-                v-else
-              >
+              <CButton style="width: 100%" color="warning" disabled v-else>
                 Belum Ada Report di Upload
               </CButton>
-        </CCol>
-      </CCol>
-    </CRow>
+            </CCol>
+          </CCol>
+        </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
             <CFormInput
@@ -724,20 +756,11 @@
       </CForm>
     </CModalBody>
     <CModalFooter>
-      <CButton
-        color="secondary"
-        @click="$emit('close')"
-      >
-        Close
-      </CButton>
+      <CButton color="secondary" @click="$emit('close')"> Close </CButton>
 
       <CButton color="primary" @click="saveSubmit" :disabled="isSaving">
-        <span v-if="isSaving">
-          <CSpinner size="sm" /> Saving...
-        </span>
-        <span v-else>
-          Submit
-        </span>
+        <span v-if="isSaving"> <CSpinner size="sm" /> Saving... </span>
+        <span v-else> Submit </span>
       </CButton>
     </CModalFooter>
   </CModal>
@@ -801,6 +824,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    memberOption: {
+      type: Array,
+      default: () => [],
+    },
     modalLoading: {
       type: Boolean,
       default: false,
@@ -810,42 +837,49 @@ export default {
       default: false,
     },
   },
-  
+
   setup(props, { emit }) {
-    const { submitData } = toRefs(props);
-    console.log('EditProblemModal props:', JSON.stringify(props, null, 2));
-    
+    const { submitData } = toRefs(props)
+    console.log('EditProblemModal props:', JSON.stringify(props, null, 2))
+
     const parseFrealProb = (frealProb) => {
-      if (!frealProb) return [{ id: 1, description: '' }];
+      if (!frealProb) return [{ id: 1, description: '' }]
       if (typeof frealProb === 'string') {
-        const cleaned = frealProb.trim();
-        const lines = cleaned.split('\\n').filter(line => line.trim() !== '');
-        if (lines.length === 0) return [{ id: 1, description: '' }];
-        const result = lines.map((line, index) => ({ id: index + 1, description: line.trim() }));
-        console.log('parseFrealProb result:', result);
-        return result;
+        const cleaned = frealProb.trim()
+        const lines = cleaned.split('\\n').filter((line) => line.trim() !== '')
+        if (lines.length === 0) return [{ id: 1, description: '' }]
+        const result = lines.map((line, index) => ({
+          id: index + 1,
+          description: line.trim(),
+        }))
+        console.log('parseFrealProb result:', result)
+        return result
       } else if (Array.isArray(frealProb)) {
         return frealProb.map((item, index) => {
           if (typeof item === 'string') {
-            return { id: index + 1, description: item };
+            return { id: index + 1, description: item }
           } else if (item && typeof item.description === 'string') {
-            return { id: index + 1, description: item.description };
+            return { id: index + 1, description: item.description }
           } else {
-            return { id: index + 1, description: '' };
+            return { id: index + 1, description: '' }
           }
-        });
+        })
       } else {
-        return [{ id: 1, description: '' }];
+        return [{ id: 1, description: '' }]
       }
-    };
+    }
 
     const parseStepRepair = (stepRepair) => {
-      if (!stepRepair || typeof stepRepair !== 'string') return [{ id: 1, description: '' }];
-      const cleaned = stepRepair.trim();
-      const lines = cleaned.split(/\r?\n/).filter(line => line.trim() !== '');
-      if (lines.length === 0) return [{ id: 1, description: '' }];
-      return lines.map((line, index) => ({ id: index + 1, description: line.trim() }));
-    };
+      if (!stepRepair || typeof stepRepair !== 'string')
+        return [{ id: 1, description: '' }]
+      const cleaned = stepRepair.trim()
+      const lines = cleaned.split(/\r?\n/).filter((line) => line.trim() !== '')
+      if (lines.length === 0) return [{ id: 1, description: '' }]
+      return lines.map((line, index) => ({
+        id: index + 1,
+        description: line.trim(),
+      }))
+    }
 
     const localSubmit = ref({
       ...(submitData.value || {}),
@@ -853,7 +887,7 @@ export default {
       stepRepairArray: parseStepRepair(submitData.value?.stepRepair),
       comments5WhySH: submitData.value?.fiveWhyShFeedback || '',
       comments5WhyLH: submitData.value?.fiveWhyLhFeedback || '',
-    });
+    })
 
     const validatedCustom01 = ref(false)
     const isSaving = ref(false)
@@ -862,7 +896,7 @@ export default {
 
     const initializeEditingRootcauses = (rootcausesArray) => {
       const editingState = {}
-      rootcausesArray.forEach(item => {
+      rootcausesArray.forEach((item) => {
         editingState[item.id] = item.description.trim() === '' ? true : false
       })
       editingRootcauses.value = editingState
@@ -923,7 +957,7 @@ export default {
 
     const initializeEditingStepRepair = (stepRepairArray) => {
       const editingState = {}
-      stepRepairArray.forEach(item => {
+      stepRepairArray.forEach((item) => {
         editingState[item.id] = item.description.trim() === '' ? true : false
       })
       editingStepRepair.value = editingState
@@ -942,7 +976,7 @@ export default {
     const generateUniqueId = () => {
       const allIds = []
       const collectIds = (items) => {
-        items.forEach(item => {
+        items.forEach((item) => {
           allIds.push(item.id)
           if (item.subItems && item.subItems.length > 0) {
             collectIds(item.subItems)
@@ -983,11 +1017,13 @@ export default {
       id: 1,
       description: '',
       subItems: [],
-    });
+    })
 
     watch(submitData, (newVal) => {
-
-      if (newVal?.tambahAnalysisTerjadi && typeof newVal.tambahAnalysisTerjadi === 'object') {
+      if (
+        newVal?.tambahAnalysisTerjadi &&
+        typeof newVal.tambahAnalysisTerjadi === 'object'
+      ) {
         treeModel.value = newVal.tambahAnalysisTerjadi
       } else {
         treeModel.value = {
@@ -998,13 +1034,19 @@ export default {
       }
 
       let rootcausesArray = []
-      if (Array.isArray(newVal?.rootcauses5Why) && newVal.rootcauses5Why.length > 0) {
+      if (
+        Array.isArray(newVal?.rootcauses5Why) &&
+        newVal.rootcauses5Why.length > 0
+      ) {
         rootcausesArray = newVal.rootcauses5Why.map((item, index) => {
           if (typeof item === 'string') {
             console.log(`rootcauses5Why1[${index}] description:`, item)
             return { id: index + 1, description: item }
           } else if (item && typeof item.description === 'string') {
-            console.log(`rootcauses5Why2[${index}] description:`, item.description)
+            console.log(
+              `rootcauses5Why2[${index}] description:`,
+              item.description,
+            )
             return { id: index + 1, description: item.description }
           } else {
             console.log(`rootcauses5Why3[${index}] description: empty`)
@@ -1014,12 +1056,18 @@ export default {
       } else if (typeof newVal?.rootcauses5Why === 'string') {
         rootcausesArray = parseFrealProb(newVal.rootcauses5Why)
         rootcausesArray.forEach((item, index) => {
-          console.log(`Parsed rootcauses5Why string[${index}] description:`, item.description)
+          console.log(
+            `Parsed rootcauses5Why string[${index}] description:`,
+            item.description,
+          )
         })
       } else if (typeof newVal?.freal_prob === 'string') {
         rootcausesArray = parseFrealProb(newVal.freal_prob)
         rootcausesArray.forEach((item, index) => {
-          console.log(`Parsed freal_prob[${index}] description:`, item.description)
+          console.log(
+            `Parsed freal_prob[${index}] description:`,
+            item.description,
+          )
         })
       } else {
         rootcausesArray = [{ id: 1, description: '' }]
@@ -1051,7 +1099,7 @@ export default {
       }
       initializeEditingRootcauses(rootcausesArray)
       initializeEditingStepRepair(stepRepairArray)
-    });
+    })
     const onMachineInput = () => {
       console.log('Machine input changed:', localSubmit.value.machineName)
     }
@@ -1091,7 +1139,10 @@ export default {
           alert('Please input problems')
           return
         }
-        if (!localSubmit.value.operator || localSubmit.value.operator.length === 0) {
+        if (
+          !localSubmit.value.operator ||
+          localSubmit.value.operator.length === 0
+        ) {
           alert('Please select at least one operator')
           return
         }
@@ -1107,13 +1158,56 @@ export default {
 
         // Format date/time fields before submit
         const submitDataFormatted = {
-          ...localSubmit.value,
-          startDate: formatDateTime(localSubmit.value.startDate),
-          finishDate: formatDateTime(localSubmit.value.finishDate),
+          machineName: localSubmit.value.machineName ?? '',
+          line: localSubmit.value.line ?? '',
+          operationNo: localSubmit.value.operationNo ?? '',
+          maker: localSubmit.value.maker ?? '',
+          problems: localSubmit.value.problems ?? '',
+          uraianKejadian: localSubmit.value.uraianKejadian ?? '',
+          uploadImage: localSubmit.value.uploadImage ?? '',
+          ilustrasiStandart: localSubmit.value.ilustrasiStandart ?? '',
+          standartImage: localSubmit.value.standartImage ?? '',
+          ilustrasiActual: localSubmit.value.ilustrasiActual ?? '',
+          actualImage: localSubmit.value.actualImage ?? '',
+          gapBetweenStandarAndActual:
+            localSubmit.value.gapBetweenStandarAndActual ?? '',
+          pilihFocusThemaMember: localSubmit.value.pilihFocusThemaMember ?? '',
+          pilihTaskforce: localSubmit.value.pilihTaskforce ?? '',
+          operator: localSubmit.value.operator ?? [],
+          avCategory: localSubmit.value.avCategory ?? '',
+          shift: localSubmit.value.shift ?? '',
+          startDate: formatDateTime(localSubmit.value.startDate) ?? '',
+          finishDate: formatDateTime(localSubmit.value.finishDate) ?? '',
+          durationMin: localSubmit.value.durationMin ?? '',
+          problemCategory: localSubmit.value.problemCategory ?? '',
+          itemTemporaryAction: localSubmit.value.itemTemporaryAction ?? '',
+          rootcauses5Why: localSubmit.value.rootcauses5Why ?? [],
+          stepRepair: localSubmit.value.stepRepair ?? [],
+          partChange: localSubmit.value.partChange ?? '',
+          countermeasureKenapaTerjadi:
+            localSubmit.value.countermeasureKenapaTerjadi ?? '',
+          yokoten: localSubmit.value.yokoten ?? [],
+          rootcause5WhyKenapaLama:
+            localSubmit.value.rootcause5WhyKenapaLama ?? '',
+          tambahAnalisisLama: localSubmit.value.tambahAnalisisLama ?? '',
+          tambahAnalysisTerjadi: localSubmit.value.tambahAnalysisTerjadi ?? '',
+          whyImage: localSubmit.value.whyImage ?? '',
+          whyLamaImage: localSubmit.value.whyLamaImage ?? '',
+          comments5WhySH: localSubmit.value.comments5WhySH ?? '',
+          comments5WhyLH: localSubmit.value.comments5WhyLH ?? '',
+          commentsCountermeasure:
+            localSubmit.value.commentsCountermeasure ?? '',
+          attachmentMeeting: localSubmit.value.attachmentMeeting ?? '',
+          file_report: localSubmit.value.file_report ?? '',
+          uploadFile: localSubmit.value.uploadFile ?? '',
+          fidProblem: localSubmit.value.fidProblem ?? '',
+          agreeTerms: localSubmit.value.agreeTerms ?? false,
+          oCategory: localSubmit.value.oCategory ?? '',
+          qCategory: localSubmit.value.qCategory ?? '',
         }
 
         console.log('Submit data:', submitDataFormatted)
-        // emit('submit', submitDataFormatted)
+        emit('submit', submitDataFormatted)
       } catch (error) {
         alert('Error during submit: ' + error.message)
         isSaving.value = false
@@ -1130,12 +1224,12 @@ export default {
         else if (newShift === 'w') shiftName.value = 'White'
         else shiftName.value = ''
       },
-      { immediate: true }
+      { immediate: true },
     )
     watch(
       () => localSubmit.value.pilihO6,
       (newO6) => {
-        console.log('O6 ini:', localSubmit.value.pilihO6);
+        console.log('O6 ini:', localSubmit.value.pilihO6)
         const o6Map = {
           1: 'O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))',
           2: 'O2: Henkaten Issue (No Enough Trial, No Confirm (others team))',
@@ -1145,71 +1239,90 @@ export default {
           6: 'O6: Lifetime Issue (Out of Standard Running, Over Capacity)',
         }
         oCategoryName.value = o6Map[newO6] || ''
-        console.log('O6 ini 1:', localSubmit.value.pilihO6);
+        console.log('O6 ini 1:', localSubmit.value.pilihO6)
       },
-      { immediate: true }
+      { immediate: true },
     )
     watch(
       () => localSubmit.value.problemCategory,
       (newCategory) => {
-        console.log('Problem Category changed:', localSubmit.value.problemCategory);
+        console.log(
+          'Problem Category changed:',
+          localSubmit.value.problemCategory,
+        )
         const categoryMap = {
           1: 'Small',
           2: 'Chokotei',
           3: 'LTB',
         }
-        problemCategoryName.value = categoryMap[newCategory] || '';
-        console.log('Problem Category changed 1:', localSubmit.value.problemCategory)
+        problemCategoryName.value = categoryMap[newCategory] || ''
+        console.log(
+          'Problem Category changed 1:',
+          localSubmit.value.problemCategory,
+        )
       },
-      { immediate: true }
+      { immediate: true },
     )
     watch(
       () => localSubmit.value.pilihQ6,
       (newQ6) => {
-        console.log('Q6 ini:', localSubmit.value.pilihQ6);
+        console.log('Q6 ini:', localSubmit.value.pilihQ6)
         const q6Map = {
-          1: "Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))",
-          2: "Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)",
-          3: "Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)",
-          4: "Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)",
-          5: "Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))",
+          1: 'Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))',
+          2: 'Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)',
+          3: 'Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)',
+          4: 'Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)',
+          5: 'Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))',
           6: "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)",
         }
         qCategoryName.value = q6Map[newQ6] || ' '
-        console.log('Q6 ini 1:', localSubmit.value.pilihQ6);
+        console.log('Q6 ini 1:', localSubmit.value.pilihQ6)
       },
-      { immediate: true }
+      { immediate: true },
     )
-    console.log("ANJING 2: " + localSubmit.value);
-    console.log('Local submit data 2:', JSON.stringify(localSubmit.value, null, 2));
+    console.log('ANJING 2: ' + localSubmit.value)
+    console.log(
+      'Local submit data 2:',
+      JSON.stringify(localSubmit.value, null, 2),
+    )
     const stopSaving = () => {
       isSaving.value = false
     }
     const editRootcause = (index) => {
       if (!Array.isArray(localSubmit.value.rootcauses5Why)) {
-        console.error('editRootcause1: rootcauses5Why is not an array');
-        return;
+        console.error('editRootcause1: rootcauses5Why is not an array')
+        return
       }
-      const id = localSubmit.value.rootcauses5Why[index]?.id;
+      const id = localSubmit.value.rootcauses5Why[index]?.id
       if (id === undefined) {
-        console.error('editRootcause1: id is undefined for index', index);
-        return;
+        console.error('editRootcause1: id is undefined for index', index)
+        return
       }
-      const currentState = editingRootcauses.value[id];
+      const currentState = editingRootcauses.value[id]
       if (!currentState || currentState === false) {
         // Enable edit mode
         editingRootcauses.value = {
           ...editingRootcauses.value,
-          [id]: true
+          [id]: true,
         }
       } else if (currentState === true) {
         // Disable edit mode
         editingRootcauses.value = {
           ...editingRootcauses.value,
-          [id]: false
+          [id]: false,
         }
       }
     }
+
+    // Reset isSaving when modal is closed
+    watch(
+      () => props.visible,
+      (newVal) => {
+        if (!newVal) {
+          isSaving.value = false
+        }
+      }
+    )
 
     return {
       localSubmit,
@@ -1243,21 +1356,33 @@ export default {
       }
     },
     downloadLastReportFile() {
-      if (this.localSubmit.file_report && this.localSubmit.fidProblem && this.localSubmit.problems) {
+      if (
+        this.localSubmit.file_report &&
+        this.localSubmit.fidProblem &&
+        this.localSubmit.problems
+      ) {
         // Construct backend download endpoint URL with query parameters
-        let url = `${window.location.origin}/api/smartandon/download-report?fid=${encodeURIComponent(this.localSubmit.fidProblem)}&problem=${encodeURIComponent(this.localSubmit.problems)}`;
-        console.log('Download URL:', url);
+        let url = `${
+          window.location.origin
+        }/api/smartandon/download-report?fid=${encodeURIComponent(
+          this.localSubmit.fidProblem,
+        )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
+        console.log('Download URL:', url)
         // Create an anchor element and trigger download
-        const link = document.createElement('a');
-        link.href = url;
+        const link = document.createElement('a')
+        link.href = url
         // Extract filename from file_report path
-        const filename = this.localSubmit.file_report.substring(this.localSubmit.file_report.lastIndexOf('/') + 1).split('?')[0];
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const filename = this.localSubmit.file_report
+          .substring(this.localSubmit.file_report.lastIndexOf('/') + 1)
+          .split('?')[0]
+        link.setAttribute('download', filename)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       } else {
-        alert('No last report file or required parameters available to download.')
+        alert(
+          'No last report file or required parameters available to download.',
+        )
       }
     },
     addRootcause() {
@@ -1266,43 +1391,51 @@ export default {
       }
       if (this.localSubmit.rootcauses5Why.length < 5) {
         const newId = this.localSubmit.rootcauses5Why.length
-          ? Math.max(...this.localSubmit.rootcauses5Why.map((item) => item.id)) + 1
+          ? Math.max(
+              ...this.localSubmit.rootcauses5Why.map((item) => item.id),
+            ) + 1
           : 1
         this.localSubmit.rootcauses5Why.push({ id: newId, description: '' })
       }
     },
     editRootcause(index) {
-      console.log('ANJING1');
-      console.log('editRootcause called with index:', index);
-      console.log('localSubmit.rootcauses5Why:', this.localSubmit.rootcauses5Why);
+      console.log('ANJING1')
+      console.log('editRootcause called with index:', index)
+      console.log(
+        'localSubmit.rootcauses5Why:',
+        this.localSubmit.rootcauses5Why,
+      )
       if (!Array.isArray(this.localSubmit.rootcauses5Why)) {
-        console.error('editRootcause2: rootcauses5Why is not an array');
-        return;
+        console.error('editRootcause2: rootcauses5Why is not an array')
+        return
       }
       if (index < 0 || index >= this.localSubmit.rootcauses5Why.length) {
-        console.error('editRootcause2: index out of bounds', index);
-        return;
+        console.error('editRootcause2: index out of bounds', index)
+        return
       }
-      const id = this.localSubmit.rootcauses5Why[index]?.id;
+      const id = this.localSubmit.rootcauses5Why[index]?.id
       if (id === undefined) {
-        console.error('editRootcause2: id is undefined for index', index);
-        return;
+        console.error('editRootcause2: id is undefined for index', index)
+        return
       }
-      const currentState = this.editingRootcauses[id];
+      const currentState = this.editingRootcauses[id]
       if (!currentState || currentState === 'locked') {
         this.editingRootcauses = {
           ...this.editingRootcauses,
-          [id]: true
-        };
+          [id]: true,
+        }
       } else if (currentState === true) {
         this.editingRootcauses = {
           ...this.editingRootcauses,
-          [id]: false
-        };
+          [id]: false,
+        }
       }
     },
     deleteRootcause(index) {
-      if (!this.localSubmit.rootcauses5Why || !this.localSubmit.rootcauses5Why[index]) {
+      if (
+        !this.localSubmit.rootcauses5Why ||
+        !this.localSubmit.rootcauses5Why[index]
+      ) {
         return
       }
       if (Array.isArray(this.localSubmit.rootcauses5Why)) {
@@ -1328,12 +1461,12 @@ export default {
       if (!currentState || currentState === 'locked') {
         this.editingStepRepair = {
           ...this.editingStepRepair,
-          [id]: true
+          [id]: true,
         }
       } else if (currentState === true) {
         this.editingStepRepair = {
           ...this.editingStepRepair,
-          [id]: 'locked'
+          [id]: 'locked',
         }
       }
     },
@@ -1352,7 +1485,7 @@ export default {
     },
     addNewAnalysis() {
       const newId = this.tambahAnalysisList.length
-        ? Math.max(...this.tambahAnalysisList.map(item => item.id)) + 1
+        ? Math.max(...this.tambahAnalysisList.map((item) => item.id)) + 1
         : 1
       this.tambahAnalysisList.push({
         id: newId,
@@ -1362,22 +1495,23 @@ export default {
     },
     addSubItem(parentIndex) {
       const newId = this.tambahAnalysisList[parentIndex].subItems.length
-        ? Math.max(...this.tambahAnalysisList[parentIndex].subItems.map(item => item.id)) + 1
+        ? Math.max(
+            ...this.tambahAnalysisList[parentIndex].subItems.map(
+              (item) => item.id,
+            ),
+          ) + 1
         : 1
       this.tambahAnalysisList[parentIndex].subItems.push({
         id: newId,
         description: '',
       })
     },
-    editItem(index) {
-    },
+    editItem(index) {},
     deleteItem(index) {
       this.tambahAnalysisList.splice(index, 1)
     },
-  }
-
+  },
 }
-
 </script>
 
 <style scoped>
@@ -1393,7 +1527,7 @@ export default {
   margin-bottom: 5px;
 }
 
-.analysis-item input[type="text"] {
+.analysis-item input[type='text'] {
   flex-grow: 1;
   margin-right: 10px;
   padding: 4px 8px;

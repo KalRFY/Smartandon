@@ -1,5 +1,4 @@
 <template>
-  
   <div style="position: relative">
     <EditProblemModal
       :visible="visibleLiveDemo"
@@ -7,6 +6,7 @@
       :machineOptions="machineOptions"
       :lineOptions="lineOptions"
       :modalLoading="modalLoading"
+      :memberOption="memberOption"
       @close="visibleLiveDemo = false"
       @submit="saveSubmit"
     />
@@ -25,7 +25,17 @@
       @update:selectedLine="selectedLine = $event"
       @update:selectedMachineName="selectedMachineName = $event"
       @update:selectedProblem="selectedProblem = $event"
-      @search="() => fetchProblems(1, { filterStartDate, filterFinishDate, selectedLine, selectedMachineName, selectedProblem, problemCategory: selectedProblemCategory })"
+      @search="
+        () =>
+          fetchProblems(1, {
+            filterStartDate,
+            filterFinishDate,
+            selectedLine,
+            selectedMachineName,
+            selectedProblem,
+            problemCategory: selectedProblemCategory,
+          })
+      "
       @reset="resetFilters"
       @machineInput="onMachineInput"
     />
@@ -111,14 +121,37 @@ export default {
       tableLoading: false,
       submit: this.getInitialSubmitData(),
       qCategoryName: '',
-      
+
       o6Options: [
-        { id: 1, label: 'O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))' },
-        { id: 2, label: 'O2: Henkaten Issue (No Enough Trial, No Confirm (others team))' },
-        { id: 3, label: 'O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)' },
-        { id: 4, label: 'O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)' },
-        { id: 5, label: 'O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible Area, Unpredictable (water leak / crush))' },
-        { id: 6, label: 'O6: Lifetime Issue (Out of Standard Running, Over Capacity)' },
+        {
+          id: 1,
+          label:
+            'O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))',
+        },
+        {
+          id: 2,
+          label:
+            'O2: Henkaten Issue (No Enough Trial, No Confirm (others team))',
+        },
+        {
+          id: 3,
+          label:
+            'O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)',
+        },
+        {
+          id: 4,
+          label:
+            'O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)',
+        },
+        {
+          id: 5,
+          label:
+            'O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible Area, Unpredictable (water leak / crush))',
+        },
+        {
+          id: 6,
+          label: 'O6: Lifetime Issue (Out of Standard Running, Over Capacity)',
+        },
       ],
 
       shiftOptions: [
@@ -132,14 +165,37 @@ export default {
         { id: 2, label: 'Chokotei' },
         { id: 3, label: 'LTB' },
       ],
-      
+
       q6Options: [
-        { id: 1, label: 'Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))' },
-        { id: 2, label: 'Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)' },
-        { id: 3, label: 'Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)' },
-        { id: 4, label: 'Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)' },
-        { id: 5, label: 'Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))' },
-        { id: 6, label: 'Q6: Back-Up (Back-Up MC\'s Preparation, Back-Up MC\'s dandori)' },
+        {
+          id: 1,
+          label:
+            'Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))',
+        },
+        {
+          id: 2,
+          label:
+            'Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)',
+        },
+        {
+          id: 3,
+          label:
+            'Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)',
+        },
+        {
+          id: 4,
+          label:
+            'Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)',
+        },
+        {
+          id: 5,
+          label:
+            'Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))',
+        },
+        {
+          id: 6,
+          label: "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)",
+        },
       ],
     }
   },
@@ -162,7 +218,7 @@ export default {
         pages.push(i)
       }
       return pages
-    }
+    },
   },
 
   methods: {
@@ -237,7 +293,9 @@ export default {
           (!problemCategory || problemCategory === null)
 
         if (allFiltersEmpty) {
-          console.log('[RepeatFlowChecker] All filters empty, calling resetFilters')
+          console.log(
+            '[RepeatFlowChecker] All filters empty, calling resetFilters',
+          )
           this.resetFilters()
           // After resetFilters, update filters to cleared state
           filters = {
@@ -266,8 +324,14 @@ export default {
           }
         }
 
-        if (filters.problemCategory !== undefined && filters.problemCategory !== '') {
-          console.log('ProblemHistory received filterCategory with category 1:', filters.problemCategory)
+        if (
+          filters.problemCategory !== undefined &&
+          filters.problemCategory !== ''
+        ) {
+          console.log(
+            'ProblemHistory received filterCategory with category 1:',
+            filters.problemCategory,
+          )
         }
 
         const params = {
@@ -278,16 +342,22 @@ export default {
           line: filters.selectedLine || undefined,
           machineName: machineLabel || undefined,
           problem: filters.selectedProblem || undefined,
-          problemCategory: filters.problemCategory || undefined
+          problemCategory: filters.problemCategory || undefined,
         }
 
-        console.log('[RepeatFlowChecker] ProblemHistory sending request to backend with params:', params)
+        console.log(
+          '[RepeatFlowChecker] ProblemHistory sending request to backend with params:',
+          params,
+        )
 
         const response = await axios.get('/api/smartandon/problemView', {
           params,
         })
 
-        console.log('[RepeatFlowChecker] ProblemHistory received data from backend:', response.data.data)
+        console.log(
+          '[RepeatFlowChecker] ProblemHistory received data from backend:',
+          response.data.data,
+        )
 
         this.allProblems = response.data.data
         this.problemsView = response.data.data
@@ -303,7 +373,6 @@ export default {
         this.selectedMachineName = filters.selectedMachineName
         this.selectedProblem = filters.selectedProblem
         this.selectedProblemCategory = filters.problemCategory
-
       } catch (error) {
         this.error = 'Failed to fetch problems: ' + error.message
         console.error(this.error)
@@ -326,43 +395,64 @@ export default {
       try {
         this.tableLoading = true
         this.modalLoading = true
-        const response = await axios.get(`/api/smartandon/problemId/${problem.fid}`);
+        const response = await axios.get(
+          `/api/smartandon/problemId/${problem.fid}`,
+        )
         const problemData = response.data
-        console.log('Problem data:', problemData);
+        console.log('Problem data:', problemData)
         this.submit = this.mapProblemDataToSubmit(problemData)
-        console.log('Submit data sent to EditProblemModal:', JSON.stringify(this.submit, null, 2))
+        console.log(
+          'Submit data sent to EditProblemModal:',
+          JSON.stringify(this.submit, null, 2),
+        )
 
         // Fetch tambahAnalysis data and filter by id_problem matching fid
-        const analysisResponse = await axios.get('/api/smartandon/tambahAnalysis');
-        const allAnalysis = analysisResponse.data;
-        const filteredAnalysis = allAnalysis.filter(item => item.id_problem === problem.fid);
+        const analysisResponse = await axios.get(
+          '/api/smartandon/tambahAnalysis',
+        )
+        const allAnalysis = analysisResponse.data
+        const filteredAnalysis = allAnalysis.filter(
+          (item) => item.id_problem === problem.fid,
+        )
 
         // Mapping berdasarkan analisys_category "TERJADI" dan "LAMA"
-        const terjadiAnalysis = filteredAnalysis.filter(item => item.analisys_category === 'TERJADI');
-        const lamaAnalysis = filteredAnalysis.filter(item => item.analisys_category === 'LAMA');
+        const terjadiAnalysis = filteredAnalysis.filter(
+          (item) => item.analisys_category === 'TERJADI',
+        )
+        const lamaAnalysis = filteredAnalysis.filter(
+          (item) => item.analisys_category === 'LAMA',
+        )
 
         this.tambahAnalysisData = {
           terjadi: terjadiAnalysis,
           lama: lamaAnalysis,
-        };
-        console.log('Mapped tambahAnalysis data:', this.tambahAnalysisData);
+        }
+        console.log('Mapped tambahAnalysis data:', this.tambahAnalysisData)
 
-        this.tambahAnalysisTerjadi = terjadiAnalysis;
-        this.tambahAnalysisLama = lamaAnalysis;
+        this.tambahAnalysisTerjadi = terjadiAnalysis
+        this.tambahAnalysisLama = lamaAnalysis
 
         // Map option labels for O6, Shift, Problem Category, and Q6
-        const o6Option = this.o6Options.find(opt => opt.id === this.submit.pilihO6)
+        const o6Option = this.o6Options.find(
+          (opt) => opt.id === this.submit.pilihO6,
+        )
         this.oCategoryName = o6Option ? o6Option.label : ''
 
-        const shiftOption = this.shiftOptions.find(opt => opt.id === this.submit.shift)
+        const shiftOption = this.shiftOptions.find(
+          (opt) => opt.id === this.submit.shift,
+        )
         this.shiftName = shiftOption ? shiftOption.label : ''
 
         const problemCategoryOption = this.problemCategoryOptions.find(
-          opt => opt.id === this.submit.problemCategory,
+          (opt) => opt.id === this.submit.problemCategory,
         )
-        this.problemCategoryName = problemCategoryOption ? problemCategoryOption.label : ''
+        this.problemCategoryName = problemCategoryOption
+          ? problemCategoryOption.label
+          : ''
 
-        const q6Option = this.q6Options.find(opt => opt.id === this.submit.qCategory)
+        const q6Option = this.q6Options.find(
+          (opt) => opt.id === this.submit.qCategory,
+        )
         this.qCategoryName = q6Option ? q6Option.label : ''
 
         this.visibleLiveDemo = true
@@ -401,7 +491,7 @@ export default {
         ilustrasiActual: problemData.ilustrasiActual || '',
         actualImage: problemData.fimage || '',
         gapBetweenStandarAndActual:
-        problemData.gapBetweenStandarAndActual || '',
+          problemData.gapBetweenStandarAndActual || '',
         pilihFocusThemaMember: problemData.pilihFocusThemaMember || '',
         pilihTaskforce: problemData.pilihTaskforce || '',
         operator: problemData.foperator
@@ -421,7 +511,7 @@ export default {
         stepRepair: problemData.fstep_repair || '',
         partChange: problemData.fpart_change || '',
         countermeasureKenapaTerjadi:
-        problemData.countermeasureKenapaTerjadi || '',
+          problemData.countermeasureKenapaTerjadi || '',
         yokoten: problemData.fyokoten || '',
         rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
         tambahAnalisisLama: problemData.tambahAnalisisLama || '',
@@ -443,6 +533,7 @@ export default {
     },
 
     async saveSubmit(submitData) {
+      console.log('Saving submit data: ', submitData)
       if (!submitData.machineName) {
         alert('Please input machine name')
         return
@@ -465,12 +556,48 @@ export default {
           machineName: submitData.machineName,
           lineName: submitData.line,
           problemDescription: submitData.problems,
-          operator: submitData.operator.join(','),
+          operator: Array.isArray(submitData.operator)
+            ? submitData.operator.join(',')
+            : '',
           fid: submitData.fidProblem,
-          lastReportFile: submitData.lastReportFile,  // Added lastReportFile to payload
+          maker: submitData.maker,
+          operationNo: submitData.operationNo,
+          avCategory: submitData.avCategory,
+          shift: submitData.shift,
+          startDate: submitData.startDate,
+          finishDate: submitData.finishDate,
+          durationMin: submitData.durationMin,
+          problemCategory: submitData.problemCategory,
+          itemTemporaryAction: submitData.itemTemporaryAction,
+          rootcauses5Why: submitData.rootcauses5Why,
+          stepRepair: submitData.stepRepair,
+          partChange: submitData.partChange,
+          countermeasureKenapaTerjadi: submitData.countermeasureKenapaTerjadi,
+          yokoten: submitData.yokoten,
+          rootcause5WhyKenapaLama: submitData.rootcause5WhyKenapaLama,
+          tambahAnalisisLama: submitData.tambahAnalisisLama,
+          tambahAnalysisTerjadi: submitData.tambahAnalysisTerjadi,
+          whyImage: submitData.whyImage,
+          whyLamaImage: submitData.whyLamaImage,
+          comments5WhySH: submitData.comments5WhySH,
+          comments5WhyLH: submitData.comments5WhyLH,
+          commentsCountermeasure: submitData.commentsCountermeasure,
+          attachmentMeeting: submitData.attachmentMeeting,
+          file_report: submitData.file_report,
+          uploadFile: submitData.uploadFile,
+          actualImage: submitData.actualImage,
+          uploadImage: submitData.uploadImage,
+          ilustrasiActual: submitData.ilustrasiActual,
+          ilustrasiStandart: submitData.ilustrasiStandart,
+          standartImage: submitData.standartImage,
+          gapBetweenStandarAndActual: submitData.gapBetweenStandarAndActual,
+          uraianKejadian: submitData.uraianKejadian,
+          agreeTerms: submitData.agreeTerms,
+          oCategory: submitData.oCategory,
+          qCategory: submitData.qCategory,
         }
 
-        const response = await api.put('/smartandon/problem/update', payload)
+        const response = await axios.put('/api/smartandon/update', payload)
 
         if (response.data.status === 'success') {
           alert('Input updated successfully')
@@ -499,12 +626,18 @@ export default {
 
     onFilterCategory(category) {
       if (category === 0) {
-        this.selectedProblemCategory = null;
+        this.selectedProblemCategory = null
       } else {
-        this.selectedProblemCategory = category;
+        this.selectedProblemCategory = category
       }
-      console.log('[RepeatFlowChecker] ProblemHistory onFilterCategory received category:', category)
-      console.log('[RepeatFlowChecker] ProblemHistory onFilterCategory received selectedProblemCategory:', this.selectedProblemCategory)
+      console.log(
+        '[RepeatFlowChecker] ProblemHistory onFilterCategory received category:',
+        category,
+      )
+      console.log(
+        '[RepeatFlowChecker] ProblemHistory onFilterCategory received selectedProblemCategory:',
+        this.selectedProblemCategory,
+      )
       // console.log('Filter time: ', filterStartDate, filterFinishDate, selectedLine, selectedMachineName, selectedProblem, problemCategory);
       // Pass current filters explicitly to fetchProblems
       this.fetchProblems(this.currentPage, {
@@ -514,7 +647,7 @@ export default {
         selectedMachineName: this.selectedMachineName,
         selectedProblem: this.selectedProblem,
         problemCategory: this.selectedProblemCategory,
-      });
+      })
 
       // console.log('Filter time1: ', filterStartDate, filterFinishDate, selectedLine, selectedMachineName, selectedProblem, problemCategory);
     },
@@ -524,7 +657,6 @@ export default {
     },
 
     async loadInitialData() {
-
       this.loading = true
       this.error = null
 
@@ -548,7 +680,6 @@ export default {
         }))
 
         await this.fetchProblems(this.currentPage)
-        
       } catch (error) {
         this.error = 'Failed to load initial data: ' + error.message
         console.error(error)
@@ -565,11 +696,6 @@ export default {
 </script>
 
 <style scoped>
-
-
-
-
-
 .dashboard-card {
   transition: transform 0.3s, box-shadow 0.3s;
   border-radius: 10px;

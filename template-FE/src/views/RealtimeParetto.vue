@@ -544,6 +544,13 @@ export default {
         color: 'secondary',
         route: '/app/LTBSummary',
       },
+      {
+        title: 'CM Followup',
+        icon: 'FileText',
+        description: 'Countermeasure tracking and follow-up monitoring',
+        color: 'secondary',
+        route: '/app/CMFollowup',
+      },
     ]
 
     const navigateTo = (route) => {
