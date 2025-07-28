@@ -18,6 +18,7 @@ const getMTBFController = async (req, res, next) => {
         status: httpStatus.BAD_REQUEST,
       });
     }
+    
     const fstartTime = startDate;
     const fendTime = endDate;
     const start = new Date(fstartTime.split(' ')[0]);
@@ -25,6 +26,7 @@ const getMTBFController = async (req, res, next) => {
     const diffDays = (end - start) / (1000 * 60 * 60 * 24);
 
     let resultsArray = [];
+
     if (type === 'daily') {
       resultsArray = await Promise.all(
         LINES.filter(Boolean).map(async (line) => {
@@ -39,14 +41,17 @@ const getMTBFController = async (req, res, next) => {
             GROUP BY DATE(fstart_time)
             ORDER BY DATE(fstart_time)
           `;
+          
           const results = await sequelize.query(query, {
             type: sequelize.QueryTypes.SELECT,
           });
+
           return results.map((row) => {
             const uptime = 24;
             const downtime = Number(row.total_fdur) || 0;
             const totalProblem = Number(row.total_rows) || 0;
             const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
+
             return {
               fline: line,
               date: row.date,
@@ -56,6 +61,7 @@ const getMTBFController = async (req, res, next) => {
               downtime: downtime.toFixed(2),
               mtbf: mtbf.toFixed(2),
             };
+
           });
         })
       );
@@ -74,9 +80,11 @@ const getMTBFController = async (req, res, next) => {
             GROUP BY DATE_FORMAT(fstart_time, '%Y-%m')
             ORDER BY DATE_FORMAT(fstart_time, '%Y-%m')
           `;
+          
           const results = await sequelize.query(query, {
             type: sequelize.QueryTypes.SELECT,
           });
+          
           return results.map((row) => {
             const [year, month] = row.month.split('-');
             const daysInMonth = new Date(year, month, 0).getDate();
@@ -84,6 +92,7 @@ const getMTBFController = async (req, res, next) => {
             const downtime = Number(row.total_fdur) || 0;
             const totalProblem = Number(row.total_rows) || 0;
             const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
+
             return {
               fline: line,
               date: row.month,
@@ -96,9 +105,12 @@ const getMTBFController = async (req, res, next) => {
           });
         })
       );
+
       resultsArray = resultsArray.flat();
+
     } else if (type === 'machines') {
       resultsArray = await Promise.all(
+
         LINES.filter(Boolean).map(async (line) => {
           const query = `
             SELECT 
@@ -111,9 +123,11 @@ const getMTBFController = async (req, res, next) => {
             GROUP BY fmc_name
             ORDER BY fmc_name
           `;
+
           const results = await sequelize.query(query, {
             type: sequelize.QueryTypes.SELECT,
           });
+
           return results.map((row) => {
             const [year, month] = row.month.split('-');
             const daysInMonth = new Date(year, month, 0).getDate();
@@ -121,6 +135,7 @@ const getMTBFController = async (req, res, next) => {
             const downtime = Number(row.total_fdur) || 0;
             const totalProblem = Number(row.total_rows) || 0;
             const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
+
             return {
               fline: line,
               date: row.month,
@@ -133,7 +148,9 @@ const getMTBFController = async (req, res, next) => {
           });
         })
       );
+
       resultsArray = resultsArray.flat();
+
     } else {
       resultsArray = await Promise.all(
         LINES.filter(Boolean).map(async (line) => {
@@ -145,14 +162,17 @@ const getMTBFController = async (req, res, next) => {
             WHERE fline = '${line}'
             AND fstart_time BETWEEN '${fstartTime}' AND '${fendTime}';
           `;
+
           const results = await sequelize.query(query, {
             type: sequelize.QueryTypes.SELECT,
           });
+
           const finalData = results[0] || {};
           const uptime = Number(diffDays * 24);
           const downtime = Number(finalData.total_fdur) || 0;
           const totalProblem = Number(finalData.total_rows) || 0;
           const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
+          
           return {
             fline: line,
             fStartTime: fstartTime,
