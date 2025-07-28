@@ -731,6 +731,20 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
+            <CCol md="12">
+              <CButton
+                style="width: 100%"
+                :color="'secondary'"
+                @click="downloadTemplateFile"
+                :disabled="!localSubmit.file_report"
+              >
+                Download Template
+              </CButton>
+            </CCol>
+          </CCol>
+        </CRow>
+        <CRow md="12" class="mb-3">
+          <CCol>
             <CFormInput
               type="file"
               feedbackInvalid="Please input the problems"
@@ -1321,7 +1335,7 @@ export default {
         if (!newVal) {
           isSaving.value = false
         }
-      }
+      },
     )
 
     return {
@@ -1361,17 +1375,15 @@ export default {
         this.localSubmit.fidProblem &&
         this.localSubmit.problems
       ) {
-        // Construct backend download endpoint URL with query parameters
         let url = `${
           window.location.origin
         }/api/smartandon/download-report?fid=${encodeURIComponent(
           this.localSubmit.fidProblem,
         )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
         console.log('Download URL:', url)
-        // Create an anchor element and trigger download
         const link = document.createElement('a')
         link.href = url
-        // Extract filename from file_report path
+
         const filename = this.localSubmit.file_report
           .substring(this.localSubmit.file_report.lastIndexOf('/') + 1)
           .split('?')[0]
@@ -1379,6 +1391,18 @@ export default {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+      } else {
+        alert(
+          'No last report file or required parameters available to download.',
+        )
+      }
+    },
+    downloadTemplateFile() {
+      if (this.localSubmit.fidProblem) {
+        const url = `api/smartandon/download-template?fid=${encodeURIComponent(
+          this.localSubmit.fidProblem,
+        )}`
+        window.open(url, '_blank')
       } else {
         alert(
           'No last report file or required parameters available to download.',
