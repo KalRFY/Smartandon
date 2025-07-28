@@ -1,13 +1,13 @@
 <template>
   <CHeader position="sticky" class="mb-4">
     <CContainer fluid>
-      <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
+      <CHeaderToggler class="ps-1 mt-1 mb-1" @click="$store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" style="color: #EB0A1E" />
       </CHeaderToggler>
       <CHeaderBrand class="mx-auto d-lg-none d-md-none">
         <h3 id="headerLabel1">{{headerLabel}}</h3>
       </CHeaderBrand>
-      <CHeaderNav class="d-none d-md-flex me-auto">
+      <CHeaderNav class="d-none d-md-flex ms-3 mb-1 me-auto">
         <h3 id="headerLabel2">{{headerLabel}}</h3>
       </CHeaderNav>
       <CHeaderNav>

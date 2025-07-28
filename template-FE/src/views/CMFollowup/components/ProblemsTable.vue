@@ -1,91 +1,106 @@
 <template>
   <CCard class="mt-3 mb-5 custom-card">
     <CCardBody>
-      <div v-if="loading" class="text-center py-8">
-        Loading data...
-      </div>
-      <div v-else>
-        <LegendStatus class="mb-4" />
+      <CRow v-if="loading">
+        <CCol class="text-center py-5">
+          Loading data...
+        </CCol>
+      </CRow>
 
-        <table class="table-auto w-full border-collapse border text-sm">
-          <thead>
-            <tr class="bg-gray-100 text-center">
-              <th class="border px-2 py-1" rowspan="3">No</th>
-              <th class="border px-2 py-1" rowspan="3">Line</th>
-              <th class="border px-2 py-1" rowspan="3">Machine</th>
-              <th class="border px-2 py-1" rowspan="3">Date Problem</th>
-              <th class="border px-2 py-1" rowspan="3">Description Problem</th>
-              <th class="border px-2 py-1" rowspan="3">Duration</th>
-              <th class="border px-2 py-1" rowspan="3">Rootcause</th>
-              <th class="border px-2 py-1" rowspan="3">Countermeasure</th>
-              <th class="border px-2 py-1" rowspan="3">Due Date</th>
-              <th class="border px-2 py-1" rowspan="3">PIC</th>
-              <th class="border px-2 py-1" rowspan="3">Status</th>
-              <th class="border px-2 py-1" colspan="2">CM Category (v)</th>
-              <th class="border px-2 py-1" colspan="12">2025</th>
-              <th class="border px-2 py-1" rowspan="3">Actions</th>
-            </tr>
-            <tr class="bg-gray-50 text-center">
-              <th class="border px-2 py-1" rowspan="2">Cause of Occurrence</th>
-              <th class="border px-2 py-1" rowspan="2">Cause of Delay</th>
-              <th class="border px-2 py-1" colspan="12">Schedule Countermeasure</th>
-            </tr>
-            <tr class="bg-gray-50 text-center">
-              <th v-for="month in 12" :key="'head-month-' + month" class="border px-2 py-1">
-                {{ new Date(0, month - 1).toLocaleString('default', { month: 'short' }) }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, idx) in data" :key="idx" class="hover:bg-gray-50 text-center">
-              <td class="border px-2 py-1">{{ idx + 1 }}</td>
-              <td class="border px-2 py-1">{{ row.line || '-' }}</td>
-              <td class="border px-2 py-1">{{ row.machine || '-' }}</td>
-              <td class="border px-2 py-1">{{ row.date || '-' }}</td>
-              <td class="border px-2 py-1 text-left">{{ row.problem || '-' }}</td>
-              <td class="border px-2 py-1">{{ row.duration || '-' }}</td>
-              <td class="border px-2 py-1 text-left">{{ row.rootcause || '-' }}</td>
-              <td class="border px-2 py-1 text-left">{{ row.countermeasure || '-' }}</td>
-              <td class="border px-2 py-1">{{ row.dueDate || '-' }}</td>
-              <td class="border px-2 py-1">{{ row.pic || '-' }}</td>
-              <td class="border px-2 py-1">{{ row.status || '-' }}</td>
-              <td class="border px-2 py-1">{{ row.kategori || '-' }}</td>
-              <td class="border px-2 py-1">
-                <input type="checkbox" disabled :checked="Boolean(row.reason_occurred)" />
-              </td>
-              <td class="border px-2 py-1">
-                <input type="checkbox" disabled :checked="Boolean(row.reason_delayed)" />
-              </td>
-              <td v-for="month in 12" :key="'month-' + idx + '-' + month" class="border px-2 py-1">
-                <input type="checkbox" disabled
-                  :checked="Array.isArray(row.schedule) && row.schedule.includes(month)" />
-              </td>
-              <td class="border px-2 py-1">
-                <button v-if="row.status === 'OK'" class="bg-green-500 text-white px-2 py-1 rounded text-xs">
-                  OK
-                </button>
-                <button v-else class="bg-blue-500 text-white px-2 py-1 rounded text-xs">
-                  Konfirmasi
-                </button>
-              </td>
-            </tr>
-            <tr v-if="data.length === 0">
-              <td colspan="28" class="border px-4 py-2 text-center">
-                No data available.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <template v-else>
+        <CRow>
+          <CCol>
+            <LegendStatus class="mb-4" />
+          </CCol>
+        </CRow>
 
-      <CRow class="mt-5 mb-3">
-        <CCol sm="2">
-          <CButton :disabled="loading" style="width: 100%" color="primary" @click="$emit('reset')">
+        <CRow>
+          <CCol>
+            <CRow style="max-height: 450px; overflow-y: auto; overflow-x: auto; display: block;">
+              <CTable bordered responsive hover align="middle" class="text-sm mb-2"
+                style="min-width: 1000px; width: 100%;">
+                <CTableHead>
+                  <CTableRow class="bg-gray-100 text-center">
+                    <CTableHeaderCell class="align-middle" rowspan="3">No</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Line</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Machine</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Date Problem</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Problem Description</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Duration</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Rootcause</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Countermeasure</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Due Date</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">PIC</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Status</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" colspan="2">CM Category (v)</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" colspan="12">Schedule Countermeasure</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="3">Actions</CTableHeaderCell>
+                  </CTableRow>
+                  <CTableRow class="bg-gray-50 text-center">
+                    <CTableHeaderCell class="align-middle" rowspan="2">Cause of Occurrence</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" rowspan="2">Cause of Delay</CTableHeaderCell>
+                    <CTableHeaderCell class="align-middle" colspan="12">2025</CTableHeaderCell>
+                  </CTableRow>
+                  <CTableRow class="bg-gray-50 text-center">
+                    <CTableHeaderCell v-for="month in 12" :key="month" class="align-middle">
+                      {{ new Date(0, month - 1).toLocaleString('default', { month: 'short' }) }}
+                    </CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+
+                <CTableBody>
+                  <CTableRow v-for="(row, idx) in data" :key="idx" class="text-center"
+                    :class="{ 'table-danger': row.status === 'NOT YET' }">
+                    <CTableDataCell>{{ row.no }}</CTableDataCell>
+                    <CTableDataCell>{{ row.line }}</CTableDataCell>
+                    <CTableDataCell>{{ row.machine }}</CTableDataCell>
+                    <CTableDataCell>{{ row.date }}</CTableDataCell>
+                    <CTableDataCell class="text-left">{{ row.problem }}</CTableDataCell>
+                    <CTableDataCell>{{ row.duration }}</CTableDataCell>
+                    <CTableDataCell class="text-left">{{ row.rootcause }}</CTableDataCell>
+                    <CTableDataCell class="text-left">{{ row.countermeasure }}</CTableDataCell>
+                    <CTableDataCell>{{ row.dueDate }}</CTableDataCell>
+                    <CTableDataCell>{{ row.pic }}</CTableDataCell>
+                    <CTableDataCell>{{ row.status }}</CTableDataCell>
+                    <CTableDataCell>
+                      <CFormCheck disabled :checked="row.reason_occurred" />
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CFormCheck disabled :checked="row.reason_delayed" />
+                    </CTableDataCell>
+                    <CTableDataCell v-for="month in 12" :key="month">
+                      <CFormCheck disabled :checked="row.schedule.includes(month)" />
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CButton v-if="row.status === 'OK'" size="sm" color="success" class="text-xs px-2 py-1">
+                        OK
+                      </CButton>
+                      <CButton v-else size="sm" color="primary" class="text-xs px-2 py-1">
+                        Confirmation
+                      </CButton>
+                    </CTableDataCell>
+                  </CTableRow>
+
+                  <CTableRow v-if="data.length === 0">
+                    <CTableDataCell colspan="28" class="text-center py-2">
+                      No data available.
+                    </CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              </CTable>
+            </CRow>
+          </CCol>
+        </CRow>
+      </template>
+
+      <CRow class="mt-5 mb-4 justify-content-center">
+        <CCol sm="auto">
+          <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('reset')" class="px-4">
             Download Countermeasure
           </CButton>
         </CCol>
-        <CCol sm="10">
-          <CButton :disabled="loading" style="width: 100%" color="primary" @click="$emit('search')">
+        <CCol sm="auto">
+          <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('search')" class="px-4">
             Send Reminder
           </CButton>
         </CCol>
@@ -96,7 +111,15 @@
 
 <script setup>
 import { defineProps } from 'vue'
-import { CCard, CCardBody, CRow, CCol, CButton } from '@coreui/vue'
+import {
+  CCard, CCardBody,
+  CRow, CCol,
+  CButton,
+  CTable, CTableHead, CTableRow, CTableBody,
+  CTableDataCell, CTableHeaderCell,
+  CFormCheck
+} from '@coreui/vue'
+
 import LegendStatus from '@/components/CMFollowup/LegendStatus.vue'
 
 const props = defineProps({

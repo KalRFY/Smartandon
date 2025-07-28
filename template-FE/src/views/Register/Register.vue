@@ -6,7 +6,7 @@
     <div class="register-card card shadow">
       <div class="card-content d-flex">
         <div class="form-side p-4">
-          <h2 class="form-title mt-1 mb-2">Register</h2>
+          <h2 class="form-title mb-2">Register</h2>
           <div class="form-subtitle mb-4">Input your credentials</div>
 
           <form @submit.prevent="onRegister">
@@ -189,10 +189,28 @@ const onRegister = async () => {
 
 .card-content {
   display: flex;
+  height: 100%;
 }
 
 .form-side {
   flex: 1;
+}
+
+.form-title {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.form-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.form-title,
+.form-subtitle {
+  text-align: center;
+  width: 100%;
+  margin-left: 13px;
 }
 
 .image-side {
@@ -221,18 +239,6 @@ const onRegister = async () => {
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
-}
-
-.form-title {
-  font-size: 26px;
-  font-weight: 600;
-  margin-left: 11.3vw;
-}
-
-.form-subtitle {
-  font-size: 16px;
-  font-weight: 400;
-  margin-left: 9.9vw;
 }
 
 .form-label {
