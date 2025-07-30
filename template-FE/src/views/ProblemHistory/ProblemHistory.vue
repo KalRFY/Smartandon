@@ -43,7 +43,7 @@
     <div style="position: relative">
       <div v-if="tableLoading" class="table-loading-overlay">
         <CSpinner color="primary" style="width: 3rem; height: 3rem" />
-        <div style="margin-top: 10px; font-size: 1.2rem; color: #333">
+        <div style="margin-top: 10px, font-size: 1.2rem, color: #333">
           Loading...
         </div>
       </div>
@@ -596,8 +596,31 @@ export default {
           oCategory: submitData.oCategory,
           qCategory: submitData.qCategory,
         }
+        const formData = new FormData()
+        Object.keys(payload).forEach((key) => {
+          const value = payload[key]
+          const isFileField = [
+            'actualImage',
+            'uploadImage',
+            'whyLamaImage',
+            'whyImage',
+            'attachmentMeeting',
+            'standartImage',
+          ].includes(key)
 
-        const response = await axios.put('/api/smartandon/update', payload)
+          if (isFileField && value instanceof File) {
+            formData.append(key, value)
+          } else if (isFileField && typeof value === 'string' && value) {
+            // Kirim path lama sebagai field biasa, bukan file
+            formData.append(key, value)
+          } else if (isFileField && !value) {
+            // Jangan append jika file kosong/null
+          } else {
+            formData.append(key, value ?? '')
+          }
+        })
+
+        const response = await axios.put('/api/smartandon/update', formData)
 
         if (response.data.status === 'success') {
           alert('Input updated successfully')

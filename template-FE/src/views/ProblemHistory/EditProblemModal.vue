@@ -428,6 +428,11 @@
               required
               @change="onFileChange($event, 'whyImage')"
             />
+            <img
+              :src="displayImg_problem"
+              width="50"
+              v-if="displayImg_problem"
+            />
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
@@ -647,6 +652,11 @@
               required
               @change="onFileChange($event, 'whyLamaImage')"
             />
+            <img
+              :src="displayWhyLamaImage"
+              width="50"
+              v-if="displayWhyLamaImage"
+            />
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
@@ -670,6 +680,8 @@
               required
               @change="onFileChange($event, 'attachmentMeeting')"
             />
+            <!-- <img :src="display_attachmentImg" width="50" />
+            v-if="display_attachmentImg" -->
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
@@ -1338,6 +1350,15 @@ export default {
       },
     )
 
+    // Debug localSubmit value
+    watch(
+      localSubmit,
+      (val) => {
+        console.log('localSubmit changed:', val)
+      },
+      { deep: true },
+    )
+
     return {
       localSubmit,
       validatedCustom01,
@@ -1359,6 +1380,28 @@ export default {
       deleteItem,
       treeModel,
     }
+  },
+  computed: {
+    displayImg_problem() {
+      console.log('displayImg_problem called, localSubmit:', this.localSubmit)
+      if (this.localSubmit?.whyImage) {
+        console.log('displayImg_problem whyImage:', this.localSubmit.whyImage)
+        return `/api/smartandon/image?path=${this.localSubmit.whyImage}`
+      }
+      return ''
+    },
+    display_attachmentImg() {
+      if (this.localSubmit?.attachmentMeeting) {
+        return `/api/smartandon/image?path=${this.localSubmit.attachmentMeeting}`
+      }
+      return ''
+    },
+    displayWhyLamaImage() {
+      if (this.localSubmit?.whyLamaImage) {
+        return `/api/smartandon/image?path=${this.localSubmit.whyLamaImage}`
+      }
+      return ''
+    },
   },
   methods: {
     onFileChange(event, field) {
