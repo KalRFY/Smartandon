@@ -307,7 +307,9 @@ const getProblemById = async (req, res, next) => {
         oCategory,
         qCategory,
         problemCategory,
-        file_report
+        file_report,
+        fpermanet_cm as countermeasureKenapaTerjadi,
+        fpermanet_cm_lama as countermeasureKenapaLama
       FROM v_current_error_2
       WHERE fid = :fid
       LIMIT 1
@@ -431,6 +433,13 @@ const updateProblem = async (req, res, next) => {
       comments5Why,
       lastReportFile,
     };
+
+    const cmKenapaLama = countermeasureKenapaLama || [];
+    console.log('Is array cmKenapaLama:', Array.isArray(cmKenapaLama));
+    const cmKenapaTerjadi = countermeasureKenapaTerjadi || [];
+    console.log('Is array cmKenapaTerjadi:', Array.isArray(cmKenapaTerjadi));
+    console.log('Countermeasure Kenapa Lama:', cmKenapaLama);
+    console.log('Countermeasure Kenapa Terjadi:', cmKenapaTerjadi);
 
     // if (machineName !== undefined) {
     //   updateFields.push('fmc_name = :machineName');
@@ -642,6 +651,14 @@ const updateProblem = async (req, res, next) => {
       }
     }
 
+    replacements.countermeasureKenapaTerjadi =
+      typeof countermeasureKenapaTerjadi === 'object'
+        ? JSON.stringify(countermeasureKenapaTerjadi)
+        : countermeasureKenapaTerjadi;
+
+    replacements.countermeasureKenapaLama =
+      typeof countermeasureKenapaLama === 'object' ? JSON.stringify(countermeasureKenapaLama) : countermeasureKenapaLama;
+
     console.log('Replacements:', replacements);
 
     const updateQuery = `
@@ -662,7 +679,10 @@ const updateProblem = async (req, res, next) => {
         t1.fyokoten = :yokoten,
         t1.problemCategory = :problemCategory,
         t1.why1_img = :whyImage,
-        t1.why2_img = :whyLamaImage
+        t1.why2_img = :whyLamaImage,
+        t1.fpermanet_cm = :countermeasureKenapaTerjadi,
+        t1.fpermanet_cm_lama = :countermeasureKenapaLama,
+        t1.fstep_repair = :stepRepair
       WHERE t1.fid = :fid;
     `;
     await sequelize.query(updateQuery, { replacements });
