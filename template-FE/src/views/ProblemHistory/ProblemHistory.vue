@@ -406,7 +406,6 @@ export default {
           JSON.stringify(this.submit, null, 2),
         )
 
-        // Fetch tambahAnalysis data and filter by id_problem matching fid
         const analysisResponse = await axios.get(
           '/api/smartandon/tambahAnalysis',
         )
@@ -415,7 +414,6 @@ export default {
           (item) => item.id_problem === problem.fid,
         )
 
-        // Mapping berdasarkan analisys_category "TERJADI" dan "LAMA"
         const terjadiAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'TERJADI',
         )
@@ -432,7 +430,6 @@ export default {
         this.tambahAnalysisTerjadi = terjadiAnalysis
         this.tambahAnalysisLama = lamaAnalysis
 
-        // Map option labels for O6, Shift, Problem Category, and Q6
         const o6Option = this.o6Options.find(
           (opt) => opt.id === this.submit.pilihO6,
         )
@@ -570,10 +567,13 @@ export default {
           problemCategory: submitData.problemCategory,
           itemTemporaryAction: submitData.itemTemporaryAction,
           rootcauses5Why: submitData.rootcauses5Why,
-          stepRepair: submitData.stepRepair,
+          stepRepair: JSON.stringify(submitData.stepRepair),
           partChange: submitData.partChange,
-          countermeasureKenapaTerjadi: submitData.countermeasureKenapaTerjadi,
-          yokoten: submitData.yokoten,
+          countermeasureKenapaTerjadi: JSON.stringify(
+            submitData.cmKenapaTerjadi,
+          ),
+          countermeasureKenapaLama: JSON.stringify(submitData.cmKenapaLama),
+          yokoten: JSON.stringify(submitData.yokoten),
           rootcause5WhyKenapaLama: submitData.rootcause5WhyKenapaLama,
           tambahAnalisisLama: submitData.tambahAnalisisLama,
           tambahAnalysisTerjadi: submitData.tambahAnalysisTerjadi,
