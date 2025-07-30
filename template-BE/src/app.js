@@ -7,6 +7,8 @@ const passport = require('passport');
 const httpStatus = require('http-status');
 const fileUpload = require('express-fileupload');
 // const schedule = require('node-schedule');
+const bodyParser = require('body-parser');
+const path = require('path');
 const config = require('./config/config');
 const morgan = require('./config/morgan');
 const { jwtStrategy } = require('./config/passport');
@@ -31,10 +33,9 @@ app.use(helmet());
 // parse json request body
 app.use(express.json({ limit: '50mb' }));
 
-// parse urlencoded request body
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(fileUpload());
+// app.use(fileUpload());
 
 // sanitize request data
 app.use(xss());
@@ -47,7 +48,7 @@ app.use(cors({ exposedHeaders: ['Content-Disposition'] }));
 app.options('*', cors());
 
 // Serve static files from reports/uploads directory
-const path = require('path');
+
 app.use('/reports/uploads', express.static(path.join(__dirname, '../reports/uploads')));
 
 // jwt authentication
@@ -68,7 +69,7 @@ app.use('/dashboard', dashboardRoutes);
 
 // Add a welcome route for the root path
 app.get('/', (req, res) => {
-  console.log("ENV: ", config.env);
+  console.log('ENV: ', config.env);
   res.status(200).json({
     message: 'Welcome to Smart Andon API',
     version: '1.0.0',

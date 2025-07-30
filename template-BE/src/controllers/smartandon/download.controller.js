@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const fs = require('fs');
+const stream = require('stream');
 const path = require('path');
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
@@ -95,4 +96,29 @@ exports.downloadTemplate = async (req, res, next) => {
     console.log(error);
     res.send('File Belum Lengkap! <a href="https:smartandonsys.web.app/problemHistory">Back</a>');
   }
+};
+
+exports.getImageController = async (req, res) => {
+  const pathImage = `${req.query.path}`;
+  const folderPath = path.dirname(pathImage);
+
+  if (!fs.existsSync(folderPath)) {
+    fs.mkdirSync(folderPath, { recursive: true });
+  }
+
+  if (!fs.existsSync(pathImage)) {
+    return res.status(404).send('File not found');
+  }
+
+  const r = fs.createReadStream(pathImage);
+  const ps = new stream.PassThrough();
+
+  stream.pipeline(r, ps, (err) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(400);
+    }
+  });
+
+  ps.pipe(res);
 };

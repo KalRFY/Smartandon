@@ -1,4 +1,10 @@
+/* eslint-disable no-console */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 const httpStatus = require('http-status');
+const { object } = require('joi');
+const fs = require('fs');
+const path = require('path');
 const { sequelize } = require('../../models');
 
 const getProblem = async (req, res, next) => {
@@ -582,7 +588,62 @@ const updateProblem = async (req, res, next) => {
     // if (updateFields.length === 0) {
     //   return res.status(httpStatus.BAD_REQUEST).json({ message: 'No fields to update' });
     // }
-    console.log('Update Fields:', updateFields);
+
+    if (req.files) {
+      console.log('Files uploaded:', req.files);
+      if (req.files.actualImage) {
+        const fileObj = req.files.actualImage[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = fileObj.path + ext;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.actualImage = newPath;
+      }
+      if (req.files.uploadImage) {
+        const fileObj = req.files.uploadImage[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = fileObj.path + ext;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.uploadImage = newPath;
+      }
+      if (req.files.standartImage) {
+        const fileObj = req.files.standartImage[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = fileObj.path + ext;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.standartImage = newPath;
+      }
+      if (req.files.whyImage) {
+        const fileObj = req.files.whyImage[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = fileObj.path + ext;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.whyImage = newPath;
+      }
+      if (req.files.whyLamaImage) {
+        const fileObj = req.files.whyLamaImage[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = fileObj.path + ext;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.whyLamaImage = newPath;
+      }
+      if (req.files.uploadFile) {
+        const fileObj = req.files.uploadFile[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = fileObj.path + ext;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.uploadFile = newPath;
+      }
+      if (req.files.attachmentMeeting) {
+        const fileObj = req.files.attachmentMeeting[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = fileObj.path + ext;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.attachmentMeeting = newPath;
+      }
+    }
+
+    console.log('Replacements:', replacements);
+
     const updateQuery = `
       UPDATE tb_error_log_2 t1
       JOIN tb_mc t2 ON t1.fmc_id = t2.fid
@@ -599,10 +660,34 @@ const updateProblem = async (req, res, next) => {
         t1.oCategory = :oCategory,
         t1.qCategory = :qCategory,
         t1.fyokoten = :yokoten,
-        t1.problemCategory = :problemCategory
+        t1.problemCategory = :problemCategory,
+        t1.why1_img = :whyImage,
+        t1.why2_img = :whyLamaImage
       WHERE t1.fid = :fid;
     `;
     await sequelize.query(updateQuery, { replacements });
+
+    const tbUraianData = {
+      general: replacements.uploadImage,
+      actual: replacements.actualImage,
+      standard: replacements.standartImage,
+    };
+
+    for (const key of Object.keys(tbUraianData)) {
+      if (tbUraianData[key]) {
+        const updateUraianQuery = `
+          UPDATE tb_r_uraian t1
+          SET t1.ilustration = :ilustration_${key}
+          WHERE t1.error_id = :fid AND t1.type_uraian = :type_uraian_${key}
+        `;
+        const uraianReplacements = {
+          fid: replacements.fid,
+          [`type_uraian_${key}`]: key,
+          [`ilustration_${key}`]: tbUraianData[key],
+        };
+        await sequelize.query(updateUraianQuery, { replacements: uraianReplacements });
+      }
+    }
 
     res.status(httpStatus.OK).json({ status: 'success', message: 'Problem updated successfully' });
   } catch (error) {
