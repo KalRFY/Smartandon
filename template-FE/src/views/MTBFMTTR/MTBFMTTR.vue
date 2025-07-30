@@ -50,32 +50,65 @@
     </CRow>
 
     <CRow class="production-lines-container flex flex-column">
-      <CCol
-        v-for="lineId in lineIds"
-        :key="lineId"
-        cols="12"
-        class="line-chart-container w-100"
-      >
-        <CCard class="w-100">
-          <CCardBody>
-            <template v-if="isLoading">
-              <div class="loading-message">Loading data...</div>
-            </template>
-            <template v-else>
-              <div v-if="!hasData(lineId)" class="empty-message">
-                No data available for {{ getLineTitle(lineId) }}
-              </div>
-              <apexchart
-                v-else
-                :options="getChartOptions(lineId)"
-                :series="getChartSeries(lineId)"
-                :height="350"
-                :type="getChartOptions(lineId).chart.type"
-              />
-            </template>
-          </CCardBody>
-        </CCard>
-      </CCol>
+      <template v-if="filterType === 'machines'">
+        <CCol
+          v-for="lineId in lineIds"
+          :key="lineId"
+          cols="12"
+          class="line-chart-container w-100"
+        >
+          <CCard class="w-100">
+            <CCardBody>
+              <template v-if="isLoading">
+                <div class="loading-message">Loading data...</div>
+              </template>
+              <template v-else>
+                <div
+                  v-if="!apiData[lineId] || apiData[lineId].length === 0"
+                  class="empty-message"
+                >
+                  No data available for {{ getLineTitle(lineId) }}
+                </div>
+                <apexchart
+                  v-else
+                  :options="getChartOptions(lineId)"
+                  :series="getChartSeries(lineId)"
+                  :height="350"
+                  :type="getChartOptions(lineId).chart.type"
+                />
+              </template>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </template>
+      <template v-else>
+        <CCol
+          v-for="lineId in lineIds"
+          :key="lineId"
+          cols="12"
+          class="line-chart-container w-100"
+        >
+          <CCard class="w-100">
+            <CCardBody>
+              <template v-if="isLoading">
+                <div class="loading-message">Loading data...</div>
+              </template>
+              <template v-else>
+                <div v-if="!hasData(lineId)" class="empty-message">
+                  No data available for {{ getLineTitle(lineId) }}
+                </div>
+                <apexchart
+                  v-else
+                  :options="getChartOptions(lineId)"
+                  :series="getChartSeries(lineId)"
+                  :height="350"
+                  :type="getChartOptions(lineId).chart.type"
+                />
+              </template>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </template>
     </CRow>
   </div>
 </template>
@@ -100,6 +133,7 @@ const chartModes = [
   { value: 'comparison', label: 'Comparison' },
 ]
 const filterTypes = [
+  { value: 'machines', label: 'Machines' },
   { value: 'daily', label: 'Daily' },
   { value: 'monthly', label: 'Monthly' },
   { value: 'total', label: 'Total' },
@@ -198,33 +232,50 @@ const fetchAllData = async () => {
     const result = await response.json()
     if (result.status === 200 && Array.isArray(result.data)) {
       const mapped = {}
-      result.data.forEach((item) => {
-        const id =
-          flineMap[item.fline] ||
-          item.fline?.toLowerCase()?.replace(/\s/g, '') ||
-          null
-        if (!id) return
-
-        if (filterType.value === 'daily' || filterType.value === 'monthly') {
+      if (filterType.value === 'machines') {
+        // Group data by lineId, each containing array of machines with mtbf/mttr
+        result.data.forEach((item) => {
+          const id =
+            flineMap[item.fline] ||
+            item.fline?.toLowerCase()?.replace(/\s/g, '') ||
+            null
+          if (!id) return
           if (!Array.isArray(mapped[id])) mapped[id] = []
           mapped[id].push({
-            date: item.date,
+            machine: item.fmc_name,
             mtbf: item.mtbf ? parseFloat(item.mtbf) : 0,
             mttr: item.mttr ? parseFloat(item.mttr) : 0,
           })
-        } else if (filterType.value === 'total') {
-          const totalFdur = parseFloat(item.total_fdur || item.mtbf || 0)
-          const totalRows = parseFloat(item.total_rows || 1)
-          const mtbf =
-            totalRows > 0 ? Math.round((totalFdur / totalRows) * 100) / 100 : 0
-          const mttr = item.mttr !== undefined ? parseFloat(item.mttr) : 0
+        })
+      } else {
+        result.data.forEach((item) => {
+          const id =
+            flineMap[item.fline] ||
+            item.fline?.toLowerCase()?.replace(/\s/g, '') ||
+            null
+          if (!id) return
 
-          mapped[id] = {
-            mtbf,
-            mttr,
+          if (filterType.value === 'daily' || filterType.value === 'monthly') {
+            if (!Array.isArray(mapped[id])) mapped[id] = []
+            mapped[id].push({
+              date: item.date,
+              mtbf: item.mtbf ? parseFloat(item.mtbf) : 0,
+              mttr: item.mttr ? parseFloat(item.mttr) : 0,
+            })
+          } else if (filterType.value === 'total') {
+            const totalFdur = parseFloat(item.total_fdur || item.mtbf || 0)
+            const totalRows = parseFloat(item.total_rows || 1)
+            const mtbf =
+              totalRows > 0 ? Math.round((totalFdur / totalRows) * 100) / 100 : 0
+            const mttr = item.mttr !== undefined ? parseFloat(item.mttr) : 0
+
+            mapped[id] = {
+              mtbf,
+              mttr,
+            }
           }
-        }
-      })
+        })
+      }
       apiData.value = mapped
     } else {
       apiData.value = {}

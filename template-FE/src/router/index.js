@@ -103,6 +103,16 @@ const appRoutes = [
       title: 'LTB Summary',
     },
   },
+  {
+    path: '/app/CMFollowup',
+    name: 'CMFollowup',
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/CMFollowup.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'CM Followup',
+    },
+  },
   /*define other routes in here*/
   {
     path: '/app/tpm-redirect',

@@ -75,11 +75,22 @@ const appRoutes = [
   {
     path: '/app/LTBSummary',
     name: 'LTBSummary',
-    component: () => import(/* webpackChunkName: "reports" */ '@/views/LTBSummary.vue'),
+    component: () => 
+      import(/* webpackChunkName: "reports" */ '@/views/LTBSummary.vue'),
     meta: {
       requiresAuth: true,
       title: 'LTB Summary'
     }
+  },
+  {
+    path: '/app/CMFollowup',
+    name: 'CMFollowup',
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/CMFollowup.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'CM Followup',
+    },
   },
   /*define other routes in here*/
 ]

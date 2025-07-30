@@ -428,6 +428,11 @@
               required
               @change="onFileChange($event, 'whyImage')"
             />
+            <img
+              :src="displayImg_problem"
+              width="50"
+              v-if="displayImg_problem"
+            />
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
@@ -494,8 +499,7 @@
                       v-model="item.description"
                       placeholder="Enter description"
                       :disabled="
-                        editingStepRepair?.[item.id] === 'locked' ||
-                        !editingStepRepair?.[item.id]
+                        !editingStepRepair || !editingStepRepair[item.id]
                       "
                     />
                   </CTableDataCell>
@@ -508,7 +512,8 @@
                     >
                       <CIcon
                         :icon="
-                          editingStepRepair?.[item.id]
+                          editingStepRepair &&
+                          editingStepRepair[item.id] === true
                             ? 'cil-paper-plane'
                             : 'cil-pencil'
                         "
@@ -551,161 +556,384 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Countermeasure (kenapa terjadi)"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.countermeasureKenapaTerjadi"
-            />
+            <label class="form-label">Yokoten</label>
+            <div v-if="yokotenList.length === 0">
+              <CButton color="primary" @click="showYokotenForm = true"
+                >Tambah Yokoten</CButton
+              >
+            </div>
+            <div v-if="showYokotenForm" class="d-flex align-items-center mb-2">
+              <CFormInput
+                v-model="yokotenForm.machine"
+                placeholder="Yokoten Item"
+                class="me-2"
+              />
+              <CFormSelect v-model="yokotenForm.pic" class="me-2">
+                <option value="">PIC</option>
+                <option
+                  v-for="pic in picOptions"
+                  :key="pic.value"
+                  :value="pic.value"
+                >
+                  {{ pic.label }}
+                </option>
+              </CFormSelect>
+              <CFormInput
+                type="date"
+                v-model="yokotenForm.datePlan"
+                class="me-2"
+              />
+              <CFormSelect v-model="yokotenForm.judg" class="me-2">
+                <option :value="false">Belum</option>
+                <option :value="true">Sudah</option>
+              </CFormSelect>
+              <CButton color="success" class="me-2" @click="submitYokoten"
+                >Submit</CButton
+              >
+              <CButton color="secondary" @click="cancelYokoten">Cancel</CButton>
+            </div>
+            <div v-if="yokotenList.length > 0">
+              <CTable bordered>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell>Item Yokoten</CTableHeaderCell>
+                    <CTableHeaderCell>PIC</CTableHeaderCell>
+                    <CTableHeaderCell>Plan Date</CTableHeaderCell>
+                    <CTableHeaderCell>Judge</CTableHeaderCell>
+                    <CTableHeaderCell>Actions</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  <CTableRow v-for="(item, idx) in yokotenList" :key="idx">
+                    <CTableDataCell>{{ item.machine }}</CTableDataCell>
+                    <CTableDataCell>{{
+                      picOptions.find(
+                        (opt) => String(opt.value) === String(item.pic),
+                      )?.label || item.pic
+                    }}</CTableDataCell>
+                    <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
+                    <CTableDataCell>{{
+                      item.judg ? 'Sudah' : 'Belum'
+                    }}</CTableDataCell>
+                    <CTableDataCell>
+                      <CButton
+                        color="warning"
+                        size="sm"
+                        class="me-2"
+                        @click="editYokoten(idx)"
+                        >Edit</CButton
+                      >
+                      <CButton
+                        color="danger"
+                        size="sm"
+                        @click="removeYokoten(idx)"
+                        >Remove</CButton
+                      >
+                    </CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              </CTable>
+              <CButton
+                color="primary"
+                class="mt-2"
+                @click="showYokotenForm = true"
+                >Tambah Yokoten</CButton
+              >
+            </div>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Yokoten"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.yokoten"
-            />
-          </CCol>
-        </CRow>
-        <CRow md="12" class="mb-3">
-          <CCol>
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Rootcause 5 Why (kenapa lama)"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.rootcause5WhyKenapaLama"
-            />
-          </CCol>
-        </CRow>
-        <CRow md="12" class="mb-3">
-          <CCol>
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Tambah Analisis LAMA"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.tambahAnalisisLama"
-            />
-          </CCol>
-        </CRow>
-        <CRow md="12" class="mb-3">
-          <CCol>
-            <CFormSelect
-              aria-describedby="Q6 Category"
-              feedbackInvalid="Please select the Q6 Category."
-              id="q6CategorySelect"
-              label="Q6 Category:"
-              required
-              v-model="localSubmit.qCategory"
+            <label class="form-label">Countermeasure (kenapa terjadi)</label>
+            <div v-if="countermeasureKenapaTerjadiList.length === 0">
+              <CButton
+                color="primary"
+                @click="showCountermeasureKenapaTerjadiForm = true"
+                >Tambah Countermeasure</CButton
+              >
+            </div>
+            <div
+              v-if="showCountermeasureKenapaTerjadiForm"
+              class="d-flex align-items-center mb-2"
             >
-              <option :value="localSubmit.qCategory" selected>
-                {{ qCategoryName }}
-              </option>
-              <option disabled value="">Choose problem Q6 Category...</option>
-              <option :value="1">
-                Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))
-              </option>
-              <option :value="2">
-                Q2: Sparepart (Part preparation, fabrication of part, repair of
-                damage part due to unavailability at SPW)
-              </option>
-              <option :value="3">
-                Q3: Tool (Special tools preparation, change of tools, personal
-                tool, change dresser, safety tool)
-              </option>
-              <option :value="4">
-                Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
-              </option>
-              <option :value="5">
-                Q5: Setting Ability (Quality checking, program adjustment,
-                program zeroing, position memory set, autosizer setting & amp,
-                PSW set, backlash adjustment (slide gib / kamisori, parameter
-                set, centering, etc))
-              </option>
-              <option :value="6">
-                Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
-              </option>
-            </CFormSelect>
+              <CFormCheck
+                v-model="countermeasureKenapaTerjadiForm.isAction"
+                label="Ini Action?"
+                class="me-2"
+              />
+              <CFormInput
+                v-model="countermeasureKenapaTerjadiForm.cmDesc"
+                placeholder="Countermeasure/Action"
+                class="me-2"
+              />
+              <CFormInput
+                type="date"
+                v-model="countermeasureKenapaTerjadiForm.datePlan"
+                class="me-2"
+              />
+              <CFormSelect
+                v-model="countermeasureKenapaTerjadiForm.category"
+                class="me-2"
+              >
+                <option value="">C/M Category</option>
+                <option value="dummy1">Improvement</option>
+                <option value="dummy2">Training</option>
+                <option value="dummy3">Revisi TPM</option>
+                <option value="dummy4">Sparepart</option>
+              </CFormSelect>
+              <CFormSelect
+                v-model="countermeasureKenapaTerjadiForm.pic"
+                class="me-2"
+              >
+                <option value="">PIC</option>
+                <option
+                  v-for="pic in picOptions"
+                  :key="pic.value"
+                  :value="pic.value"
+                >
+                  {{ pic.label }}
+                </option>
+              </CFormSelect>
+              <CFormSelect
+                v-if="
+                  typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
+                "
+                v-model="countermeasureKenapaTerjadiForm.judg"
+                class="me-2"
+              >
+                <option value="belum">Belum</option>
+                <option value="sudah">Sudah</option>
+              </CFormSelect>
+              <CFormTextarea
+                v-if="
+                  typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
+                "
+                v-model="countermeasureKenapaTerjadiForm.result"
+                placeholder="Result Notes"
+                class="me-2"
+                rows="2"
+              />
+              <CButton
+                color="success"
+                class="me-2"
+                @click="submitCountermeasureKenapaTerjadi"
+              >
+                Submit
+              </CButton>
+              <CButton
+                color="secondary"
+                @click="cancelCountermeasureKenapaTerjadi"
+              >
+                Cancel
+              </CButton>
+            </div>
+            <div v-if="countermeasureKenapaTerjadiList.length > 0">
+              <CTable bordered>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell>Action?</CTableHeaderCell>
+                    <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
+                    <CTableHeaderCell>Plan Date</CTableHeaderCell>
+                    <CTableHeaderCell>C/M Category</CTableHeaderCell>
+                    <CTableHeaderCell>PIC</CTableHeaderCell>
+                    <CTableHeaderCell>Judge</CTableHeaderCell>
+                    <CTableHeaderCell>Result Notes</CTableHeaderCell>
+                    <CTableHeaderCell>Actions</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  <CTableRow
+                    v-for="(item, idx) in countermeasureKenapaTerjadiList"
+                    :key="idx"
+                  >
+                    <CTableDataCell>{{
+                      item.isAction ? 'Ya' : 'Tidak'
+                    }}</CTableDataCell>
+                    <CTableDataCell>{{ item.cmDesc }}</CTableDataCell>
+                    <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
+                    <CTableDataCell>{{ item.category }}</CTableDataCell>
+                    <CTableDataCell>{{
+                      picOptions.find(
+                        (opt) => String(opt.value) === String(item.pic),
+                      )?.label || item.pic
+                    }}</CTableDataCell>
+                    <CTableDataCell>
+                      <CFormSelect v-model="item.judg" disabled>
+                        <option value="belum">Belum</option>
+                        <option value="sudah">Sudah</option>
+                      </CFormSelect>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CFormTextarea v-model="item.result" disabled rows="2" />
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CButton
+                        color="warning"
+                        size="sm"
+                        class="me-2"
+                        @click="editCountermeasureKenapaTerjadi(idx)"
+                        >Edit</CButton
+                      >
+                      <CButton
+                        color="danger"
+                        size="sm"
+                        @click="removeCountermeasureKenapaTerjadi(idx)"
+                        >Remove</CButton
+                      >
+                    </CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              </CTable>
+              <CButton
+                color="primary"
+                class="mt-2"
+                @click="showCountermeasureKenapaTerjadiForm = true"
+                >Tambah Countermeasure</CButton
+              >
+            </div>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="5 Why (Kenapa Lama) Image"
-              required
-              @change="onFileChange($event, 'whyLamaImage')"
-            />
-          </CCol>
-        </CRow>
-        <CRow md="12" class="mb-3">
-          <CCol>
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Countermeasure (kenapa Lama)"
-              required
-              v-model="localSubmit.countermeasureKenapaLama"
-            />
-          </CCol>
-        </CRow>
-        <CRow md="12" class="mb-3">
-          <CCol>
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Attachment Meeting"
-              required
-              @change="onFileChange($event, 'attachmentMeeting')"
-            />
-          </CCol>
-        </CRow>
-        <CRow md="12" class="mb-3">
-          <CCol>
-            <CFormInput label="No Comments" />
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="ProblemsSH"
-              label="Comments 5 Why SH"
-              required
-              v-model="localSubmit.comments5WhySH"
-              :placeholder="
-                localSubmit.comments5WhySH ? 'SH: isi comment' : 'kosong'
-              "
-            />
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="ProblemsLH"
-              label="Comments 5 Why LH"
-              required
-              v-model="localSubmit.comments5WhyLH"
-              :placeholder="
-                localSubmit.comments5WhyLH ? 'LH: isi comment' : 'kosong'
-              "
-            />
-          </CCol>
-        </CRow>
-        <CRow md="12" class="mb-3">
-          <CCol>
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Comments Countermeasure"
-              required
-              v-model="localSubmit.commentsCountermeasure"
-            />
+            <label class="form-label">Countermeasure (kenapa Lama)</label>
+            <div v-if="countermeasureKenapaLamaList.length === 0">
+              <CButton
+                color="primary"
+                @click="showCountermeasureKenapaLamaForm = true"
+                >Tambah Countermeasure</CButton
+              >
+            </div>
+            <div
+              v-if="showCountermeasureKenapaLamaForm"
+              class="d-flex align-items-center mb-2"
+            >
+              <CFormCheck
+                v-model="countermeasureKenapaLamaForm.isAction"
+                label="Ini Action?"
+                class="me-2"
+              />
+              <CFormInput
+                v-model="countermeasureKenapaLamaForm.cmDesc"
+                placeholder="Countermeasure/Action"
+                class="me-2"
+              />
+              <CFormInput
+                type="date"
+                v-model="countermeasureKenapaLamaForm.datePlan"
+                class="me-2"
+              />
+              <CFormSelect
+                v-model="countermeasureKenapaLamaForm.category"
+                class="me-2"
+              >
+                <option value="">C/M Category</option>
+                <option value="dummy1">Improvement</option>
+                <option value="dummy2">Training</option>
+                <option value="dummy3">Revisi TPM</option>
+                <option value="dummy4">Sparepart</option>
+              </CFormSelect>
+              <CFormSelect
+                v-model="countermeasureKenapaLamaForm.pic"
+                class="me-2"
+              >
+                <option value="">PIC</option>
+                <option
+                  v-for="pic in picOptions"
+                  :key="pic.value"
+                  :value="pic.value"
+                >
+                  {{ pic.label }}
+                </option>
+              </CFormSelect>
+              <CFormSelect
+                v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
+                v-model="countermeasureKenapaLamaForm.judg"
+                class="me-2"
+              >
+                <option value="belum">Belum</option>
+                <option value="sudah">Sudah</option>
+              </CFormSelect>
+              <CFormTextarea
+                v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
+                v-model="countermeasureKenapaLamaForm.result"
+                placeholder="Result Notes"
+                class="me-2"
+                rows="2"
+              />
+              <CButton
+                color="success"
+                class="me-2"
+                @click="submitCountermeasureKenapaLama"
+                >Submit</CButton
+              >
+              <CButton color="secondary" @click="cancelCountermeasureKenapaLama"
+                >Cancel</CButton
+              >
+            </div>
+            <div v-if="countermeasureKenapaLamaList.length > 0">
+              <CTable bordered>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell>Action?</CTableHeaderCell>
+                    <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
+                    <CTableHeaderCell>Plan Date</CTableHeaderCell>
+                    <CTableHeaderCell>C/M Category</CTableHeaderCell>
+                    <CTableHeaderCell>PIC</CTableHeaderCell>
+                    <CTableHeaderCell>Judge</CTableHeaderCell>
+                    <CTableHeaderCell>Result Notes</CTableHeaderCell>
+                    <CTableHeaderCell>Actions</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  <CTableRow
+                    v-for="(item, idx) in countermeasureKenapaLamaList"
+                    :key="idx"
+                  >
+                    <CTableDataCell>{{
+                      item.isAction ? 'Ya' : 'Tidak'
+                    }}</CTableDataCell>
+                    <CTableDataCell>{{ item.cmDesc }}</CTableDataCell>
+                    <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
+                    <CTableDataCell>{{ item.category }}</CTableDataCell>
+                    <CTableDataCell>{{
+                      picOptions.find(
+                        (opt) => String(opt.value) === String(item.pic),
+                      )?.label || item.pic
+                    }}</CTableDataCell>
+                    <CTableDataCell>
+                      <CFormSelect v-model="item.judg" disabled>
+                        <option value="belum">Belum</option>
+                        <option value="sudah">Sudah</option>
+                      </CFormSelect>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CFormTextarea v-model="item.result" disabled rows="2" />
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CButton
+                        color="warning"
+                        size="sm"
+                        class="me-2"
+                        @click="editCountermeasureKenapaLama(idx)"
+                        >Edit</CButton
+                      >
+                      <CButton
+                        color="danger"
+                        size="sm"
+                        @click="removeCountermeasureKenapaLama(idx)"
+                        >Remove</CButton
+                      >
+                    </CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              </CTable>
+              <CButton
+                color="primary"
+                class="mt-2"
+                @click="showCountermeasureKenapaLamaForm = true"
+                >Tambah Countermeasure</CButton
+              >
+            </div>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
@@ -725,6 +953,20 @@
               </CButton>
               <CButton style="width: 100%" color="warning" disabled v-else>
                 Belum Ada Report di Upload
+              </CButton>
+            </CCol>
+          </CCol>
+        </CRow>
+        <CRow md="12" class="mb-3">
+          <CCol>
+            <CCol md="12">
+              <CButton
+                style="width: 100%"
+                :color="'secondary'"
+                @click="downloadTemplateFile"
+                :disabled="!localSubmit.file_report"
+              >
+                Download Template
               </CButton>
             </CCol>
           </CCol>
@@ -767,7 +1009,7 @@
 </template>
 
 <script>
-import { ref, watch, toRefs } from 'vue'
+import { ref, watch, toRefs, onMounted } from 'vue'
 import {
   CModal,
   CModalHeader,
@@ -821,6 +1063,10 @@ export default {
       default: () => [],
     },
     lineOptions: {
+      type: Array,
+      default: () => [],
+    },
+    memberOption: {
       type: Array,
       default: () => [],
     },
@@ -952,10 +1198,12 @@ export default {
     // },
 
     const initializeEditingStepRepair = (stepRepairArray) => {
+      console.log('Initializing editingStepRepair with:', stepRepairArray)
       const editingState = {}
       stepRepairArray.forEach((item) => {
         editingState[item.id] = item.description.trim() === '' ? true : false
       })
+      console.log('Editing state for step repair:', editingState)
       editingStepRepair.value = editingState
     }
 
@@ -1071,30 +1319,94 @@ export default {
       }
 
       let stepRepairArray = []
+      console.log('newVal.stepRepair:', newVal?.stepRepair)
+      console.log('TYPE OF newVal.stepRepair:', typeof newVal?.stepRepair)
+      
       if (Array.isArray(newVal?.stepRepair) && newVal.stepRepair.length > 0) {
         stepRepairArray = newVal.stepRepair.map((item, index) => {
           if (typeof item === 'string') {
             return { id: index + 1, description: item }
           } else if (item && typeof item.description === 'string') {
-            return { id: index + 1, description: item.description }
+            return { id: item.id || index + 1, description: item.description }
           } else {
             return { id: index + 1, description: '' }
           }
         })
+        console.log('stepRepair from array:', stepRepairArray)
       } else if (typeof newVal?.stepRepair === 'string') {
-        stepRepairArray = parseStepRepair(newVal.stepRepair)
-      } else if (typeof newVal?.freal_prob === 'string') {
+        try {
+          const parsed = JSON.parse(newVal.stepRepair)
+          if (Array.isArray(parsed)) {
+            stepRepairArray = parsed.map((item, index) => {
+              if (typeof item === 'string') {
+                return { id: index + 1, description: item }
+              } else if (item && typeof item.description === 'string') {
+                return {
+                  id: item.id || index + 1,
+                  description: item.description,
+                }
+              } else {
+                return { id: index + 1, description: '' }
+              }
+            })
+            console.log('Parsed stepRepair from JSON:', stepRepairArray)
+          } else {
+            stepRepairArray = parseStepRepair(newVal.stepRepair)
+            console.log('Parsed stepRepair as string:', stepRepairArray)
+          }
+        } catch (e) {
+          stepRepairArray = parseStepRepair(newVal.stepRepair)
+          console.log('Parsed stepRepair from fallback:', stepRepairArray)
+        }
+      } else if (typeof newVal?.fstep_repair === 'string') {
         stepRepairArray = parseStepRepair(newVal.fstep_repair)
+        console.log('Parsed stepRepair from fstep_repair:', stepRepairArray)
       } else {
         stepRepairArray = [{ id: 1, description: '' }]
+        console.log('Default stepRepair array:', stepRepairArray)
       }
       localSubmit.value = {
         ...(newVal || {}),
         rootcauses5Why: rootcausesArray,
         stepRepair: stepRepairArray,
       }
+      console.log(
+        'Updated localSubmit:',
+        JSON.stringify(localSubmit.value, null, 2),
+      )
+      console.log(
+        'IS ARRAY COUNTERMEASURE KENAPA TERJADI:',
+        Array.isArray(newVal.countermeasureKenapaTerjadi),
+      )
+
+      console.log(
+        'IS ARRAY COUNTERMEASURE KENAPA LAMA:',
+        Array.isArray(newVal.countermeasureKenapaLama),
+      )
       initializeEditingRootcauses(rootcausesArray)
       initializeEditingStepRepair(stepRepairArray)
+      countermeasureKenapaTerjadiList.value = Array.isArray(
+        newVal.countermeasureKenapaTerjadi,
+      )
+        ? newVal.countermeasureKenapaTerjadi
+        : typeof newVal.countermeasureKenapaTerjadi === 'string' &&
+          newVal.countermeasureKenapaTerjadi
+        ? JSON.parse(newVal.countermeasureKenapaTerjadi)
+        : []
+      countermeasureKenapaLamaList.value = Array.isArray(
+        newVal.countermeasureKenapaLama,
+      )
+        ? newVal.countermeasureKenapaLama
+        : typeof newVal.countermeasureKenapaLama === 'string' &&
+          newVal.countermeasureKenapaLama
+        ? JSON.parse(newVal.countermeasureKenapaLama)
+        : []
+      yokotenList.value = Array.isArray(submitData.value?.yokoten)
+        ? submitData.value.yokoten
+        : typeof submitData.value?.yokoten === 'string' &&
+          submitData.value.yokoten
+        ? JSON.parse(submitData.value.yokoten)
+        : []
     })
     const onMachineInput = () => {
       console.log('Machine input changed:', localSubmit.value.machineName)
@@ -1152,7 +1464,11 @@ export default {
         }
         isSaving.value = true
 
-        // Format date/time fields before submit
+        localSubmit.value.countermeasureKenapaTerjadiList =
+          countermeasureKenapaTerjadiList.value
+        localSubmit.value.countermeasureKenapaLamaList =
+          countermeasureKenapaLamaList.value
+        localSubmit.value.yokotenList = yokotenList.value
         const submitDataFormatted = {
           machineName: localSubmit.value.machineName ?? '',
           line: localSubmit.value.line ?? '',
@@ -1182,7 +1498,7 @@ export default {
           partChange: localSubmit.value.partChange ?? '',
           countermeasureKenapaTerjadi:
             localSubmit.value.countermeasureKenapaTerjadi ?? '',
-          yokoten: localSubmit.value.yokoten ?? [],
+          yokoten: localSubmit.value.yokotenList ?? [],
           rootcause5WhyKenapaLama:
             localSubmit.value.rootcause5WhyKenapaLama ?? '',
           tambahAnalisisLama: localSubmit.value.tambahAnalisisLama ?? '',
@@ -1200,6 +1516,9 @@ export default {
           agreeTerms: localSubmit.value.agreeTerms ?? false,
           oCategory: localSubmit.value.oCategory ?? '',
           qCategory: localSubmit.value.qCategory ?? '',
+          cmKenapaLama: localSubmit.value.countermeasureKenapaLamaList ?? [],
+          cmKenapaTerjadi:
+            localSubmit.value.countermeasureKenapaTerjadiList ?? [],
         }
 
         console.log('Submit data:', submitDataFormatted)
@@ -1296,13 +1615,11 @@ export default {
       }
       const currentState = editingRootcauses.value[id]
       if (!currentState || currentState === false) {
-        // Enable edit mode
         editingRootcauses.value = {
           ...editingRootcauses.value,
           [id]: true,
         }
       } else if (currentState === true) {
-        // Disable edit mode
         editingRootcauses.value = {
           ...editingRootcauses.value,
           [id]: false,
@@ -1310,15 +1627,308 @@ export default {
       }
     }
 
-    // Reset isSaving when modal is closed
     watch(
       () => props.visible,
       (newVal) => {
         if (!newVal) {
           isSaving.value = false
         }
-      }
+      },
     )
+
+    watch(
+      localSubmit,
+      (val) => {
+        console.log('localSubmit changed:', val)
+      },
+      { deep: true },
+    )
+
+    const countermeasureKenapaTerjadiList = ref([])
+    const showCountermeasureKenapaTerjadiForm = ref(false)
+    const countermeasureKenapaTerjadiForm = ref({
+      isAction: false,
+      cmDesc: '',
+      datePlan: '',
+      category: '',
+      pic: '',
+      result: '',
+      judg: 'belum',
+    })
+    const yokotenForm = ref({
+      machine: '',
+      pic: '',
+      datePlan: '',
+      judg: false,
+    })
+    const yokotenList = ref([])
+    const showYokotenForm = ref(false)
+
+    const submitYokoten = () => {
+      if (typeof yokotenForm.value._editIdx === 'number') {
+        yokotenList.value[yokotenForm.value._editIdx] = { ...yokotenForm.value }
+        delete yokotenForm.value._editIdx
+      } else {
+        yokotenList.value.push({ ...yokotenForm.value })
+      }
+      showYokotenForm.value = false
+      yokotenForm.value = { machine: '', pic: '', datePlan: '', judg: false }
+    }
+
+    const editYokoten = (idx) => {
+      const item = yokotenList.value[idx]
+      if (item) {
+        yokotenForm.value = { ...item }
+        showYokotenForm.value = true
+        yokotenForm.value._editIdx = idx
+      }
+    }
+
+    const removeYokoten = (idx) => {
+      yokotenList.value.splice(idx, 1)
+    }
+
+    const cancelYokoten = () => {
+      showYokotenForm.value = false
+      yokotenForm.value = { machine: '', pic: '', datePlan: '', judg: false }
+    }
+
+    const submitCountermeasureKenapaTerjadi = () => {
+      if (typeof countermeasureKenapaTerjadiForm.value._editIdx === 'number') {
+        countermeasureKenapaTerjadiList.value[
+          countermeasureKenapaTerjadiForm.value._editIdx
+        ] = {
+          ...countermeasureKenapaTerjadiForm.value,
+        }
+        delete countermeasureKenapaTerjadiForm.value._editIdx
+      } else {
+        countermeasureKenapaTerjadiList.value.push({
+          ...countermeasureKenapaTerjadiForm.value,
+        })
+      }
+      showCountermeasureKenapaTerjadiForm.value = false
+      countermeasureKenapaTerjadiForm.value = {
+        isAction: false,
+        cmDesc: '',
+        datePlan: '',
+        category: '',
+        pic: '',
+        result: '',
+        judg: 'belum',
+      }
+    }
+    const cancelCountermeasureKenapaTerjadi = () => {
+      showCountermeasureKenapaTerjadiForm.value = false
+      countermeasureKenapaTerjadiForm.value = {
+        isAction: false,
+        cmDesc: '',
+        datePlan: '',
+        category: '',
+        pic: '',
+        result: '',
+        judg: 'belum',
+      }
+    }
+    const editCountermeasureKenapaTerjadi = (idx) => {
+      const item = countermeasureKenapaTerjadiList.value[idx]
+      if (item) {
+        countermeasureKenapaTerjadiForm.value = { ...item }
+        showCountermeasureKenapaTerjadiForm.value = true
+        countermeasureKenapaTerjadiForm.value._editIdx = idx
+      }
+    }
+    const removeCountermeasureKenapaTerjadi = (idx) => {
+      countermeasureKenapaTerjadiList.value.splice(idx, 1)
+    }
+    watch(
+      () => countermeasureKenapaTerjadiForm.value.isAction,
+      (val) => {
+        if (val) {
+          countermeasureKenapaTerjadiForm.value.cmDesc = '[ACTION]'
+        } else {
+          countermeasureKenapaTerjadiForm.value.cmDesc = ''
+        }
+      },
+    )
+
+    const countermeasureKenapaLamaList = ref([])
+    const showCountermeasureKenapaLamaForm = ref(false)
+    const countermeasureKenapaLamaForm = ref({
+      isAction: false,
+      cmDesc: '',
+      datePlan: '',
+      category: '',
+      pic: '',
+      judge: 'belum',
+    })
+    const submitCountermeasureKenapaLama = () => {
+      if (typeof countermeasureKenapaLamaForm.value._editIdx === 'number') {
+        countermeasureKenapaLamaList.value[
+          countermeasureKenapaLamaForm.value._editIdx
+        ] = {
+          ...countermeasureKenapaLamaForm.value,
+        }
+        delete countermeasureKenapaLamaForm.value._editIdx
+      } else {
+        countermeasureKenapaLamaList.value.push({
+          ...countermeasureKenapaLamaForm.value,
+        })
+      }
+      showCountermeasureKenapaLamaForm.value = false
+      countermeasureKenapaLamaForm.value = {
+        isAction: false,
+        cmDesc: '',
+        datePlan: '',
+        category: '',
+        pic: '',
+        judge: 'belum',
+      }
+    }
+
+    const editStepRepair = (index) => {
+      console.log('editStepRepair called with index:', index)
+      console.log('localSubmit.stepRepair:', localSubmit.value.stepRepair)
+      if (
+        !localSubmit.value.stepRepair ||
+        !Array.isArray(localSubmit.value.stepRepair)
+      ) {
+        console.error(
+          'editStepRepair: stepRepair is not an array or is undefined',
+        )
+        return
+      }
+      if (index < 0 || index >= localSubmit.value.stepRepair.length) {
+        console.error('editStepRepair: index out of bounds', index)
+        return
+      }
+      const item = localSubmit.value.stepRepair[index]
+      if (!item || typeof item.id === 'undefined') {
+        console.error(
+          'editStepRepair: item or item.id is undefined for index',
+          index,
+        )
+        return
+      }
+      const id = item.id
+      console.log('editStepRepair id:', id)
+      console.log('editingStepRepair:', editingStepRepair.value)
+      const currentState = editingStepRepair.value[id]
+      if (!currentState || currentState === false) {
+        editingStepRepair.value = {
+          ...editingStepRepair.value,
+          [id]: true,
+        }
+      } else if (currentState === true) {
+        editingStepRepair.value = {
+          ...editingStepRepair.value,
+          [id]: false,
+        }
+      }
+    }
+
+    const cancelCountermeasureKenapaLama = () => {
+      showCountermeasureKenapaLamaForm.value = false
+      countermeasureKenapaLamaForm.value = {
+        isAction: false,
+        cmDesc: '',
+        datePlan: '',
+        category: '',
+        pic: '',
+        judge: 'belum',
+      }
+    }
+    const editCountermeasureKenapaLama = (idx) => {
+      const item = countermeasureKenapaLamaList.value[idx]
+      if (item) {
+        countermeasureKenapaLamaForm.value = { ...item }
+        showCountermeasureKenapaLamaForm.value = true
+        countermeasureKenapaLamaForm.value._editIdx = idx
+      }
+    }
+    const removeCountermeasureKenapaLama = (idx) => {
+      countermeasureKenapaLamaList.value.splice(idx, 1)
+    }
+    watch(
+      () => countermeasureKenapaLamaForm.value.isAction,
+      (val) => {
+        if (val) {
+          countermeasureKenapaLamaForm.value.action = '[ACTION]'
+        } else {
+          countermeasureKenapaLamaForm.value.action = ''
+        }
+      },
+    )
+
+    const picOptions = ref([])
+    onMounted(async () => {
+      try {
+        const res = await fetch('/api/smartandon/member')
+        const data = await res.json()
+        console.log('PIC options data:', data)
+        picOptions.value = Array.isArray(data)
+          ? data.map((m) => ({
+              value: String(m.fid) || m.name,
+              label: m.fname,
+            }))
+          : []
+      } catch (e) {
+        picOptions.value = []
+      }
+    })
+
+    const addRootcause = () => {
+      if (!localSubmit.value.rootcauses5Why) {
+        localSubmit.value.rootcauses5Why = []
+      }
+      if (localSubmit.value.rootcauses5Why.length < 5) {
+        const newId = localSubmit.value.rootcauses5Why.length
+          ? Math.max(
+              ...localSubmit.value.rootcauses5Why.map((item) => item.id),
+            ) + 1
+          : 1
+        localSubmit.value.rootcauses5Why.push({ id: newId, description: '' })
+      }
+    }
+
+    const deleteRootcause = (index) => {
+      if (
+        !localSubmit.value.rootcauses5Why ||
+        !localSubmit.value.rootcauses5Why[index]
+      ) {
+        return
+      }
+      if (Array.isArray(localSubmit.value.rootcauses5Why)) {
+        localSubmit.value.rootcauses5Why.splice(index, 1)
+      } else {
+        localSubmit.value.rootcauses5Why = []
+      }
+    }
+
+    const addStepRepair = () => {
+      if (!localSubmit.value.stepRepair) {
+        localSubmit.value.stepRepair = []
+      }
+      if (localSubmit.value.stepRepair.length < 5) {
+        const newId = localSubmit.value.stepRepair.length
+          ? Math.max(...localSubmit.value.stepRepair.map((item) => item.id)) + 1
+          : 1
+        localSubmit.value.stepRepair.push({ id: newId, description: '' })
+      }
+    }
+
+    const deleteStepRepair = (index) => {
+      if (
+        !localSubmit.value.stepRepair ||
+        !localSubmit.value.stepRepair[index]
+      ) {
+        return
+      }
+      if (Array.isArray(localSubmit.value.stepRepair)) {
+        localSubmit.value.stepRepair.splice(index, 1)
+      } else {
+        localSubmit.value.stepRepair = []
+      }
+    }
 
     return {
       localSubmit,
@@ -1340,7 +1950,57 @@ export default {
       addSubItem,
       deleteItem,
       treeModel,
+      countermeasureKenapaTerjadiList,
+      countermeasureKenapaLamaList,
+      showCountermeasureKenapaTerjadiForm,
+      countermeasureKenapaTerjadiForm,
+      submitCountermeasureKenapaTerjadi,
+      cancelCountermeasureKenapaTerjadi,
+      editCountermeasureKenapaTerjadi,
+      removeCountermeasureKenapaTerjadi,
+      showCountermeasureKenapaLamaForm,
+      countermeasureKenapaLamaForm,
+      submitCountermeasureKenapaLama,
+      cancelCountermeasureKenapaLama,
+      editCountermeasureKenapaLama,
+      removeCountermeasureKenapaLama,
+      picOptions,
+      editStepRepair,
+      editingStepRepair,
+      yokotenForm,
+      yokotenList,
+      showYokotenForm,
+      submitYokoten,
+      cancelYokoten,
+      editYokoten,
+      removeYokoten,
+      addRootcause,
+      deleteRootcause,
+      addStepRepair,
+      deleteStepRepair,
     }
+  },
+  computed: {
+    displayImg_problem() {
+      console.log('displayImg_problem called, localSubmit:', this.localSubmit)
+      if (this.localSubmit?.whyImage) {
+        console.log('displayImg_problem whyImage:', this.localSubmit.whyImage)
+        return `/api/smartandon/image?path=${this.localSubmit.whyImage}`
+      }
+      return ''
+    },
+    display_attachmentImg() {
+      if (this.localSubmit?.attachmentMeeting) {
+        return `/api/smartandon/image?path=${this.localSubmit.attachmentMeeting}`
+      }
+      return ''
+    },
+    displayWhyLamaImage() {
+      if (this.localSubmit?.whyLamaImage) {
+        return `/api/smartandon/image?path=${this.localSubmit.whyLamaImage}`
+      }
+      return ''
+    },
   },
   methods: {
     onFileChange(event, field) {
@@ -1357,17 +2017,15 @@ export default {
         this.localSubmit.fidProblem &&
         this.localSubmit.problems
       ) {
-        // Construct backend download endpoint URL with query parameters
         let url = `${
           window.location.origin
         }/api/smartandon/download-report?fid=${encodeURIComponent(
           this.localSubmit.fidProblem,
         )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
         console.log('Download URL:', url)
-        // Create an anchor element and trigger download
         const link = document.createElement('a')
         link.href = url
-        // Extract filename from file_report path
+
         const filename = this.localSubmit.file_report
           .substring(this.localSubmit.file_report.lastIndexOf('/') + 1)
           .split('?')[0]
@@ -1381,130 +2039,17 @@ export default {
         )
       }
     },
-    addRootcause() {
-      if (!this.localSubmit.rootcauses5Why) {
-        this.localSubmit.rootcauses5Why = []
-      }
-      if (this.localSubmit.rootcauses5Why.length < 5) {
-        const newId = this.localSubmit.rootcauses5Why.length
-          ? Math.max(
-              ...this.localSubmit.rootcauses5Why.map((item) => item.id),
-            ) + 1
-          : 1
-        this.localSubmit.rootcauses5Why.push({ id: newId, description: '' })
-      }
-    },
-    editRootcause(index) {
-      console.log('ANJING1')
-      console.log('editRootcause called with index:', index)
-      console.log(
-        'localSubmit.rootcauses5Why:',
-        this.localSubmit.rootcauses5Why,
-      )
-      if (!Array.isArray(this.localSubmit.rootcauses5Why)) {
-        console.error('editRootcause2: rootcauses5Why is not an array')
-        return
-      }
-      if (index < 0 || index >= this.localSubmit.rootcauses5Why.length) {
-        console.error('editRootcause2: index out of bounds', index)
-        return
-      }
-      const id = this.localSubmit.rootcauses5Why[index]?.id
-      if (id === undefined) {
-        console.error('editRootcause2: id is undefined for index', index)
-        return
-      }
-      const currentState = this.editingRootcauses[id]
-      if (!currentState || currentState === 'locked') {
-        this.editingRootcauses = {
-          ...this.editingRootcauses,
-          [id]: true,
-        }
-      } else if (currentState === true) {
-        this.editingRootcauses = {
-          ...this.editingRootcauses,
-          [id]: false,
-        }
-      }
-    },
-    deleteRootcause(index) {
-      if (
-        !this.localSubmit.rootcauses5Why ||
-        !this.localSubmit.rootcauses5Why[index]
-      ) {
-        return
-      }
-      if (Array.isArray(this.localSubmit.rootcauses5Why)) {
-        this.localSubmit.rootcauses5Why.splice(index, 1)
+    downloadTemplateFile() {
+      if (this.localSubmit.fidProblem) {
+        const url = `api/smartandon/download-template?fid=${encodeURIComponent(
+          this.localSubmit.fidProblem,
+        )}`
+        window.open(url, '_blank')
       } else {
-        this.localSubmit.rootcauses5Why = []
+        alert(
+          'No last report file or required parameters available to download.',
+        )
       }
-    },
-    addStepRepair() {
-      if (!this.localSubmit.stepRepair) {
-        this.localSubmit.stepRepair = []
-      }
-      if (this.localSubmit.stepRepair.length < 5) {
-        const newId = this.localSubmit.stepRepair.length
-          ? Math.max(...this.localSubmit.stepRepair.map((item) => item.id)) + 1
-          : 1
-        this.localSubmit.stepRepair.push({ id: newId, description: '' })
-      }
-    },
-    editStepRepair(index) {
-      const id = this.localSubmit.stepRepair[index].id
-      const currentState = this.editingStepRepair[id]
-      if (!currentState || currentState === 'locked') {
-        this.editingStepRepair = {
-          ...this.editingStepRepair,
-          [id]: true,
-        }
-      } else if (currentState === true) {
-        this.editingStepRepair = {
-          ...this.editingStepRepair,
-          [id]: 'locked',
-        }
-      }
-    },
-    deleteStepRepair(index) {
-      if (!this.localSubmit.stepRepair || !this.localSubmit.stepRepair[index]) {
-        return
-      }
-      if (Array.isArray(this.localSubmit.stepRepair)) {
-        this.localSubmit.stepRepair.splice(index, 1)
-      } else {
-        this.localSubmit.stepRepair = []
-      }
-    },
-    toggleTambahAnalysis() {
-      this.showTambahAnalysis = !this.showTambahAnalysis
-    },
-    addNewAnalysis() {
-      const newId = this.tambahAnalysisList.length
-        ? Math.max(...this.tambahAnalysisList.map((item) => item.id)) + 1
-        : 1
-      this.tambahAnalysisList.push({
-        id: newId,
-        description: '',
-        subItems: [],
-      })
-    },
-    addSubItem(parentIndex) {
-      const newId = this.tambahAnalysisList[parentIndex].subItems.length
-        ? Math.max(
-            ...this.tambahAnalysisList[parentIndex].subItems.map(
-              (item) => item.id,
-            ),
-          ) + 1
-        : 1
-      this.tambahAnalysisList[parentIndex].subItems.push({
-        id: newId,
-        description: '',
-      })
-    },
-    editItem(index) {},
-    deleteItem(index) {
-      this.tambahAnalysisList.splice(index, 1)
     },
   },
 }

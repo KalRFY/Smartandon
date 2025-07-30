@@ -19,11 +19,11 @@
 export default {
   el:'#AppBreadcrumb',
   name: 'AppBreadcrumb',
-  data() {
-      return {
-        breadcrumbsJsonValue: [{"active":false,"name":"Home","path":"#/dc/dashboard"}]
-      }
-  },
+  // data() {
+  //     return {
+  //       breadcrumbsJsonValue: [{"active":false,"name":"Home","path":"#/dc/dashboard"}]
+  //     }
+  // },
   methods: {
     breadcrumbsStrJsonValueChange(){
       // console.log('mf-header '+localStorage.breadcrumbs);

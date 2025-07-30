@@ -6,6 +6,7 @@
       :machineOptions="machineOptions"
       :lineOptions="lineOptions"
       :modalLoading="modalLoading"
+      :memberOption="memberOption"
       @close="visibleLiveDemo = false"
       @submit="saveSubmit"
     />
@@ -42,7 +43,7 @@
     <div style="position: relative">
       <div v-if="tableLoading" class="table-loading-overlay">
         <CSpinner color="primary" style="width: 3rem; height: 3rem" />
-        <div style="margin-top: 10px; font-size: 1.2rem; color: #333">
+        <div style="margin-top: 10px, font-size: 1.2rem, color: #333">
           Loading...
         </div>
       </div>
@@ -405,7 +406,6 @@ export default {
           JSON.stringify(this.submit, null, 2),
         )
 
-        // Fetch tambahAnalysis data and filter by id_problem matching fid
         const analysisResponse = await axios.get(
           '/api/smartandon/tambahAnalysis',
         )
@@ -414,7 +414,6 @@ export default {
           (item) => item.id_problem === problem.fid,
         )
 
-        // Mapping berdasarkan analisys_category "TERJADI" dan "LAMA"
         const terjadiAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'TERJADI',
         )
@@ -431,7 +430,6 @@ export default {
         this.tambahAnalysisTerjadi = terjadiAnalysis
         this.tambahAnalysisLama = lamaAnalysis
 
-        // Map option labels for O6, Shift, Problem Category, and Q6
         const o6Option = this.o6Options.find(
           (opt) => opt.id === this.submit.pilihO6,
         )
@@ -569,10 +567,13 @@ export default {
           problemCategory: submitData.problemCategory,
           itemTemporaryAction: submitData.itemTemporaryAction,
           rootcauses5Why: submitData.rootcauses5Why,
-          stepRepair: submitData.stepRepair,
+          stepRepair: JSON.stringify(submitData.stepRepair),
           partChange: submitData.partChange,
-          countermeasureKenapaTerjadi: submitData.countermeasureKenapaTerjadi,
-          yokoten: submitData.yokoten,
+          countermeasureKenapaTerjadi: JSON.stringify(
+            submitData.cmKenapaTerjadi,
+          ),
+          countermeasureKenapaLama: JSON.stringify(submitData.cmKenapaLama),
+          yokoten: JSON.stringify(submitData.yokoten),
           rootcause5WhyKenapaLama: submitData.rootcause5WhyKenapaLama,
           tambahAnalisisLama: submitData.tambahAnalisisLama,
           tambahAnalysisTerjadi: submitData.tambahAnalysisTerjadi,
@@ -595,8 +596,31 @@ export default {
           oCategory: submitData.oCategory,
           qCategory: submitData.qCategory,
         }
+        const formData = new FormData()
+        Object.keys(payload).forEach((key) => {
+          const value = payload[key]
+          const isFileField = [
+            'actualImage',
+            'uploadImage',
+            'whyLamaImage',
+            'whyImage',
+            'attachmentMeeting',
+            'standartImage',
+          ].includes(key)
 
-        const response = await axios.put('/api/smartandon/update', payload)
+          if (isFileField && value instanceof File) {
+            formData.append(key, value)
+          } else if (isFileField && typeof value === 'string' && value) {
+            // Kirim path lama sebagai field biasa, bukan file
+            formData.append(key, value)
+          } else if (isFileField && !value) {
+            // Jangan append jika file kosong/null
+          } else {
+            formData.append(key, value ?? '')
+          }
+        })
+
+        const response = await axios.put('/api/smartandon/update', formData)
 
         if (response.data.status === 'success') {
           alert('Input updated successfully')
