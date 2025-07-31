@@ -3,7 +3,6 @@
   <CRow>
     <CCol>
       <CCard>
-        <CCardHeader style="font-weight: bold; font-size: medium;">Table History</CCardHeader>
         <CCardBody>
           <TableActions
             @freq="$emit('freq')"
@@ -17,7 +16,7 @@
           <CRow>
             <CCol class="mb-3">
               <CTable v-if="problems.length" bordered hover responsive>
-                <CTableHead>
+                <CTableHead color="dark">
                   <CTableRow>
                     <CTableHeaderCell scope="col">No</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Date</CTableHeaderCell>
@@ -28,13 +27,20 @@
                     <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     <CTableHeaderCell scope="col">LTB Reports</CTableHeaderCell>
+
+                    <!-- <CTableHeaderCell scope="col">Terjadi</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Lama</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">CM</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">CM Lama</CTableHeaderCell> -->
+
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  <CTableRow
-                    v-for="(problem, index) in problems"
-                    :key="problem.fid"
-                  >
+                <CTableRow
+                  v-for="(problem, index) in problems"
+                  :key="problem.fid"
+                  :color="getRowColor(problem)"
+                >
                     <CTableDataCell>{{
                       (currentPage - 1) * pageSize + index + 1
                     }}</CTableDataCell>
@@ -82,6 +88,12 @@
                         View LTB Report
                       </CButton>
                     </CTableDataCell>
+
+                    <!-- <CTableDataCell>{{ problem.terjadiAnalysis || '' }}</CTableDataCell>
+                    <CTableDataCell>{{ problem.lamaAnalysis || '' }}</CTableDataCell>
+                    <CTableDataCell>{{ problem.fpermanet_cm || '' }}</CTableDataCell>
+                    <CTableDataCell>{{ problem.fpermanet_cm_lama || '' }}</CTableDataCell> -->
+                    
                   </CTableRow>
                 </CTableBody>
               </CTable>
@@ -178,6 +190,7 @@ export default {
     'repeat',
     'ltr',
     'filterCategory',
+    'filteredCategory',
   ],
 
   methods: {
@@ -193,6 +206,37 @@ export default {
       console.log(`ProblemsTable emitted filterCategory with category: ${category}`)
       this.$emit('filterCategory', category)
     },
+    onFilterCategoryWhycm(filtered) {
+      this.$emit('filteredCategory', filtered)
+    },
+    getRowColor(problem) {
+      const analysisArray = Array.isArray(problem.terjadiAnalysis) ? problem.terjadiAnalysis : []
+      const hasTerjadi = analysisArray.some(item => item.id_problem === problem.fid)
+      const analysisArrayLama = Array.isArray(problem.lamaAnalysis) ? problem.lamaAnalysis : []
+      const hasLama = analysisArrayLama.some(item => item.id_problem === problem.fid)
+      if (!hasTerjadi && !hasLama) {
+        console.log('Row color: danger (Five Why missing)')
+        return 'danger'
+      }
+
+      // Check if any analysis item has empty fpermanet_cm
+      // const hasEmptyPermanentCm = analysisArray.some(item => {
+      //   const cm = item.fpermanet_cm
+      //   // const cmLama = item.fpermanet_cm_lama
+
+      //   const isCmEmpty = !cm || (Array.isArray(cm) && cm.length === 0)
+      //   // const isCmLamaEmpty = !cmLama || (Array.isArray(cmLama) && cmLama.length === 0)
+
+      //   return isCmEmpty
+      // })
+      if (
+        (problem.fpermanet_cm != '[]' && problem.fpermanet_cm.length !== 0) || 
+        (problem.fpermanet_cm_lama != '[]' && problem.fpermanet_cm_lama.length !== 0)) {
+        return ''
+      }
+      return 'warning'
+    },
   },
+
 }
 </script>
