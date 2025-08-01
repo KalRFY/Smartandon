@@ -662,7 +662,11 @@ const updateProblem = async (req, res, next) => {
       if (req.files.uploadFile) {
         const fileObj = req.files.uploadFile[0];
         const ext = path.extname(fileObj.originalname);
-        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
+        const reportsUploadDir = path.join(__dirname, `../../../reports/uploads/${fid}_${problemDescription}`);
+        if (!fs.existsSync(reportsUploadDir)) {
+          fs.mkdirSync(reportsUploadDir, { recursive: true });
+        }
+        const newPath = `./reports/uploads/${fid}_${problemDescription}/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
         replacements.uploadFile = newPath;
       }
@@ -672,6 +676,13 @@ const updateProblem = async (req, res, next) => {
         const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
         replacements.attachmentMeeting = newPath;
+      }
+      if (req.files.file_report) {
+        const fileObj = req.files.file_report[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.file_report = newPath;
       }
     }
 
@@ -706,7 +717,8 @@ const updateProblem = async (req, res, next) => {
         t1.why2_img = :whyLamaImage,
         t1.fpermanet_cm = :countermeasureKenapaTerjadi,
         t1.fpermanet_cm_lama = :countermeasureKenapaLama,
-        t1.fstep_repair = :stepRepair
+        t1.fstep_repair = :stepRepair,
+        t1.file_report = :uploadFile
       WHERE t1.fid = :fid;
     `;
     await sequelize.query(updateQuery, { replacements });
