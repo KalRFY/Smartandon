@@ -112,6 +112,11 @@
               required
               @change="onFileChange($event, 'uploadImage')"
             />
+            <img
+              :src="displayUploadImgImage"
+              width="50"
+              v-if="displayUploadImgImage"
+            />
           </CCol>
         </CRow>
         <CRow class="mb-3">
@@ -134,6 +139,11 @@
               required
               @change="onFileChange($event, 'standartImage')"
             />
+            <img
+              :src="displayStandardImage"
+              width="50"
+              v-if="displayStandardImage"
+            />
           </CCol>
         </CRow>
         <CRow class="mb-3">
@@ -155,6 +165,11 @@
               label="Actual Image"
               required
               @change="onFileChange($event, 'actualImage')"
+            />
+            <img
+              :src="displayActualImage"
+              width="50"
+              v-if="displayActualImage"
             />
           </CCol>
         </CRow>
@@ -432,6 +447,23 @@
               :src="displayImg_problem"
               width="50"
               v-if="displayImg_problem"
+            />
+          </CCol>
+        </CRow>
+        <CRow md="12" class="mb-3">
+          <CCol>
+            <CFormInput
+              type="file"
+              feedbackInvalid="Please input the problems"
+              id="Problems"
+              label="5 Why (Kenapa lama) Image"
+              required
+              @change="onFileChange($event, 'whyLamaImage')"
+            />
+            <img
+              :src="displayWhyLamaImage"
+              width="50"
+              v-if="displayWhyLamaImage"
             />
           </CCol>
         </CRow>
@@ -1998,6 +2030,24 @@ export default {
     displayWhyLamaImage() {
       if (this.localSubmit?.whyLamaImage) {
         return `/api/smartandon/image?path=${this.localSubmit.whyLamaImage}`
+      }
+      return ''
+    },
+    displayUploadImgImage() {
+      if (this.localSubmit?.uploadImage) {
+        return `/api/smartandon/image?path=${this.localSubmit.uploadImage}`
+      }
+      return ''
+    },
+    displayActualImage() {
+      if (this.localSubmit?.actualImage) {
+        return `/api/smartandon/image?path=${this.localSubmit.actualImage}`
+      }
+      return ''
+    },
+    displayStandardImage() {
+      if (this.localSubmit?.standardImage) {
+        return `/api/smartandon/image?path=${this.localSubmit.standardImage}`
       }
       return ''
     },

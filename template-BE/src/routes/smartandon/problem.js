@@ -18,7 +18,9 @@ router.put(
     { name: 'standartImage', maxCount: 1 },
     { name: 'whyImage', maxCount: 1 },
     { name: 'whyLamaImage', maxCount: 1 },
+    { name: 'uploadFile', maxCount: 1 },
     { name: 'attachmentMeeting', maxCount: 1 },
+    { name: 'file_report', maxCount: 1 },
   ]),
   problemController.updateProblem
 );
