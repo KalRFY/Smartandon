@@ -81,64 +81,64 @@
             icon: 'cilFactory',
             parentId: 'ROOT',
 
-            items: [
-              {
-                component: 'CNavItem',
-                to: '/app/Dashboard2',
-                name: 'Dashboard',
-                icon: 'cilSpeedometer',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/DashboardDataDisplay',
-                name: 'Dashboard Data Display',
-                icon: 'cilListNumbered',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/MTBFMTTR',
-                name: 'MTBF-MTTR',
-                icon: 'cilGraph',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/ProblemHistory',
-                name: 'Problem History',
-                icon: 'cilHistory',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/RealtimeParetto',
-                name: 'Realtime Paretto',
-                icon: 'cilChart',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/LTBSummary',
-                name: 'LTB Report Status',
-                icon: 'cilDescription',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/CMFollowup',
-                name: 'CM Followup',
-                icon: 'cilCalendar',
-                parentId: 'ROOT',
-              },
-            ]
-          },
-          {
-            component: 'CNavItem',
-            to: '/app/Others',
-            name: 'Others',
-            icon: 'cilApps',
-            parentId: 'ROOT',
+          items: [
+            {
+              component: 'CNavItem',
+              to: '/app/Dashboard2',
+              name: 'Dashboard',
+              icon: 'cilHome',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/DashboardDataDisplay',
+              name: 'Dashboard Data Display',
+              icon: 'cilListNumbered',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/MTBFMTTR',
+              name: 'MTBF-MTTR',
+              icon: 'cilSpeedometer',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/RealtimeParetto',
+              name: 'Realtime Paretto',
+              icon: 'cilChart',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/LTBSummary',
+              name: 'LTB Report Status',
+              icon: 'cilDescription',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/ProblemHistory',
+              name: 'Problem History',
+              icon: 'cilHistory',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/CMFollowup',
+              name: 'CM Followup',
+              icon: 'cilCalendar',
+              parentId: 'ROOT',
+            },
+          ]
+        },
+        {
+          component: 'CNavItem',
+          to: '/app/Others',
+          name: 'Others',
+          icon: 'cilApps',
+          parentId: 'ROOT',
 
             items: [
               {

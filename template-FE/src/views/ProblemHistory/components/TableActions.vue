@@ -1,8 +1,8 @@
 <!-- TableActions.vue -->
 <template>
-  <CRow>
+  <CRow class="mb-3">
     <CCol>
-      <CCard class="control-card">
+      <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
         <CCardBody>
           <CRow>
             <CFormLabel style="font-weight: bold; font-size: medium;">Filters</CFormLabel>
@@ -62,10 +62,34 @@
             </CButtonGroup>
           </CRow>
         </CCardBody>
-      </CCard>
+      </div>
     </CCol>
-    <CCol sm="3">
-      <CCard>
+    <!-- <CCol sm="3">
+      <CRow class="mb-3">
+        <div class="border-secondary" style="background-color: white; border-radius: 9px; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
+          <CCardBody>
+            <CCol>
+              <CButton color="primary" style="width: 100%; font-size: x-small; font-weight: bold;">
+                <label>5 Why Belum di isi</label>
+              </CButton>
+            </CCol>
+          </CCardBody>
+        </div>
+      </CRow>
+      <CRow>
+        <div class="border-secondary" style="background-color: white; border-radius: 9px; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
+          <CCardBody>
+            <CCol>
+              <CButton color="warning" style="width: 100%; font-size: x-small; font-weight: bold;">
+                <label>C/M Belum di isi</label>
+              </CButton>
+            </CCol>
+          </CCardBody>
+        </div>
+      </CRow>
+    </CCol> -->
+    <CCol sm="2">
+      <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
         <CCardBody>
           <CRow>
             <CFormLabel style="font-weight: bold; font-size: medium;">Download Excel</CFormLabel>
@@ -83,9 +107,20 @@
             </CCol>
           </CRow>
         </CCardBody>
-      </CCard>
+      </div>
     </CCol>
   </CRow>
+  <CRow>
+    <CCol>
+      <CButton style="width: 50%; font-size: x-small; font-weight: bold; background-color: #FF7F7F; color: white;" @click="onClickFilterWhyCm(1)">
+        <label>5 Why Belum di isi</label>
+      </CButton>
+      <CButton style="width: 50%; font-size: x-small; font-weight: bold; background-color: #FFFFA0;" @click="onClickFilterWhyCm(2)">
+        <label>C/M Belum di isi</label>
+      </CButton>
+    </CCol>
+  </CRow>
+  
 </template>
 
 <script>
@@ -110,6 +145,7 @@ export default {
   data() {
     return {
       selectedCategory: 0,
+      selectedFiltered: 0,
     }
   },
   methods: {
@@ -120,6 +156,12 @@ export default {
         this.$emit('filterCategory', category)
       }
     },
+    onClickFilterWhyCm(filtered) {
+      if (!this.isLoading) {
+        this.selectedFiltered = filtered
+        this.$emit('filteredCategory', filtered)
+      }
+    }
   },
 }
 </script>
