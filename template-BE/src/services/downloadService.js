@@ -10,7 +10,13 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-plusplus */
 
-const XLSXPopulate = require('xlsx-populate');
+let XLSXPopulate;
+try {
+  XLSXPopulate = require('xlsx-populate');
+} catch (error) {
+  console.warn('xlsx-populate module not found, download service will be disabled.');
+  XLSXPopulate = null;
+}
 const moment = require('moment/moment');
 const { sequelize } = require('../models');
 const fs = require("fs");

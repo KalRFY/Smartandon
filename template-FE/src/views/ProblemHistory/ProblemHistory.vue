@@ -43,7 +43,7 @@
     <div style="position: relative">
       <div v-if="tableLoading" class="table-loading-overlay">
         <CSpinner color="primary" style="width: 3rem; height: 3rem" />
-        <div style="margin-top: 10px, font-size: 1.2rem, color: #333">
+        <div style="margin-top: 10px; font-size: 1.2rem; color: #333">
           Loading...
         </div>
       </div>

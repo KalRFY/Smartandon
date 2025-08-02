@@ -1,4 +1,5 @@
 <template>
+  
   <CModal
     :visible="visible"
     @close="$emit('close')"
@@ -430,9 +431,32 @@
             />
             <img
               :src="displayImg_problem"
-              width="50"
+              width="200"
+              style="cursor: pointer;"
               v-if="displayImg_problem"
+              @click="showFullSizeImage = true"
             />
+            <CModal
+              :visible="showFullSizeImage"
+              @update:visible="val => showFullSizeImage = val"
+              @close="showFullSizeImage = false"
+              size="lg"
+              aria-labelledby="fullSizeImageLabel"
+              centered
+            >
+              <CModalHeader>
+                <CModalTitle id="fullSizeImageLabel">5 Why Image Preview</CModalTitle>
+              </CModalHeader>
+
+              <CModalBody style="text-align: center;">
+                <img :src="displayImg_problem" style="max-width: 100%; max-height: 80vh;" />
+              </CModalBody>
+
+              <CModalFooter>
+                <CButton color="secondary" size="sm" @click="showFullSizeImage = false">Close</CButton>
+              </CModalFooter>
+              
+            </CModal>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
@@ -513,7 +537,7 @@
                       <CIcon
                         :icon="
                           editingStepRepair &&
-                          editingStepRepair[item.id] === true
+                          editingStepRepair[localSubmit.stepRepair[index].id] === true
                             ? 'cil-paper-plane'
                             : 'cil-pencil'
                         "
@@ -676,10 +700,10 @@
                 class="me-2"
               >
                 <option value="">C/M Category</option>
-                <option value="dummy1">Improvement</option>
-                <option value="dummy2">Training</option>
-                <option value="dummy3">Revisi TPM</option>
-                <option value="dummy4">Sparepart</option>
+                <option value="Improvement">Improvement</option>
+                <option value="Training">Training</option>
+                <option value="Revisi TPM">Revisi TPM</option>
+                <option value="Sparepart">Sparepart</option>
               </CFormSelect>
               <CFormSelect
                 v-model="countermeasureKenapaTerjadiForm.pic"
@@ -827,10 +851,10 @@
                 class="me-2"
               >
                 <option value="">C/M Category</option>
-                <option value="dummy1">Improvement</option>
-                <option value="dummy2">Training</option>
-                <option value="dummy3">Revisi TPM</option>
-                <option value="dummy4">Sparepart</option>
+                <option value="Improvement">Improvement</option>
+                <option value="Training">Training</option>
+                <option value="Revisi TPM">Revisi TPM</option>
+                <option value="Sparepart">Sparepart</option>
               </CFormSelect>
               <CFormSelect
                 v-model="countermeasureKenapaLamaForm.pic"
@@ -964,7 +988,6 @@
                 style="width: 100%"
                 :color="'secondary'"
                 @click="downloadTemplateFile"
-                :disabled="!localSubmit.file_report"
               >
                 Download Template
               </CButton>
@@ -1567,8 +1590,9 @@ export default {
         )
         const categoryMap = {
           1: 'Small',
-          2: 'Chokotei',
-          3: 'LTB',
+          2: 'Repeat',
+          3: 'LTR',
+          4: 'SLTR'
         }
         problemCategoryName.value = categoryMap[newCategory] || ''
         console.log(
@@ -2001,6 +2025,11 @@ export default {
       }
       return ''
     },
+  },
+  data() {
+    return {
+      showFullSizeImage: false,
+    }
   },
   methods: {
     onFileChange(event, field) {

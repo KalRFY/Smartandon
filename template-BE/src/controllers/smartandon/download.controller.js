@@ -4,6 +4,15 @@ const stream = require('stream');
 const path = require('path');
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
+
+let XLSXPopulate;
+try {
+  XLSXPopulate = require('xlsx-populate');
+} catch (error) {
+  console.warn('xlsx-populate module not found, download service will be disabled.');
+  XLSXPopulate = null;
+}
+
 const { generatedStepRepairCellDuration, mappedImageFile } = require('../../services/downloadService');
 
 exports.downloadReport = async (req, res, next) => {
@@ -72,6 +81,10 @@ exports.downloadReport = async (req, res, next) => {
 exports.downloadTemplate = async (req, res, next) => {
   const { fid } = req.query;
   try {
+    if (!XLSXPopulate) {
+      throw new Error('xlsx-populate module is not available. Cannot generate Excel file.');
+    }
+
     const vCurrentError2DataQuery = `SELECT * FROM v_current_error_2 WHERE fid = :fid`;
     const vCurrentError2Data = await sequelize.query(vCurrentError2DataQuery, {
       replacements: { fid },
@@ -98,6 +111,8 @@ exports.downloadTemplate = async (req, res, next) => {
   }
 };
 
+const mime = require('mime-types');
+
 exports.getImageController = async (req, res) => {
   const pathImage = `${req.query.path}`;
   const folderPath = path.dirname(pathImage);
@@ -109,6 +124,9 @@ exports.getImageController = async (req, res) => {
   if (!fs.existsSync(pathImage)) {
     return res.status(404).send('File not found');
   }
+
+  const mimeType = mime.lookup(pathImage) || 'application/octet-stream';
+  res.setHeader('Content-Type', mimeType);
 
   const r = fs.createReadStream(pathImage);
   const ps = new stream.PassThrough();
