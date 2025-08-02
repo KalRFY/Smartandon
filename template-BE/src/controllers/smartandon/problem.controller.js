@@ -320,7 +320,28 @@ const getProblemById = async (req, res, next) => {
     if (result.length === 0) {
       return res.status(httpStatus.NOT_FOUND).json({ message: 'Problem not found' });
     }
-    res.status(httpStatus.OK).json(result[0]);
+
+    const query2 = `
+      SELECT
+        tb.type_uraian as typeUraian,
+        tb.ilustration as ilustration
+      FROM tb_r_uraian tb
+      WHERE tb.error_id = :fid
+    `
+    const [uraianResult] = await sequelize.query(query2, {
+      replacements: { fid },
+    });
+
+    const finalResult = {
+      ...result[0],
+      uraianResult: uraianResult.reduce((acc, item) => {
+        acc[item.typeUraian] = item.ilustration;
+        return acc;
+      }, {}),
+    }
+    console.log('Final Result:', finalResult);
+
+    res.status(httpStatus.OK).json(finalResult);
   } catch (error) {
     next(error);
   }
@@ -603,51 +624,65 @@ const updateProblem = async (req, res, next) => {
       if (req.files.actualImage) {
         const fileObj = req.files.actualImage[0];
         const ext = path.extname(fileObj.originalname);
-        const newPath = fileObj.path + ext;
+        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
+        console.log('New path for actualImage:', newPath);
         fs.renameSync(fileObj.path, newPath);
         replacements.actualImage = newPath;
       }
       if (req.files.uploadImage) {
         const fileObj = req.files.uploadImage[0];
         const ext = path.extname(fileObj.originalname);
-        const newPath = fileObj.path + ext;
+        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
+        
         fs.renameSync(fileObj.path, newPath);
         replacements.uploadImage = newPath;
       }
       if (req.files.standartImage) {
         const fileObj = req.files.standartImage[0];
         const ext = path.extname(fileObj.originalname);
-        const newPath = fileObj.path + ext;
+        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
+        console.log('New path for standartImage:', newPath);
         fs.renameSync(fileObj.path, newPath);
         replacements.standartImage = newPath;
       }
       if (req.files.whyImage) {
         const fileObj = req.files.whyImage[0];
         const ext = path.extname(fileObj.originalname);
-        const newPath = fileObj.path + ext;
+        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
         replacements.whyImage = newPath;
       }
       if (req.files.whyLamaImage) {
         const fileObj = req.files.whyLamaImage[0];
         const ext = path.extname(fileObj.originalname);
-        const newPath = fileObj.path + ext;
+        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
         replacements.whyLamaImage = newPath;
       }
       if (req.files.uploadFile) {
         const fileObj = req.files.uploadFile[0];
         const ext = path.extname(fileObj.originalname);
-        const newPath = fileObj.path + ext;
+        const reportsUploadDir = path.join(__dirname, `../../../reports/uploads/${fid}_${problemDescription}`);
+        if (!fs.existsSync(reportsUploadDir)) {
+          fs.mkdirSync(reportsUploadDir, { recursive: true });
+        }
+        const newPath = `./reports/uploads/${fid}_${problemDescription}/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
         replacements.uploadFile = newPath;
       }
       if (req.files.attachmentMeeting) {
         const fileObj = req.files.attachmentMeeting[0];
         const ext = path.extname(fileObj.originalname);
-        const newPath = fileObj.path + ext;
+        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
         replacements.attachmentMeeting = newPath;
+      }
+      if (req.files.file_report) {
+        const fileObj = req.files.file_report[0];
+        const ext = path.extname(fileObj.originalname);
+        const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
+        fs.renameSync(fileObj.path, newPath);
+        replacements.file_report = newPath;
       }
     }
 
@@ -682,7 +717,8 @@ const updateProblem = async (req, res, next) => {
         t1.why2_img = :whyLamaImage,
         t1.fpermanet_cm = :countermeasureKenapaTerjadi,
         t1.fpermanet_cm_lama = :countermeasureKenapaLama,
-        t1.fstep_repair = :stepRepair
+        t1.fstep_repair = :stepRepair,
+        t1.file_report = :uploadFile
       WHERE t1.fid = :fid;
     `;
     await sequelize.query(updateQuery, { replacements });
