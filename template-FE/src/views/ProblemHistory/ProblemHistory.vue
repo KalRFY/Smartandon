@@ -27,7 +27,7 @@
       @update:selectedProblem="selectedProblem = $event"
       @search="
         () =>
-          fetchProblems(1, {
+          fetchProblems(currentPage, {
             filterStartDate,
             filterFinishDate,
             selectedLine,
@@ -55,6 +55,8 @@
           :pageSize="pageSize"
           :totalPages="totalPages"
           :visiblePages="visiblePages"
+          :filteredTambahAnalisis="filteredTambahAnalisis"
+          :filteredTambahAnalisisLama="filteredTambahAnalisisLama"
           @editProblem="onClickInput"
           @viewLtbReport="onClickLtbReport"
           @goToPage="goToPage"
@@ -121,6 +123,11 @@ export default {
       tableLoading: false,
       submit: this.getInitialSubmitData(),
       qCategoryName: '',
+      filteredTambahAnalisis: [],
+      filteredTambahAnalisisLama: [],
+      terjadiAnalysis: [],
+      lamaAnalysis: [],
+      selectedFiltered: '',
 
       o6Options: [
         {
@@ -233,7 +240,7 @@ export default {
         uraianKejadian: '',
         uploadImage: '',
         ilustrasiStandart: '',
-        standartImage: '',
+        standardImage: '',
         ilustrasiActual: '',
         actualImage: '',
         gapBetweenStandarAndActual: '',
@@ -366,6 +373,38 @@ export default {
         this.pageSize = response.data.limit
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
 
+        // Fetch tambahAnalysis data and store it
+        const analysisResponse = await axios.get('/api/smartandon/tambahAnalysis')
+        this.tambahAnalysisData = analysisResponse.data
+
+        const allAnalysis = analysisResponse.data
+        console.log('Filtered Analysis:', allAnalysis);
+        // console.log('Filter Analysis All:', this.filteredAnalysis);
+
+        // Mapping berdasarkan analisys_category "TERJADI" dan "LAMA"
+        this.terjadiAnalysis = allAnalysis.filter(
+          (item) => item.analisys_category === 'TERJADI',
+        )
+        this.lamaAnalysis = allAnalysis.filter(
+          (item) => item.analisys_category === 'LAMA',
+        )
+
+        // Merge terjadiAnalysis and lamaAnalysis into each problem in problemsView
+        this.problemsView = this.problemsView.map(problem => {
+          return {
+            ...problem,
+            terjadiAnalysis: this.terjadiAnalysis.filter(item => item.id_problem === problem.fid),
+            lamaAnalysis: this.lamaAnalysis.filter(item => item.id_problem === problem.fid),
+          }
+        })
+
+        console.log('Problems with merged analysis:', this.problemsView);
+
+        this.tambahAnalysisData = {
+          terjadi: this.terjadiAnalysis,
+          lama: this.lamaAnalysis,
+        }
+
         // Update local filter states to keep them consistent
         this.filterStartDate = filters.filterStartDate
         this.filterFinishDate = filters.filterFinishDate
@@ -388,7 +427,9 @@ export default {
       this.selectedLine = null
       this.selectedProblem = ''
       this.selectedProblemCategory = null
+      // Reset currentPage explicitly on filter reset
       this.currentPage = 1
+      // Removed fetchProblems call here to prevent infinite recursion
     },
 
     async onClickInput(problem) {
@@ -406,16 +447,14 @@ export default {
           JSON.stringify(this.submit, null, 2),
         )
 
-        // Fetch tambahAnalysis data and filter by id_problem matching fid
         const analysisResponse = await axios.get(
           '/api/smartandon/tambahAnalysis',
         )
+
         const allAnalysis = analysisResponse.data
         const filteredAnalysis = allAnalysis.filter(
           (item) => item.id_problem === problem.fid,
         )
-
-        // Mapping berdasarkan analisys_category "TERJADI" dan "LAMA"
         const terjadiAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'TERJADI',
         )
@@ -427,12 +466,17 @@ export default {
           terjadi: terjadiAnalysis,
           lama: lamaAnalysis,
         }
+        
         console.log('Mapped tambahAnalysis data:', this.tambahAnalysisData)
+        console.log('Tambah Analisis Terjadi:', terjadiAnalysis)
+        console.log('Tambah Analisis Lama:', lamaAnalysis)
 
         this.tambahAnalysisTerjadi = terjadiAnalysis
         this.tambahAnalysisLama = lamaAnalysis
+        
+        this.filteredTambahAnalisis = terjadiAnalysis
+        this.filteredTambahAnalisisLama = lamaAnalysis
 
-        // Map option labels for O6, Shift, Problem Category, and Q6
         const o6Option = this.o6Options.find(
           (opt) => opt.id === this.submit.pilihO6,
         )
@@ -485,11 +529,11 @@ export default {
         operationNo: problemData.foperation_no || '',
         problems: problemData.ferror_name || '',
         uraianKejadian: problemData.ferror_detail || '',
-        uploadImage: problemData.uploadImage || '',
+        uploadImage: problemData.uraianResult.general || '',
         ilustrasiStandart: problemData.ilustrasiStandart || '',
-        standartImage: problemData.fDescImage || '',
+        standardImage: problemData.uraianResult.standard || '',
         ilustrasiActual: problemData.ilustrasiActual || '',
-        actualImage: problemData.fimage || '',
+        actualImage: problemData.uraianResult.actual || '',
         gapBetweenStandarAndActual:
           problemData.gapBetweenStandarAndActual || '',
         pilihFocusThemaMember: problemData.pilihFocusThemaMember || '',
@@ -511,13 +555,13 @@ export default {
         stepRepair: problemData.fstep_repair || '',
         partChange: problemData.fpart_change || '',
         countermeasureKenapaTerjadi:
-          problemData.countermeasureKenapaTerjadi || '',
+          problemData.fpermanet_cm || '',
         yokoten: problemData.fyokoten || '',
         rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
         tambahAnalisisLama: problemData.tambahAnalisisLama || '',
         pilihQ6: problemData.qCategory || '',
         whyLamaImage: problemData.why2_img || '',
-        countermeasureKenapaLama: problemData.countermeasureKenapaLama || '',
+        countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
         attachmentMeeting: problemData.attachmentMeeting || '',
         comments5WhySH: problemData.fiveWhyShFeedback || '',
         comments5WhyLH: problemData.fiveWhyLhFeedback || '',
@@ -570,10 +614,13 @@ export default {
           problemCategory: submitData.problemCategory,
           itemTemporaryAction: submitData.itemTemporaryAction,
           rootcauses5Why: submitData.rootcauses5Why,
-          stepRepair: submitData.stepRepair,
+          stepRepair: JSON.stringify(submitData.stepRepair),
           partChange: submitData.partChange,
-          countermeasureKenapaTerjadi: submitData.countermeasureKenapaTerjadi,
-          yokoten: submitData.yokoten,
+          countermeasureKenapaTerjadi: JSON.stringify(
+            submitData.cmKenapaTerjadi,
+          ),
+          countermeasureKenapaLama: JSON.stringify(submitData.cmKenapaLama),
+          yokoten: JSON.stringify(submitData.yokoten),
           rootcause5WhyKenapaLama: submitData.rootcause5WhyKenapaLama,
           tambahAnalisisLama: submitData.tambahAnalisisLama,
           tambahAnalysisTerjadi: submitData.tambahAnalysisTerjadi,
@@ -596,8 +643,31 @@ export default {
           oCategory: submitData.oCategory,
           qCategory: submitData.qCategory,
         }
+        const formData = new FormData()
+        Object.keys(payload).forEach((key) => {
+          const value = payload[key]
+          const isFileField = [
+            'actualImage',
+            'uploadImage',
+            'whyLamaImage',
+            'whyImage',
+            'attachmentMeeting',
+            'standartImage',
+          ].includes(key)
 
-        const response = await axios.put('/api/smartandon/update', payload)
+          if (isFileField && value instanceof File) {
+            formData.append(key, value)
+          } else if (isFileField && typeof value === 'string' && value) {
+            // Kirim path lama sebagai field biasa, bukan file
+            formData.append(key, value)
+          } else if (isFileField && !value) {
+            // Jangan append jika file kosong/null
+          } else {
+            formData.append(key, value ?? '')
+          }
+        })
+
+        const response = await axios.put('/api/smartandon/update', formData)
 
         if (response.data.status === 'success') {
           alert('Input updated successfully')
@@ -616,7 +686,14 @@ export default {
     goToPage(page) {
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page
-        this.fetchProblems(page)
+        this.fetchProblems(page, {
+          filterStartDate: this.filterStartDate,
+          filterFinishDate: this.filterFinishDate,
+          selectedLine: this.selectedLine,
+          selectedMachineName: this.selectedMachineName,
+          selectedProblem: this.selectedProblem,
+          problemCategory: this.selectedProblemCategory,
+        })
       }
     },
 
@@ -624,9 +701,65 @@ export default {
       console.log('Machine input changed:', this.selectedMachineName)
     },
 
+    onFilterCategoryWhyCm(filtered) {
+      if (filtered === 0) {
+        this.selectedFiltered = null
+      } else {
+        this.selectedFiltered = filtered
+      }
+
+      this.fetchProblems(this.currentPage, {
+        filterStartDate: this.filterStartDate,
+        filterFinishDate: this.filterFinishDate,
+        selectedLine: this.selectedLine,
+        selectedMachineName: this.selectedMachineName,
+        selectedProblem: this.selectedProblem,
+        problemCategory: this.selectedProblemCategory,
+      })
+    },
+
+    onClickFilterWhyCm(filtered) {
+      this.selectedFiltered = filtered
+      if (filtered === 1) {
+        // Filter for "5 Why Belum di isi"
+        this.onFilterCategory(5)
+      } else if (filtered === 2) {
+        // Filter for "C/M Belum di isi"
+        this.onFilterCategory(6)
+      }
+    },
+
     onFilterCategory(category) {
       if (category === 0) {
         this.selectedProblemCategory = null
+      } else if (category === 5) {
+        // Filter problems where "5 Why" belum diisi (empty terjadiAnalysis or lamaAnalysis)
+        this.problemsView = this.allProblems.filter(problem => {
+          const analysisArray = Array.isArray(problem.terjadiAnalysis) ? problem.terjadiAnalysis : []
+          const hasTerjadi = analysisArray.some(item => item.id_problem === problem.fid)
+          const analysisArrayLama = Array.isArray(problem.lamaAnalysis) ? problem.lamaAnalysis : []
+          const hasLama = analysisArrayLama.some(item => item.id_problem === problem.fid)
+          return !hasTerjadi && !hasLama
+        })
+        this.selectedProblemCategory = category
+        this.totalRecords = this.problemsView.length
+        this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
+        this.currentPage = 1
+        return
+      } else if (category === 6) {
+        // Filter problems where "cm" belum diisi (empty fpermanet_cm and fpermanet_cm_lama)
+        this.problemsView = this.allProblems.filter(problem => {
+          const cm = problem.fpermanet_cm
+          const cmLama = problem.fpermanet_cm_lama
+          const isCmEmpty = !cm || (Array.isArray(cm) && cm.length === 0)
+          const isCmLamaEmpty = !cmLama || (Array.isArray(cmLama) && cmLama.length === 0)
+          return isCmEmpty && isCmLamaEmpty
+        })
+        this.selectedProblemCategory = category
+        this.totalRecords = this.problemsView.length
+        this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
+        this.currentPage = 1
+        return
       } else {
         this.selectedProblemCategory = category
       }

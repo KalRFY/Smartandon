@@ -113,8 +113,8 @@ const getMTBFController = async (req, res, next) => {
 
         LINES.filter(Boolean).map(async (line) => {
           const query = `
-            SELECT 
-                DATE_FORMAT(fstart_time, '%Y-%m') as month,
+            SELECT
+                fmc_name,
                 SUM(fdur) AS total_fdur,
                 COUNT(*) AS total_rows
             FROM v_current_error_2
@@ -137,6 +137,7 @@ const getMTBFController = async (req, res, next) => {
             const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
 
             return {
+              fmc_name: row.fmc_name,
               fline: line,
               date: row.month,
               totalFdur: downtime,

@@ -1,4 +1,5 @@
 <template>
+  
   <CRow class="mb-3">
     <!-- <CCol sm="11" style="font-size: xx-large; font-weight: bold;">
       Smartandon
@@ -18,6 +19,7 @@
   <CRow class="mb-3">
     <CCol lg="3" class="mb-3">
       <CCard style="width: 100%; height: 100%;">
+        
         <CCardBody class="d-flex flex-column align-items-center justify-content-center">
           
           <CRow class="mb-3">
@@ -44,9 +46,7 @@
         </CCardBody>
       </CCard>
     </CCol>
-
     <CCol lg="9" style="height: 100%;">
-      
       <div class="dashboard-cards-container">
         <div
           v-for="(card, index) in dashboardCards"
