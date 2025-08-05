@@ -13,7 +13,18 @@
             <LegendStatus class="mb-4" />
           </CCol>
         </CRow>
-
+        <CRow class="mt-2 mb-4 justify-content-center">
+          <CCol sm="auto">
+            <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('reset')" class="px-4">
+              Download Countermeasure
+            </CButton>
+          </CCol>
+          <CCol sm="auto">
+            <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('search')" class="px-4">
+              Send Reminder
+            </CButton>
+          </CCol>
+        </CRow>
         <CRow>
           <CCol>
             <CRow style="max-height: 450px; overflow-y: auto; overflow-x: auto; display: block;">
@@ -92,19 +103,6 @@
           </CCol>
         </CRow>
       </template>
-
-      <CRow class="mt-5 mb-4 justify-content-center">
-        <CCol sm="auto">
-          <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('reset')" class="px-4">
-            Download Countermeasure
-          </CButton>
-        </CCol>
-        <CCol sm="auto">
-          <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('search')" class="px-4">
-            Send Reminder
-          </CButton>
-        </CCol>
-      </CRow>
     </CCardBody>
   </CCard>
 </template>

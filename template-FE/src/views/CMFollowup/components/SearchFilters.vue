@@ -43,15 +43,19 @@
       </CRow>
 
       <CRow class="mt-3 mb-4 g-1 align-items-end">
-        <CCol md="10" class="px-1">
-          <CFormLabel for="problem">Problem</CFormLabel>
+       <CCol md="10" class="px-1">
+          <CFormLabel for="keyword">Search</CFormLabel>
           <CInputGroup>
             <CInputGroupText>
               <Search size="16" />
             </CInputGroupText>
-            <CFormInput id="problem" placeholder="Search machine, problem or countermeasure"
-              :model-value="selectedProblem" @update:model-value="$emit('update:selectedProblem', $event)"
-              aria-label="Problem" aria-describedby="basic-addon3" />
+            <CFormInput
+              id="keyword"
+              placeholder="Search machine, problem, countermeasure, or PIC"
+              :model-value="searchKeyword"
+              @update:model-value="$emit('update:searchKeyword', $event)"
+              aria-label="Search"
+            />
           </CInputGroup>
         </CCol>
 
@@ -144,7 +148,7 @@ export default {
       type: [String, Number],
       default: null,
     },
-    selectedProblem: {
+    searchKeyword: {
       type: String,
       default: '',
     },
@@ -175,7 +179,7 @@ export default {
     'update:filterFinishDate',
     'update:selectedLine',
     'update:selectedMachineName',
-    'update:selectedProblem',
+    'update:searchKeyword',
     'update:selectedCategory',
     'update:selectedShift',
     'search',
