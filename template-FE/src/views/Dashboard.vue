@@ -19,7 +19,6 @@
     <CCol lg="3" class="mb-3">
       <CCard style="width: 100%; height: 100%;">
         <CCardBody class="d-flex flex-column align-items-center justify-content-center">
-          
           <CRow class="mb-3">
             <div style="text-align: center;">
               <img
@@ -29,7 +28,7 @@
               />
             </div>
           </CRow>
-
+          
           <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif; text-align: center;">
             Smartandon
           </CRow>
@@ -89,7 +88,6 @@
     >
     Machine Stop Input
   </CButton>
-
 
   <COffcanvas placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
     <COffcanvasHeader>
@@ -538,24 +536,10 @@ export default {
 
     const dashboardCards = [
       {
-        title: 'Machine Stop Input',
-        icon: 'AlertTriangle',
-        description: 'Record and monitor machine stop events',
-        color: 'danger',
-        route: '/machine-stop',
-      },
-      {
         title: 'MTBF',
         icon: 'Clock',
         description: 'Mean Time Between Failures metrics',
         color: 'info',
-        route: '/app/MTBFMTTR',
-      },
-      {
-        title: 'MTTR',
-        icon: 'Timer',
-        description: 'Mean Time To Repair analytics',
-        color: 'warning',
         route: '/app/MTBFMTTR',
       },
       {
@@ -585,6 +569,20 @@ export default {
         description: 'Countermeasure tracking and follow-up monitoring',
         color: 'secondary',
         route: '/app/CMFollowup',
+      },
+      {
+        title: 'TPM System',
+        icon: 'FileText',
+        description: 'TPM System',
+        color: 'secondary',
+        route: '/app/tpm-redirect',
+      },
+      {
+        title: 'Order Spareparts',
+        icon: 'BarChart2',
+        description: 'Order Spareparts',
+        color: 'secondary',
+        route: '/app/order-spareparts-redirect',
       },
     ]
 

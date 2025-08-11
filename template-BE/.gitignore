@@ -1,5 +1,6 @@
 # Dependencies
 node_modules
+/template-BE/upload
 
 # yarn error logs
 yarn-error.log

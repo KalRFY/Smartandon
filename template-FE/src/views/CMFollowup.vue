@@ -28,6 +28,7 @@
     @reset="resetFilters" 
   />
 
+  <Container>
     <CRow>
       <CCol>
         <LoadingState v-if="loading" :progress="progress" :trigger="triggerKey" />
@@ -37,7 +38,7 @@
         </template>
       </CCol>
     </CRow>
-  </CContainer>
+  </Container>
 </template>
 
 <script setup>

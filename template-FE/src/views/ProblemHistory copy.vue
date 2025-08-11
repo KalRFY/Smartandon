@@ -488,7 +488,7 @@ export default {
           ilustrasiStandart: problemData.ilustrasi_standart || '',
           ilustrasiActual: problemData.ilustrasi_actual || '',
           actualImage: problemData.actual_image || '',
-          gapBetweenStandarAndActual: problemData.gap_between_standar_and_actual || '',
+          gapBetweenStandarAndActual: problemData.gapIlustrasi || '',
           pilihFocusThemaMember: problemData.pilih_focus_thema_member || '',
           pilihTaskforce: problemData.pilih_taskforce || '',
           operator: problemData.foperator ? problemData.foperator.split(',') : [],
