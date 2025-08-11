@@ -90,24 +90,29 @@ const putMachineStopInput = async (req, res, next) => {
   try {
     console.log('Received request body:', req.body);
 
-    const { fmc_id, ferror_name } = req.body;
+    const { fmc_id, ferror_name, fstart_time } = req.body;
+
     let values = '';
+
     if (fmc_id) {
-      values += `${fmc_id}, `;
+      values += `${fmc_id}`;
     }
     if (ferror_name){
-      values += `'${ferror_name}'`;
+      values += `, '${ferror_name}'`;
+    }
+    if (fstart_time){
+      values += `, '${fstart_time}'`;
     }
 
     console.log("Values: " + values);
 
     if (!fmc_id || !ferror_name) {
-      console.log('Missing required fields:', { fmc_id, ferror_name });
+      console.log('Missing required fields:', { fmc_id, ferror_name, fstart_time });
       return res.status(httpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
     }
 
     const insertQuery = `
-      INSERT INTO tb_error_log_2 (fmc_id, ferror_name)
+      INSERT INTO tb_error_log_2 (fmc_id, ferror_name, fstart_time)
       VALUES (${values})
     `;
 

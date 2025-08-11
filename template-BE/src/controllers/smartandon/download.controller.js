@@ -98,12 +98,21 @@ exports.downloadTemplate = async (req, res, next) => {
     });
 
     const problemData = vCurrentError2Data[0] || {};
+    console.log('=== DOWNLOAD CONTROLLER DEBUG ===');
+    console.log('vCurrentError2Data length:', vCurrentError2Data.length);
+    console.log('problemData keys:', Object.keys(problemData));
+    console.log('problemData.why1_img:', problemData.why1_img);
+    console.log('problemData.why2_img:', problemData.why2_img);
+    console.log('tbRUraianData length:', tbRUraianData.length);
+
     const generatedExcelPath = await generatedStepRepairCellDuration(
       res,
       problemData,
       tbRUraianData,
       './reports/template/draft_ltb.xlsx'
     );
+    console.log('generatedExcelPath:', generatedExcelPath);
+
     await mappedImageFile(res, problemData, tbRUraianData, generatedExcelPath);
   } catch (error) {
     console.log(error);

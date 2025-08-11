@@ -86,6 +86,16 @@ const getProblemView = async (req, res, next) => {
     const { line } = req.query;
     const { problem } = req.query;
     const { problemCategory } = req.query;
+    const { limitView } = req.query;
+
+    console.log('Limit View:', limitView);
+
+    let limitClause = `LIMIT ${limit} OFFSET ${offset}`;
+    // if (limitView == 0) {
+    //   limitClause = ``;
+    //   console.log('Iyaaaaa');
+    // }
+    console.log('Limit Clauseee:', limitClause);
 
     // Build where clause for date filtering
     let whereClause = 'WHERE fid IS NOT NULL';
@@ -136,6 +146,10 @@ const getProblemView = async (req, res, next) => {
         `;
       }
       whereClause += `)`;
+    }
+
+    if (limitView == 0) {
+      whereClause += ` AND fend_time IS NULL`;
     }
 
     // if (problemCategory == 4) {
@@ -225,10 +239,15 @@ const getProblemView = async (req, res, next) => {
       FROM v_current_error_2
       ${whereClause}
       ORDER BY fid ASC
-      LIMIT :limit OFFSET :offset
+      ${limitClause}
     `;
-    replacements.limit = limit;
-    replacements.offset = offset;
+    
+
+
+
+
+    console.log('Problem View Query:', dataQuery);
+    console.log('Problem View');
 
     const [problemsView] = await sequelize.query(dataQuery, {
       replacements,
@@ -324,11 +343,25 @@ const getProblemById = async (req, res, next) => {
     const query2 = `
       SELECT
         tb.type_uraian as typeUraian,
-        tb.ilustration as ilustration
+        tb.ilustration as ilustration,
+        tb.desc_nm as desc_nm
       FROM tb_r_uraian tb
       WHERE tb.error_id = :fid
     `
+
+    const query3 = `
+      SELECT
+        tb.type_uraian as typeUraian,
+        tb.desc_nm as desc_nm
+      FROM tb_r_uraian tb
+      WHERE tb.error_id = :fid
+    `
+
     const [uraianResult] = await sequelize.query(query2, {
+      replacements: { fid },
+    });
+
+    const [descResult] = await sequelize.query(query3, {
       replacements: { fid },
     });
 
@@ -337,6 +370,10 @@ const getProblemById = async (req, res, next) => {
       uraianResult: uraianResult.reduce((acc, item) => {
         acc[item.typeUraian] = item.ilustration;
         return acc;
+      }, {}),
+      descResult: descResult.reduce((desc, item) => {
+        desc[item.typeUraian] = item.desc_nm;
+        return desc;
       }, {}),
     }
     console.log('Final Result:', finalResult);
@@ -351,7 +388,7 @@ const updateProblem = async (req, res, next) => {
   try {
     const {
       machineName,
-      lineName,
+      line,
       problemDescription,
       operator,
       fid,
@@ -399,15 +436,16 @@ const updateProblem = async (req, res, next) => {
       qCategory,
     } = req.body;
     console.log('UPDATE PROBLEM BODY:', req.body);
+    console.log('Problems from body:', problemDescription);
 
     if (!fid) {
       return res.status(httpStatus.BAD_REQUEST).json({ message: 'Problem ID (fid) is required' });
     }
 
-    const updateFields = [];
+    // const updateFields = [];
     const replacements = {
       machineName,
-      lineName,
+      line,
       problemDescription,
       operator,
       fid,
@@ -619,6 +657,106 @@ const updateProblem = async (req, res, next) => {
     //   return res.status(httpStatus.BAD_REQUEST).json({ message: 'No fields to update' });
     // }
 
+    replacements.countermeasureKenapaTerjadi =
+      typeof countermeasureKenapaTerjadi === 'object'
+        ? JSON.stringify(countermeasureKenapaTerjadi)
+        : countermeasureKenapaTerjadi;
+
+    replacements.countermeasureKenapaLama =
+      typeof countermeasureKenapaLama === 'object' ? JSON.stringify(countermeasureKenapaLama) : countermeasureKenapaLama;
+
+    console.log('Replacements:', replacements);
+
+    const updateFields = [
+      't1.ferror_name = :problemDescription',
+      't1.foperator = :operator',
+      't1.fiveWhyShFeedback = :comments5WhySH',
+      't1.fiveWhyLhFeedback = :comments5WhyLH',
+      't1.temporaryAction = :itemTemporaryAction',
+      't1.fpart_change = :partChange',
+      't1.oCategory = :oCategory',
+      't1.qCategory = :qCategory',
+      't1.fyokoten = :yokoten',
+      't1.problemCategory = :problemCategory',
+      't1.why1_img = :whyImage',
+      't1.why2_img = :whyLamaImage',
+      't1.fpermanet_cm = :countermeasureKenapaTerjadi',
+      't1.fpermanet_cm_lama = :countermeasureKenapaLama',
+      't1.fstep_repair = :stepRepair',
+      't1.fstart_time = :startDate',
+      't1.fend_time = :finishDate',
+    ];
+
+    let updateField = 't1.fmc_id = t2.fid';
+
+    if (machineName && machineName !== '' && Number.isInteger(Number(machineName))) {
+      updateField += `, t1.fmc_id = :machineName`;
+    }
+    if (problemDescription) {
+      updateField += `, t1.ferror_name = :problemDescription`;
+    }
+    if (operator) {
+      updateField += `, t1.foperator = :operator`;
+    }
+    if (gapBetweenStandarAndActual) {  
+      updateField += `, t1.gapIlustrasi = :gapBetweenStandarAndActual`;
+    }
+    if (avCategory) {
+      updateField += `, t1.fav_categoty = :avCategory`;
+    }
+    if (shift) {
+      updateField += `, t1.fshift = :shift`;
+    }
+    if (startDate) {
+      // Convert to WIB timezone if needed
+      const startDateWIB = new Date(startDate);
+      startDateWIB.setHours(startDateWIB.getHours() + 7); // Adjust to WIB
+      updateField += `, t1.fstart_time = :startDate`;
+      replacements.startDate = startDateWIB.toISOString().slice(0, 19).replace('T', ' ');
+    }
+    if (finishDate) {
+      // Convert to WIB timezone if needed
+      const finishDateWIB = new Date(finishDate);
+      finishDateWIB.setHours(finishDateWIB.getHours() + 7); // Adjust to WIB
+      updateField += `, t1.fend_time = :finishDate`;
+      replacements.finishDate = finishDateWIB.toISOString().slice(0, 19).replace('T', ' ');
+    }
+    if (problemCategory) {
+      updateField += `, t1.problemCategory = :problemCategory`;
+    }
+    if (itemTemporaryAction) {
+      updateField += `, t1.temporaryAction = :itemTemporaryAction`;
+    }
+    if (whyImage) {
+      updateField += `, t1.why1_img = :whyImage`;
+    }
+    if (oCategory) {
+      updateField += `, t1.oCategory = :oCategory`;
+    }
+    if (stepRepair) {
+      updateField += `, t1.fstep_repair = :stepRepair`;
+    }
+    if (partChange) {
+      updateField += `, t1.fpart_change = :partChange`;
+    }
+    // if (countermeasureKenapaTerjadi) {
+    //   updateField += `, t1.fpermanet_cm = :countermeasureKenapaTerjadi`;
+    // }
+    if (yokoten) {
+      updateField += `, t1.fyokoten = :yokoten`;
+    }
+    if (qCategory) {
+      updateField += `, t1.qCategory = :qCategory`;
+    }
+    if (whyLamaImage) {
+      updateField += `, t1.why2_img = :whyLamaImage`;
+    }
+    if (countermeasureKenapaLama) {
+      updateField += `, t1.fpermanet_cm_lama = :countermeasureKenapaLama`;
+    }
+    // if (attachmentMeeting) {
+    //   updateField += `, t1.fpermanet_cm_lama = :attachmentMeeting`;
+    // }
     if (req.files) {
       console.log('Files uploaded:', req.files);
       if (req.files.actualImage) {
@@ -650,14 +788,18 @@ const updateProblem = async (req, res, next) => {
         const ext = path.extname(fileObj.originalname);
         const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
-        replacements.whyImage = newPath;
+        if (newPath) {
+          updateField += `, t1.why1_img = '${newPath}'`;
+        }
       }
       if (req.files.whyLamaImage) {
         const fileObj = req.files.whyLamaImage[0];
         const ext = path.extname(fileObj.originalname);
         const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
-        replacements.whyLamaImage = newPath;
+        if (newPath) {
+          updateField += `, t1.why2_img = '${newPath}'`;
+        }
       }
       if (req.files.uploadFile) {
         const fileObj = req.files.uploadFile[0];
@@ -668,7 +810,12 @@ const updateProblem = async (req, res, next) => {
         }
         const newPath = `./reports/uploads/${fid}_${problemDescription}/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
-        replacements.uploadFile = newPath;
+        if (newPath) {
+          replacements.uploadFile = newPath;
+          updateField += `, t1.file_report = :uploadFile`;
+        }
+        console.log('New path for uploadFile:', newPath);
+        console.log('File upload completed:', fileObj.uploadFile);
       }
       if (req.files.attachmentMeeting) {
         const fileObj = req.files.attachmentMeeting[0];
@@ -676,6 +823,7 @@ const updateProblem = async (req, res, next) => {
         const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
         replacements.attachmentMeeting = newPath;
+        updateField += `, t1.fattachment_meeting = :attachmentMeeting`;
       }
       if (req.files.file_report) {
         const fileObj = req.files.file_report[0];
@@ -683,69 +831,108 @@ const updateProblem = async (req, res, next) => {
         const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
         fs.renameSync(fileObj.path, newPath);
         replacements.file_report = newPath;
+        updateField += `, t1.ffile_report = :file_report`;
       }
     }
+    
+    // countermeasureKenapaTerjadi =
+    // typeof countermeasureKenapaTerjadi === 'object'
+    // ? JSON.stringify(countermeasureKenapaTerjadi)
+    // : countermeasureKenapaTerjadi;
+    
+    // countermeasureKenapaLama =
+    // typeof countermeasureKenapaLama === 'object' ? JSON.stringify(countermeasureKenapaLama) : countermeasureKenapaLama;
 
-    replacements.countermeasureKenapaTerjadi =
-      typeof countermeasureKenapaTerjadi === 'object'
-        ? JSON.stringify(countermeasureKenapaTerjadi)
-        : countermeasureKenapaTerjadi;
-
-    replacements.countermeasureKenapaLama =
-      typeof countermeasureKenapaLama === 'object' ? JSON.stringify(countermeasureKenapaLama) : countermeasureKenapaLama;
-
+    if (countermeasureKenapaTerjadi) {
+      updateField += `, t1.fpermanet_cm = :countermeasureKenapaTerjadi`;
+    }
+    if (countermeasureKenapaLama) {
+      updateField += `, t1.fpermanet_cm_lama = :countermeasureKenapaLama`;
+    }
+    
     console.log('Replacements:', replacements);
-
     const updateQuery = `
       UPDATE tb_error_log_2 t1
       JOIN tb_mc t2 ON t1.fmc_id = t2.fid
       LEFT JOIN m_problem_member mpm ON t1.fid = mpm.id_m_problem
       LEFT JOIN tb_mt_member tmm ON tmm.fid = mpm.id_m_member
-      SET 
-        t1.fmc_id = t2.fid,
-        t1.ferror_name = :problemDescription,
-        t1.foperator = :operator,
-        t1.fiveWhyShFeedback = :comments5WhySH,
-        t1.fiveWhyLhFeedback = :comments5WhyLH,
-        t1.temporaryAction = :itemTemporaryAction,
-        t1.fpart_change = :partChange,
-        t1.oCategory = :oCategory,
-        t1.qCategory = :qCategory,
-        t1.fyokoten = :yokoten,
-        t1.problemCategory = :problemCategory,
-        t1.why1_img = :whyImage,
-        t1.why2_img = :whyLamaImage,
-        t1.fpermanet_cm = :countermeasureKenapaTerjadi,
-        t1.fpermanet_cm_lama = :countermeasureKenapaLama,
-        t1.fstep_repair = :stepRepair,
-        t1.file_report = :uploadFile
+      SET ${updateField}
       WHERE t1.fid = :fid;
     `;
     await sequelize.query(updateQuery, { replacements });
 
-    const tbUraianData = {
-      general: replacements.uploadImage,
-      actual: replacements.actualImage,
-      standard: replacements.standartImage,
+    console.log('Update Query:', updateQuery);
+
+    const uraianKeys = ['general', 'standard', 'actual'];
+    const uraianData = {
+      general: {
+        type_uraian: 'general',
+        ilustration: replacements.uploadImage || null,
+        desc_nm: replacements.uraianKejadian || null
+      },
+      standard: {
+        type_uraian: 'standard',
+        ilustration: replacements.standartImage || null,
+        desc_nm: replacements.ilustrasiStandart || null
+      },
+      actual: {
+        type_uraian: 'actual',
+        ilustration: replacements.actualImage || null,
+        desc_nm: replacements.ilustrasiActual || null
+      }
     };
 
-    for (const key of Object.keys(tbUraianData)) {
-      if (tbUraianData[key]) {
-        const updateUraianQuery = `
-          UPDATE tb_r_uraian t1
-          SET t1.ilustration = :ilustration_${key}
-          WHERE t1.error_id = :fid AND t1.type_uraian = :type_uraian_${key}
+    // Process each uraian type
+    for (const key of uraianKeys) {
+      const item = uraianData[key];
+      
+      // Always process even if data is null to ensure consistency
+      const checkQuery = `
+        SELECT COUNT(*) as count FROM tb_r_uraian 
+        WHERE error_id = :fid AND type_uraian = :type_uraian
+      `;
+      
+      const [checkResult] = await sequelize.query(checkQuery, { 
+        replacements: { 
+          fid: replacements.fid, 
+          type_uraian: item.type_uraian 
+        } 
+      });
+
+      if (checkResult[0].count === 0) {
+        // Insert new record
+        const insertQuery = `
+          INSERT INTO tb_r_uraian (error_id, type_uraian, ilustration, desc_nm)
+          VALUES (:fid, :type_uraian, :ilustration, :desc_nm)
         `;
-        const uraianReplacements = {
-          fid: replacements.fid,
-          [`type_uraian_${key}`]: key,
-          [`ilustration_${key}`]: tbUraianData[key],
-        };
-        await sequelize.query(updateUraianQuery, { replacements: uraianReplacements });
+        await sequelize.query(insertQuery, { 
+          replacements: {
+            fid: replacements.fid,
+            type_uraian: item.type_uraian,
+            ilustration: item.ilustration,
+            desc_nm: item.desc_nm
+          }
+        });
+      } else {
+        // Update existing record
+        const updateQuery = `
+          UPDATE tb_r_uraian 
+          SET ilustration = :ilustration, desc_nm = :desc_nm
+          WHERE error_id = :fid AND type_uraian = :type_uraian
+        `;
+        await sequelize.query(updateQuery, { 
+          replacements: {
+            fid: replacements.fid,
+            type_uraian: item.type_uraian,
+            ilustration: item.ilustration,
+            desc_nm: item.desc_nm
+          }
+        });
       }
-    }
+    };
 
     res.status(httpStatus.OK).json({ status: 'success', message: 'Problem updated successfully' });
+
   } catch (error) {
     next(error);
   }
