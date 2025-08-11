@@ -1,5 +1,5 @@
 <template>
-  <CCard class="mt-3 mb-5 custom-card">
+  <CCard class="mt-3 mb-5">
     <CCardBody>
       <CRow v-if="loading">
         <CCol class="text-center py-5">
@@ -8,16 +8,30 @@
       </CRow>
 
       <template v-else>
+        
         <CRow>
           <CCol>
             <LegendStatus class="mb-4" />
           </CCol>
         </CRow>
+        
+        <CRow class="mb-3 justify-content-center">
+          <CCol sm="auto">
+            <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('reset')" class="px-4">
+              Download Countermeasure
+            </CButton>
+          </CCol>
+          <CCol sm="auto">
+            <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('search')" class="px-4">
+              Send Reminder
+            </CButton>
+          </CCol>
+        </CRow>
 
         <CRow>
           <CCol>
-            <CRow style="max-height: 450px; overflow-y: auto; overflow-x: auto; display: block;">
-              <CTable bordered responsive hover align="middle" class="text-sm mb-2"
+            <CRow style="max-height: 750px; overflow-y: auto; overflow-x: auto; display: block;">
+              <CTable bordered responsive hover-align="middle" class="text-sm mb-2"
                 style="min-width: 1000px; width: 100%;">
                 <CTableHead>
                   <CTableRow class="bg-gray-100 text-center">
@@ -92,19 +106,6 @@
           </CCol>
         </CRow>
       </template>
-
-      <CRow class="mt-5 mb-4 justify-content-center">
-        <CCol sm="auto">
-          <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('reset')" class="px-4">
-            Download Countermeasure
-          </CButton>
-        </CCol>
-        <CCol sm="auto">
-          <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('search')" class="px-4">
-            Send Reminder
-          </CButton>
-        </CCol>
-      </CRow>
     </CCardBody>
   </CCard>
 </template>

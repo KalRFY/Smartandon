@@ -4,7 +4,7 @@
       <CCardHeader class="text-white">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <strong>Search</strong>
+            <strong style="font-size: medium;">Search</strong>
           </div>
         </div>
       </CCardHeader>
@@ -550,7 +550,7 @@ export default {
 
 <style scoped>
 .realtime-pareto-container {
-  padding: 15px;
+  padding: 0px;
 }
 
 .search-card,

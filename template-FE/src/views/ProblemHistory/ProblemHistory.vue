@@ -528,14 +528,14 @@ export default {
         maker: problemData.fmaker || '',
         operationNo: problemData.foperation_no || '',
         problems: problemData.ferror_name || '',
-        uraianKejadian: problemData.ferror_detail || '',
+        uraianKejadian: problemData.descResult.general || '',
         uploadImage: problemData.uraianResult.general || '',
-        ilustrasiStandart: problemData.ilustrasiStandart || '',
+        ilustrasiStandart: problemData.descResult.standard || '',
         standardImage: problemData.uraianResult.standard || '',
-        ilustrasiActual: problemData.ilustrasiActual || '',
+        ilustrasiActual: problemData.descResult.actual || '',
         actualImage: problemData.uraianResult.actual || '',
         gapBetweenStandarAndActual:
-          problemData.gapBetweenStandarAndActual || '',
+          problemData.gapIlustrasi || '',
         pilihFocusThemaMember: problemData.pilihFocusThemaMember || '',
         pilihTaskforce: problemData.pilihTaskforce || '',
         operator: problemData.foperator
@@ -595,14 +595,37 @@ export default {
         return
       }
 
+      let machineId = submitData.machineName;
+      let lineId = submitData.line;
+
+      if (typeof machineId === 'string') {
+        const machineObj = this.machineOptions.find(m => m.label === machineId);
+        if (machineObj) machineId = machineObj.id;
+      }
+      // Jika line berupa label, cari id-nya dari lineOptions
+      if (typeof lineId === 'string') {
+        const lineObj = this.lineOptions.find(l => l.label === lineId);
+        if (lineObj) lineId = lineObj.id;
+      }
+
+      let operatorNames = Array.isArray(submitData.operator)
+        ? submitData.operator.map(op => {
+            if (typeof op === 'string') {
+              // Jika sudah nama, langsung pakai
+              return op;
+            }
+            // Jika id, cari labelnya
+            const memberObj = this.memberOption.find(m => m.id === op);
+            return memberObj ? memberObj.label : op;
+          })
+        : [];
+
       try {
         const payload = {
           machineName: submitData.machineName,
           lineName: submitData.line,
           problemDescription: submitData.problems,
-          operator: Array.isArray(submitData.operator)
-            ? submitData.operator.join(',')
-            : '',
+          operator: operatorNames.join(','),
           fid: submitData.fidProblem,
           maker: submitData.maker,
           operationNo: submitData.operationNo,

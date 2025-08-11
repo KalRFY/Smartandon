@@ -1,44 +1,42 @@
 <template>
-  <CContainer fluid class="mt-4 mb-4">
-    <CRow>
-      <CCol>
-        <h3>CM Follow-up</h3>
-        <p>Post-problem countermeasure tracking</p>
-      </CCol>
-    </CRow>
+  <CRow>
+    <CCol>
+      <h3>CM Follow-up</h3>
+      <p>Post-problem countermeasure tracking</p>
+    </CCol>
+  </CRow>
 
-    <SearchFilters 
-      :filterStartDate="filters.start_date" 
-      :filterFinishDate="filters.end_date"
-      :selectedLine="filters.line" 
-      :selectedMachineName="filters.machine" 
-      :searchKeyword="filters.keyword"
-      :selectedCategory="filters.category" 
-      :selectedShift="filters.shift" 
-      :lineOptions="lineOptions"
-      :machineOptions="machineOptions" 
-      :loading="loading"
-      @update:filterStartDate="val => filters.start_date = val"
-      @update:filterFinishDate="val => filters.end_date = val" 
-      @update:selectedLine="val => filters.line = val"
-      @update:selectedMachineName="val => filters.machine = val"
-      @update:searchKeyword="val => filters.keyword = val"
-      @update:selectedCategory="val => filters.category = val" 
-      @update:selectedShift="val => filters.shift = val"
-      @search="fetchCMFollowup" 
-      @reset="resetFilters" 
-    />
+  <SearchFilters 
+    :filterStartDate="filters.start_date" 
+    :filterFinishDate="filters.end_date"
+    :selectedLine="filters.line" 
+    :selectedMachineName="filters.machine" 
+    :searchKeyword="filters.keyword"
+    :selectedCategory="filters.category" 
+    :selectedShift="filters.shift" 
+    :lineOptions="lineOptions"
+    :machineOptions="machineOptions" 
+    :loading="loading"
+    @update:filterStartDate="val => filters.start_date = val"
+    @update:filterFinishDate="val => filters.end_date = val" 
+    @update:selectedLine="val => filters.line = val"
+    @update:selectedMachineName="val => filters.machine = val"
+    @update:searchKeyword="val => filters.keyword = val"
+    @update:selectedCategory="val => filters.category = val" 
+    @update:selectedShift="val => filters.shift = val"
+    @search="fetchCMFollowup" 
+    @reset="resetFilters" 
+  />
 
-    <CRow>
-      <CCol>
-        <LoadingState v-if="loading" :progress="progress" :trigger="triggerKey" />
-        <template v-else>
-          <CMIndicator :data="tableData" />
-          <ProblemsTable :data="tableData" :loading="loading" />
-        </template>
-      </CCol>
-    </CRow>
-  </CContainer>
+  <CRow>
+    <CCol>
+      <LoadingState v-if="loading" :progress="progress" :trigger="triggerKey" />
+      <template v-else>
+        <CMIndicator :data="tableData" />
+        <ProblemsTable :data="tableData" :loading="loading" />
+      </template>
+    </CCol>
+  </CRow>
 </template>
 
 <script setup>

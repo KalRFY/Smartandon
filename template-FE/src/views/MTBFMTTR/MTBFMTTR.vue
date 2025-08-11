@@ -139,7 +139,6 @@ const filterTypes = [
   { value: 'total', label: 'Total' },
 ]
 
-const username = ref('AndreanDjabbar')
 const currentTime = ref('')
 const now = new Date()
 const days = [
@@ -777,7 +776,7 @@ export default {
 
 <style scoped>
 .mtbf-mttr-dashboard {
-  padding: 15px;
+  padding: 0px;
 }
 .toggle-group {
   display: flex;

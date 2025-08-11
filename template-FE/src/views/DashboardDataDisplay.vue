@@ -135,6 +135,41 @@
     </CCol>
   </CRow>
 
+  <CRow class="mb-3">
+    <CCol>
+      <CCard>
+        <CTable>
+          <CTableHead>
+            <CTableRow>
+              <CTableHeaderCell scope="col">No</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
+              <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Line</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
+            </CTableRow>
+          </CTableHead>
+          <CTableBody>
+            <!-- <CTableRow v-if="loadingProblemActive">
+              <CTableDataCell colspan="6" class="text-center">Loading...</CTableDataCell>
+            </CTableRow>
+            <CTableRow v-else-if="problemActive.length === 0">
+              <CTableDataCell colspan="6" class="text-center">No active problems</CTableDataCell>
+            </CTableRow> -->
+            <CTableRow v-for="(problem, idx) in problemActive" :key="problem.fid">
+              <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
+              <CTableDataCell>{{ problem.fmc_name }}</CTableDataCell>
+              <CTableDataCell>{{ problem.foperator }}</CTableDataCell>
+              <CTableDataCell>{{ problem.fline }}</CTableDataCell>
+              <CTableDataCell>{{ problem.ferror_name }}</CTableDataCell>
+              <CTableDataCell>{{ problem.fdur }}</CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        </CTable>
+      </CCard>
+    </CCol>
+  </CRow>
+
 
 
 
@@ -205,6 +240,23 @@ export default {
     };
   },
   async created() {
+    try {
+      this.loadingProblemActive = true;
+      this.limitView = 0;
+      const response = await axios.get('/api/smartandon/problemView', {
+        params: { 
+          limitView: 0,
+        }
+      });
+      // Filter hanya problem yang fend_time null
+      this.problemActive = response.data.data
+      console.log('Filtered active problems:', this.problemActive);
+    } catch (error) {
+      console.error('Failed to fetch active problems:', error);
+      this.problemActive = [];
+    } finally {
+      this.loadingProblemActive = false;
+    }
     try {
       const response = await axios.get('/api/smartandon/qcc-m-types');
       this.types = response.data;
