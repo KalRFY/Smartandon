@@ -28,20 +28,21 @@
     @reset="resetFilters" 
   />
 
-  <CRow>
-    <CCol>
-      <LoadingState v-if="loading" :progress="progress" :trigger="triggerKey" />
-      <template v-else>
-        <CMIndicator :data="tableData" />
-        <ProblemsTable :data="tableData" :loading="loading" />
-      </template>
-    </CCol>
-  </CRow>
+    <CRow>
+      <CCol>
+        <LoadingState v-if="loading" :progress="progress" :trigger="triggerKey" />
+        <template v-else>
+          <CMIndicator :data="filteredData" />
+          <ProblemsTable :data="filteredData" :loading="loading" />
+        </template>
+      </CCol>
+    </CRow>
+  </CContainer>
 </template>
 
 <script setup>
 import axios from 'axios'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import dayjs from 'dayjs'
 import { getCMFollowup } from '@/apis/cmFollowup'
 import SearchFilters from '@/views/CMFollowup/components/SearchFilters.vue'
@@ -66,6 +67,18 @@ const tableData = ref([])
 const lineOptions = ref([])
 const machineOptions = ref([])
 
+const filteredData = computed(() => {
+  if (!filters.value.keyword) {
+    return tableData.value
+  }
+  const kw = filters.value.keyword.toLowerCase()
+  return tableData.value.filter(row => {
+    const missingFields = ['line', 'machine', 'date', 'problem', 'duration', 'rootcause'].some(key => !row[key])
+    if (missingFields) return true
+    return [row.machine, row.problem, row.countermeasure, row.pic].some(field => field && field.toString().toLowerCase().includes(kw))
+  })
+})
+
 async function loadInitialData() {
   loading.value = true
   try {
@@ -73,21 +86,10 @@ async function loadInitialData() {
       axios.get('/api/smartandon/machine'),
       axios.get('/api/smartandon/line')
     ])
-
-    console.log('Machine response:', machineRes.data)
-    console.log('Line response:', lineRes.data)
-
-    machineOptions.value = (machineRes.data || []).map(machine => ({
-      id: machine.fid,
-      label: machine.fmc_name
-    }))
-
-    lineOptions.value = (lineRes.data || []).map(line => ({
-      id: line.fid,
-      label: line.fline
-    }))
+    machineOptions.value = (machineRes.data || []).map(machine => ({ id: machine.fid, label: machine.fmc_name }))
+    lineOptions.value = (lineRes.data || []).map(line => ({ id: line.fid, label: line.fline }))
   } catch (error) {
-    console.error('Failed to load line/machine data:', error.response || error)
+    console.error('Failed to load line/machine data:', error)
   } finally {
     loading.value = false
   }
@@ -97,34 +99,29 @@ async function fetchCMFollowup() {
   loading.value = true
   triggerKey.value++
   progress.value = 0
-
   let internalProgress = 0
-  const step = () => {
-    if (internalProgress < 100) {
-      internalProgress += 1
-      progress.value = internalProgress
-      setTimeout(step, 15)
-    }
-  }
+  const step = () => { if (internalProgress < 100) { internalProgress += 1; progress.value = internalProgress; setTimeout(step, 15) } }
   step()
 
   try {
-    tableData.value = await getCMFollowup(filters.value)
+    const apiFilters = { ...filters.value }
+    if (filters.value.keyword) {
+      apiFilters.start_date = ''
+      apiFilters.end_date = ''
+    }
+    // ALWAYS fetch full data without filtering by date
+    // Use actual filters with start_date and end_date to ensure data fetched correctly
+    tableData.value = await getCMFollowup(apiFilters)
   } catch (err) {
     console.error('Error fetching CMFollowup data:', err)
   } finally {
-    const waitUntilDone = () => new Promise((resolve) => {
+    await new Promise(resolve => {
       const check = () => {
-        if (progress.value >= 100) {
-          resolve()
-        } else {
-          setTimeout(check, 30)
-        }
+        if (progress.value >= 100) resolve()
+        else setTimeout(check, 30)
       }
       check()
     })
-
-    await waitUntilDone()
     loading.value = false
   }
 }

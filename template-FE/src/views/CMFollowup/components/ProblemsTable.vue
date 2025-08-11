@@ -14,8 +14,7 @@
             <LegendStatus class="mb-4" />
           </CCol>
         </CRow>
-        
-        <CRow class="mb-3 justify-content-center">
+        <CRow class="mt-2 mb-4 justify-content-center">
           <CCol sm="auto">
             <CButton :disabled="loading" color="primary" variant="outline" @click="$emit('reset')" class="px-4">
               Download Countermeasure
@@ -27,7 +26,6 @@
             </CButton>
           </CCol>
         </CRow>
-
         <CRow>
           <CCol>
             <CRow style="max-height: 750px; overflow-y: auto; overflow-x: auto; display: block;">

@@ -14,13 +14,8 @@
         <div style="margin-top: 10px">Loading data...</div>
       </div>
 
-      <CForm
-        v-else
-        class="row g-3 needs-validation"
-        novalidate
-        :validated="validatedCustom01"
-        @submit="handleSubmitCustom01"
-      >
+      <CForm v-else class="row g-3 needs-validation" novalidate :validated="validatedCustom01"
+        @submit="handleSubmitCustom01">
         <CRow class="mb-3">
           <CCol md="6">
             <label style="font-size: medium; font-weight: bold;" for="machineSelect" class="form-label">Machine Name</label>
@@ -279,24 +274,12 @@
         </CRow>
         <!-- <CRow class="mb-3">
           <CCol md="8">
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Pilih Focus Thema Member"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.pilihFocusThemaMember"
-            />
+            <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Pilih Focus Thema Member"
+              placeholder="Not yet inputted" required v-model="localSubmit.pilihFocusThemaMember" />
           </CCol>
           <CCol md="4">
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Pilih Taskforce"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.pilihTaskforce"
-            />
+            <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Pilih Taskforce"
+              placeholder="Not yet inputted" required v-model="localSubmit.pilihTaskforce" />
           </CCol>
         </CRow> -->
         <CRow md="12" class="mb-3">
@@ -361,33 +344,21 @@
           <CCol md="6">
             <label style="font-size: medium; font-weight: bold;" for="startDateModal" class="form-label">Start Date</label>
             <CInputGroup>
-              <CInputGroupText id="basic-addon1"
-                ><CIcon icon="cilClock" size="l"
-              /></CInputGroupText>
-              <CFormInput
-                id="startDateModal"
-                type="datetime-local"
-                required
-                v-model="localSubmit.startDate"
-                aria-label="Start Date"
-                aria-describedby="basic-addon1"
-              />
+              <CInputGroupText id="basic-addon1">
+                <CIcon icon="cilClock" size="l" />
+              </CInputGroupText>
+              <CFormInput id="startDateModal" type="datetime-local" required v-model="localSubmit.startDate"
+                aria-label="Start Date" aria-describedby="basic-addon1" />
             </CInputGroup>
           </CCol>
           <CCol md="6">
             <label style="font-size: medium; font-weight: bold;" for="finishDateModal" class="form-label">Finish Date</label>
             <CInputGroup>
-              <CInputGroupText id="basic-addon2"
-                ><CIcon icon="cilClock" size="l"
-              /></CInputGroupText>
-              <CFormInput
-                id="finishDateModal"
-                type="datetime-local"
-                required
-                v-model="localSubmit.finishDate"
-                aria-label="Finish Date"
-                aria-describedby="basic-addon2"
-              />
+              <CInputGroupText id="basic-addon2">
+                <CIcon icon="cilClock" size="l" />
+              </CInputGroupText>
+              <CFormInput id="finishDateModal" type="datetime-local" required v-model="localSubmit.finishDate"
+                aria-label="Finish Date" aria-describedby="basic-addon2" />
             </CInputGroup>
           </CCol>
         </CRow>
@@ -526,10 +497,8 @@
               Tambah Analysis TERJADI
             </CButton>
             <div v-if="showTambahAnalysis" class="analysis-list">
-              <TreeList
-                :model="treeModel || { id: 1, description: '', subItems: [] }"
-                @update:model="(val) => (treeModel = val)"
-              />
+              <TreeList :model="treeModel || { id: 1, description: '', subItems: [] }"
+                @update:model="(val) => (treeModel = val)" />
             </div>
           </CCol>
         </CRow>
@@ -888,7 +857,7 @@
             </CCard>
           </CCol>
         </CRow>
-        <CRow md="12" class="mb-3">
+        <CRow md="12" class="mb-3 mt-3">
           <CCol>
             <CCard>
               <CCardBody>
@@ -1200,17 +1169,79 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
+            <LegendStatus class="mb-4" />
+          </CCol>
+
+          <CCard class="mt-3 custom-card">
+            <CCardBody>
+              <CRow>
+                <CCol>
+                  <h5>Approval Status 5 Why</h5>
+                  <CRow class="text-center mb-3">
+                    <CCol>
+                      <CButton size="sm" color="success" @click="onApprove('5why', 'tl')">Approve</CButton>
+                      <CButton size="sm" color="info" class="ms-2" @click="onComment('5why', 'tl')">Comment</CButton>
+                    </CCol>
+                  </CRow>
+                  <CRow class="bg-black text-white fw-bold text-center py-2">
+                    <CCol>GL Check</CCol>
+                    <CCol>SH Check</CCol>
+                  </CRow>
+                  <CRow class="text-center py-3">
+                    <CCol>
+                      <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyLhApprove)" />
+                    </CCol>
+                    <CCol>
+                      <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyShApprove)" />
+                    </CCol>
+                  </CRow>
+                  <h5 class="mt-4">Approval Status Countermeasure</h5>
+                  <CRow class="text-center mb-3">
+                    <CCol>
+                      <CButton size="sm" color="success" @click="onApprove('counter', 'tl')">Approve</CButton>
+                      <CButton size="sm" color="info" class="ms-2" @click="onComment('counter', 'tl')">Comment</CButton>
+                    </CCol>
+                  </CRow>
+                  <CRow class="bg-black text-white fw-bold text-center py-2">
+                    <CCol>TL Check</CCol>
+                    <CCol>GL Check</CCol>
+                    <CCol>SH Check</CCol>
+                  </CRow>
+                  <CRow class="text-center py-3">
+                    <CCol>
+                      <span class="status-circle" :class="statusClass(localSubmit?.cmTlApprove)" />
+                    </CCol>
+                    <CCol>
+                      <span class="status-circle" :class="statusClass(localSubmit?.cmLhApprove)" />
+                    </CCol>
+                    <CCol>
+                      <span class="status-circle" :class="statusClass(localSubmit?.cmShApprove)" />
+                    </CCol>
+                  </CRow>
+
+                  <h5 class="mt-4">Approval Status Departement Head</h5>
+                  <CRow class="bg-black text-white fw-bold text-center py-2">
+                    <CCol>DPH Check</CCol>
+                  </CRow>
+                  <CRow class="justify-content-center text-center py-3 mb-4">
+                    <CCol xs="auto">
+                      <span class="status-circle" :class="statusClass(localSubmit?.cmDhApprove)" />
+                    </CCol>
+                  </CRow>
+                </CCol>
+              </CRow>
+            </CCardBody>
+          </CCard>
+
+        </CRow>
+        <CRow md="12" class="mb-3">
+          <CCol>
             <CCol md="12">
               <label class="form-label">Last Report File</label>
             </CCol>
             <CCol md="12">
-              <CButton
-                style="width: 100%"
-                :color="localSubmit.file_report ? 'primary' : 'secondary'"
-                @click="downloadLastReportFile"
-                :disabled="!localSubmit.file_report"
-                v-if="localSubmit.file_report"
-              >
+              <CButton style="width: 100%" :color="localSubmit.file_report ? 'primary' : 'secondary'"
+                @click="downloadLastReportFile" :disabled="!localSubmit.file_report" v-if="localSubmit.file_report">
                 Download Last Report File
               </CButton>
               <CButton style="width: 100%" color="warning" disabled v-else>
@@ -1222,11 +1253,7 @@
         <CRow md="12" class="mb-3">
           <CCol>
             <CCol md="12">
-              <CButton
-                style="width: 100%"
-                :color="'secondary'"
-                @click="downloadTemplateFile"
-              >
+              <CButton style="width: 100%" :color="'secondary'" @click="downloadTemplateFile">
                 Download Template
               </CButton>
             </CCol>
@@ -1234,26 +1261,14 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Upload Report"
-              required
-              @change="onFileChange($event, 'uploadFile')"
-            />
+            <CFormInput type="file" feedbackInvalid="Please input the problems" id="Problems" label="Upload Report"
+              required @change="onFileChange($event, 'uploadFile')" />
           </CCol>
         </CRow>
         <CRow xs="12" class="mb-3">
           <CCol>
-            <CFormCheck
-              feedbackInvalid="You must agree before submitting."
-              id="invalidCheck"
-              label="Agree to terms and conditions"
-              required
-              type="checkbox"
-              v-model="localSubmit.agreeTerms"
-            />
+            <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
+              label="Agree to terms and conditions" required type="checkbox" v-model="localSubmit.agreeTerms" />
           </CCol>
         </CRow>
       </CForm>
@@ -1262,7 +1277,9 @@
       <CButton color="secondary" @click="$emit('close')"> Close </CButton>
 
       <CButton color="primary" @click="saveSubmit" :disabled="isSaving">
-        <span v-if="isSaving"> <CSpinner size="sm" /> Saving... </span>
+        <span v-if="isSaving">
+          <CSpinner size="sm" /> Saving...
+        </span>
         <span v-else> Submit </span>
       </CButton>
     </CModalFooter>
@@ -1289,6 +1306,7 @@ import {
 import Treeselect from 'vue3-treeselect'
 import { cilClock } from '@coreui/icons'
 import { CIcon } from '@coreui/icons-vue'
+import LegendStatus from '@/views/ProblemHistory/components/LegendStatus.vue'
 import TreeList from 'vue-tree-list'
 
 export default {
@@ -1309,6 +1327,7 @@ export default {
     Treeselect,
     TreeList,
     cilClock,
+    LegendStatus,
   },
   props: {
     visible: {
@@ -1583,7 +1602,7 @@ export default {
       let stepRepairArray = []
       console.log('newVal.stepRepair:', newVal?.stepRepair)
       console.log('TYPE OF newVal.stepRepair:', typeof newVal?.stepRepair)
-      
+
       if (Array.isArray(newVal?.stepRepair) && newVal.stepRepair.length > 0) {
         stepRepairArray = newVal.stepRepair.map((item, index) => {
           if (typeof item === 'string') {
@@ -1631,7 +1650,20 @@ export default {
         ...(newVal || {}),
         rootcauses5Why: rootcausesArray,
         stepRepair: stepRepairArray,
+        fiveWhyLhApprove: newVal.fiveWhyLhApprove,
+        fiveWhyShApprove: newVal.fiveWhyShApprove,
+        fiveWhyLhFeedback: newVal.fiveWhyLhFeedback,
+        fiveWhyShFeedback: newVal.fiveWhyShFeedback,
+        cmLhApprove: newVal.cmLhApprove,
+        cmShApprove: newVal.cmShApprove,
+        cmTlApprove: newVal.cmTlApprove,
+        cmDhApprove: newVal.cmDhApprove,
+        cmLhFeedback: newVal.cmLhFeedback,
+        cmShFeedback: newVal.cmShFeedback,
+        cmTlFeedback: newVal.cmTlFeedback,
+        cmDhFeedback: newVal.cmDhFeedback,
       }
+
       console.log(
         'Updated localSubmit:',
         JSON.stringify(localSubmit.value, null, 2),
@@ -1653,22 +1685,22 @@ export default {
         ? newVal.countermeasureKenapaTerjadi
         : typeof newVal.countermeasureKenapaTerjadi === 'string' &&
           newVal.countermeasureKenapaTerjadi
-        ? JSON.parse(newVal.countermeasureKenapaTerjadi)
-        : []
+          ? JSON.parse(newVal.countermeasureKenapaTerjadi)
+          : []
       countermeasureKenapaLamaList.value = Array.isArray(
         newVal.countermeasureKenapaLama,
       )
         ? newVal.countermeasureKenapaLama
         : typeof newVal.countermeasureKenapaLama === 'string' &&
           newVal.countermeasureKenapaLama
-        ? JSON.parse(newVal.countermeasureKenapaLama)
-        : []
+          ? JSON.parse(newVal.countermeasureKenapaLama)
+          : []
       yokotenList.value = Array.isArray(submitData.value?.yokoten)
         ? submitData.value.yokoten
         : typeof submitData.value?.yokoten === 'string' &&
           submitData.value.yokoten
-        ? JSON.parse(submitData.value.yokoten)
-        : []
+          ? JSON.parse(submitData.value.yokoten)
+          : []
     })
     const onMachineInput = () => {
       console.log('Machine input changed:', localSubmit.value.machineName)
@@ -1891,7 +1923,7 @@ export default {
       },
       { immediate: true },
     )
-    console.log('ANJING 2: ' + localSubmit.value)
+    console.log('Local submit data: ' + localSubmit.value)
     console.log(
       'Local submit data 2:',
       JSON.stringify(localSubmit.value, null, 2),
@@ -2163,9 +2195,9 @@ export default {
         console.log('PIC options data:', data)
         picOptions.value = Array.isArray(data)
           ? data.map((m) => ({
-              value: String(m.fid) || m.name,
-              label: m.fname,
-            }))
+            value: String(m.fid) || m.name,
+            label: m.fname,
+          }))
           : []
       } catch (e) {
         picOptions.value = []
@@ -2179,8 +2211,8 @@ export default {
       if (localSubmit.value.rootcauses5Why.length < 5) {
         const newId = localSubmit.value.rootcauses5Why.length
           ? Math.max(
-              ...localSubmit.value.rootcauses5Why.map((item) => item.id),
-            ) + 1
+            ...localSubmit.value.rootcauses5Why.map((item) => item.id),
+          ) + 1
           : 1
         localSubmit.value.rootcauses5Why.push({ id: newId, description: '' })
       }
@@ -2224,6 +2256,20 @@ export default {
       } else {
         localSubmit.value.stepRepair = []
       }
+    }
+
+    const statusClass = (status) => {
+      if (status === 1 || status === '1') return 'status-approved'
+      if (status === 0 || status === '0') return 'status-rejected'
+      return 'status-pending'
+    }
+
+    const onApprove = (section, role) => {
+      console.log('Approve', section, role)
+    }
+
+    const onComment = (section, role) => {
+      console.log('Comment', section, role)
     }
 
     return {
@@ -2274,6 +2320,9 @@ export default {
       deleteRootcause,
       addStepRepair,
       deleteStepRepair,
+      statusClass,
+      onApprove,
+      onComment,
     }
   },
   computed: {
@@ -2340,11 +2389,10 @@ export default {
         this.localSubmit.fidProblem &&
         this.localSubmit.problems
       ) {
-        let url = `${
-          window.location.origin
-        }/api/smartandon/download-report?fid=${encodeURIComponent(
-          this.localSubmit.fidProblem,
-        )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
+        let url = `${window.location.origin
+          }/api/smartandon/download-report?fid=${encodeURIComponent(
+            this.localSubmit.fidProblem,
+          )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
         console.log('Download URL:', url)
         const link = document.createElement('a')
         link.href = url
@@ -2379,6 +2427,10 @@ export default {
 </script>
 
 <style scoped>
+.custom-card {
+  border-radius: 12px;
+}
+
 .analysis-list ul {
   list-style-type: none;
   padding-left: 20px;
@@ -2408,5 +2460,28 @@ export default {
 
 .analysis-item .actions button:hover {
   color: #007bff;
+}
+
+.status-circle {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}
+
+.status-approved {
+  background-color: #2eb85c;
+  border-color: #2eb85c;
+}
+
+.status-rejected {
+  background-color: #e55353;
+  border-color: #e55353;
+}
+
+.status-pending {
+  background-color: white;
+  border-color: #ccc;
 }
 </style>
