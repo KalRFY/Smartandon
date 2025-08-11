@@ -153,7 +153,6 @@
                   <CCol md="8">
                     <label style="font-size: medium; font-weight: bold;" class="form-label">Ilustrasi Standart</label>
                     <CFormInput
-                      style="font-size: medium; font-weight: bold;"
                       feedbackInvalid="Please input the problems"
                       id="Problems"
                       placeholder="Not yet inputted"
@@ -398,7 +397,7 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <label style="font-size: medium; font-weight: bold;" class="form-label">item Temporary Action</label>
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Item Temporary Action</label>
             <CFormInput
               feedbackInvalid="Please input the problems"
               id="Problems"
@@ -1169,69 +1168,72 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <LegendStatus class="mb-4" />
+
+            <CCol>
+              <LegendStatus class="mb-4" />
+            </CCol>
+  
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <h5>Approval Status 5 Why</h5>
+                    <CRow class="text-center mb-3">
+                      <CCol>
+                        <CButton size="sm" color="success" @click="onApprove('5why', 'tl')">Approve</CButton>
+                        <CButton size="sm" color="info" class="ms-2" @click="onComment('5why', 'tl')">Comment</CButton>
+                      </CCol>
+                    </CRow>
+                    <CRow class="bg-black text-white fw-bold text-center py-2">
+                      <CCol>GL Check</CCol>
+                      <CCol>SH Check</CCol>
+                    </CRow>
+                    <CRow class="text-center py-3">
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyLhApprove)" />
+                      </CCol>
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyShApprove)" />
+                      </CCol>
+                    </CRow>
+                    <h5 class="mt-4">Approval Status Countermeasure</h5>
+                    <CRow class="text-center mb-3">
+                      <CCol>
+                        <CButton size="sm" color="success" @click="onApprove('counter', 'tl')">Approve</CButton>
+                        <CButton size="sm" color="info" class="ms-2" @click="onComment('counter', 'tl')">Comment</CButton>
+                      </CCol>
+                    </CRow>
+                    <CRow class="bg-black text-white fw-bold text-center py-2">
+                      <CCol>TL Check</CCol>
+                      <CCol>GL Check</CCol>
+                      <CCol>SH Check</CCol>
+                    </CRow>
+                    <CRow class="text-center py-3">
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.cmTlApprove)" />
+                      </CCol>
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.cmLhApprove)" />
+                      </CCol>
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.cmShApprove)" />
+                      </CCol>
+                    </CRow>
+  
+                    <h5 class="mt-4">Approval Status Departement Head</h5>
+                    <CRow class="bg-black text-white fw-bold text-center py-2">
+                      <CCol>DPH Check</CCol>
+                    </CRow>
+                    <CRow class="justify-content-center text-center py-3 mb-4">
+                      <CCol xs="auto">
+                        <span class="status-circle" :class="statusClass(localSubmit?.cmDhApprove)" />
+                      </CCol>
+                    </CRow>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
-
-          <CCard class="mt-3 custom-card">
-            <CCardBody>
-              <CRow>
-                <CCol>
-                  <h5>Approval Status 5 Why</h5>
-                  <CRow class="text-center mb-3">
-                    <CCol>
-                      <CButton size="sm" color="success" @click="onApprove('5why', 'tl')">Approve</CButton>
-                      <CButton size="sm" color="info" class="ms-2" @click="onComment('5why', 'tl')">Comment</CButton>
-                    </CCol>
-                  </CRow>
-                  <CRow class="bg-black text-white fw-bold text-center py-2">
-                    <CCol>GL Check</CCol>
-                    <CCol>SH Check</CCol>
-                  </CRow>
-                  <CRow class="text-center py-3">
-                    <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyLhApprove)" />
-                    </CCol>
-                    <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyShApprove)" />
-                    </CCol>
-                  </CRow>
-                  <h5 class="mt-4">Approval Status Countermeasure</h5>
-                  <CRow class="text-center mb-3">
-                    <CCol>
-                      <CButton size="sm" color="success" @click="onApprove('counter', 'tl')">Approve</CButton>
-                      <CButton size="sm" color="info" class="ms-2" @click="onComment('counter', 'tl')">Comment</CButton>
-                    </CCol>
-                  </CRow>
-                  <CRow class="bg-black text-white fw-bold text-center py-2">
-                    <CCol>TL Check</CCol>
-                    <CCol>GL Check</CCol>
-                    <CCol>SH Check</CCol>
-                  </CRow>
-                  <CRow class="text-center py-3">
-                    <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.cmTlApprove)" />
-                    </CCol>
-                    <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.cmLhApprove)" />
-                    </CCol>
-                    <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.cmShApprove)" />
-                    </CCol>
-                  </CRow>
-
-                  <h5 class="mt-4">Approval Status Departement Head</h5>
-                  <CRow class="bg-black text-white fw-bold text-center py-2">
-                    <CCol>DPH Check</CCol>
-                  </CRow>
-                  <CRow class="justify-content-center text-center py-3 mb-4">
-                    <CCol xs="auto">
-                      <span class="status-circle" :class="statusClass(localSubmit?.cmDhApprove)" />
-                    </CCol>
-                  </CRow>
-                </CCol>
-              </CRow>
-            </CCardBody>
-          </CCard>
 
         </CRow>
         <CRow md="12" class="mb-3">
