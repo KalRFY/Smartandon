@@ -12,22 +12,27 @@ const getFollowups = async (req, res, next) => {
       conditions.push('DATE(p.date_problem) >= :start');
       replacements.start = start;
     }
+    
     if (finish) {
       conditions.push('DATE(p.date_problem) <= :finish');
       replacements.finish = finish;
     }
+    
     if (line) {
       conditions.push('p.line = :line');
       replacements.line = line;
     }
+    
     if (machine) {
       conditions.push('p.machine = :machine');
       replacements.machine = machine;
     }
+    
     if (shift) {
       conditions.push('p.shift = :shift');
       replacements.shift = shift;
     }
+    
     if (keyword) {
       conditions.push('(p.description LIKE :keyword OR c.description LIKE :keyword)');
       replacements.keyword = `%${keyword}%`;

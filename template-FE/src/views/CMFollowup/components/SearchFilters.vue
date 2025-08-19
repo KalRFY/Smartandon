@@ -82,7 +82,7 @@
           <CFormSelect :model-value="selectedCategory" @update:model-value="$emit('update:selectedCategory', $event)">
             <option value="">All</option>
             <option value="Taskforce">TASKFORCE</option>
-            <option value="Thema">Thema</option>
+            <option value="Thema">Focus Thema Member</option>
           </CFormSelect>
         </CCol>
 

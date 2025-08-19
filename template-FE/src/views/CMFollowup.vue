@@ -73,10 +73,27 @@ const getLineLabel = id => lineOptions.value.find(l => l.id === id)?.label
 const getMachineLabel = id => machineOptions.value.find(m => m.id === id)?.label
 
 const filteredData = computed(() => {
+  if (filters.value.category === "Thema") {
+    return []
+  }
+
   return tableData.value.filter(item => {
     const lineMatch = filters.value.line ? item.line === getLineLabel(filters.value.line) : true
     const machineMatch = filters.value.machine ? item.machine === getMachineLabel(filters.value.machine) : true
-    return lineMatch && machineMatch
+
+    const keyword = filters.value.keyword?.toLowerCase() || ''
+    const searchMatch = !keyword || 
+      item.machine.toLowerCase().includes(keyword) ||
+      item.problem.toLowerCase().includes(keyword) ||
+      item.countermeasure.toLowerCase().includes(keyword) ||
+      item.pic.toLowerCase().includes(keyword)
+
+      let categoryMatch = true
+      if (filters.value.category === "Taskforce") {
+        categoryMatch = item.problem?.toLowerCase().includes("taskforce")
+      }
+
+    return lineMatch && machineMatch && searchMatch && categoryMatch
   })
 })
 
@@ -123,7 +140,14 @@ async function fetchCMFollowup() {
       apiFilters.start_date = ''
       apiFilters.end_date = ''
     }
-    const rawData = await getCMFollowup(apiFilters)
+
+    let rawData = await getCMFollowup(apiFilters)
+
+    if (filters.value.category === "Thema") {
+      console.log("Filtering for Thema category")
+      rawData = []
+    }
+
     tableData.value = rawData
   } catch (err) {
     console.error('Error fetching CMFollowup data:', err)
