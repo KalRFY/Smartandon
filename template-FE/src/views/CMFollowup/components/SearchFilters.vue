@@ -8,9 +8,12 @@
             <CInputGroupText id="basic-addon1">
               <Clock size="16" />
             </CInputGroupText>
-            <CFormInput id="startDate" type="date" :model-value="filterStartDate"
-              @update:model-value="$emit('update:filterStartDate', $event)" aria-label="Start Date"
-              aria-describedby="basic-addon1" />
+            <CFormInput 
+              id="startDate" 
+              type="date" 
+              :model-value="filterStartDate"
+              @update:model-value="$emit('update:filterStartDate', $event)" 
+            />
           </CInputGroup>
         </CCol>
 
@@ -20,30 +23,46 @@
             <CInputGroupText id="basic-addon2">
               <Clock size="16" />
             </CInputGroupText>
-            <CFormInput id="finishDate" type="date" :model-value="filterFinishDate"
-              @update:model-value="$emit('update:filterFinishDate', $event)" aria-label="Finish Date"
-              aria-describedby="basic-addon2" />
+            <CFormInput 
+              id="finishDate" 
+              type="date" 
+              :model-value="filterFinishDate"
+              @update:model-value="$emit('update:filterFinishDate', $event)" 
+            />
           </CInputGroup>
         </CCol>
 
         <CCol class="md-3">
           <CFormLabel for="lineSelect">Line</CFormLabel>
-          <Treeselect id="lineSelect" :model-value="selectedLine"
-            @update:model-value="$emit('update:selectedLine', $event)" :multiple="false" :flat="true"
-            :options="lineOptions" :searchable="true" :clearable="true" placeholder="Select or input line"
-            :value-consists-of="'ALL'" />
+            <Treeselect 
+              id="lineSelect"
+              :model-value="selectedLine"
+              @update:model-value="$emit('update:selectedLine', $event)"
+              :options="lineOptions"
+              :multiple="false"
+              :searchable="true"
+              :clearable="true"
+              placeholder="Select line"
+            />
         </CCol>
 
         <CCol class="md-3">
           <CFormLabel for="selectedMachineName">Machine Name</CFormLabel>
-          <Treeselect id="selectedMachineName" :model-value="selectedMachineName"
-            @update:model-value="$emit('update:selectedMachineName', $event)" :options="machineOptions"
-            :searchable="true" :clearable="true" placeholder="Select or input machine" :value-consists-of="'ALL'" />
+            <Treeselect 
+              id="selectedMachineName"
+              :model-value="selectedMachineName"
+              @update:model-value="$emit('update:selectedMachineName', $event)"
+              :options="machineOptions"
+              :multiple="false"
+              :searchable="true"
+              :clearable="true"
+              placeholder="Select machine"
+            />
         </CCol>
       </CRow>
 
       <CRow class="mt-3 mb-4 g-1 align-items-end">
-       <CCol md="10" class="px-1">
+        <CCol md="10" class="px-1">
           <CFormLabel for="keyword">Search</CFormLabel>
           <CInputGroup>
             <CInputGroupText>
@@ -54,7 +73,6 @@
               placeholder="Search machine, problem, countermeasure, or PIC"
               :model-value="searchKeyword"
               @update:model-value="$emit('update:searchKeyword', $event)"
-              aria-label="Search"
             />
           </CInputGroup>
         </CCol>
@@ -82,12 +100,23 @@
 
       <CRow class="mt-4 mb-3">
         <CCol sm="2">
-          <CButton :disabled="loading" style="width: 100%" color="dark" variant="outline" @click="$emit('reset')">
+          <CButton 
+            :disabled="loading" 
+            style="width: 100%" 
+            color="dark" 
+            variant="outline" 
+            @click="$emit('reset')"
+          >
             Reset
           </CButton>
         </CCol>
         <CCol sm="10">
-          <CButton :disabled="loading" style="width: 100%" color="primary" @click="$emit('search')">
+          <CButton 
+            :disabled="loading" 
+            style="width: 100%" 
+            color="primary" 
+            @click="$emit('search')"
+          >
             Search
           </CButton>
         </CCol>
@@ -132,46 +161,16 @@ export default {
   },
 
   props: {
-    filterStartDate: {
-      type: String,
-      default: '',
-    },
-    filterFinishDate: {
-      type: String,
-      default: '',
-    },
-    selectedLine: {
-      type: [String, Number],
-      default: null,
-    },
-    selectedMachineName: {
-      type: [String, Number],
-      default: null,
-    },
-    searchKeyword: {
-      type: String,
-      default: '',
-    },
-    selectedCategory: {
-      type: String,
-      default: null,
-    },
-    selectedShift: {
-      type: String,
-      default: null,
-    },
-    lineOptions: {
-      type: Array,
-      default: () => [],
-    },
-    machineOptions: {
-      type: Array,
-      default: () => [],
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
+    filterStartDate: String,
+    filterFinishDate: String,
+    selectedLine: [String, Number],
+    selectedMachineName: [String, Number],
+    searchKeyword: String,
+    selectedCategory: String,
+    selectedShift: String,
+    lineOptions: { type: Array, default: () => [] },
+    machineOptions: { type: Array, default: () => [] },
+    loading: { type: Boolean, default: false },
   },
 
   emits: [

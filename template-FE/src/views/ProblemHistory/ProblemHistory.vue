@@ -854,6 +854,9 @@ export default {
         }))
 
         const memberResponse = await axios.get('/api/smartandon/member')
+           console.log('RAW machineResponse:', machineResponse.data)
+    console.log('RAW lineResponse:', lineResponse.data)
+
         this.memberOption = memberResponse.data.map((member) => ({
           id: member.fid,
           label: member.fname,

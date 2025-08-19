@@ -42,23 +42,24 @@
 </template>
 
 <script setup>
-import axios from 'axios'
 import { ref, onMounted, computed } from 'vue'
 import dayjs from 'dayjs'
+import axios from 'axios'
 import { getCMFollowup } from '@/apis/cmFollowup'
+
 import SearchFilters from '@/views/CMFollowup/components/SearchFilters.vue'
 import ProblemsTable from '@/views/CMFollowup/components/ProblemsTable.vue'
 import CMIndicator from '@/views/CMFollowup/components/CMIndicator.vue'
 import LoadingState from '@/views/CMFollowup/components/LoadingState.vue'
 
 const filters = ref({
-  line: '',
-  machine: null,
+  line: '',                 
+  machine: '',              
   start_date: dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
   end_date: dayjs().format('YYYY-MM-DD'),
-  keyword: '',
-  category: '',
-  shift: '',
+  keyword: '',              
+  category: '',             
+  shift: ''                 
 })
 
 const loading = ref(false)
@@ -68,27 +69,33 @@ const tableData = ref([])
 const lineOptions = ref([])
 const machineOptions = ref([])
 
+const getLineLabel = id => lineOptions.value.find(l => l.id === id)?.label
+const getMachineLabel = id => machineOptions.value.find(m => m.id === id)?.label
+
 const filteredData = computed(() => {
-  if (!filters.value.keyword) {
-    return tableData.value
-  }
-  const kw = filters.value.keyword.toLowerCase()
-  return tableData.value.filter(row => {
-    const missingFields = ['line', 'machine', 'date', 'problem', 'duration', 'rootcause'].some(key => !row[key])
-    if (missingFields) return true
-    return [row.machine, row.problem, row.countermeasure, row.pic].some(field => field && field.toString().toLowerCase().includes(kw))
+  return tableData.value.filter(item => {
+    const lineMatch = filters.value.line ? item.line === getLineLabel(filters.value.line) : true
+    const machineMatch = filters.value.machine ? item.machine === getMachineLabel(filters.value.machine) : true
+    return lineMatch && machineMatch
   })
 })
 
 async function loadInitialData() {
   loading.value = true
   try {
-    const [machineRes, lineRes] = await Promise.all([
+    const [machineResponse, lineResponse] = await Promise.all([
       axios.get('/api/smartandon/machine'),
       axios.get('/api/smartandon/line')
     ])
-    machineOptions.value = (machineRes.data || []).map(machine => ({ id: machine.fid, label: machine.fmc_name }))
-    lineOptions.value = (lineRes.data || []).map(line => ({ id: line.fid, label: line.fline }))
+
+    machineOptions.value = (machineResponse.data || []).map(m => ({
+      id: m.fid,
+      label: m.fmc_name
+    }))
+    lineOptions.value = (lineResponse.data || []).map(l => ({
+      id: l.fid,
+      label: l.fline
+    }))
   } catch (error) {
     console.error('Failed to load line/machine data:', error)
   } finally {
@@ -101,7 +108,13 @@ async function fetchCMFollowup() {
   triggerKey.value++
   progress.value = 0
   let internalProgress = 0
-  const step = () => { if (internalProgress < 100) { internalProgress += 1; progress.value = internalProgress; setTimeout(step, 15) } }
+  const step = () => { 
+    if (internalProgress < 100) { 
+      internalProgress += 1; 
+      progress.value = internalProgress; 
+      setTimeout(step, 15) 
+    } 
+  }
   step()
 
   try {
@@ -110,11 +123,11 @@ async function fetchCMFollowup() {
       apiFilters.start_date = ''
       apiFilters.end_date = ''
     }
-    // ALWAYS fetch full data without filtering by date
-    // Use actual filters with start_date and end_date to ensure data fetched correctly
-    tableData.value = await getCMFollowup(apiFilters)
+    const rawData = await getCMFollowup(apiFilters)
+    tableData.value = rawData
   } catch (err) {
     console.error('Error fetching CMFollowup data:', err)
+    tableData.value = []
   } finally {
     await new Promise(resolve => {
       const check = () => {
@@ -129,8 +142,8 @@ async function fetchCMFollowup() {
 
 function resetFilters() {
   filters.value = {
-    line: '',
-    machine: null,
+    line: '', 
+    machine: '', 
     start_date: dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
     end_date: dayjs().format('YYYY-MM-DD'),
     keyword: '',
