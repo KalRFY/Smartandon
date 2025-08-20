@@ -1,19 +1,23 @@
 import axios from 'axios'
 import dayjs from 'dayjs'
 
-axios.defaults.baseURL = 'https://mt-system.id'
+const cmAxios = axios.create({
+  baseURL: 'https://mt-system.id'
+})
 
 export async function getCMFollowup(filters) {
-  const { line, start_date, end_date } = filters
-  const response = await axios.get('/cmFollowup', {
+  const { line, machine, start_date, end_date } = filters
+
+  const response = await cmAxios.get('/cmFollowup', {
     params: {
       ...(line ? { line } : {}),
+      ...(machine ? { machine } : {}),
       startDate: start_date,
       endDate: end_date,
     },
   })
 
-  const raw = response.data?.data || []
+  const raw = response.data?.data || response.data || []
 
   return raw.map((item, idx) => {
     let cms = []
@@ -32,8 +36,8 @@ export async function getCMFollowup(filters) {
 
     return {
       no: idx + 1,
-      line: item.fline,
-      machine: item.fmc_name,
+      line: item.fline || '-',
+      machine: item.fmc_name || '-',
       date: item.fstart_time ? dayjs(item.fstart_time).format('YYYY-MM-DD') : '-',
       problem: item.ferror_name || '-',
       duration: item.fdur || '-',
