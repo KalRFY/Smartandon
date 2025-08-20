@@ -10,11 +10,18 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-plusplus */
 
-const XLSXPopulate = require('xlsx-populate');
+let XLSXPopulate;
+try {
+  XLSXPopulate = require('xlsx-populate');
+} catch (error) {
+  console.warn('xlsx-populate module not found, download service will be disabled.');
+  XLSXPopulate = null;
+}
 const moment = require('moment/moment');
 const { sequelize } = require('../models');
 const fs = require("fs");
 const ExcelJS = require("exceljs");
+const path = require('path');
 
 
 const filledColor = [];
@@ -94,12 +101,96 @@ const flattenArray = (arr) => {
 }
 
 const isNotEmpty = (input) => {
-    console.log(input);
-    if (input == "" || input == "null" || input == -1) {
+    console.log('isNotEmpty input:', input, 'type:', typeof input);
+    if (input == null || input == undefined || input == "" || input == "null" || input == "undefined" || input == -1) {
         return false;
     } else {
         return true;
     }
+}
+
+// Helper function untuk debugging countermeasure data
+const debugCountermeasureData = (problemData) => {
+    console.log('=== DEBUG COUNTERMEASURE DATA ===');
+    console.log('fpermanet_cm:', problemData.fpermanet_cm);
+    console.log('fpermanet_cm_lama:', problemData.fpermanet_cm_lama);
+    
+    try {
+        const cm_terjadi = isNotEmpty(problemData.fpermanet_cm) ? JSON.parse(problemData.fpermanet_cm) : [];
+        const cm_lama = isNotEmpty(problemData.fpermanet_cm_lama) ? JSON.parse(problemData.fpermanet_cm_lama) : [];
+        
+        console.log('Parsed cm_terjadi:', cm_terjadi);
+        console.log('Parsed cm_lama:', cm_lama);
+        
+        if (cm_terjadi.length > 0) {
+            console.log('Sample cm_terjadi item:', cm_terjadi[0]);
+            console.log('cm_terjadi item keys:', Object.keys(cm_terjadi[0] || {}));
+        }
+        
+        if (cm_lama.length > 0) {
+            console.log('Sample cm_lama item:', cm_lama[0]);
+            console.log('cm_lama item keys:', Object.keys(cm_lama[0] || {}));
+        }
+        
+        const countermeasure = cm_terjadi && cm_lama ? cm_terjadi.concat(cm_lama).splice(0, 5) : [];
+        console.log('Final countermeasure array:', countermeasure);
+        
+        return countermeasure;
+    } catch (error) {
+        console.error('Error parsing countermeasure data:', error);
+        return [];
+    }
+}
+
+// Helper function untuk memastikan data cmCategory bisa masuk ke Excel
+const sanitizeCountermeasureData = (item) => {
+    console.log('=== SANITIZE COUNTERMEASURE ITEM ===');
+    console.log('Original item:', item);
+    
+    // Cek semua kemungkinan nama field untuk cmCategory
+    const possibleCategoryFields = [
+        'cmCategory', 'cmcategory', 'category', 'Category', 
+        'cm_category', 'cm_cat', 'cat', 'Cat'
+    ];
+    
+    let cmCategoryValue = '';
+    for (const field of possibleCategoryFields) {
+        if (item[field] !== undefined && item[field] !== null && item[field] !== '') {
+            cmCategoryValue = String(item[field]);
+            console.log(`Found cmCategory in field '${field}':`, cmCategoryValue);
+            break;
+        }
+    }
+    
+    // Jika tidak ditemukan, coba cek semua keys
+    if (!cmCategoryValue) {
+        console.log('All item keys:', Object.keys(item));
+        // Cari field yang mengandung 'category' atau 'cat'
+        for (const key of Object.keys(item)) {
+            if (key.toLowerCase().includes('category') || key.toLowerCase().includes('cat')) {
+                cmCategoryValue = String(item[key] || '');
+                console.log(`Found potential category field '${key}':`, cmCategoryValue);
+                break;
+            }
+        }
+    }
+    
+    // Sanitasi nilai lainnya
+    const cmDescValue = item.cmDesc || item.cmdesc || item.desc || item.Desc || item.description || '';
+    const picValue = item.pic || item.PIC || item.pic_name || item.picName || '';
+    const datePlanValue = item.datePlan || item.date_plan || item.plan_date || item.date || '';
+    const judgValue = item.judg !== undefined ? (item.judg ? 'OK' : 'Not Yet') : 'Not Yet';
+    
+    const sanitizedItem = {
+        cmCategory: cmCategoryValue,
+        cmDesc: cmDescValue,
+        pic: picValue,
+        datePlan: datePlanValue,
+        judg: judgValue
+    };
+    
+    console.log('Sanitized item:', sanitizedItem);
+    return sanitizedItem;
 }
 
 const q6 = [{
@@ -136,7 +227,7 @@ const generatedStepRepairCellDuration = async (res, problemData, uraianData, ful
 
   sheet.cell('F12').value(startTime.format('DD'));
   sheet.cell('H12').value(startTime.format('MM'));
-  sheet.cell('J12').value(startTime.format('MM'));
+  sheet.cell('J12').value(startTime.format('YYYY'));
   sheet.cell('L12').value(problemData.fshift == 'r' ? 'RED' : 'WHITE');
   sheet.cell('M12').value(startTime.format('HH:mm:ss'));
   sheet.cell('O12').value(endTime.format('HH:mm:ss'));
@@ -147,11 +238,17 @@ const generatedStepRepairCellDuration = async (res, problemData, uraianData, ful
   sheet.cell('CH11').value(problemData.foperator);
   sheet.cell('CY11').value(problemData.fid);
 
-  sheet.cell('C31').value(uraianData.length ? uraianData[0].desc_nm : '');
-  sheet.cell('L17').value(uraianData.length >= 1 && !uraianData[1].desc_nm ? '<no-description>' : uraianData[1].desc_nm);
-  sheet.cell('L27').value(uraianData.length >= 2 && !uraianData[2].desc_nm ? '<no-description>' : uraianData[2].desc_nm);
+  sheet.cell('C31').value((uraianData[0] && uraianData[0].desc_nm) || '');
+  sheet.cell('L17').value((uraianData[1] && uraianData[1].desc_nm) || '<no-description>');
+  sheet.cell('L27').value((uraianData[2] && uraianData[2].desc_nm) || '<no-description>');
 
-  const jsonStepRepair = JSON.parse(problemData.fstep_new);
+  let jsonStepRepair = [];
+  try {
+    jsonStepRepair = problemData.fstep_new ? JSON.parse(problemData.fstep_new) : [];
+  } catch (e) {
+    console.warn('Invalid fstep_new JSON, continuing with empty steps');
+    jsonStepRepair = [];
+  }
   if (jsonStepRepair.length > 0) {
     let no = 1;
     let idxAct = 0;
@@ -203,7 +300,42 @@ const generatedStepRepairCellDuration = async (res, problemData, uraianData, ful
     }
   }
 
-    const dataAnalysisQuery = `SELECT * FROM o_analisys WHERE id_problem = :fid`;
+  // Mark O6 and Q6 categories on row 35 based on problemData.oCategory and problemData.qCategory
+  try {
+    const oCategoryColumnById = {
+      '1': 'L',
+      '2': 'M',
+      '3': 'O',
+      '4': 'Q',
+      '5': 'S',
+      '6': 'U',
+    };
+    const qCategoryColumnById = {
+      '1': 'AM',
+      '2': 'AZ',
+      '3': 'BM',
+      '4': 'BZ',
+      '5': 'CM',
+      '6': 'CZ',
+    };
+
+    const o6Key = problemData && problemData.oCategory != null ? String(problemData.oCategory) : null;
+    const qKey = problemData && problemData.qCategory != null ? String(problemData.qCategory) : null;
+
+    const o6 = o6Key && oCategoryColumnById[o6Key] ? oCategoryColumnById[o6Key] : null;
+    const q = qKey && qCategoryColumnById[qKey] ? qCategoryColumnById[qKey] : null;
+
+    if (q) {
+      sheet.cell(`${q}35`).value('O');
+    }
+    if (o6) {
+      sheet.cell(`${o6}35`).value('O');
+    }
+  } catch (markErr) {
+    console.warn('Failed to mark O6/Q6 category cells:', markErr);
+  }
+
+  const dataAnalysisQuery = `SELECT * FROM o_analisys WHERE id_problem = :fid`;
     const dataAnalysis = await sequelize.query(dataAnalysisQuery, {
         replacements: { fid: problemData.fid },
         type: sequelize.QueryTypes.SELECT,
@@ -235,7 +367,8 @@ const generatedStepRepairCellDuration = async (res, problemData, uraianData, ful
   const cm_lama = isNotEmpty(problemData.fpermanet_cm_lama) ? JSON.parse(problemData.fpermanet_cm_lama) : [];
   const cm_terjadi = isNotEmpty(problemData.fpermanet_cm) ? JSON.parse(problemData.fpermanet_cm) : [];
 
-  const countermeasure = cm_terjadi && cm_lama ? cm_terjadi.concat(cm_lama).splice(0, 5) : null;
+  // Gunakan fungsi debug untuk mendapatkan data countermeasure yang lebih detail
+  const countermeasure = debugCountermeasureData(problemData);
   console.log('countermeasure');
   console.log(countermeasure);
 
@@ -246,15 +379,73 @@ const generatedStepRepairCellDuration = async (res, problemData, uraianData, ful
     const containerCmColPic = ['AY47', 'AY48', 'AY49', 'AY50'];
     const containerCmColDate = ['BO47', 'BO48', 'BO49', 'BO50'];
     const containerCmColJudg = ['BX47', 'BX48', 'BX49', 'BX50'];
-    if (countermeasure.length > 0) {
+    if (countermeasure && countermeasure.length > 0) {
       countermeasure.map((item, i) => {
-        sheet.cell(containerCmColNo[i]).value(i + 1);
-        sheet.cell(containerCmColDesc[i]).value(item.cmDesc);
-        sheet.cell(containerCmColCat[i]).value(item.cmCategory);
-        sheet.cell(containerCmColPic[i]).value(item.pic);
-        sheet.cell(containerCmColDate[i]).value(item.datePlan);
-        sheet.cell(containerCmColJudg[i]).value(item.judg ? 'OK' : 'Not Yet');
+        console.log(`Processing countermeasure item ${i}:`, item);
+        console.log(`cmCategory value:`, item.cmCategory);
+        console.log(`cmCategory type:`, typeof item.cmCategory);
+        
+        // Gunakan fungsi sanitasi untuk memastikan data benar
+        const sanitizedItem = sanitizeCountermeasureData(item);
+        
+        try {
+          // Validasi cell sebelum menulis
+          const cellNo = sheet.cell(containerCmColNo[i]);
+          const cellDesc = sheet.cell(containerCmColDesc[i]);
+          const cellCat = sheet.cell(containerCmColCat[i]);
+          const cellPic = sheet.cell(containerCmColPic[i]);
+          const cellDate = sheet.cell(containerCmColDate[i]);
+          const cellJudg = sheet.cell(containerCmColJudg[i]);
+          
+          // Pastikan cell ada sebelum menulis
+          if (!cellNo || !cellDesc || !cellCat || !cellPic || !cellDate || !cellJudg) {
+            console.error(`One or more cells not found for row ${i}`);
+            return;
+          }
+          
+          cellNo.value(i + 1);
+          cellDesc.value(sanitizedItem.cmDesc);
+          cellCat.value(sanitizedItem.cmCategory);
+          cellPic.value(sanitizedItem.pic);
+          cellDate.value(sanitizedItem.datePlan);
+          cellJudg.value(sanitizedItem.judg);
+          
+          // Verifikasi data yang ditulis ke Excel
+          const writtenNo = cellNo.value();
+          const writtenDesc = cellDesc.value();
+          const writtenCat = cellCat.value();
+          const writtenPic = cellPic.value();
+          const writtenDate = cellDate.value();
+          const writtenJudg = cellJudg.value();
+          
+          console.log(`Successfully wrote to Excel - Row ${i + 1}:`);
+          console.log(`  No: ${writtenNo}`);
+          console.log(`  Desc: ${writtenDesc}`);
+          console.log(`  Category: ${writtenCat}`);
+          console.log(`  PIC: ${writtenPic}`);
+          console.log(`  Date: ${writtenDate}`);
+          console.log(`  Judg: ${writtenJudg}`);
+          
+          // Verifikasi bahwa data benar-benar masuk
+          if (writtenCat !== sanitizedItem.cmCategory) {
+            console.warn(`WARNING: Category mismatch! Expected: ${sanitizedItem.cmCategory}, Written: ${writtenCat}`);
+          }
+        } catch (error) {
+          console.error(`Error writing to Excel for item ${i}:`, error);
+          console.error(`Item data:`, item);
+          console.error(`Sanitized item:`, sanitizedItem);
+          console.error(`Cell addresses:`, {
+            no: containerCmColNo[i],
+            desc: containerCmColDesc[i],
+            cat: containerCmColCat[i],
+            pic: containerCmColPic[i],
+            date: containerCmColDate[i],
+            judg: containerCmColJudg[i]
+          });
+        }
       });
+    } else {
+      console.log('No countermeasure data found or empty array');
     }
   }
   const containerYokoColMc = ['CD47', 'CD49'];
@@ -293,6 +484,11 @@ const generatedStepRepairCellDuration = async (res, problemData, uraianData, ful
 };
 
 const mappedImageFile = async (res, problemData, uraianData, generatedExcelPath) => {
+    console.log('=== MAPPED IMAGE FILE START ===');
+    console.log('problemData:', problemData);
+    console.log('uraianData length:', uraianData.length);
+    console.log('generatedExcelPath:', generatedExcelPath);
+
     const workbook = new ExcelJS.Workbook();
     const wb = await workbook.xlsx.readFile(generatedExcelPath);
     const worksheet = wb.worksheets[0];
@@ -359,68 +555,128 @@ const mappedImageFile = async (res, problemData, uraianData, generatedExcelPath)
             ext: {width: 200, height: 150},
         });
 
-        const why1_img = problemData.why1_img;
+    }
 
-        if (isNotEmpty(why1_img) && fs.existsSync(why1_img)) {
-            let col1 = "M";
-            let row1 = 36;
-            let colIndex1 = worksheet.getColumn(col1).number;
-            let imageSave = workbook.addImage({
-                filename: why1_img ?? 'tidak ada gambar',
-                extension: "jpeg",
-            });
+    // Insert Why Analysis Images - MOVED OUTSIDE CONDITIONS
+    const why1_img = problemData.why1_img;
+    const why2_img = problemData.why2_img;
+    const why12_img = problemData.why12_img;
+    const why22_img = problemData.why22_img;
 
-            worksheet.addImage(imageSave, {
-                tl: {col: colIndex1, row: row1},
-                ext: {width: 250, height: 200},
-            });
-        }
+    // Debug logging untuk why images
+    console.log('=== DEBUG WHY IMAGES ===');
+    console.log('why1_img from DB:', why1_img);
+    console.log('why2_img from DB:', why2_img);
+    console.log('why12_img from DB:', why12_img);
+    console.log('why22_img from DB:', why22_img);
+    console.log('Current working directory:', process.cwd());
+    console.log('why1_img absolute path:', path.resolve(why1_img || ''));
+    console.log('why2_img absolute path:', path.resolve(why2_img || ''));
+    console.log('why1_img exists:', fs.existsSync(why1_img));
+    console.log('why2_img exists:', fs.existsSync(why2_img));
+    console.log('why1_img isNotEmpty:', isNotEmpty(why1_img));
+    console.log('why2_img isNotEmpty:', isNotEmpty(why2_img));
 
-        const why12_img = problemData.why12_img;
-        const why22_img = problemData.why22_img;
+    // Why1 Image (Why Terjadi - First Level) - Cell M36
+    if (isNotEmpty(why1_img) && fs.existsSync(why1_img)) {
+        console.log('Processing why1_img:', why1_img);
+        // Detect file extension
+        const ext = path.extname(why1_img).toLowerCase();
+        const extension = ext === '.jpg' || ext === '.jpeg' ? 'jpeg' : 
+                         ext === '.png' ? 'png' : 
+                         ext === '.gif' ? 'gif' : 'jpeg';
+        console.log('why1_img extension:', extension);
 
-        if (isNotEmpty(why1_img) && fs.existsSync(why1_img)) {
-            let col1 = "M";
-            let row1 = 36;
-            let colIndex1 = worksheet.getColumn(col1).number;
-            let imageSave = workbook.addImage({
-                filename: why1_img ?? 'tidak ada gambar',
-                extension: "jpeg",
-            });
-            worksheet.addImage(imageSave, {
-                tl: {col: colIndex1, row: row1},
-                ext: {width: 250, height: 200},
-            });
-        }
+        const why1ImageId = workbook.addImage({
+            filename: why1_img,
+            extension: extension,
+        });
+        const col1 = "M";
+        const row1 = 36;
+        const colIndex1 = worksheet.getColumn(col1).number;
+        worksheet.addImage(why1ImageId, {
+            tl: {col: colIndex1, row: row1},
+            ext: {width: 250, height: 200},
+        });
+        console.log('why1_img added to Excel at M36');
+    } else {
+        console.log('why1_img skipped - not found or empty');
+    }
 
-        if (isNotEmpty(why12_img) && fs.existsSync(why12_img)) {
-            let col1 = "AM";
-            let row1 = 36;
-            let colIndex1 = worksheet.getColumn(col1).number;
-            let imageSave = workbook.addImage({
-                filename: why12_img,
-                extension: "jpeg",
-            });
+    // Why2 Image (Why Lama - First Level) - Cell AM36
+    if (isNotEmpty(why2_img) && fs.existsSync(why2_img)) {
+        console.log('Processing why2_img:', why2_img);
+        // Detect file extension
+        const ext2 = path.extname(why2_img).toLowerCase();
+        const extension2 = ext2 === '.jpg' || ext2 === '.jpeg' ? 'jpeg' : 
+                          ext2 === '.png' ? 'png' : 
+                          ext2 === '.gif' ? 'gif' : 'jpeg';
+        console.log('why2_img extension:', extension2);
 
-            worksheet.addImage(imageSave, {
-                tl: {col: colIndex1, row: row1},
-                ext: {width: 250, height: 200},
-            });
-        }
+        const why2ImageId = workbook.addImage({
+            filename: why2_img,
+            extension: extension2,
+        });
+        const col2 = "AM";
+        const row2 = 36;
+        const colIndex2 = worksheet.getColumn(col2).number;
+        worksheet.addImage(why2ImageId, {
+            tl: {col: colIndex2, row: row2},
+            ext: {width: 250, height: 200},
+        });
+        console.log('why2_img added to Excel at AM36');
+    } else {
+        console.log('why2_img skipped - not found or empty');
+    }
 
-        if (isNotEmpty(why22_img) && fs.existsSync(why22_img)) {
-            let col1 = "BR";
-            let row1 = 36;
-            let colIndex1 = worksheet.getColumn(col1).number;
-            let imageSave = workbook.addImage({
-                filename: why22_img ?? 'tidak ada gambar',
-                extension: "jpeg",
-            });
-            worksheet.addImage(imageSave, {
-                tl: {col: colIndex1, row: row1},
-                ext: {width: 250, height: 200},
-            });
-        }
+    // Why12 Image (Why Terjadi - Second Level) - Cell BR36
+    if (isNotEmpty(why12_img) && fs.existsSync(why12_img)) {
+        console.log('Processing why12_img:', why12_img);
+        const ext3 = path.extname(why12_img).toLowerCase();
+        const extension3 = ext3 === '.jpg' || ext3 === '.jpeg' ? 'jpeg' : 
+                          ext3 === '.png' ? 'png' : 
+                          ext3 === '.gif' ? 'gif' : 'jpeg';
+        console.log('why12_img extension:', extension3);
+
+        const why12ImageId = workbook.addImage({
+            filename: why12_img,
+            extension: extension3,
+        });
+        const col3 = "BR";
+        const row3 = 36;
+        const colIndex3 = worksheet.getColumn(col3).number;
+        worksheet.addImage(why12ImageId, {
+            tl: {col: colIndex3, row: row3},
+            ext: {width: 250, height: 200},
+        });
+        console.log('why12_img added to Excel at BR36');
+    } else {
+        console.log('why12_img skipped - not found or empty');
+    }
+
+    // Why22 Image (Why Lama - Second Level) - Cell CG36
+    if (isNotEmpty(why22_img) && fs.existsSync(why22_img)) {
+        console.log('Processing why22_img:', why22_img);
+        const ext4 = path.extname(why22_img).toLowerCase();
+        const extension4 = ext4 === '.jpg' || ext4 === '.jpeg' ? 'jpeg' : 
+                          ext4 === '.png' ? 'png' : 
+                          ext4 === '.gif' ? 'gif' : 'jpeg';
+        console.log('why22_img extension:', extension4);
+
+        const why22ImageId = workbook.addImage({
+            filename: why22_img,
+            extension: extension4,
+        });
+        const col4 = "CG";
+        const row4 = 36;
+        const colIndex4 = worksheet.getColumn(col4).number;
+        worksheet.addImage(why22ImageId, {
+            tl: {col: colIndex4, row: row4},
+            ext: {width: 250, height: 200},
+        });
+        console.log('why22_img added to Excel at CG36');
+    } else {
+        console.log('why22_img skipped - not found or empty');
     }
 
     await workbook.xlsx.writeFile(generatedExcelPath);
@@ -429,5 +685,7 @@ const mappedImageFile = async (res, problemData, uraianData, generatedExcelPath)
 
 module.exports = {
     generatedStepRepairCellDuration,
-    mappedImageFile
+    mappedImageFile,
+    sanitizeCountermeasureData,
+    debugCountermeasureData
 };

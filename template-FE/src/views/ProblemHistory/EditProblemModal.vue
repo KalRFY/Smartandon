@@ -14,16 +14,11 @@
         <div style="margin-top: 10px">Loading data...</div>
       </div>
 
-      <CForm
-        v-else
-        class="row g-3 needs-validation"
-        novalidate
-        :validated="validatedCustom01"
-        @submit="handleSubmitCustom01"
-      >
+      <CForm v-else class="row g-3 needs-validation" novalidate :validated="validatedCustom01"
+        @submit="handleSubmitCustom01">
         <CRow class="mb-3">
           <CCol md="6">
-            <label for="machineSelect" class="form-label">Machine Name</label>
+            <label style="font-size: medium; font-weight: bold;" for="machineSelect" class="form-label">Machine Name</label>
             <Treeselect
               id="machineSelect"
               v-model="localSubmit.machineName"
@@ -39,7 +34,7 @@
             />
           </CCol>
           <CCol md="6">
-            <label for="lineSelect" class="form-label">Line</label>
+            <label style="font-size: medium; font-weight: bold;" for="lineSelect" class="form-label">Line</label>
             <Treeselect
               id="lineSelect"
               v-model="localSubmit.line"
@@ -58,10 +53,10 @@
         </CRow>
         <CRow class="mb-3">
           <CCol md="6">
+            <label style="font-size: medium; font-weight: bold;" class="form-label-3">Operation No.</label>
             <CFormInput
               feedbackInvalid="Operation No."
               id="Problems"
-              label="Operation No."
               placeholder="Not yet inputted"
               required
               disabled
@@ -69,10 +64,10 @@
             />
           </CCol>
           <CCol md="6">
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Maker</label>
             <CFormInput
               feedbackInvalid="Maker"
               id="Problems"
-              label="Maker"
               placeholder="Not yet inputted"
               required
               disabled
@@ -82,10 +77,10 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Problems</label>
             <CFormInput
               feedbackInvalid="Please input the problems"
               id="Problems"
-              label="Problems"
               placeholder="Not yet inputted"
               required
               v-model="localSubmit.problems"
@@ -93,123 +88,202 @@
           </CCol>
         </CRow>
         <CRow class="mb-3">
-          <CCol md="8">
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Uraian Kejadian"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.uraianKejadian"
-            />
-          </CCol>
-          <CCol md="4">
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Upload Image"
-              required
-              @change="onFileChange($event, 'uploadImage')"
-            />
-            <img
-              :src="displayUploadImgImage"
-              width="50"
-              v-if="displayUploadImgImage"
-            />
+          <CCol>
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol md="8">
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Uraian Kejadian</label>
+                    <CFormInput
+                      feedbackInvalid="Please input the problems"
+                      id="Problems"
+                      placeholder="Not yet inputted"
+                      required
+                      v-model="localSubmit.uraianKejadian"
+                    />
+                  </CCol>
+                  <CCol md="4">
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Upload Image</label>
+                    <CFormInput
+                      type="file"
+                      feedbackInvalid="Please input the problems"
+                      id="Problems"
+                      required
+                      @change="onFileChange($event, 'uploadImage')"
+                    />
+                    <img
+                      :src="displayUploadImgImage"
+                      width="200"
+                      style="cursor: pointer;"
+                      v-if="displayUploadImgImage"
+                      @click="showFullSizeImageUpload = true"
+                    />
+                    <CModal
+                      :visible="showFullSizeImageUpload"
+                      @update:visible="val => showFullSizeImageUpload = val"
+                      @close="showFullSizeImageUpload = false"
+                      size="lg"
+                      aria-labelledby="fullSizeImageLabel"
+                      centered
+                    >
+                      <CModalHeader>
+                        <CModalTitle id="fullSizeImageLabel">Upload Image Preview</CModalTitle>
+                      </CModalHeader>
+        
+                      <CModalBody style="text-align: center;">
+                        <img :src="displayUploadImgImage" style="max-width: 100%; max-height: 80vh;" />
+                      </CModalBody>
+        
+                      <CModalFooter>
+                        <CButton color="secondary" size="sm" @click="showFullSizeImageUpload = false">Close</CButton>
+                      </CModalFooter>
+                      
+                    </CModal>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
         <CRow class="mb-3">
-          <CCol md="8">
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Ilustrasi Standart"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.ilustrasiStandart"
-            />
-          </CCol>
-          <CCol md="4">
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Standart Image"
-              required
-              @change="onFileChange($event, 'standartImage')"
-            />
-            <img
-              :src="displayStandardImage"
-              width="50"
-              v-if="displayStandardImage"
-            />
+          <CCol>
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol md="8">
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Ilustrasi Standart</label>
+                    <CFormInput
+                      feedbackInvalid="Please input the problems"
+                      id="Problems"
+                      placeholder="Not yet inputted"
+                      required
+                      v-model="localSubmit.ilustrasiStandart"
+                    />
+                  </CCol>
+                  <CCol md="4">
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Standart Image</label>
+                    <CFormInput
+                      type="file"
+                      feedbackInvalid="Please input the problems"
+                      id="Problems"
+                      required
+                      @change="onFileChange($event, 'standartImage')"
+                    />
+                    <img
+                      :src="displayStandardImage"
+                      width="200"
+                      style="cursor: pointer;"
+                      v-if="displayStandardImage"
+                      @click="showFullSizeImageStandart = true"
+                    />
+                    <CModal
+                      :visible="showFullSizeImageStandart"
+                      @update:visible="val => showFullSizeImageStandart = val"
+                      @close="showFullSizeImageStandart = false"
+                      size="lg"
+                      aria-labelledby="fullSizeImageStandartLabel"
+                      centered
+                    >
+                      <CModalHeader>
+                        <CModalTitle id="fullSizeImageStandartLabel">Standart Image Preview</CModalTitle>
+                      </CModalHeader>
+        
+                      <CModalBody style="text-align: center;">
+                        <img :src="displayStandardImage" style="max-width: 100%; max-height: 80vh;" />
+                      </CModalBody>
+        
+                      <CModalFooter>
+                        <CButton color="secondary" size="sm" @click="showFullSizeImageStandart = false">Close</CButton>
+                      </CModalFooter>
+                    </CModal>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
         <CRow class="mb-3">
-          <CCol md="8">
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Ilustrasi Actual"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.ilustrasiActual"
-            />
-          </CCol>
-          <CCol md="4">
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Actual Image"
-              required
-              @change="onFileChange($event, 'actualImage')"
-            />
-            <img
-              :src="displayActualImage"
-              width="50"
-              v-if="displayActualImage"
-            />
+          <CCol>
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol md="8">
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Ilustrasi Actual</label>
+                    <CFormInput
+                      feedbackInvalid="Please input the problems"
+                      id="Problems"
+                      placeholder="Not yet inputted"
+                      required
+                      v-model="localSubmit.ilustrasiActual"
+                    />
+                  </CCol>
+                  <CCol md="4">
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Actual Image</label>
+                    <CFormInput
+                      type="file"
+                      feedbackInvalid="Please input the problems"
+                      id="Problems"
+                      required
+                      @change="onFileChange($event, 'actualImage')"
+                    />
+                    <img
+                      :src="displayActualImage"
+                      width="200"
+                      style="cursor: pointer;"
+                      v-if="displayActualImage"
+                      @click="showFullSizeImageActual = true"
+                    />
+                    <CModal
+                      :visible="showFullSizeImageActual"
+                      @update:visible="val => showFullSizeImageActual = val"
+                      @close="showFullSizeImageActual = false"
+                      size="lg"
+                      aria-labelledby="fullSizeImageActualLabel"
+                      centered
+                    >
+                      <CModalHeader>
+                        <CModalTitle id="fullSizeImageActualLabel">Actual Image Preview</CModalTitle>
+                      </CModalHeader>
+        
+                      <CModalBody style="text-align: center;">
+                        <img :src="displayActualImage" style="max-width: 100%; max-height: 80vh;" />
+                      </CModalBody>
+        
+                      <CModalFooter>
+                        <CButton color="secondary" size="sm" @click="showFullSizeImageActual = false">Close</CButton>
+                      </CModalFooter>
+                    </CModal>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Gap Between Standar and Actual</label>
             <CFormInput
               feedbackInvalid="Please input the problems"
               id="Problems"
-              label="Gap Between Standar and Actual"
               placeholder="Not yet inputted"
               required
               v-model="localSubmit.gapBetweenStandarAndActual"
             />
           </CCol>
         </CRow>
-        <CRow class="mb-3">
+        <!-- <CRow class="mb-3">
           <CCol md="8">
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Pilih Focus Thema Member"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.pilihFocusThemaMember"
-            />
+            <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Pilih Focus Thema Member"
+              placeholder="Not yet inputted" required v-model="localSubmit.pilihFocusThemaMember" />
           </CCol>
           <CCol md="4">
-            <CFormInput
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Pilih Taskforce"
-              placeholder="Not yet inputted"
-              required
-              v-model="localSubmit.pilihTaskforce"
-            />
+            <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Pilih Taskforce"
+              placeholder="Not yet inputted" required v-model="localSubmit.pilihTaskforce" />
           </CCol>
-        </CRow>
+        </CRow> -->
         <CRow md="12" class="mb-3">
           <CCol>
-            <label for="operatorSelect" class="form-label">Operator</label>
+            <label style="font-size: medium; font-weight: bold;" for="operatorSelect" class="form-label">Operator</label>
             <Treeselect
               id="operatorSelect"
               v-model="localSubmit.operator"
@@ -228,11 +302,11 @@
         </CRow>
         <CRow class="mb-3">
           <CCol md="6">
+            <label style="font-size: medium; font-weight: bold;" class="form-label">AV Category</label>
             <CFormSelect
               aria-describedby="avCategory"
               feedbackInvalid="Please select the AV Category."
               id="avCategorySelect"
-              label="AV Category"
               required
               v-model="localSubmit.avCategory"
             >
@@ -247,11 +321,11 @@
             </CFormSelect>
           </CCol>
           <CCol md="6">
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Shift</label>
             <CFormSelect
               aria-describedby="shift"
               feedbackInvalid="Please select the shift."
               id="shiftSelect"
-              label="Shift"
               required
               v-model="localSubmit.shift"
             >
@@ -267,58 +341,46 @@
         </CRow>
         <CRow class="mb-3">
           <CCol md="6">
-            <label for="startDateModal" class="form-label">Start Date</label>
+            <label style="font-size: medium; font-weight: bold;" for="startDateModal" class="form-label">Start Date</label>
             <CInputGroup>
-              <CInputGroupText id="basic-addon1"
-                ><CIcon icon="cilClock" size="l"
-              /></CInputGroupText>
-              <CFormInput
-                id="startDateModal"
-                type="datetime-local"
-                required
-                v-model="localSubmit.startDate"
-                aria-label="Start Date"
-                aria-describedby="basic-addon1"
-              />
+              <CInputGroupText id="basic-addon1">
+                <CIcon icon="cilClock" size="l" />
+              </CInputGroupText>
+              <CFormInput id="startDateModal" type="datetime-local" required v-model="localSubmit.startDate"
+                aria-label="Start Date" aria-describedby="basic-addon1" />
             </CInputGroup>
           </CCol>
           <CCol md="6">
-            <label for="finishDateModal" class="form-label">Finish Date</label>
+            <label style="font-size: medium; font-weight: bold;" for="finishDateModal" class="form-label">Finish Date</label>
             <CInputGroup>
-              <CInputGroupText id="basic-addon2"
-                ><CIcon icon="cilClock" size="l"
-              /></CInputGroupText>
-              <CFormInput
-                id="finishDateModal"
-                type="datetime-local"
-                required
-                v-model="localSubmit.finishDate"
-                aria-label="Finish Date"
-                aria-describedby="basic-addon2"
-              />
+              <CInputGroupText id="basic-addon2">
+                <CIcon icon="cilClock" size="l" />
+              </CInputGroupText>
+              <CFormInput id="finishDateModal" type="datetime-local" required v-model="localSubmit.finishDate"
+                aria-label="Finish Date" aria-describedby="basic-addon2" />
             </CInputGroup>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Duration (min)</label>
             <CFormInput
               feedbackInvalid="Please input the problems"
               id="Problems"
-              label="Duration (min)"
               placeholder="Not yet inputted"
               required
               v-model="localSubmit.durationMin"
+              disabled
             />
           </CCol>
         </CRow>
-
         <CRow md="12" class="mb-3">
+          <label style="font-size: medium; font-weight: bold;" class="form-label">Problem Category:</label>
           <CCol>
             <CFormSelect
               aria-describedby="problemCategory"
               feedbackInvalid="Please select the problem category."
               id="problemCategorySelect"
-              label="Problem Category:"
               required
               v-model="localSubmit.problemCategory"
             >
@@ -335,10 +397,10 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Item Temporary Action</label>
             <CFormInput
               feedbackInvalid="Please input the problems"
               id="Problems"
-              label="Item Temporary Action"
               placeholder="Not yet inputted"
               required
               v-model="localSubmit.itemTemporaryAction"
@@ -347,75 +409,83 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <label class="form-label">Rootcause 5 Why (Kenapa Terjadi)</label>
-            <CTable bordered>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
-                  <CTableHeaderCell>Description</CTableHeaderCell>
-                  <CTableHeaderCell style="width: 120px"
-                    >Actions</CTableHeaderCell
-                  >
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                <CTableRow
-                  v-for="(item, index) in localSubmit.rootcauses5Why"
-                  :key="item.id"
-                >
-                  <CTableDataCell>{{ index + 1 }}</CTableDataCell>
-                  <CTableDataCell>
-                    <CFormInput
-                      type="text"
-                      v-model="item.description"
-                      placeholder="Enter description"
-                      :disabled="
-                        editingRootcauses?.[item.id] === 'locked' ||
-                        !editingRootcauses?.[item.id]
-                      "
-                    />
-                  </CTableDataCell>
-                  <CTableDataCell>
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Rootcause 5 Why (Kenapa Terjadi)</label>
+                    <CTable bordered>
+                      <CTableHead>
+                        <CTableRow>
+                          <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
+                          <CTableHeaderCell>Description</CTableHeaderCell>
+                          <CTableHeaderCell style="width: 120px"
+                            >Actions</CTableHeaderCell
+                          >
+                        </CTableRow>
+                      </CTableHead>
+                      <CTableBody>
+                        <CTableRow
+                          v-for="(item, index) in localSubmit.rootcauses5Why"
+                          :key="item.id"
+                        >
+                          <CTableDataCell>{{ index + 1 }}</CTableDataCell>
+                          <CTableDataCell>
+                            <CFormInput
+                              type="text"
+                              v-model="item.description"
+                              placeholder="Enter description"
+                              :disabled="
+                                editingRootcauses?.[item.id] === 'locked' ||
+                                !editingRootcauses?.[item.id]
+                              "
+                            />
+                          </CTableDataCell>
+                          <CTableDataCell>
+                            <CButton
+                              color="primary"
+                              size="sm"
+                              class="me-2"
+                              @click="editRootcause(index)"
+                            >
+                              <CIcon
+                                :icon="
+                                  editingRootcauses?.[item.id]
+                                    ? 'cil-paper-plane'
+                                    : 'cil-pencil'
+                                "
+                              />
+                            </CButton>
+                            <CButton
+                              color="danger"
+                              size="sm"
+                              @click="deleteRootcause(index)"
+                            >
+                              <CIcon icon="cil-trash" />
+                            </CButton>
+                          </CTableDataCell>
+                        </CTableRow>
+                      </CTableBody>
+                    </CTable>
                     <CButton
-                      color="primary"
+                      color="success"
                       size="sm"
-                      class="me-2"
-                      @click="editRootcause(index)"
+                      class="mt-2"
+                      style="color: white"
+                      @click="addRootcause"
+                      v-if="localSubmit.rootcauses5Why.length < 5"
                     >
-                      <CIcon
-                        :icon="
-                          editingRootcauses?.[item.id]
-                            ? 'cil-paper-plane'
-                            : 'cil-pencil'
-                        "
-                      />
+                      Add Rootcause
                     </CButton>
-                    <CButton
-                      color="danger"
-                      size="sm"
-                      @click="deleteRootcause(index)"
-                    >
-                      <CIcon icon="cil-trash" />
-                    </CButton>
-                  </CTableDataCell>
-                </CTableRow>
-              </CTableBody>
-            </CTable>
-            <CButton
-              color="success"
-              size="sm"
-              class="mt-2"
-              style="color: white"
-              @click="addRootcause"
-              v-if="localSubmit.rootcauses5Why.length < 5"
-            >
-              Add Rootcause
-            </CButton>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <label class="form-label">Tambah Analysis TERJADI</label>
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Tambah Analysis TERJADI</label>
             <CButton
               color="primary"
               sm="12"
@@ -426,54 +496,115 @@
               Tambah Analysis TERJADI
             </CButton>
             <div v-if="showTambahAnalysis" class="analysis-list">
-              <TreeList
-                :model="treeModel || { id: 1, description: '', subItems: [] }"
-                @update:model="(val) => (treeModel = val)"
-              />
+              <TreeList :model="treeModel || { id: 1, description: '', subItems: [] }"
+                @update:model="(val) => (treeModel = val)" />
             </div>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="5 Why (Kenapa Terjadi) Image"
-              required
-              @change="onFileChange($event, 'whyImage')"
-            />
-            <img
-              :src="displayImg_problem"
-              width="50"
-              v-if="displayImg_problem"
-            />
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">5 Why (Kenapa Terjadi) Image</label>
+                    <CFormInput
+                      type="file"
+                      feedbackInvalid="Please input the problems"
+                      id="Problems"
+                      required
+                      @change="onFileChange($event, 'whyImage')"
+                    />
+                    <img
+                      :src="displayImg_problem"
+                      width="200"
+                      style="cursor: pointer;"
+                      v-if="displayImg_problem"
+                      @click="showFullSizeImage = true"
+                    />
+                    <CModal
+                      :visible="showFullSizeImage"
+                      @update:visible="val => showFullSizeImage = val"
+                      @close="showFullSizeImage = false"
+                      size="lg"
+                      aria-labelledby="fullSizeImageLabel"
+                      centered
+                    >
+                      <CModalHeader>
+                        <CModalTitle id="fullSizeImageLabel">5 Why (Kenapa Terjadi) Image Preview</CModalTitle>
+                      </CModalHeader>
+        
+                      <CModalBody style="text-align: center;">
+                        <img :src="displayImg_problem" style="max-width: 100%; max-height: 80vh;" />
+                      </CModalBody>
+        
+                      <CModalFooter>
+                        <CButton color="secondary" size="sm" @click="showFullSizeImage = false">Close</CButton>
+                      </CModalFooter>
+                      
+                    </CModal>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="5 Why (Kenapa lama) Image"
-              required
-              @change="onFileChange($event, 'whyLamaImage')"
-            />
-            <img
-              :src="displayWhyLamaImage"
-              width="50"
-              v-if="displayWhyLamaImage"
-            />
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">5 Why (Kenapa Lama) Image</label>
+                    <CFormInput
+                      style="font-size: medium; font-weight: bold;"
+                      type="file"
+                      feedbackInvalid="Please input the problems"
+                      id="Problems"
+                      required
+                      @change="onFileChange($event, 'whyLamaImage')"
+                    />
+                    <img
+                      :src="displayWhyLamaImage"
+                      width="200"
+                      style="cursor: pointer;"
+                      v-if="displayWhyLamaImage"
+                      @click="showFullSizeImageLama = true"
+                    />
+                    <CModal
+                      :visible="showFullSizeImageLama"
+                      @update:visible="val => showFullSizeImageLama = val"
+                      @close="showFullSizeImageLama = false"
+                      size="lg"
+                      aria-labelledby="fullSizeImageLabel"
+                      centered
+                    >
+                      <CModalHeader>
+                        <CModalTitle id="fullSizeImageLabel">5 Why (Kenapa Lama) Image Preview</CModalTitle>
+                      </CModalHeader>
+        
+                      <CModalBody style="text-align: center;">
+                        <img :src="displayWhyLamaImage" style="max-width: 100%; max-height: 80vh;" />
+                      </CModalBody>
+        
+                      <CModalFooter>
+                        <CButton color="secondary" size="sm" @click="showFullSizeImageLama = false">Close</CButton>
+                      </CModalFooter>
+                      
+                    </CModal>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
+            <label style="font-size: medium; font-weight: bold;" class="form-label">06 Category:</label>
             <CFormSelect
               aria-describedby="O6 Category"
               feedbackInvalid="Please select the O6 Category."
               id="o6CategorySelect"
-              label="O6 Category:"
               required
               v-model="localSubmit.oCategory"
             >
@@ -508,78 +639,121 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <label class="form-label">Step Repair</label>
-            <CTable bordered>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
-                  <CTableHeaderCell>Description</CTableHeaderCell>
-                  <CTableHeaderCell style="width: 120px"
-                    >Actions</CTableHeaderCell
-                  >
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                <CTableRow
-                  v-for="(item, index) in localSubmit.stepRepair"
-                  :key="item.id"
-                >
-                  <CTableDataCell>{{ index + 1 }}</CTableDataCell>
-                  <CTableDataCell>
-                    <CFormInput
-                      type="text"
-                      v-model="item.description"
-                      placeholder="Enter description"
-                      :disabled="
-                        !editingStepRepair || !editingStepRepair[item.id]
-                      "
-                    />
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <CButton
-                      color="primary"
-                      size="sm"
-                      class="me-2"
-                      @click="editStepRepair(index)"
-                    >
-                      <CIcon
-                        :icon="
-                          editingStepRepair &&
-                          editingStepRepair[item.id] === true
-                            ? 'cil-paper-plane'
-                            : 'cil-pencil'
-                        "
-                      />
-                    </CButton>
-                    <CButton
-                      color="danger"
-                      size="sm"
-                      @click="deleteStepRepair(index)"
-                    >
-                      <CIcon icon="cil-trash" />
-                    </CButton>
-                  </CTableDataCell>
-                </CTableRow>
-              </CTableBody>
-            </CTable>
-            <CButton
-              color="success"
-              size="sm"
-              class="mt-2"
-              style="color: white"
-              @click="addStepRepair"
-              v-if="localSubmit.stepRepair.length < 5"
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Q6 Category:</label>
+            <CFormSelect
+              aria-describedby="Q6 Category"
+              feedbackInvalid="Please select the Q6 Category."
+              id="q6CategorySelect"
+              required
+              v-model="localSubmit.qCategory"
             >
-              Add Step Repair
-            </CButton>
+              <option :value="localSubmit.qCategory" selected>
+                {{ qCategoryName }}
+              </option>
+              <option disabled value="">Choose problem Q6 Category...</option>
+              <option :value="1">
+                Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))
+              </option>
+              <option :value="2">
+                Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)
+              </option>
+              <option :value="3">
+                Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)
+              </option>
+              <option :value="4">
+                Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
+              </option>
+              <option :value="5">
+                Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))
+              </option>
+              <option :value="6">
+                Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
+              </option>
+            </CFormSelect>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Step Repair</label>
+                    <CTable bordered>
+                      <CTableHead>
+                        <CTableRow>
+                          <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
+                          <CTableHeaderCell>Description</CTableHeaderCell>
+                          <CTableHeaderCell style="width: 120px"
+                            >Actions</CTableHeaderCell
+                          >
+                        </CTableRow>
+                      </CTableHead>
+                      <CTableBody>
+                        <CTableRow
+                          v-for="(item, index) in localSubmit.stepRepair"
+                          :key="item.id"
+                        >
+                          <CTableDataCell>{{ index + 1 }}</CTableDataCell>
+                          <CTableDataCell>
+                            <CFormInput
+                              type="text"
+                              v-model="item.description"
+                              placeholder="Enter description"
+                              :disabled="
+                                !editingStepRepair || !editingStepRepair[item.id]
+                              "
+                            />
+                          </CTableDataCell>
+                          <CTableDataCell>
+                            <CButton
+                              color="primary"
+                              size="sm"
+                              class="me-2"
+                              @click="editStepRepair(index)"
+                            >
+                              <CIcon
+                                :icon="
+                                  editingStepRepair &&
+                                  editingStepRepair[localSubmit.stepRepair[index].id] === true
+                                    ? 'cil-paper-plane'
+                                    : 'cil-pencil'
+                                "
+                              />
+                            </CButton>
+                            <CButton
+                              color="danger"
+                              size="sm"
+                              @click="deleteStepRepair(index)"
+                            >
+                              <CIcon icon="cil-trash" />
+                            </CButton>
+                          </CTableDataCell>
+                        </CTableRow>
+                      </CTableBody>
+                    </CTable>
+                    <CButton
+                      color="success"
+                      size="sm"
+                      class="mt-2"
+                      style="color: white"
+                      @click="addStepRepair"
+                      v-if="localSubmit.stepRepair.length < 5"
+                    >
+                      Add Step Repair
+                    </CButton>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+        <CRow md="12" class="mb-3">
+          <CCol>
+            <label style="font-size: medium; font-weight: bold;" class="form-label">Part Change</label>
             <CFormInput
               feedbackInvalid="Please input the problems"
               id="Problems"
-              label="Part Change"
               placeholder="Not yet inputted"
               required
               v-model="localSubmit.partChange"
@@ -588,385 +762,479 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <label class="form-label">Yokoten</label>
-            <div v-if="yokotenList.length === 0">
-              <CButton color="primary" @click="showYokotenForm = true"
-                >Tambah Yokoten</CButton
-              >
-            </div>
-            <div v-if="showYokotenForm" class="d-flex align-items-center mb-2">
-              <CFormInput
-                v-model="yokotenForm.machine"
-                placeholder="Yokoten Item"
-                class="me-2"
-              />
-              <CFormSelect v-model="yokotenForm.pic" class="me-2">
-                <option value="">PIC</option>
-                <option
-                  v-for="pic in picOptions"
-                  :key="pic.value"
-                  :value="pic.value"
-                >
-                  {{ pic.label }}
-                </option>
-              </CFormSelect>
-              <CFormInput
-                type="date"
-                v-model="yokotenForm.datePlan"
-                class="me-2"
-              />
-              <CFormSelect v-model="yokotenForm.judg" class="me-2">
-                <option :value="false">Belum</option>
-                <option :value="true">Sudah</option>
-              </CFormSelect>
-              <CButton color="success" class="me-2" @click="submitYokoten"
-                >Submit</CButton
-              >
-              <CButton color="secondary" @click="cancelYokoten">Cancel</CButton>
-            </div>
-            <div v-if="yokotenList.length > 0">
-              <CTable bordered>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell>Item Yokoten</CTableHeaderCell>
-                    <CTableHeaderCell>PIC</CTableHeaderCell>
-                    <CTableHeaderCell>Plan Date</CTableHeaderCell>
-                    <CTableHeaderCell>Judge</CTableHeaderCell>
-                    <CTableHeaderCell>Actions</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  <CTableRow v-for="(item, idx) in yokotenList" :key="idx">
-                    <CTableDataCell>{{ item.machine }}</CTableDataCell>
-                    <CTableDataCell>{{
-                      picOptions.find(
-                        (opt) => String(opt.value) === String(item.pic),
-                      )?.label || item.pic
-                    }}</CTableDataCell>
-                    <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
-                    <CTableDataCell>{{
-                      item.judg ? 'Sudah' : 'Belum'
-                    }}</CTableDataCell>
-                    <CTableDataCell>
-                      <CButton
-                        color="warning"
-                        size="sm"
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Yokoten</label>
+                    <div v-if="yokotenList.length === 0">
+                      <CButton color="primary" @click="showYokotenForm = true"
+                        >Tambah Yokoten</CButton
+                      >
+                    </div>
+                    <div v-if="showYokotenForm" class="d-flex align-items-center mb-2">
+                      <CFormInput
+                        v-model="yokotenForm.machine"
+                        placeholder="Yokoten Item"
                         class="me-2"
-                        @click="editYokoten(idx)"
-                        >Edit</CButton
+                      />
+                      <CFormSelect v-model="yokotenForm.pic" class="me-2">
+                        <option value="">PIC</option>
+                        <option
+                          v-for="pic in picOptions"
+                          :key="pic.value"
+                          :value="pic.value"
+                        >
+                          {{ pic.label }}
+                        </option>
+                      </CFormSelect>
+                      <CFormInput
+                        type="date"
+                        v-model="yokotenForm.datePlan"
+                        class="me-2"
+                      />
+                      <CFormSelect v-model="yokotenForm.judg" class="me-2">
+                        <option :value="false">Belum</option>
+                        <option :value="true">Sudah</option>
+                      </CFormSelect>
+                      <CButton color="success" class="me-2" @click="submitYokoten"
+                        >Submit</CButton
                       >
+                      <CButton color="secondary" @click="cancelYokoten">Cancel</CButton>
+                    </div>
+                    <div v-if="yokotenList.length > 0">
+                      <CTable bordered>
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell>Item Yokoten</CTableHeaderCell>
+                            <CTableHeaderCell>PIC</CTableHeaderCell>
+                            <CTableHeaderCell>Plan Date</CTableHeaderCell>
+                            <CTableHeaderCell>Judge</CTableHeaderCell>
+                            <CTableHeaderCell>Actions</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          <CTableRow v-for="(item, idx) in yokotenList" :key="idx">
+                            <CTableDataCell>{{ item.machine }}</CTableDataCell>
+                            <CTableDataCell>{{
+                              picOptions.find(
+                                (opt) => String(opt.value) === String(item.pic),
+                              )?.label || item.pic
+                            }}</CTableDataCell>
+                            <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
+                            <CTableDataCell>{{
+                              item.judg ? 'Sudah' : 'Belum'
+                            }}</CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                color="warning"
+                                size="sm"
+                                class="me-2"
+                                @click="editYokoten(idx)"
+                                >Edit</CButton
+                              >
+                              <CButton
+                                color="danger"
+                                size="sm"
+                                @click="removeYokoten(idx)"
+                                >Remove</CButton
+                              >
+                            </CTableDataCell>
+                          </CTableRow>
+                        </CTableBody>
+                      </CTable>
                       <CButton
-                        color="danger"
-                        size="sm"
-                        @click="removeYokoten(idx)"
-                        >Remove</CButton
+                        color="primary"
+                        class="mt-2"
+                        @click="showYokotenForm = true"
+                        >Tambah Yokoten</CButton
                       >
-                    </CTableDataCell>
-                  </CTableRow>
-                </CTableBody>
-              </CTable>
-              <CButton
-                color="primary"
-                class="mt-2"
-                @click="showYokotenForm = true"
-                >Tambah Yokoten</CButton
-              >
-            </div>
+                    </div>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+        <CRow md="12" class="mb-3 mt-3">
+          <CCol>
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Countermeasure (kenapa terjadi)</label>
+                    <div v-if="countermeasureKenapaTerjadiList.length === 0">
+                      <CButton
+                        color="primary"
+                        @click="showCountermeasureKenapaTerjadiForm = true"
+                        >Tambah Countermeasure</CButton
+                      >
+                    </div>
+                    <div
+                      v-if="showCountermeasureKenapaTerjadiForm"
+                      class="d-flex align-items-center mb-2"
+                    >
+                      <CFormCheck
+                        v-model="countermeasureKenapaTerjadiForm.isAction"
+                        label="Ini Action?"
+                        class="me-2"
+                      />
+                      <CFormInput
+                        v-model="countermeasureKenapaTerjadiForm.cmDesc"
+                        placeholder="Countermeasure/Action"
+                        class="me-2"
+                      />
+                      <CFormInput
+                        type="date"
+                        v-model="countermeasureKenapaTerjadiForm.datePlan"
+                        class="me-2"
+                      />
+                      <CFormSelect
+                        v-model="countermeasureKenapaTerjadiForm.category"
+                        class="me-2"
+                      >
+                        <option value="">C/M Category</option>
+                        <option value="Improvement">Improvement</option>
+                        <option value="Training">Training</option>
+                        <option value="Revisi TPM">Revisi TPM</option>
+                        <option value="Sparepart">Sparepart</option>
+                      </CFormSelect>
+                      <CFormSelect
+                        v-model="countermeasureKenapaTerjadiForm.pic"
+                        class="me-2"
+                      >
+                        <option value="">PIC</option>
+                        <option
+                          v-for="pic in picOptions"
+                          :key="pic.value"
+                          :value="pic.value"
+                        >
+                          {{ pic.label }}
+                        </option>
+                      </CFormSelect>
+                      <CFormSelect
+                        v-if="
+                          typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
+                        "
+                        v-model="countermeasureKenapaTerjadiForm.judg"
+                        class="me-2"
+                      >
+                        <option value="belum">Belum</option>
+                        <option value="sudah">Sudah</option>
+                      </CFormSelect>
+                      <CFormTextarea
+                        v-if="
+                          typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
+                        "
+                        v-model="countermeasureKenapaTerjadiForm.result"
+                        placeholder="Result Notes"
+                        class="me-2"
+                        rows="2"
+                      />
+                      <CButton
+                        color="success"
+                        class="me-2"
+                        @click="submitCountermeasureKenapaTerjadi"
+                      >
+                        Submit
+                      </CButton>
+                      <CButton
+                        color="secondary"
+                        @click="cancelCountermeasureKenapaTerjadi"
+                      >
+                        Cancel
+                      </CButton>
+                    </div>
+                    <div v-if="countermeasureKenapaTerjadiList.length > 0">
+                      <CTable bordered>
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell>Action?</CTableHeaderCell>
+                            <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
+                            <CTableHeaderCell>Plan Date</CTableHeaderCell>
+                            <CTableHeaderCell>C/M Category</CTableHeaderCell>
+                            <CTableHeaderCell>PIC</CTableHeaderCell>
+                            <CTableHeaderCell>Judge</CTableHeaderCell>
+                            <CTableHeaderCell>Result Notes</CTableHeaderCell>
+                            <CTableHeaderCell>Actions</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          <CTableRow
+                            v-for="(item, idx) in countermeasureKenapaTerjadiList"
+                            :key="idx"
+                          >
+                            <CTableDataCell>{{
+                              item.isAction ? 'Ya' : 'Tidak'
+                            }}</CTableDataCell>
+                            <CTableDataCell>{{ item.cmDesc }}</CTableDataCell>
+                            <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
+                            <CTableDataCell>{{ item.category }}</CTableDataCell>
+                            <CTableDataCell>{{
+                              picOptions.find(
+                                (opt) => String(opt.value) === String(item.pic),
+                              )?.label || item.pic
+                            }}</CTableDataCell>
+                            <CTableDataCell>
+                              <CFormSelect v-model="item.judg" disabled>
+                                <option value="belum">Belum</option>
+                                <option value="sudah">Sudah</option>
+                              </CFormSelect>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CFormTextarea v-model="item.result" disabled rows="2" />
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                color="warning"
+                                size="sm"
+                                class="me-2"
+                                @click="editCountermeasureKenapaTerjadi(idx)"
+                                >Edit</CButton
+                              >
+                              <CButton
+                                color="danger"
+                                size="sm"
+                                @click="removeCountermeasureKenapaTerjadi(idx)"
+                                >Remove</CButton
+                              >
+                            </CTableDataCell>
+                          </CTableRow>
+                        </CTableBody>
+                      </CTable>
+                      <CButton
+                        color="primary"
+                        class="mt-2"
+                        @click="showCountermeasureKenapaTerjadiForm = true"
+                        >Tambah Countermeasure</CButton
+                      >
+                    </div>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <label class="form-label">Countermeasure (kenapa terjadi)</label>
-            <div v-if="countermeasureKenapaTerjadiList.length === 0">
-              <CButton
-                color="primary"
-                @click="showCountermeasureKenapaTerjadiForm = true"
-                >Tambah Countermeasure</CButton
-              >
-            </div>
-            <div
-              v-if="showCountermeasureKenapaTerjadiForm"
-              class="d-flex align-items-center mb-2"
-            >
-              <CFormCheck
-                v-model="countermeasureKenapaTerjadiForm.isAction"
-                label="Ini Action?"
-                class="me-2"
-              />
-              <CFormInput
-                v-model="countermeasureKenapaTerjadiForm.cmDesc"
-                placeholder="Countermeasure/Action"
-                class="me-2"
-              />
-              <CFormInput
-                type="date"
-                v-model="countermeasureKenapaTerjadiForm.datePlan"
-                class="me-2"
-              />
-              <CFormSelect
-                v-model="countermeasureKenapaTerjadiForm.category"
-                class="me-2"
-              >
-                <option value="">C/M Category</option>
-                <option value="dummy1">Improvement</option>
-                <option value="dummy2">Training</option>
-                <option value="dummy3">Revisi TPM</option>
-                <option value="dummy4">Sparepart</option>
-              </CFormSelect>
-              <CFormSelect
-                v-model="countermeasureKenapaTerjadiForm.pic"
-                class="me-2"
-              >
-                <option value="">PIC</option>
-                <option
-                  v-for="pic in picOptions"
-                  :key="pic.value"
-                  :value="pic.value"
-                >
-                  {{ pic.label }}
-                </option>
-              </CFormSelect>
-              <CFormSelect
-                v-if="
-                  typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
-                "
-                v-model="countermeasureKenapaTerjadiForm.judg"
-                class="me-2"
-              >
-                <option value="belum">Belum</option>
-                <option value="sudah">Sudah</option>
-              </CFormSelect>
-              <CFormTextarea
-                v-if="
-                  typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
-                "
-                v-model="countermeasureKenapaTerjadiForm.result"
-                placeholder="Result Notes"
-                class="me-2"
-                rows="2"
-              />
-              <CButton
-                color="success"
-                class="me-2"
-                @click="submitCountermeasureKenapaTerjadi"
-              >
-                Submit
-              </CButton>
-              <CButton
-                color="secondary"
-                @click="cancelCountermeasureKenapaTerjadi"
-              >
-                Cancel
-              </CButton>
-            </div>
-            <div v-if="countermeasureKenapaTerjadiList.length > 0">
-              <CTable bordered>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell>Action?</CTableHeaderCell>
-                    <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
-                    <CTableHeaderCell>Plan Date</CTableHeaderCell>
-                    <CTableHeaderCell>C/M Category</CTableHeaderCell>
-                    <CTableHeaderCell>PIC</CTableHeaderCell>
-                    <CTableHeaderCell>Judge</CTableHeaderCell>
-                    <CTableHeaderCell>Result Notes</CTableHeaderCell>
-                    <CTableHeaderCell>Actions</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  <CTableRow
-                    v-for="(item, idx) in countermeasureKenapaTerjadiList"
-                    :key="idx"
-                  >
-                    <CTableDataCell>{{
-                      item.isAction ? 'Ya' : 'Tidak'
-                    }}</CTableDataCell>
-                    <CTableDataCell>{{ item.cmDesc }}</CTableDataCell>
-                    <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
-                    <CTableDataCell>{{ item.category }}</CTableDataCell>
-                    <CTableDataCell>{{
-                      picOptions.find(
-                        (opt) => String(opt.value) === String(item.pic),
-                      )?.label || item.pic
-                    }}</CTableDataCell>
-                    <CTableDataCell>
-                      <CFormSelect v-model="item.judg" disabled>
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <label style="font-size: medium; font-weight: bold;" class="form-label">Countermeasure (kenapa Lama)</label>
+                    <div v-if="countermeasureKenapaLamaList.length === 0">
+                      <CButton
+                        color="primary"
+                        @click="showCountermeasureKenapaLamaForm = true"
+                        >Tambah Countermeasure</CButton
+                      >
+                    </div>
+                    <div
+                      v-if="showCountermeasureKenapaLamaForm"
+                      class="d-flex align-items-center mb-2"
+                    >
+                      <CFormCheck
+                        v-model="countermeasureKenapaLamaForm.isAction"
+                        label="Ini Action?"
+                        class="me-2"
+                      />
+                      <CFormInput
+                        v-model="countermeasureKenapaLamaForm.cmDesc"
+                        placeholder="Countermeasure/Action"
+                        class="me-2"
+                      />
+                      <CFormInput
+                        type="date"
+                        v-model="countermeasureKenapaLamaForm.datePlan"
+                        class="me-2"
+                      />
+                      <CFormSelect
+                        v-model="countermeasureKenapaLamaForm.category"
+                        class="me-2"
+                      >
+                        <option value="">C/M Category</option>
+                        <option value="Improvement">Improvement</option>
+                        <option value="Training">Training</option>
+                        <option value="Revisi TPM">Revisi TPM</option>
+                        <option value="Sparepart">Sparepart</option>
+                      </CFormSelect>
+                      <CFormSelect
+                        v-model="countermeasureKenapaLamaForm.pic"
+                        class="me-2"
+                      >
+                        <option value="">PIC</option>
+                        <option
+                          v-for="pic in picOptions"
+                          :key="pic.value"
+                          :value="pic.value"
+                        >
+                          {{ pic.label }}
+                        </option>
+                      </CFormSelect>
+                      <CFormSelect
+                        v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
+                        v-model="countermeasureKenapaLamaForm.judg"
+                        class="me-2"
+                      >
                         <option value="belum">Belum</option>
                         <option value="sudah">Sudah</option>
                       </CFormSelect>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <CFormTextarea v-model="item.result" disabled rows="2" />
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <CButton
-                        color="warning"
-                        size="sm"
+                      <CFormTextarea
+                        v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
+                        v-model="countermeasureKenapaLamaForm.result"
+                        placeholder="Result Notes"
                         class="me-2"
-                        @click="editCountermeasureKenapaTerjadi(idx)"
-                        >Edit</CButton
-                      >
+                        rows="2"
+                      />
                       <CButton
-                        color="danger"
-                        size="sm"
-                        @click="removeCountermeasureKenapaTerjadi(idx)"
-                        >Remove</CButton
+                        color="success"
+                        class="me-2"
+                        @click="submitCountermeasureKenapaLama"
+                        >Submit</CButton
                       >
-                    </CTableDataCell>
-                  </CTableRow>
-                </CTableBody>
-              </CTable>
-              <CButton
-                color="primary"
-                class="mt-2"
-                @click="showCountermeasureKenapaTerjadiForm = true"
-                >Tambah Countermeasure</CButton
-              >
-            </div>
+                      <CButton color="secondary" @click="cancelCountermeasureKenapaLama"
+                        >Cancel</CButton
+                      >
+                    </div>
+                    <div v-if="countermeasureKenapaLamaList.length > 0">
+                      <CTable bordered>
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell>Action?</CTableHeaderCell>
+                            <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
+                            <CTableHeaderCell>Plan Date</CTableHeaderCell>
+                            <CTableHeaderCell>C/M Category</CTableHeaderCell>
+                            <CTableHeaderCell>PIC</CTableHeaderCell>
+                            <CTableHeaderCell>Judge</CTableHeaderCell>
+                            <CTableHeaderCell>Result Notes</CTableHeaderCell>
+                            <CTableHeaderCell>Actions</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          <CTableRow
+                            v-for="(item, idx) in countermeasureKenapaLamaList"
+                            :key="idx"
+                          >
+                            <CTableDataCell>{{
+                              item.isAction ? 'Ya' : 'Tidak'
+                            }}</CTableDataCell>
+                            <CTableDataCell>{{ item.cmDesc }}</CTableDataCell>
+                            <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
+                            <CTableDataCell>{{ item.category }}</CTableDataCell>
+                            <CTableDataCell>{{
+                              picOptions.find(
+                                (opt) => String(opt.value) === String(item.pic),
+                              )?.label || item.pic
+                            }}</CTableDataCell>
+                            <CTableDataCell>
+                              <CFormSelect v-model="item.judg" disabled>
+                                <option value="belum">Belum</option>
+                                <option value="sudah">Sudah</option>
+                              </CFormSelect>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CFormTextarea v-model="item.result" disabled rows="2" />
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                color="warning"
+                                size="sm"
+                                class="me-2"
+                                @click="editCountermeasureKenapaLama(idx)"
+                                >Edit</CButton
+                              >
+                              <CButton
+                                color="danger"
+                                size="sm"
+                                @click="removeCountermeasureKenapaLama(idx)"
+                                >Remove</CButton
+                              >
+                            </CTableDataCell>
+                          </CTableRow>
+                        </CTableBody>
+                      </CTable>
+                      <CButton
+                        color="primary"
+                        class="mt-2"
+                        @click="showCountermeasureKenapaLamaForm = true"
+                        >Tambah Countermeasure</CButton
+                      >
+                    </div>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <label class="form-label">Countermeasure (kenapa Lama)</label>
-            <div v-if="countermeasureKenapaLamaList.length === 0">
-              <CButton
-                color="primary"
-                @click="showCountermeasureKenapaLamaForm = true"
-                >Tambah Countermeasure</CButton
-              >
-            </div>
-            <div
-              v-if="showCountermeasureKenapaLamaForm"
-              class="d-flex align-items-center mb-2"
-            >
-              <CFormCheck
-                v-model="countermeasureKenapaLamaForm.isAction"
-                label="Ini Action?"
-                class="me-2"
-              />
-              <CFormInput
-                v-model="countermeasureKenapaLamaForm.cmDesc"
-                placeholder="Countermeasure/Action"
-                class="me-2"
-              />
-              <CFormInput
-                type="date"
-                v-model="countermeasureKenapaLamaForm.datePlan"
-                class="me-2"
-              />
-              <CFormSelect
-                v-model="countermeasureKenapaLamaForm.category"
-                class="me-2"
-              >
-                <option value="">C/M Category</option>
-                <option value="dummy1">Improvement</option>
-                <option value="dummy2">Training</option>
-                <option value="dummy3">Revisi TPM</option>
-                <option value="dummy4">Sparepart</option>
-              </CFormSelect>
-              <CFormSelect
-                v-model="countermeasureKenapaLamaForm.pic"
-                class="me-2"
-              >
-                <option value="">PIC</option>
-                <option
-                  v-for="pic in picOptions"
-                  :key="pic.value"
-                  :value="pic.value"
-                >
-                  {{ pic.label }}
-                </option>
-              </CFormSelect>
-              <CFormSelect
-                v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
-                v-model="countermeasureKenapaLamaForm.judg"
-                class="me-2"
-              >
-                <option value="belum">Belum</option>
-                <option value="sudah">Sudah</option>
-              </CFormSelect>
-              <CFormTextarea
-                v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
-                v-model="countermeasureKenapaLamaForm.result"
-                placeholder="Result Notes"
-                class="me-2"
-                rows="2"
-              />
-              <CButton
-                color="success"
-                class="me-2"
-                @click="submitCountermeasureKenapaLama"
-                >Submit</CButton
-              >
-              <CButton color="secondary" @click="cancelCountermeasureKenapaLama"
-                >Cancel</CButton
-              >
-            </div>
-            <div v-if="countermeasureKenapaLamaList.length > 0">
-              <CTable bordered>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell>Action?</CTableHeaderCell>
-                    <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
-                    <CTableHeaderCell>Plan Date</CTableHeaderCell>
-                    <CTableHeaderCell>C/M Category</CTableHeaderCell>
-                    <CTableHeaderCell>PIC</CTableHeaderCell>
-                    <CTableHeaderCell>Judge</CTableHeaderCell>
-                    <CTableHeaderCell>Result Notes</CTableHeaderCell>
-                    <CTableHeaderCell>Actions</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  <CTableRow
-                    v-for="(item, idx) in countermeasureKenapaLamaList"
-                    :key="idx"
-                  >
-                    <CTableDataCell>{{
-                      item.isAction ? 'Ya' : 'Tidak'
-                    }}</CTableDataCell>
-                    <CTableDataCell>{{ item.cmDesc }}</CTableDataCell>
-                    <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
-                    <CTableDataCell>{{ item.category }}</CTableDataCell>
-                    <CTableDataCell>{{
-                      picOptions.find(
-                        (opt) => String(opt.value) === String(item.pic),
-                      )?.label || item.pic
-                    }}</CTableDataCell>
-                    <CTableDataCell>
-                      <CFormSelect v-model="item.judg" disabled>
-                        <option value="belum">Belum</option>
-                        <option value="sudah">Sudah</option>
-                      </CFormSelect>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <CFormTextarea v-model="item.result" disabled rows="2" />
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <CButton
-                        color="warning"
-                        size="sm"
-                        class="me-2"
-                        @click="editCountermeasureKenapaLama(idx)"
-                        >Edit</CButton
-                      >
-                      <CButton
-                        color="danger"
-                        size="sm"
-                        @click="removeCountermeasureKenapaLama(idx)"
-                        >Remove</CButton
-                      >
-                    </CTableDataCell>
-                  </CTableRow>
-                </CTableBody>
-              </CTable>
-              <CButton
-                color="primary"
-                class="mt-2"
-                @click="showCountermeasureKenapaLamaForm = true"
-                >Tambah Countermeasure</CButton
-              >
-            </div>
+
+            <CCol>
+              <LegendStatus class="mb-4" />
+            </CCol>
+  
+            <CCard>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <h5>Approval Status 5 Why</h5>
+                    <CRow class="text-center mb-3">
+                      <CCol>
+                        <CButton size="sm" color="success" @click="onApprove('5why', 'tl')">Approve</CButton>
+                        <CButton size="sm" color="info" class="ms-2" @click="onComment('5why', 'tl')">Comment</CButton>
+                      </CCol>
+                    </CRow>
+                    <CRow class="bg-black text-white fw-bold text-center py-2">
+                      <CCol>GL Check</CCol>
+                      <CCol>SH Check</CCol>
+                    </CRow>
+                    <CRow class="text-center py-3">
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyLhApprove)" />
+                      </CCol>
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyShApprove)" />
+                      </CCol>
+                    </CRow>
+                    <h5 class="mt-4">Approval Status Countermeasure</h5>
+                    <CRow class="text-center mb-3">
+                      <CCol>
+                        <CButton size="sm" color="success" @click="onApprove('counter', 'tl')">Approve</CButton>
+                        <CButton size="sm" color="info" class="ms-2" @click="onComment('counter', 'tl')">Comment</CButton>
+                      </CCol>
+                    </CRow>
+                    <CRow class="bg-black text-white fw-bold text-center py-2">
+                      <CCol>TL Check</CCol>
+                      <CCol>GL Check</CCol>
+                      <CCol>SH Check</CCol>
+                    </CRow>
+                    <CRow class="text-center py-3">
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.cmTlApprove)" />
+                      </CCol>
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.cmLhApprove)" />
+                      </CCol>
+                      <CCol>
+                        <span class="status-circle" :class="statusClass(localSubmit?.cmShApprove)" />
+                      </CCol>
+                    </CRow>
+  
+                    <h5 class="mt-4">Approval Status Departement Head</h5>
+                    <CRow class="bg-black text-white fw-bold text-center py-2">
+                      <CCol>DPH Check</CCol>
+                    </CRow>
+                    <CRow class="justify-content-center text-center py-3 mb-4">
+                      <CCol xs="auto">
+                        <span class="status-circle" :class="statusClass(localSubmit?.cmDhApprove)" />
+                      </CCol>
+                    </CRow>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
           </CCol>
+
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
@@ -974,13 +1242,8 @@
               <label class="form-label">Last Report File</label>
             </CCol>
             <CCol md="12">
-              <CButton
-                style="width: 100%"
-                :color="localSubmit.file_report ? 'primary' : 'secondary'"
-                @click="downloadLastReportFile"
-                :disabled="!localSubmit.file_report"
-                v-if="localSubmit.file_report"
-              >
+              <CButton style="width: 100%" :color="localSubmit.file_report ? 'primary' : 'secondary'"
+                @click="downloadLastReportFile" :disabled="!localSubmit.file_report" v-if="localSubmit.file_report">
                 Download Last Report File
               </CButton>
               <CButton style="width: 100%" color="warning" disabled v-else>
@@ -992,12 +1255,7 @@
         <CRow md="12" class="mb-3">
           <CCol>
             <CCol md="12">
-              <CButton
-                style="width: 100%"
-                :color="'secondary'"
-                @click="downloadTemplateFile"
-                :disabled="!localSubmit.file_report"
-              >
+              <CButton style="width: 100%" :color="'secondary'" @click="downloadTemplateFile">
                 Download Template
               </CButton>
             </CCol>
@@ -1005,26 +1263,14 @@
         </CRow>
         <CRow md="12" class="mb-3">
           <CCol>
-            <CFormInput
-              type="file"
-              feedbackInvalid="Please input the problems"
-              id="Problems"
-              label="Upload Report"
-              required
-              @change="onFileChange($event, 'uploadFile')"
-            />
+            <CFormInput type="file" feedbackInvalid="Please input the problems" id="Problems" label="Upload Report"
+              required @change="onFileChange($event, 'uploadFile')" />
           </CCol>
         </CRow>
         <CRow xs="12" class="mb-3">
           <CCol>
-            <CFormCheck
-              feedbackInvalid="You must agree before submitting."
-              id="invalidCheck"
-              label="Agree to terms and conditions"
-              required
-              type="checkbox"
-              v-model="localSubmit.agreeTerms"
-            />
+            <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
+              label="Agree to terms and conditions" required type="checkbox" v-model="localSubmit.agreeTerms" />
           </CCol>
         </CRow>
       </CForm>
@@ -1033,7 +1279,9 @@
       <CButton color="secondary" @click="$emit('close')"> Close </CButton>
 
       <CButton color="primary" @click="saveSubmit" :disabled="isSaving">
-        <span v-if="isSaving"> <CSpinner size="sm" /> Saving... </span>
+        <span v-if="isSaving">
+          <CSpinner size="sm" /> Saving...
+        </span>
         <span v-else> Submit </span>
       </CButton>
     </CModalFooter>
@@ -1055,10 +1303,12 @@ import {
   CFormCheck,
   CButton,
   CSpinner,
+  CCardBody,
 } from '@coreui/vue'
 import Treeselect from 'vue3-treeselect'
 import { cilClock } from '@coreui/icons'
 import { CIcon } from '@coreui/icons-vue'
+import LegendStatus from '@/views/ProblemHistory/components/LegendStatus.vue'
 import TreeList from 'vue-tree-list'
 
 export default {
@@ -1079,6 +1329,7 @@ export default {
     Treeselect,
     TreeList,
     cilClock,
+    LegendStatus,
   },
   props: {
     visible: {
@@ -1353,7 +1604,7 @@ export default {
       let stepRepairArray = []
       console.log('newVal.stepRepair:', newVal?.stepRepair)
       console.log('TYPE OF newVal.stepRepair:', typeof newVal?.stepRepair)
-      
+
       if (Array.isArray(newVal?.stepRepair) && newVal.stepRepair.length > 0) {
         stepRepairArray = newVal.stepRepair.map((item, index) => {
           if (typeof item === 'string') {
@@ -1401,7 +1652,20 @@ export default {
         ...(newVal || {}),
         rootcauses5Why: rootcausesArray,
         stepRepair: stepRepairArray,
+        fiveWhyLhApprove: newVal.fiveWhyLhApprove,
+        fiveWhyShApprove: newVal.fiveWhyShApprove,
+        fiveWhyLhFeedback: newVal.fiveWhyLhFeedback,
+        fiveWhyShFeedback: newVal.fiveWhyShFeedback,
+        cmLhApprove: newVal.cmLhApprove,
+        cmShApprove: newVal.cmShApprove,
+        cmTlApprove: newVal.cmTlApprove,
+        cmDhApprove: newVal.cmDhApprove,
+        cmLhFeedback: newVal.cmLhFeedback,
+        cmShFeedback: newVal.cmShFeedback,
+        cmTlFeedback: newVal.cmTlFeedback,
+        cmDhFeedback: newVal.cmDhFeedback,
       }
+
       console.log(
         'Updated localSubmit:',
         JSON.stringify(localSubmit.value, null, 2),
@@ -1423,22 +1687,22 @@ export default {
         ? newVal.countermeasureKenapaTerjadi
         : typeof newVal.countermeasureKenapaTerjadi === 'string' &&
           newVal.countermeasureKenapaTerjadi
-        ? JSON.parse(newVal.countermeasureKenapaTerjadi)
-        : []
+          ? JSON.parse(newVal.countermeasureKenapaTerjadi)
+          : []
       countermeasureKenapaLamaList.value = Array.isArray(
         newVal.countermeasureKenapaLama,
       )
         ? newVal.countermeasureKenapaLama
         : typeof newVal.countermeasureKenapaLama === 'string' &&
           newVal.countermeasureKenapaLama
-        ? JSON.parse(newVal.countermeasureKenapaLama)
-        : []
+          ? JSON.parse(newVal.countermeasureKenapaLama)
+          : []
       yokotenList.value = Array.isArray(submitData.value?.yokoten)
         ? submitData.value.yokoten
         : typeof submitData.value?.yokoten === 'string' &&
           submitData.value.yokoten
-        ? JSON.parse(submitData.value.yokoten)
-        : []
+          ? JSON.parse(submitData.value.yokoten)
+          : []
     })
     const onMachineInput = () => {
       console.log('Machine input changed:', localSubmit.value.machineName)
@@ -1448,7 +1712,7 @@ export default {
       saveSubmit()
     }
     const formatDateTime = (dateTimeStr) => {
-      if (!dateTimeStr) return ''
+      if (!dateTimeStr) return null
       const date = new Date(dateTimeStr)
       const pad = (n) => (n < 10 ? '0' + n : n)
       return (
@@ -1467,6 +1731,19 @@ export default {
     }
     const saveSubmit = () => {
       try {
+
+        let avCategories = '';
+
+        if (localSubmit.value.avCategory === '1') {
+          avCategories = 'MESIN'
+        } else if (avCategory === '2') {
+          avCategories = 'DIES'
+        } else if (avCategory === '3') {
+          avCategories = 'TOOL'
+        } else if (avCategory === '4') {
+          avCategories = 'COOLANT'
+        }
+
         if (!localSubmit.value || !localSubmit.value.machineName) {
           alert('Please input machine name')
           return
@@ -1496,11 +1773,32 @@ export default {
         }
         isSaving.value = true
 
-        localSubmit.value.countermeasureKenapaTerjadiList =
-          countermeasureKenapaTerjadiList.value
-        localSubmit.value.countermeasureKenapaLamaList =
-          countermeasureKenapaLamaList.value
-        localSubmit.value.yokotenList = yokotenList.value
+        // Helper: resolve PIC label dari ID
+        const resolvePicLabel = (value) => {
+          const found = Array.isArray(picOptions.value)
+            ? picOptions.value.find((opt) => String(opt.value) === String(value))
+            : null
+          return found?.label || (value ?? '')
+        }
+
+        // Map list agar field pic berisi label (nama), bukan ID
+        const mapPicToLabel = (list) =>
+          Array.isArray(list)
+            ? list.map((item) => ({
+                ...item,
+                pic: resolvePicLabel(item.pic),
+              }))
+            : []
+
+        // Simpan versi yang sudah termap untuk dikirim ke backend
+        localSubmit.value.countermeasureKenapaTerjadiList = mapPicToLabel(
+          countermeasureKenapaTerjadiList.value,
+        )
+        localSubmit.value.countermeasureKenapaLamaList = mapPicToLabel(
+          countermeasureKenapaLamaList.value,
+        )
+        localSubmit.value.yokotenList = mapPicToLabel(yokotenList.value)
+
         const submitDataFormatted = {
           machineName: localSubmit.value.machineName ?? '',
           line: localSubmit.value.line ?? '',
@@ -1518,10 +1816,10 @@ export default {
           pilihFocusThemaMember: localSubmit.value.pilihFocusThemaMember ?? '',
           pilihTaskforce: localSubmit.value.pilihTaskforce ?? '',
           operator: localSubmit.value.operator ?? [],
-          avCategory: localSubmit.value.avCategory ?? '',
+          avCategory: avCategories ?? '',
           shift: localSubmit.value.shift ?? '',
-          startDate: formatDateTime(localSubmit.value.startDate) ?? '',
-          finishDate: formatDateTime(localSubmit.value.finishDate) ?? '',
+          startDate: formatDateTime(localSubmit.value.startDate),
+          finishDate: formatDateTime(localSubmit.value.finishDate),
           durationMin: localSubmit.value.durationMin ?? '',
           problemCategory: localSubmit.value.problemCategory ?? '',
           itemTemporaryAction: localSubmit.value.itemTemporaryAction ?? '',
@@ -1529,7 +1827,7 @@ export default {
           stepRepair: localSubmit.value.stepRepair ?? [],
           partChange: localSubmit.value.partChange ?? '',
           countermeasureKenapaTerjadi:
-            localSubmit.value.countermeasureKenapaTerjadi ?? '',
+            localSubmit.value.countermeasureKenapaTerjadiList ?? [],
           yokoten: localSubmit.value.yokotenList ?? [],
           rootcause5WhyKenapaLama:
             localSubmit.value.rootcause5WhyKenapaLama ?? '',
@@ -1549,11 +1847,10 @@ export default {
           oCategory: localSubmit.value.oCategory ?? '',
           qCategory: localSubmit.value.qCategory ?? '',
           cmKenapaLama: localSubmit.value.countermeasureKenapaLamaList ?? [],
-          cmKenapaTerjadi:
-            localSubmit.value.countermeasureKenapaTerjadiList ?? [],
+          cmKenapaTerjadi: localSubmit.value.countermeasureKenapaTerjadiList ?? [],
         }
 
-        console.log('Submit data:', submitDataFormatted)
+        console.log('Submit data 1:', submitDataFormatted)
         emit('submit', submitDataFormatted)
       } catch (error) {
         alert('Error during submit: ' + error.message)
@@ -1599,8 +1896,9 @@ export default {
         )
         const categoryMap = {
           1: 'Small',
-          2: 'Chokotei',
-          3: 'LTB',
+          2: 'Repeat',
+          3: 'LTR',
+          4: 'SLTR'
         }
         problemCategoryName.value = categoryMap[newCategory] || ''
         console.log(
@@ -1627,7 +1925,7 @@ export default {
       },
       { immediate: true },
     )
-    console.log('ANJING 2: ' + localSubmit.value)
+    console.log('Local submit data: ' + localSubmit.value)
     console.log(
       'Local submit data 2:',
       JSON.stringify(localSubmit.value, null, 2),
@@ -1899,9 +2197,9 @@ export default {
         console.log('PIC options data:', data)
         picOptions.value = Array.isArray(data)
           ? data.map((m) => ({
-              value: String(m.fid) || m.name,
-              label: m.fname,
-            }))
+            value: String(m.fid) || m.name,
+            label: m.fname,
+          }))
           : []
       } catch (e) {
         picOptions.value = []
@@ -1915,8 +2213,8 @@ export default {
       if (localSubmit.value.rootcauses5Why.length < 5) {
         const newId = localSubmit.value.rootcauses5Why.length
           ? Math.max(
-              ...localSubmit.value.rootcauses5Why.map((item) => item.id),
-            ) + 1
+            ...localSubmit.value.rootcauses5Why.map((item) => item.id),
+          ) + 1
           : 1
         localSubmit.value.rootcauses5Why.push({ id: newId, description: '' })
       }
@@ -1960,6 +2258,20 @@ export default {
       } else {
         localSubmit.value.stepRepair = []
       }
+    }
+
+    const statusClass = (status) => {
+      if (status === 1 || status === '1') return 'status-approved'
+      if (status === 0 || status === '0') return 'status-rejected'
+      return 'status-pending'
+    }
+
+    const onApprove = (section, role) => {
+      console.log('Approve', section, role)
+    }
+
+    const onComment = (section, role) => {
+      console.log('Comment', section, role)
     }
 
     return {
@@ -2010,6 +2322,9 @@ export default {
       deleteRootcause,
       addStepRepair,
       deleteStepRepair,
+      statusClass,
+      onApprove,
+      onComment,
     }
   },
   computed: {
@@ -2052,6 +2367,15 @@ export default {
       return ''
     },
   },
+  data() {
+    return {
+      showFullSizeImage: false,
+      showFullSizeImageLama: false,
+      showFullSizeImageUpload: false,
+      showFullSizeImageStandart: false,
+      showFullSizeImageActual: false,
+    }
+  },
   methods: {
     onFileChange(event, field) {
       const file = event.target.files[0]
@@ -2067,11 +2391,10 @@ export default {
         this.localSubmit.fidProblem &&
         this.localSubmit.problems
       ) {
-        let url = `${
-          window.location.origin
-        }/api/smartandon/download-report?fid=${encodeURIComponent(
-          this.localSubmit.fidProblem,
-        )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
+        let url = `${window.location.origin
+          }/api/smartandon/download-report?fid=${encodeURIComponent(
+            this.localSubmit.fidProblem,
+          )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
         console.log('Download URL:', url)
         const link = document.createElement('a')
         link.href = url
@@ -2106,6 +2429,10 @@ export default {
 </script>
 
 <style scoped>
+.custom-card {
+  border-radius: 12px;
+}
+
 .analysis-list ul {
   list-style-type: none;
   padding-left: 20px;
@@ -2135,5 +2462,28 @@ export default {
 
 .analysis-item .actions button:hover {
   color: #007bff;
+}
+
+.status-circle {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}
+
+.status-approved {
+  background-color: #2eb85c;
+  border-color: #2eb85c;
+}
+
+.status-rejected {
+  background-color: #e55353;
+  border-color: #e55353;
+}
+
+.status-pending {
+  background-color: white;
+  border-color: #ccc;
 }
 </style>

@@ -27,7 +27,7 @@
       @update:selectedProblem="selectedProblem = $event"
       @search="
         () =>
-          fetchProblems(1, {
+          fetchProblems(currentPage, {
             filterStartDate,
             filterFinishDate,
             selectedLine,
@@ -43,7 +43,7 @@
     <div style="position: relative">
       <div v-if="tableLoading" class="table-loading-overlay">
         <CSpinner color="primary" style="width: 3rem; height: 3rem" />
-        <div style="margin-top: 10px, font-size: 1.2rem, color: #333">
+        <div style="margin-top: 10px; font-size: 1.2rem; color: #333">
           Loading...
         </div>
       </div>
@@ -55,6 +55,8 @@
           :pageSize="pageSize"
           :totalPages="totalPages"
           :visiblePages="visiblePages"
+          :filteredTambahAnalisis="filteredTambahAnalisis"
+          :filteredTambahAnalisisLama="filteredTambahAnalisisLama"
           @editProblem="onClickInput"
           @viewLtbReport="onClickLtbReport"
           @goToPage="goToPage"
@@ -121,6 +123,11 @@ export default {
       tableLoading: false,
       submit: this.getInitialSubmitData(),
       qCategoryName: '',
+      filteredTambahAnalisis: [],
+      filteredTambahAnalisisLama: [],
+      terjadiAnalysis: [],
+      lamaAnalysis: [],
+      selectedFiltered: '',
 
       o6Options: [
         {
@@ -266,6 +273,18 @@ export default {
         lastReportFile: '',
         uploadFile: '',
         agreeTerms: false,
+        fiveWhyLhApprove: 0,
+        fiveWhyShApprove: 0,
+        fiveWhyLhFeedback: 0,
+        fiveWhyShFeedback: 0,
+        cmLhApprove: 0,
+        cmShApprove: 0,
+        cmTlApprove: 0,
+        cmDhApprove: 0,
+        cmLhFeedback: 0,
+        cmShFeedback: 0,
+        cmTlFeedback: 0,
+        cmDhFeedback: 0,
       }
     },
 
@@ -366,6 +385,38 @@ export default {
         this.pageSize = response.data.limit
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
 
+        // Fetch tambahAnalysis data and store it
+        const analysisResponse = await axios.get('/api/smartandon/tambahAnalysis')
+        this.tambahAnalysisData = analysisResponse.data
+
+        const allAnalysis = analysisResponse.data
+        console.log('Filtered Analysis:', allAnalysis);
+        // console.log('Filter Analysis All:', this.filteredAnalysis);
+
+        // Mapping berdasarkan analisys_category "TERJADI" dan "LAMA"
+        this.terjadiAnalysis = allAnalysis.filter(
+          (item) => item.analisys_category === 'TERJADI',
+        )
+        this.lamaAnalysis = allAnalysis.filter(
+          (item) => item.analisys_category === 'LAMA',
+        )
+
+        // Merge terjadiAnalysis and lamaAnalysis into each problem in problemsView
+        this.problemsView = this.problemsView.map(problem => {
+          return {
+            ...problem,
+            terjadiAnalysis: this.terjadiAnalysis.filter(item => item.id_problem === problem.fid),
+            lamaAnalysis: this.lamaAnalysis.filter(item => item.id_problem === problem.fid),
+          }
+        })
+
+        console.log('Problems with merged analysis:', this.problemsView);
+
+        this.tambahAnalysisData = {
+          terjadi: this.terjadiAnalysis,
+          lama: this.lamaAnalysis,
+        }
+
         // Update local filter states to keep them consistent
         this.filterStartDate = filters.filterStartDate
         this.filterFinishDate = filters.filterFinishDate
@@ -388,7 +439,9 @@ export default {
       this.selectedLine = null
       this.selectedProblem = ''
       this.selectedProblemCategory = null
+      // Reset currentPage explicitly on filter reset
       this.currentPage = 1
+      // Removed fetchProblems call here to prevent infinite recursion
     },
 
     async onClickInput(problem) {
@@ -409,11 +462,11 @@ export default {
         const analysisResponse = await axios.get(
           '/api/smartandon/tambahAnalysis',
         )
+
         const allAnalysis = analysisResponse.data
         const filteredAnalysis = allAnalysis.filter(
           (item) => item.id_problem === problem.fid,
         )
-
         const terjadiAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'TERJADI',
         )
@@ -425,10 +478,16 @@ export default {
           terjadi: terjadiAnalysis,
           lama: lamaAnalysis,
         }
+        
         console.log('Mapped tambahAnalysis data:', this.tambahAnalysisData)
+        console.log('Tambah Analisis Terjadi:', terjadiAnalysis)
+        console.log('Tambah Analisis Lama:', lamaAnalysis)
 
         this.tambahAnalysisTerjadi = terjadiAnalysis
         this.tambahAnalysisLama = lamaAnalysis
+        
+        this.filteredTambahAnalisis = terjadiAnalysis
+        this.filteredTambahAnalisisLama = lamaAnalysis
 
         const o6Option = this.o6Options.find(
           (opt) => opt.id === this.submit.pilihO6,
@@ -481,14 +540,14 @@ export default {
         maker: problemData.fmaker || '',
         operationNo: problemData.foperation_no || '',
         problems: problemData.ferror_name || '',
-        uraianKejadian: problemData.ferror_detail || '',
+        uraianKejadian: problemData.descResult.general || '',
         uploadImage: problemData.uraianResult.general || '',
-        ilustrasiStandart: problemData.ilustrasiStandart || '',
+        ilustrasiStandart: problemData.descResult.standard || '',
         standardImage: problemData.uraianResult.standard || '',
-        ilustrasiActual: problemData.ilustrasiActual || '',
+        ilustrasiActual: problemData.descResult.actual || '',
         actualImage: problemData.uraianResult.actual || '',
         gapBetweenStandarAndActual:
-          problemData.gapBetweenStandarAndActual || '',
+          problemData.gapIlustrasi || '',
         pilihFocusThemaMember: problemData.pilihFocusThemaMember || '',
         pilihTaskforce: problemData.pilihTaskforce || '',
         operator: problemData.foperator
@@ -508,13 +567,13 @@ export default {
         stepRepair: problemData.fstep_repair || '',
         partChange: problemData.fpart_change || '',
         countermeasureKenapaTerjadi:
-          problemData.countermeasureKenapaTerjadi || '',
+          problemData.fpermanet_cm || '',
         yokoten: problemData.fyokoten || '',
         rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
         tambahAnalisisLama: problemData.tambahAnalisisLama || '',
         pilihQ6: problemData.qCategory || '',
         whyLamaImage: problemData.why2_img || '',
-        countermeasureKenapaLama: problemData.countermeasureKenapaLama || '',
+        countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
         attachmentMeeting: problemData.attachmentMeeting || '',
         comments5WhySH: problemData.fiveWhyShFeedback || '',
         comments5WhyLH: problemData.fiveWhyLhFeedback || '',
@@ -522,6 +581,18 @@ export default {
         file_report: problemData.file_report || '',
         uploadFile: problemData.uploadFile || '',
         agreeTerms: false,
+        fiveWhyLhApprove: problemData.fiveWhyLhApprove || 0,
+        fiveWhyShApprove: problemData.fiveWhyShApprove || 0,
+        fiveWhyLhFeedback: problemData.fiveWhyLhFeedback || 0,
+        fiveWhyShFeedback: problemData.fiveWhyShFeedback || 0,
+        cmLhApprove: problemData.cmLhApprove || 0,
+        cmShApprove: problemData.cmShApprove || 0,
+        cmTlApprove: problemData.cmTlApprove || 0,
+        cmDhApprove: problemData.cmDhApprove || 0,
+        cmLhFeedback: problemData.cmLhFeedback || 0,
+        cmShFeedback: problemData.cmShFeedback || 0,
+        cmTlFeedback: problemData.cmTlFeedback || 0,
+        cmDhFeedback: problemData.cmDhFeedback || 0,
       }
     },
 
@@ -548,14 +619,37 @@ export default {
         return
       }
 
+      let machineId = submitData.machineName;
+      let lineId = submitData.line;
+
+      if (typeof machineId === 'string') {
+        const machineObj = this.machineOptions.find(m => m.label === machineId);
+        if (machineObj) machineId = machineObj.id;
+      }
+      // Jika line berupa label, cari id-nya dari lineOptions
+      if (typeof lineId === 'string') {
+        const lineObj = this.lineOptions.find(l => l.label === lineId);
+        if (lineObj) lineId = lineObj.id;
+      }
+
+      let operatorNames = Array.isArray(submitData.operator)
+        ? submitData.operator.map(op => {
+            if (typeof op === 'string') {
+              // Jika sudah nama, langsung pakai
+              return op;
+            }
+            // Jika id, cari labelnya
+            const memberObj = this.memberOption.find(m => m.id === op);
+            return memberObj ? memberObj.label : op;
+          })
+        : [];
+
       try {
         const payload = {
           machineName: submitData.machineName,
           lineName: submitData.line,
           problemDescription: submitData.problems,
-          operator: Array.isArray(submitData.operator)
-            ? submitData.operator.join(',')
-            : '',
+          operator: operatorNames.join(','),
           fid: submitData.fidProblem,
           maker: submitData.maker,
           operationNo: submitData.operationNo,
@@ -639,7 +733,14 @@ export default {
     goToPage(page) {
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page
-        this.fetchProblems(page)
+        this.fetchProblems(page, {
+          filterStartDate: this.filterStartDate,
+          filterFinishDate: this.filterFinishDate,
+          selectedLine: this.selectedLine,
+          selectedMachineName: this.selectedMachineName,
+          selectedProblem: this.selectedProblem,
+          problemCategory: this.selectedProblemCategory,
+        })
       }
     },
 
@@ -647,9 +748,65 @@ export default {
       console.log('Machine input changed:', this.selectedMachineName)
     },
 
+    onFilterCategoryWhyCm(filtered) {
+      if (filtered === 0) {
+        this.selectedFiltered = null
+      } else {
+        this.selectedFiltered = filtered
+      }
+
+      this.fetchProblems(this.currentPage, {
+        filterStartDate: this.filterStartDate,
+        filterFinishDate: this.filterFinishDate,
+        selectedLine: this.selectedLine,
+        selectedMachineName: this.selectedMachineName,
+        selectedProblem: this.selectedProblem,
+        problemCategory: this.selectedProblemCategory,
+      })
+    },
+
+    onClickFilterWhyCm(filtered) {
+      this.selectedFiltered = filtered
+      if (filtered === 1) {
+        // Filter for "5 Why Belum di isi"
+        this.onFilterCategory(5)
+      } else if (filtered === 2) {
+        // Filter for "C/M Belum di isi"
+        this.onFilterCategory(6)
+      }
+    },
+
     onFilterCategory(category) {
       if (category === 0) {
         this.selectedProblemCategory = null
+      } else if (category === 5) {
+        // Filter problems where "5 Why" belum diisi (empty terjadiAnalysis or lamaAnalysis)
+        this.problemsView = this.allProblems.filter(problem => {
+          const analysisArray = Array.isArray(problem.terjadiAnalysis) ? problem.terjadiAnalysis : []
+          const hasTerjadi = analysisArray.some(item => item.id_problem === problem.fid)
+          const analysisArrayLama = Array.isArray(problem.lamaAnalysis) ? problem.lamaAnalysis : []
+          const hasLama = analysisArrayLama.some(item => item.id_problem === problem.fid)
+          return !hasTerjadi && !hasLama
+        })
+        this.selectedProblemCategory = category
+        this.totalRecords = this.problemsView.length
+        this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
+        this.currentPage = 1
+        return
+      } else if (category === 6) {
+        // Filter problems where "cm" belum diisi (empty fpermanet_cm and fpermanet_cm_lama)
+        this.problemsView = this.allProblems.filter(problem => {
+          const cm = problem.fpermanet_cm
+          const cmLama = problem.fpermanet_cm_lama
+          const isCmEmpty = !cm || (Array.isArray(cm) && cm.length === 0)
+          const isCmLamaEmpty = !cmLama || (Array.isArray(cmLama) && cmLama.length === 0)
+          return isCmEmpty && isCmLamaEmpty
+        })
+        this.selectedProblemCategory = category
+        this.totalRecords = this.problemsView.length
+        this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
+        this.currentPage = 1
+        return
       } else {
         this.selectedProblemCategory = category
       }

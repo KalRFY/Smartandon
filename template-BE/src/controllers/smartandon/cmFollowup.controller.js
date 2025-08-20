@@ -3,7 +3,20 @@ const { sequelize } = require('../../models');
 
 const getFollowups = async (req, res, next) => {
   try {
-    const { start, finish, line, machine, shift } = req.query;
+    const { start, finish, line, machine, shift, keyword } = req.query;
+
+    let whereClause = '';
+    if (!keyword) {
+      const conditions = [];
+      if (start) conditions.push(`p.date_problem >= '${start}'`);
+      if (finish) conditions.push(`p.date_problem <= '${finish}'`);
+      if (line) conditions.push(`p.line = '${line}'`);
+      if (machine) conditions.push(`p.machine = '${machine}'`);
+      if (shift) conditions.push(`p.shift = '${shift}'`);
+      if (conditions.length > 0) {
+        whereClause = 'WHERE ' + conditions.join(' AND ');
+      }
+    }
 
     const [rows] = await sequelize.query(`
       SELECT
@@ -22,14 +35,10 @@ const getFollowups = async (req, res, next) => {
         c.schedule_month
       FROM problems p
       JOIN countermeasures c ON c.problem_id = p.id
-      WHERE 1=1
-        ${start    ? ` AND p.date_problem >= '${start}'`  : ''}
-        ${finish   ? ` AND p.date_problem <= '${finish}'` : ''}
-        ${line     ? ` AND p.line = '${line}'`            : ''}
-        ${machine  ? ` AND p.machine = '${machine}'`      : ''}
-        ${shift    ? ` AND p.shift = '${shift}'`          : ''}
+      ${whereClause}
       ORDER BY p.date_problem ASC
     `);
+
     res.status(httpStatus.OK).json(rows);
   } catch (error) {
     next(error);
