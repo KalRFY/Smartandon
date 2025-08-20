@@ -1,4 +1,5 @@
 <template>
+
   <CModal
     :visible="visible"
     @close="$emit('close')"
@@ -2252,6 +2253,7 @@ export default {
 
     const picOptions = ref([])
     const sparepartOptions = ref([])
+    // const sparepartOption = ref([])
     
     onMounted(async () => {
       try {
