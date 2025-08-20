@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-await-in-loop */
 const httpStatus = require('http-status');
 const { object } = require('joi');
 const fs = require('fs');
@@ -911,7 +908,7 @@ const updateProblem = async (req, res, next) => {
 
     const uraianKeys = ['general', 'standard', 'actual'];
     const analysisKeys = ['TERJADI', 'LAMA'];
-    const sparepartsKeys = ['1', '2', '3'];
+    // const sparepartsKeys = ['1', '2', '3'];
 
     const uraianData = {
       general: {
@@ -942,20 +939,20 @@ const updateProblem = async (req, res, next) => {
       },
     };
 
-    const sparepartsData = {
-      1: {
-        sparepart_category: 1,
-        json_string: replacements.sparepartMengganti
-      },
-      2: {
-        sparepart_category: 2,
-        json_string: replacements.sparepartMenambahkan
-      },
-      3: {
-        sparepart_category: 3,
-        json_string: replacements.sparepartModifikasi
-      },
-    };
+    // const sparepartsData = {
+    //   1: {
+    //     sparepart_category: 1,
+    //     json_string: replacements.sparepartMengganti
+    //   },
+    //   2: {
+    //     sparepart_category: 2,
+    //     json_string: replacements.sparepartMenambahkan
+    //   },
+    //   3: {
+    //     sparepart_category: 3,
+    //     json_string: replacements.sparepartModifikasi
+    //   },
+    // };
 
     // Process each uraian type
     for (const key of uraianKeys) {
@@ -1052,55 +1049,55 @@ const updateProblem = async (req, res, next) => {
       }
     };
 
-    for (const key of sparepartsKeys) {
-      const item = sparepartsData[key];
+    // for (const key of sparepartsKeys) {
+    //   const item = sparepartsData[key];
       
-      // Always process even if data is null to ensure consistency
-      const checkQuery = `
-        SELECT COUNT(*) as count FROM tb_sparepart 
-        WHERE problemId = :fid AND sparepart_category = :sparepart_category
-      `;
+    //   // Always process even if data is null to ensure consistency
+    //   const checkQuery = `
+    //     SELECT COUNT(*) as count FROM tb_sparepart 
+    //     WHERE problemId = :fid AND sparepart_category = :sparepart_category
+    //   `;
       
-      const [checkResult] = await sequelize.query(checkQuery, { 
-        replacements: { 
-          fid: replacements.fid, 
-          sparepart_category: item.sparepart_category 
-        } 
-      });
+    //   const [checkResult] = await sequelize.query(checkQuery, { 
+    //     replacements: { 
+    //       fid: replacements.fid, 
+    //       sparepart_category: item.sparepart_category 
+    //     } 
+    //   });
 
-      if (checkResult[0].count === 0) {
-        // Insert new record
-        const insertQuery = `
-          INSERT INTO tb_sparepart (problemId, sparepart_category, sparepart_id, sparepart_nm, quantity)
-          VALUES (:fid, :sparepart_category, :sparepart_id, :sparepart_nm, :quantity)
-        `;
-        await sequelize.query(insertQuery, { 
-          replacements: {
-            fid: replacements.fid,
-            sparepart_category: item.sparepart_category,
-            sparepart_id: item.sparepart_id,
-            sparepart_nm: item.sparepart_nm,
-            quantity: item.quantity,
-          }
-        });
-      } else {
-        // Update existing record
-        const updateQuery = `
-          UPDATE o_analisys 
-          SET sparepart_id = :sparepart_id, sparepart_nm = :sparepart_nm, quantity = :quantity
-          WHERE problemId = :fid AND sparepart_category = :sparepart_category
-        `;
-        await sequelize.query(updateQuery, { 
-          replacements: {
-            fid: replacements.fid,
-            sparepart_category: item.sparepart_category,
-            sparepart_id: item.sparepart_id,
-            sparepart_nm: item.sparepart_nm,
-            quantity: item.quantity,
-          }
-        });
-      }
-    };
+    //   if (checkResult[0].count === 0) {
+    //     // Insert new record
+    //     const insertQuery = `
+    //       INSERT INTO tb_sparepart (problemId, sparepart_category, sparepart_id, sparepart_nm, quantity)
+    //       VALUES (:fid, :sparepart_category, :sparepart_id, :sparepart_nm, :quantity)
+    //     `;
+    //     await sequelize.query(insertQuery, { 
+    //       replacements: {
+    //         fid: replacements.fid,
+    //         sparepart_category: item.sparepart_category,
+    //         sparepart_id: item.sparepart_id,
+    //         sparepart_nm: item.sparepart_nm,
+    //         quantity: item.quantity,
+    //       }
+    //     });
+    //   } else {
+    //     // Update existing record
+    //     const updateQuery = `
+    //       UPDATE o_analisys 
+    //       SET sparepart_id = :sparepart_id, sparepart_nm = :sparepart_nm, quantity = :quantity
+    //       WHERE problemId = :fid AND sparepart_category = :sparepart_category
+    //     `;
+    //     await sequelize.query(updateQuery, { 
+    //       replacements: {
+    //         fid: replacements.fid,
+    //         sparepart_category: item.sparepart_category,
+    //         sparepart_id: item.sparepart_id,
+    //         sparepart_nm: item.sparepart_nm,
+    //         quantity: item.quantity,
+    //       }
+    //     });
+    //   }
+    // };
 
     res.status(httpStatus.OK).json({ status: 'success', message: 'Problem updated successfully' });
 

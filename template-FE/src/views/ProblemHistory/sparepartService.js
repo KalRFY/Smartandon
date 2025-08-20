@@ -1,4 +1,3 @@
-// Service for managing spareparts from problem history
 import axios from 'vue3-treeselect'
 
 export const sparepartService = {
