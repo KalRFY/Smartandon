@@ -29,6 +29,26 @@
 
   <CRow>
     <CCol class="mb-3">
+      <CTable v-if="spareparts.length" bordered hover responsive>
+        <CTableHead>
+          <CTableRow>
+            <CTableHeaderCell scope="col">ID</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Sparepart</CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+        <CTableBody>
+          <CTableRow v-for="sparepart in spareparts" :key="sparepart.sparepart_id">
+            <CTableDataCell>{{ sparepart.sparepart_id }}</CTableDataCell>
+            <CTableDataCell>{{ sparepart.sparepart_nm }}</CTableDataCell>
+          </CTableRow>
+        </CTableBody>
+      </CTable>
+      <p v-else>Loading spareparts...</p>
+    </CCol>
+  </CRow>
+
+  <CRow>
+    <CCol class="mb-3">
       <CTable v-if="lines.length" bordered hover responsive>
         <CTableHead>
           <CTableRow>
@@ -236,10 +256,25 @@ export default {
       oee: [],
       oeeOption: [],
       members: [],
-      memberOption: []
+      memberOption: [],
+      spareparts: [],
+      sparepartsOption: [],
+      problemActive: [],
+      loadingProblemActive: false,
+      limitView: 0
     };
   },
   async created() {
+    try {
+      const response = await axios.get('/api/smartandon/spareparts');
+      this.spareparts = response.data?.data || response.data;
+      this.sparepartsOption = this.spareparts.map(sparepart => ({
+        id: sparepart.sparepart_id,
+        label: sparepart.sparepart_nm
+      }));
+    } catch (error) {
+      console.error('Failed to fetch spareparts:', error);
+    }
     try {
       this.loadingProblemActive = true;
       this.limitView = 0;
@@ -248,8 +283,7 @@ export default {
           limitView: 0,
         }
       });
-      // Filter hanya problem yang fend_time null
-      this.problemActive = response.data.data
+      this.problemActive = response.data?.data || response.data;
       console.log('Filtered active problems:', this.problemActive);
     } catch (error) {
       console.error('Failed to fetch active problems:', error);
@@ -259,30 +293,14 @@ export default {
     }
     try {
       const response = await axios.get('/api/smartandon/qcc-m-types');
-      this.types = response.data;
+      this.types = response.data?.data || response.data;
     } catch (error) {
       console.error('Failed to fetch qcc_m_types:', error);
     }
     try {
       const response = await axios.get('/api/smartandon/line');
-      this.lines = response.data;
-    } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error);
-    }
-    try {
-      const response = await axios.get('/api/smartandon/machine');
-      this.machines = response.data;
-      this.machineOptions = response.data.map(machine => ({
-        id: machine.fid,
-        label: machine.fmc_name
-      }));
-    } catch (error) {
-      console.error('Failed to fetch machines:', error);
-    }
-    try {
-      const response = await axios.get('/api/smartandon/line');
-      this.lines = response.data;
-      this.lineOptions = response.data.map(line => ({
+      this.lines = response.data?.data || response.data;
+      this.lineOptions = this.lines.map(line => ({
         id: line.fid,
         label: line.fline
       }));
@@ -290,9 +308,19 @@ export default {
       console.error('Failed to fetch lines:', error);
     }
     try {
+      const response = await axios.get('/api/smartandon/machine');
+      this.machines = response.data?.data || response.data;
+      this.machineOptions = this.machines.map(machine => ({
+        id: machine.fid,
+        label: machine.fmc_name
+      }));
+    } catch (error) {
+      console.error('Failed to fetch machines:', error);
+    }
+    try {
       const response = await axios.get('/api/smartandon/problemId');
-      this.problems = response.data;
-      this.problemOption = response.data.map(problem => ({
+      this.problems = response.data?.data || response.data;
+      this.problemOption = this.problems.map(problem => ({
         id: problem.fid,
         label: problem.ferror_name
       }));
@@ -301,8 +329,8 @@ export default {
     }
     try {
       const response = await axios.get('/api/smartandon/oee');
-      this.oee = response.data;
-      this.oeeOption = response.data.map(oeeValue => ({
+      this.oee = response.data?.data || response.data;
+      this.oeeOption = this.oee.map(oeeValue => ({
         id: oeeValue.GROUP_NAME,
         label: oeeValue.TAG_NAME,
         labelOee: oeeValue.REG_VALUE
@@ -312,10 +340,10 @@ export default {
     }
     try {
       const response = await axios.get('/api/smartandon/member');
-      this.members = response.data;
-      this.memberOption = response.data.map(oeeValue => ({
-        id: memberId.fid,
-        label: memberName.fname,
+      this.members = response.data?.data || response.data;
+      this.memberOption = this.members.map(member => ({
+        id: member.fid,
+        label: member.fname
       }));
     } catch (error) {
       console.error('Failed to fetch member:', error);

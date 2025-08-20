@@ -98,52 +98,52 @@ const getProblemView = async (req, res, next) => {
     console.log('Limit Clauseee:', limitClause);
 
     // Build where clause for date filtering
-    let whereClause = 'WHERE e.fid IS NOT NULL';
+    let whereClause = 'WHERE fid IS NOT NULL';
     const replacements = {};
 
     if (startDate || finishDate) {
       if (startDate == finishDate) {
-        whereClause += ` AND e.fstart_time LIKE '%${startDate}%'`;
-        whereClause += ` AND e.fstart_time LIKE '%${finishDate}%'`;
+        whereClause += ` AND fstart_time LIKE '%${startDate}%'`;
+        whereClause += ` AND fstart_time LIKE '%${finishDate}%'`;
       } else {
         if (startDate) {
-          whereClause += ` AND e.fstart_time >= '${startDate}'`;
+          whereClause += ` AND fstart_time >= '${startDate}'`;
           replacements.startDate = startDate;
         }
         if (finishDate) {
-          whereClause += ` AND e.fend_time <= '${finishDate}'`;
+          whereClause += ` AND fend_time <= '${finishDate}'`;
           replacements.finishDate = finishDate;
         }
       }
     }
     if (machineName) {
-      whereClause += ` AND e.fmc_name LIKE '%${machineName}%'`;
+      whereClause += ` AND fmc_name LIKE '%${machineName}%'`;
     }
     if (line) {
-      whereClause += ` AND e.line_id = ${line}`;
+      whereClause += ` AND line_id = ${line}`;
     }
     if (problem) {
-      whereClause += ` AND e.ferror_name LIKE '%${problem}%'`;
+      whereClause += ` AND ferror_name LIKE '%${problem}%'`;
     }
 
     if (problemCategory) {
-      whereClause += ` AND (e.problemCategory = ${problemCategory}`;
+      whereClause += ` AND (problemCategory = ${problemCategory}`;
       if (problemCategory == 3) {
         whereClause += ` 
-        OR (
-          ((e.fdur >= 120 AND e.fdur < 659) AND (e.line_id = 1 OR e.line_id = 2)) OR
-          ((e.fdur >= 120 AND e.fdur < 359) AND (e.line_id IN (3,4,5,6))) OR
-          (e.fdur >= 15 AND e.fdur < 179 AND e.line_id = 7)
-        )
-      `;
+          OR (
+            ((fdur >= 120 AND fdur < 659) AND (line_id = 1 OR line_id = 2)) OR
+            ((fdur >= 120 AND fdur < 359) AND (line_id IN (3,4,5,6))) OR
+            (fdur >= 15 AND fdur < 179 AND line_id = 7)
+          )
+        `;
       } else if (problemCategory == 4) {
         whereClause += ` 
-        OR (
-          ((e.fdur >= 659) AND (e.line_id = 1 OR e.line_id = 2)) OR
-          ((e.fdur >= 359) AND (e.line_id IN (3,4,5,6))) OR
-          (e.fdur >= 179 AND e.line_id = 7)
+          OR (
+          ((fdur >= 659) AND (line_id = 1 OR line_id = 2)) OR
+          ((fdur >= 359) AND (line_id IN (3,4,5,6))) OR
+          (fdur >= 179 AND line_id = 7)
         )
-      `;
+        `;
       }
       whereClause += `)`;
     }
@@ -163,12 +163,13 @@ const getProblemView = async (req, res, next) => {
     //   whereClause += `)`;
     // }
 
+    console.log('KONTOL');
     console.log(whereClause);
 
     // Query total count
     const countQuery = `
       SELECT COUNT(*) as total
-      FROM v_current_error_2 e
+      FROM v_current_error_2
       ${whereClause}
     `;
     const [countResult] = await sequelize.query(countQuery, { replacements });
@@ -177,67 +178,65 @@ const getProblemView = async (req, res, next) => {
     // Query paginated data
     const dataQuery = `
       SELECT
-        e.fid,
-        e.line_id,
-        e.fline,
-        e.fmc_name,
-        e.fmaker,
-        e.foperation_no,
-        e.freg,
-        e.fbit,
-        e.ferror_name,
-        e.ferror_detail,
-        e.fstart_time,
-        e.fend_time,
-        e.fdur,
-        e.foperator,
-        e.fshift,
-        e.freal_prob,
-        e.fav_categoty,
-        e.froot_cause,
-        e.fstep_repair,
-        e.fpart_change,
-        e.fpermanet_cm,
-        e.fwhy_analisys,
-        e.fpdf_report,
-        e.fimage,
-        e.fDescImage,
-        e.tmp,
-        e.fpermanet_cm_lama,
-        e.fyokoten,
-        e.fyokoten_date,
-        e.fyokoten_pic,
-        e.id_member_thema,
-        e.fname_theme_member,
-        e.fimage_member,
-        e.why1_img,
-        e.fstep_new,
-        e.gapIlustrasi,
-        e.why2_img,
-        e.why12_img,
-        e.why22_img,
-        e.oCategory,
-        e.qCategory,
-        e.problemCategory,
-        e.file_report,
-        el.fiveWhyLhApprove,
-        el.fiveWhyShApprove,
-        el.fiveWhyLhFeedback,
-        el.fiveWhyShFeedback,
-        el.cmLhApprove,
-        el.cmShApprove,
-        el.cmLhFeedback,
-        el.cmShFeedback,
-        el.temporaryAction,
-        el.cmDhApprove,
-        el.cmDhFeedback,
-        el.cmTlApprove,
-        el.cmTlFeedback,
-        el.fattachment,
-        el.id_m_problem_member
-
-      FROM v_current_error_2 e
-      LEFT JOIN tb_error_log_2 el ON el.fid = e.fid
+        fid,
+        line_id,
+        fline,
+        fmc_name,
+        fmaker,
+        foperation_no,
+        freg,
+        fbit,
+        ferror_name,
+        ferror_detail,
+        fstart_time,
+        fend_time,
+        fdur,
+        foperator,
+        fshift,
+        freal_prob,
+        fav_categoty,
+        froot_cause,
+        fstep_repair,
+        fpart_change,
+        fpermanet_cm,
+        fwhy_analisys,
+        fpdf_report,
+        fimage,
+        fDescImage,
+        tmp,
+        fpermanet_cm_lama,
+        fyokoten,
+        fyokoten_date,
+        fyokoten_pic,
+        fiveWhyLhApprove,
+        fiveWhyShApprove,
+        fiveWhyLhFeedback,
+        fiveWhyShFeedback,
+        cmLhApprove,
+        cmShApprove,
+        cmLhFeedback,
+        cmShFeedback,
+        temporaryAction,
+        cmDhApprove,
+        cmDhFeedback,
+        cmTlApprove,
+        cmTlFeedback,
+        fattachment,
+        id_m_problem_member,
+        id_member_thema,
+        fname_theme_member,
+        fimage_member,
+        why1_img,
+        fstep_new,
+        gapIlustrasi,
+        why2_img,
+        why12_img,
+        why22_img,
+        oCategory,
+        qCategory,
+        problemCategory,
+        file_report
+      FROM v_current_error_2
       ${whereClause}
       ORDER BY fid ASC
       ${limitClause}
@@ -268,80 +267,75 @@ const getProblemView = async (req, res, next) => {
 const getProblemById = async (req, res, next) => {
   try {
     const { fid } = req.params;
-
     const query = `
       SELECT
-        e.fid,
-        e.line_id,
-        e.fline,
-        e.fmc_name,
-        e.fmaker,
-        e.foperation_no,
-        e.freg,
-        e.fbit,
-        e.ferror_name,
-        e.ferror_detail,
-        e.fstart_time,
-        e.fend_time,
-        e.fdur,
-        e.foperator,
-        e.fshift,
-        e.freal_prob,
-        e.fav_categoty,
-        e.froot_cause,
-        e.fstep_repair,
-        e.fpart_change,
-        e.fpermanet_cm,
-        e.fwhy_analisys,
-        e.fpdf_report,
-        e.fimage,
-        e.fDescImage,
-        e.tmp,
-        e.fpermanet_cm_lama,
-        e.fyokoten,
-        e.fyokoten_date,
-        e.fyokoten_pic,
-        e.id_member_thema,
-        e.fname_theme_member,
-        e.fimage_member,
-        e.why1_img,
-        e.fstep_new,
-        e.gapIlustrasi,
-        e.why2_img,
-        e.why12_img,
-        e.why22_img,
-        e.oCategory,
-        e.qCategory,
-        e.problemCategory,
-        e.file_report,
-        e.fpermanet_cm as countermeasureKenapaTerjadi,
-        e.fpermanet_cm_lama as countermeasureKenapaLama,
-        el.fiveWhyLhApprove,
-        el.fiveWhyShApprove,
-        el.fiveWhyLhFeedback,
-        el.fiveWhyShFeedback,
-        el.cmLhApprove,
-        el.cmShApprove,
-        el.cmLhFeedback,
-        el.cmShFeedback,
-        el.temporaryAction,
-        el.cmDhApprove,
-        el.cmDhFeedback,
-        el.cmTlApprove,
-        el.cmTlFeedback,
-        el.fattachment,
-        el.id_m_problem_member
-
-      FROM v_current_error_2 e
-      LEFT JOIN tb_error_log_2 el ON el.fid = e.fid
-      WHERE e.fid = :fid
+        fid,
+        line_id,
+        fline,
+        fmc_name,
+        fmaker,
+        foperation_no,
+        freg,
+        fbit,
+        ferror_name,
+        ferror_detail,
+        fstart_time,
+        fend_time,
+        fdur,
+        foperator,
+        fshift,
+        freal_prob,
+        fav_categoty,
+        froot_cause,
+        fstep_repair,
+        fpart_change,
+        fpermanet_cm,
+        fwhy_analisys,
+        fpdf_report,
+        fimage,
+        fDescImage,
+        tmp,
+        fpermanet_cm_lama,
+        fyokoten,
+        fyokoten_date,
+        fyokoten_pic,
+        fiveWhyLhApprove,
+        fiveWhyShApprove,
+        fiveWhyLhFeedback,
+        fiveWhyShFeedback,
+        cmLhApprove,
+        cmShApprove,
+        cmLhFeedback,
+        cmShFeedback,
+        temporaryAction,
+        cmDhApprove,
+        cmDhFeedback,
+        cmTlApprove,
+        cmTlFeedback,
+        fattachment,
+        id_m_problem_member,
+        id_member_thema,
+        fname_theme_member,
+        fimage_member,
+        why1_img,
+        fstep_new,
+        gapIlustrasi,
+        why2_img,
+        why12_img,
+        why22_img,
+        oCategory,
+        qCategory,
+        problemCategory,
+        file_report,
+        fpermanet_cm as countermeasureKenapaTerjadi,
+        fpermanet_cm_lama as countermeasureKenapaLama
+      FROM v_current_error_2
+      WHERE fid = :fid
       LIMIT 1
     `;
-
     const [result] = await sequelize.query(query, {
       replacements: { fid },
     });
-
     if (result.length === 0) {
       return res.status(httpStatus.NOT_FOUND).json({ message: 'Problem not found' });
     }
@@ -349,8 +343,7 @@ const getProblemById = async (req, res, next) => {
     const query2 = `
       SELECT
         tb.type_uraian as typeUraian,
-        tb.ilustration as ilustration,
-        tb.desc_nm as desc_nm
+        tb.ilustration as ilustration
       FROM tb_r_uraian tb
       WHERE tb.error_id = :fid
     `
@@ -363,11 +356,48 @@ const getProblemById = async (req, res, next) => {
       WHERE tb.error_id = :fid
     `
 
+    const queryAnalysis = `
+      SELECT
+        o.analisys_category as analisys_category,
+        o.json_string as json_string
+      FROM o_analisys o
+      WHERE o.id_problem = :fid
+    `
+
+    const querySpareparts = `
+      SELECT
+        problemId,
+        sparepart_category,
+        material_number,
+        uom,
+        mrp,
+        rop,
+        rov,
+        lead_time,
+        sparepart_nm,
+        sparepart_id,
+        uuid,
+        price,
+        vendor,
+        replacement_material_number,
+        quantity
+      FROM tb_sparepart
+      WHERE problemId = :fid
+    `
+
     const [uraianResult] = await sequelize.query(query2, {
       replacements: { fid },
     });
 
     const [descResult] = await sequelize.query(query3, {
+      replacements: { fid },
+    });
+
+    const [analysis] = await sequelize.query(queryAnalysis, {
+      replacements: { fid },
+    });
+
+    const [sparepartsResult] = await sequelize.query(querySpareparts, {
       replacements: { fid },
     });
 
@@ -381,8 +411,19 @@ const getProblemById = async (req, res, next) => {
         desc[item.typeUraian] = item.desc_nm;
         return desc;
       }, {}),
+      analysis: analysis.reduce((analisis, item) => {
+        analisis[item.analisys_category] = item.json_string;
+        return analisis;
+      }, {}),
+      sparepartsResult: sparepartsResult.reduce((sparepart, item) => {
+        sparepart[item.sparepart_category] = item.sparepart_nm;
+        sparepart[item.sparepart_category] = item.sparepart_id;
+        sparepart[item.sparepart_category] = item.quantity;
+        return sparepart;
+      }, {}),
     }
     console.log('Final Result:', finalResult);
+
     res.status(httpStatus.OK).json(finalResult);
   } catch (error) {
     next(error);
@@ -776,7 +817,7 @@ const updateProblem = async (req, res, next) => {
         const fileObj = req.files.uploadImage[0];
         const ext = path.extname(fileObj.originalname);
         const newPath = `./upload/${path.basename(fileObj.path)}${ext}`;
-
+        
         fs.renameSync(fileObj.path, newPath);
         replacements.uploadImage = newPath;
       }
@@ -869,6 +910,9 @@ const updateProblem = async (req, res, next) => {
     console.log('Update Query:', updateQuery);
 
     const uraianKeys = ['general', 'standard', 'actual'];
+    const analysisKeys = ['TERJADI', 'LAMA'];
+    const sparepartsKeys = ['1', '2', '3'];
+
     const uraianData = {
       general: {
         type_uraian: 'general',
@@ -885,6 +929,32 @@ const updateProblem = async (req, res, next) => {
         ilustration: replacements.actualImage || null,
         desc_nm: replacements.ilustrasiActual || null
       }
+    };
+
+    const analysisData = {
+      TERJADI: {
+        analisys_category: 'TERJADI',
+        json_string: replacements.tambahAnalysisTerjadi ? (typeof replacements.tambahAnalysisTerjadi === 'string' ? replacements.tambahAnalysisTerjadi : JSON.stringify(replacements.tambahAnalysisTerjadi)) : '[]'
+      },
+      LAMA: {
+        analisys_category: 'LAMA',
+        json_string: replacements.tambahAnalisisLama ? (typeof replacements.tambahAnalisisLama === 'string' ? replacements.tambahAnalisisLama : JSON.stringify(replacements.tambahAnalisisLama)) : '[]'
+      },
+    };
+
+    const sparepartsData = {
+      1: {
+        sparepart_category: 1,
+        json_string: replacements.sparepartMengganti
+      },
+      2: {
+        sparepart_category: 2,
+        json_string: replacements.sparepartMenambahkan
+      },
+      3: {
+        sparepart_category: 3,
+        json_string: replacements.sparepartModifikasi
+      },
     };
 
     // Process each uraian type
@@ -931,6 +1001,102 @@ const updateProblem = async (req, res, next) => {
             type_uraian: item.type_uraian,
             ilustration: item.ilustration,
             desc_nm: item.desc_nm
+          }
+        });
+      }
+    };
+
+    for (const key of analysisKeys) {
+      const item = analysisData[key];
+      
+      // Always process even if data is null to ensure consistency
+      const checkQuery = `
+        SELECT COUNT(*) as count FROM o_analisys 
+        WHERE id_problem = :fid AND analisys_category = :analisys_category
+      `;
+      
+      const [checkResult] = await sequelize.query(checkQuery, { 
+        replacements: { 
+          fid: replacements.fid, 
+          analisys_category: item.analisys_category 
+        } 
+      });
+
+      if (checkResult[0].count === 0) {
+        // Insert new record
+        const insertQuery = `
+          INSERT INTO o_analisys (id_problem, analisys_category, json_string)
+          VALUES (:fid, :analisys_category, :json_string)
+        `;
+        await sequelize.query(insertQuery, { 
+          replacements: {
+            fid: replacements.fid,
+            analisys_category: item.analisys_category,
+            json_string: item.json_string || '[]',
+          }
+        });
+      } else {
+        // Update existing record
+        const updateQuery = `
+          UPDATE o_analisys 
+          SET json_string = :json_string
+          WHERE id_problem = :fid AND analisys_category = :analisys_category
+        `;
+        await sequelize.query(updateQuery, { 
+          replacements: {
+            fid: replacements.fid,
+            analisys_category: item.analisys_category,
+            json_string: item.json_string || '[]',
+          }
+        });
+      }
+    };
+
+    for (const key of sparepartsKeys) {
+      const item = sparepartsData[key];
+      
+      // Always process even if data is null to ensure consistency
+      const checkQuery = `
+        SELECT COUNT(*) as count FROM tb_sparepart 
+        WHERE problemId = :fid AND sparepart_category = :sparepart_category
+      `;
+      
+      const [checkResult] = await sequelize.query(checkQuery, { 
+        replacements: { 
+          fid: replacements.fid, 
+          sparepart_category: item.sparepart_category 
+        } 
+      });
+
+      if (checkResult[0].count === 0) {
+        // Insert new record
+        const insertQuery = `
+          INSERT INTO tb_sparepart (problemId, sparepart_category, sparepart_id, sparepart_nm, quantity)
+          VALUES (:fid, :sparepart_category, :sparepart_id, :sparepart_nm, :quantity)
+        `;
+        await sequelize.query(insertQuery, { 
+          replacements: {
+            fid: replacements.fid,
+            sparepart_category: item.sparepart_category,
+            sparepart_id: item.sparepart_id,
+            sparepart_nm: item.sparepart_nm,
+            quantity: item.quantity,
+          }
+        });
+      } else {
+        // Update existing record
+        const updateQuery = `
+          UPDATE o_analisys 
+          SET sparepart_id = :sparepart_id, sparepart_nm = :sparepart_nm, quantity = :quantity
+          WHERE problemId = :fid AND sparepart_category = :sparepart_category
+        `;
+        await sequelize.query(updateQuery, { 
+          replacements: {
+            fid: replacements.fid,
+            sparepart_category: item.sparepart_category,
+            sparepart_id: item.sparepart_id,
+            sparepart_nm: item.sparepart_nm,
+            quantity: item.quantity,
           }
         });
       }

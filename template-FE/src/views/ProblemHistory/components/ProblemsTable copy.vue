@@ -57,13 +57,13 @@
                     }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fline }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fdur || '' }}</CTableDataCell>
-                    <CTableDataCell style="width: 10%;">
+                    <CTableDataCell>
                       <CButton
                         class="mb-3"
                         shape="rounded-pill"
                         color="success"
                         style="
-                          font-size: x-small;
+                          font-size: small;
                           font-weight: bold;
                           color: white;
                         "
@@ -72,29 +72,14 @@
                         Edit Problem
                       </CButton>
                     </CTableDataCell>
-                    <CTableDataCell style="width: 15%;">
+                    <CTableDataCell>
                       <CButton
-                        v-if="!problem.file_report && (isLtrProblem(problem) || isSltrProblem(problem))"
-                        class="mb-3"
-                        shape="rounded-pill"
-                        color="primary"
-                        style="
-                          width: 100%;
-                          font-size: x-small;
-                          font-weight: bold;
-                          color: white;
-                        "
-                      >
-                        Belum Upload Report
-                      </CButton>
-                      <CButton
-                        v-if="problem.file_report && (isLtrProblem(problem) || isSltrProblem(problem))"
+                        v-if="problem.file_report"
                         class="mb-3"
                         shape="rounded-pill"
                         color="info"
                         style="
-                          width: 100%;
-                          font-size: x-small;
+                          font-size: small;
                           font-weight: bold;
                           color: white;
                         "
@@ -238,8 +223,10 @@ export default {
       // const hasEmptyPermanentCm = analysisArray.some(item => {
       //   const cm = item.fpermanet_cm
       //   // const cmLama = item.fpermanet_cm_lama
+
       //   const isCmEmpty = !cm || (Array.isArray(cm) && cm.length === 0)
       //   // const isCmLamaEmpty = !cmLama || (Array.isArray(cmLama) && cmLama.length === 0)
+
       //   return isCmEmpty
       // })
       if (
@@ -248,30 +235,6 @@ export default {
         return ''
       }
       return 'warning'
-    },
-
-    isLtrProblem(problem) {
-      const duration = parseInt(problem.fdur) || 0
-      const lineId = parseInt(problem.line_id) || 0
-      
-      // LTR criteria based on the SQL query
-      return (
-        (problem.problemCategory == 3) || ((duration >= 120 && duration < 659) && (lineId === 1 || lineId === 2)) ||
-        ((duration >= 120 && duration < 359) && [3, 4, 5, 6].includes(lineId)) ||
-        (duration >= 15 && duration < 179 && lineId === 7)
-      )
-    },
-
-    isSltrProblem(problem) {
-      const duration = parseInt(problem.fdur) || 0
-      const lineId = parseInt(problem.line_id) || 0
-      
-      // SLTR criteria (opposite of LTR)
-      return (
-        (problem.problemCategory == 4) || (duration >= 659 && (lineId === 1 || lineId === 2)) ||
-        (duration >= 359 && [3, 4, 5, 6].includes(lineId)) ||
-        (duration >= 179 && lineId === 7)
-      )
     },
   },
 

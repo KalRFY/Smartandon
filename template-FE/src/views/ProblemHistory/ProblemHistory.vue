@@ -128,6 +128,7 @@ export default {
       terjadiAnalysis: [],
       lamaAnalysis: [],
       selectedFiltered: '',
+      sparepartsOption: [],
 
       o6Options: [
         {
@@ -240,7 +241,7 @@ export default {
         uraianKejadian: '',
         uploadImage: '',
         ilustrasiStandart: '',
-        standardImage: '',
+        standartImage: '',
         ilustrasiActual: '',
         actualImage: '',
         gapBetweenStandarAndActual: '',
@@ -489,6 +490,9 @@ export default {
         this.filteredTambahAnalisis = terjadiAnalysis
         this.filteredTambahAnalisisLama = lamaAnalysis
 
+        this.submit.tambahAnalysisTerjadi = terjadiAnalysis
+        this.submit.tambahAnalisisLama = lamaAnalysis
+
         const o6Option = this.o6Options.find(
           (opt) => opt.id === this.submit.pilihO6,
         )
@@ -533,6 +537,9 @@ export default {
         return `${year}-${month}-${day}T${hours}:${minutes}`
       }
 
+      const terjadiRaw = problemData?.analysis?.TERJADI
+      const lamaRaw    = problemData?.analysis?.LAMA
+
       return {
         machineName: problemData.fmc_name || '',
         line: problemData.fline || '',
@@ -543,7 +550,7 @@ export default {
         uraianKejadian: problemData.descResult.general || '',
         uploadImage: problemData.uraianResult.general || '',
         ilustrasiStandart: problemData.descResult.standard || '',
-        standardImage: problemData.uraianResult.standard || '',
+        standartImage: problemData.uraianResult.standard || '',
         ilustrasiActual: problemData.descResult.actual || '',
         actualImage: problemData.uraianResult.actual || '',
         gapBetweenStandarAndActual:
@@ -561,7 +568,23 @@ export default {
         problemCategory: problemData.problemCategory || '',
         itemTemporaryAction: problemData.temporaryAction || '',
         rootcauses5Why: problemData.freal_prob || '',
-        tambahAnalysisTerjadi: problemData.o_analisys || '',
+
+        tambahAnalysisTerjadi: (() => {
+          if (Array.isArray(terjadiRaw)) return terjadiRaw
+          if (typeof terjadiRaw === 'string') {
+            try { const v = JSON.parse(terjadiRaw); return Array.isArray(v) ? v : [] } catch { return [] }
+          }
+          return []
+        })(),
+
+        tambahAnalisisLama: (() => {
+          if (Array.isArray(lamaRaw)) return lamaRaw
+          if (typeof lamaRaw === 'string') {
+            try { const v = JSON.parse(lamaRaw); return Array.isArray(v) ? v : [] } catch { return [] }
+          }
+          return []
+        })(),
+
         whyImage: problemData.why1_img || '',
         pilihO6: problemData.oCategory || '',
         stepRepair: problemData.fstep_repair || '',
@@ -570,7 +593,6 @@ export default {
           problemData.fpermanet_cm || '',
         yokoten: problemData.fyokoten || '',
         rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
-        tambahAnalisisLama: problemData.tambahAnalisisLama || '',
         pilihQ6: problemData.qCategory || '',
         whyLamaImage: problemData.why2_img || '',
         countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
@@ -669,8 +691,9 @@ export default {
           countermeasureKenapaLama: JSON.stringify(submitData.cmKenapaLama),
           yokoten: JSON.stringify(submitData.yokoten),
           rootcause5WhyKenapaLama: submitData.rootcause5WhyKenapaLama,
-          tambahAnalisisLama: submitData.tambahAnalisisLama,
-          tambahAnalysisTerjadi: submitData.tambahAnalysisTerjadi,
+          tambahAnalisisLama: JSON.stringify(submitData.tambahAnalisisLama || []),
+          tambahAnalysisTerjadi: JSON.stringify(submitData.tambahAnalysisTerjadi || []),
+
           whyImage: submitData.whyImage,
           whyLamaImage: submitData.whyLamaImage,
           comments5WhySH: submitData.comments5WhySH,

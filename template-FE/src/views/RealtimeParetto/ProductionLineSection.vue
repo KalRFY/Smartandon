@@ -43,7 +43,7 @@
                     <CTableRow>
                       <CTableHeaderCell scope="col">#</CTableHeaderCell>
                       <CTableHeaderCell scope="col"
-                        >Start Date</CTableHeaderCell
+                        >Last Occurred</CTableHeaderCell
                       >
                       <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Operator</CTableHeaderCell>

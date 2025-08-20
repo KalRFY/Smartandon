@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable prettier/prettier */
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
 
@@ -91,7 +89,7 @@ const getRealtimeParetoController = async (req, res, next) => {
     queryResults.forEach(({ line, results }) => {
       allResults.push({
         title: line,
-        panelId: `PANEL${line.replace(/\s+/g, '').toUpperCase()}`,
+        panelId: `PANEL ${line.replace(/\s+/g, '').toUpperCase()}`,
         minQuantity: 0,
         problems: results
       })
