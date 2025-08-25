@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const qccMTypesController = require('../../controllers/smartandon/qccMTypes.controller');
+
+const router = express.Router();
 
 router.get('/qcc-m-types', qccMTypesController.getQccMTypes);
 

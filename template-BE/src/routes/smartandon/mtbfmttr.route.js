@@ -1,7 +1,8 @@
 const express = require('express');
-const router = express.Router();
 const MTBFMTTRController = require('../../controllers/smartandon/MTBFMTTR.controller');
 const { authMiddleware } = require('../../middlewares/auth');
+
+const router = express.Router();
 
 router.get('/', authMiddleware, MTBFMTTRController.defaultController);
 router.get('/mtbf', MTBFMTTRController.getMTBFController);

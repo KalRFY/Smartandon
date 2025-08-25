@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const sparepartsController = require('../../controllers/smartandon/sparepart.controller');
+
+const router = express.Router();
 
 router.get('/spareparts', sparepartsController.getSpareparts);
 

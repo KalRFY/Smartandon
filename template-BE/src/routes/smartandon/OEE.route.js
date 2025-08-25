@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const oeeController = require('../../controllers/smartandon/oee.controller');
+
+const router = express.Router();
 
 router.get('/oee', oeeController.getOEE);
 router.get('/oeeView', oeeController.getOEEView);

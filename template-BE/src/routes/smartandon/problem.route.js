@@ -1,8 +1,8 @@
 const express = require('express');
-
-const router = express.Router();
 const multer = require('multer');
 const problemController = require('../../controllers/smartandon/problem.controller');
+
+const router = express.Router();
 
 const upload = multer({ dest: 'upload/' });
 

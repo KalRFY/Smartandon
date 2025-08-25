@@ -2,81 +2,69 @@ const express = require('express');
 const docsRoute = require('./docs.route');
 const config = require('../config/config');
 
-const dashboardRoutes = require('./smartandon/dashboard');
-const qccMTypesRoutes = require('./smartandon/qccMTypes');
-const lineRoutes = require('./smartandon/line');
-const machineRoutes = require('./smartandon/machine');
-const memberRoutes = require('./smartandon/member');
-const machineStopInputRoutes = require('./smartandon/machineStopInput.controller');
-
-const problemRoutes = require('./smartandon/problem');
-const oeeRoutes = require('./smartandon/OEE');
-const mtbfmttrRoutes = require('./smartandon/mtbfmttr');
-const realtimeParetoRoutes = require('./smartandon/realtimePareto');
-const summaryRoutes = require('./smartandon/summary');
-const cmFollowupRoutes = require('./smartandon/cmFollowup');
+const dashboardRoutes = require('./smartandon/dashboard.route');
+const qccMTypesRoutes = require('./smartandon/qccMTypes.route');
+const lineRoutes = require('./smartandon/line.route');
+const machineRoutes = require('./smartandon/machine.route');
+const memberRoutes = require('./smartandon/member.route');
+const machineStopInputRoutes = require('./smartandon/machineStopInput.route');
+const problemRoutes = require('./smartandon/problem.route');
+const oeeRoutes = require('./smartandon/OEE.route');
+const mtbfmttrRoutes = require('./smartandon/mtbfmttr.route');
+const realtimeParetoRoutes = require('./smartandon/realtimePareto.route');
+const summaryRoutes = require('./smartandon/summary.route');
+const cmFollowupRoutes = require('./smartandon/cmFollowup.route');
 const downloadRoutes = require('./smartandon/download.route');
-
-const tambahAnalysis = require('./smartandon/tambahAnalysis');
-
-const authRoutes = require('./smartandon/auth');
-const userRoutes = require('./smartandon/user');
-const sparepartRoutes = require('./smartandon/spareparts')
+const authRoutes = require('./smartandon/auth.route');
+const userRoutes = require('./smartandon/user.route');
+const sparepartRoutes = require('./smartandon/spareparts.route');
+const tambahAnalysis = require('./smartandon/tambahAnalysis.route');
 
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
-const { path } = require('../app');
 
 const router = express.Router();
 
-const defaultRoutes = [
-  {
-    path: '/gauge',
-    route: GaugeRoute,
-  },
-  {
-    path: '/common',
-    route: CommonRoute,
-  },
+const smartAndonRoutes = [
   {
     path: '/dashboard',
     route: dashboardRoutes,
   },
   {
-    path: '/smartandon',
+    path: '/qccMTypes',
     route: qccMTypesRoutes,
   },
   {
-    path: '/smartandon',
+    path: '/line',
     route: lineRoutes,
   },
   {
-    path: '/smartandon',
+    path: '/machine',
     route: machineRoutes,
   },
   {
-    path: '/smartandon',
+    path: '/member',
+    route: memberRoutes,
+  },
+  {
+    path: '/machine-stop-input',
+    route: machineStopInputRoutes,
+  },
+  {
+    path: '/problem',
     route: problemRoutes,
   },
   {
-    path: '/smartandon',
-    route: downloadRoutes,
-  },
-  {
-    path: '/realtime-pareto',
-    route: realtimeParetoRoutes,
+    path: '/oee',
+    route: oeeRoutes,
   },
   {
     path: '/mtbfmttr',
     route: mtbfmttrRoutes,
   },
   {
-    path: '/smartandon',
-    route: oeeRoutes,
-  },
-  {
-    path: '/smartandon',
-    route: memberRoutes,
+    path: '/realtime-pareto',
+    route: realtimeParetoRoutes,
   },
   {
     path: '/summary',
@@ -87,6 +75,10 @@ const defaultRoutes = [
     route: cmFollowupRoutes,
   },
   {
+    path: '/download',
+    route: downloadRoutes,
+  },
+  {
     path: '/auth',
     route: authRoutes,
   },
@@ -95,32 +87,41 @@ const defaultRoutes = [
     route: userRoutes,
   },
   {
-    path: '/smartandon',
-    route: machineStopInputRoutes,
+    path: '/sparepart',
+    route: sparepartRoutes,
   },
   {
-    path: '/smartandon',
+    path: '/tambahAnalysis',
     route: tambahAnalysis,
   },
+];
+
+const GaugeRoutes = [
   {
-    path: '/smartandon',
-    route: sparepartRoutes,
+    path: '/gauge',
+    route: GaugeRoute,
+  },
+  {
+    path: '/common',
+    route: CommonRoute,
   },
 ];
 
 const devRoutes = [
-  // routes available only in development mode
   {
     path: '/docs',
     route: docsRoute,
   },
 ];
 
-defaultRoutes.forEach((route) => {
-  router.use(route.path, route.route);
+smartAndonRoutes.forEach((route) => {
+  router.use(`/smartandon/${route.path}`, route.route);
 });
 
-/* istanbul ignore next */
+GaugeRoutes.forEach((route) => {
+  router.use(`/qdc/${route.path}`, route.route);
+});
+
 if (config.env === 'dev' || config.env === 'local') {
   devRoutes.forEach((route) => {
     router.use(route.path, route.route);

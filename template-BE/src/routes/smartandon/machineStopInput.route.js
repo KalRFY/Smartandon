@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const machineStopInputController = require('../../controllers/smartandon/machineStopInput.controller');
+
+const router = express.Router();
 
 router.get('/machineStopInput', machineStopInputController.getMachineStopInput);
 router.get('/problemNameSuggestions', machineStopInputController.getProblemNameSuggestions);

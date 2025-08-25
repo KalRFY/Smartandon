@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const tambahAnalysisController = require('../../controllers/smartandon/tambahAnalysis.controller');
+
+const router = express.Router();
 
 router.get('/tambahAnalysis', tambahAnalysisController.getTambahAnalysis);
 

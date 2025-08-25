@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const machineController = require('../../controllers/smartandon/machine.controller');
+
+const router = express.Router();
 
 router.get('/machine', machineController.getMachine);
 
