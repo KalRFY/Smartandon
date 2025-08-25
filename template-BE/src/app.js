@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const express = require('express');
 const helmet = require('helmet');
 const xss = require('xss-clean');
@@ -5,7 +6,6 @@ const compression = require('compression');
 const cors = require('cors');
 const passport = require('passport');
 const httpStatus = require('http-status');
-const fileUpload = require('express-fileupload');
 // const schedule = require('node-schedule');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -18,7 +18,6 @@ const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
 
 const app = express();
-const dashboardRoutes = require('./routes/smartandon/dashboard');
 
 global.__basedir = `${__dirname}/..`;
 
@@ -33,9 +32,8 @@ app.use(helmet());
 // parse json request body
 app.use(express.json({ limit: '50mb' }));
 
+// file upload
 app.use(bodyParser.urlencoded({ extended: false }));
-
-// app.use(fileUpload());
 
 // sanitize request data
 app.use(xss());
@@ -48,7 +46,6 @@ app.use(cors({ exposedHeaders: ['Content-Disposition'] }));
 app.options('*', cors());
 
 // Serve static files from reports/uploads directory
-
 app.use('/reports/uploads', express.static(path.join(__dirname, '../reports/uploads')));
 
 // jwt authentication
@@ -63,13 +60,8 @@ if (config.env === 'production') {
 // v1 api routes
 app.use('/api', routes);
 
-// Add direct access to dashboard routes
-app.use('/dashboard', dashboardRoutes);
-// app.use('/problem', dashboardRoutes);
-
 // Add a welcome route for the root path
 app.get('/', (req, res) => {
-  console.log('ENV: ', config.env);
   res.status(200).json({
     message: 'Welcome to Smart Andon API',
     version: '1.0.0',
@@ -80,8 +72,6 @@ app.get('/', (req, res) => {
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
-  // Log only essential request information instead of the entire request object
-  console.log(`Unhandled route: ${req.method} ${req.originalUrl}`);
   next(new ApiError(httpStatus.NOT_FOUND, `Route not found: ${req.originalUrl}`));
 });
 
@@ -92,8 +82,3 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 module.exports = app;
-
-const port = process.env.PORT || 3001;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});

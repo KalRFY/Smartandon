@@ -6,48 +6,52 @@ const { sequelize } = require('./models');
 
 const startServer = async () => {
   try {
-    // Test database connection first
+    // Test database connection
     logger.info('Testing database connection...');
     await sequelize.authenticate();
     logger.info('Database connection established successfully.');
-    
-    // Sync all models with the database, creating or altering tables as needed
+
+    // Sync models
     logger.info('Syncing database models...');
     await sequelize.sync({ alter: true });
     logger.info('Database models synced successfully.');
-    
+
+    // Seed initial data
     await seedDashboardData();
+
+    // Start server
     const server = app.listen(config.port, () => {
-      logger.info(`Listening to port ${config.port}`);
+      logger.info(`Listening on port ${config.port}`);
     });
 
-    const exitHandler = () => {
-      if (server) {
+    // Graceful shutdown
+    const shutdown = (code = 1) => {
+      if (server.close) {
         server.close(() => {
           logger.info('Server closed');
-          process.exit(1);
+          process.exit(code);
         });
       } else {
-        process.exit(1);
+        process.exit(code);
       }
     };
 
-    const unexpectedErrorHandler = (error) => {
+    // Handle errors
+    const handleUnexpectedError = (error) => {
       logger.error(error);
-      exitHandler();
+      shutdown(1);
     };
 
-    process.on('uncaughtException', unexpectedErrorHandler);
-    process.on('unhandledRejection', unexpectedErrorHandler);
+    process.on('uncaughtException', handleUnexpectedError);
+    process.on('unhandledRejection', handleUnexpectedError);
 
     process.on('SIGTERM', () => {
       logger.info('SIGTERM received');
-      if (server) {
-        server.close();
-      }
+      shutdown(0);
     });
   } catch (error) {
     logger.error('Failed to start server:', error);
+    process.exit(1);
   }
 };
 

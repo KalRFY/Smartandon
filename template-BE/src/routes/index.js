@@ -1,6 +1,8 @@
 const express = require('express');
-const docsRoute = require('./docs.route');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const config = require('../config/config');
+const swaggerDefinition = require('../docs/swaggerDef');
 
 const dashboardRoutes = require('./smartandon/dashboard.route');
 const qccMTypesRoutes = require('./smartandon/qccMTypes.route');
@@ -107,13 +109,6 @@ const GaugeRoutes = [
   },
 ];
 
-const devRoutes = [
-  {
-    path: '/docs',
-    route: docsRoute,
-  },
-];
-
 smartAndonRoutes.forEach((route) => {
   router.use(`/smartandon/${route.path}`, route.route);
 });
@@ -123,9 +118,17 @@ GaugeRoutes.forEach((route) => {
 });
 
 if (config.env === 'dev' || config.env === 'local') {
-  devRoutes.forEach((route) => {
-    router.use(route.path, route.route);
+  const specs = swaggerJsdoc({
+    swaggerDefinition,
+    apis: ['src/docs/*.yml', 'src/routes/**/*.route.js'],
   });
+  router.use('/docs', swaggerUi.serve);
+  router.get(
+    '/docs',
+    swaggerUi.setup(specs, {
+      explorer: true,
+    })
+  );
 }
 
 module.exports = router;
