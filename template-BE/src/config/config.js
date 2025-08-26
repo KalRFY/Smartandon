@@ -18,12 +18,20 @@ const envVarsSchema = Joi.object()
     PORT: Joi.number().default(3000),
 
     // QDC DB MySQL
-    USER_DB_NEW: Joi.string().required(),
-    PASSWORD_DB_NEW: Joi.string().required(),
-    NAME_DB_NEW: Joi.string().required(),
-    HOST_DB_NEW: Joi.string().required(),
-    DB_PORT: Joi.number().default(3306),
-    QDC_MSSQL_DBDIALECT: Joi.string().default('mysql'),
+    QDC_MYSQL_USER: Joi.string().required(),
+    QDC_MYSQL_PASSWORD: Joi.string().required(),
+    QDC_MYSQL_NAME: Joi.string().required(),
+    QDC_MYSQL_HOST: Joi.string().required(),
+    QDC_MYSQL_PORT: Joi.number().default(3306),
+    QDC_MYSQL_DBDIALECT: Joi.string().default('mysql'),
+
+    // MariaDB
+    MARIADB_USER: Joi.string(),
+    MARIADB_PASSWORD: Joi.string(),
+    MARIADB_NAME: Joi.string(),
+    MARIADB_HOST: Joi.string(),
+    MARIADB_PORT: Joi.number().default(3306),
+    MARIADB_DBDIALECT: Joi.string().default('mariadb'),
 
     // QDC PostgreSQL
     QDC_PG_USER: Joi.string(),
@@ -77,12 +85,12 @@ const config = {
 
   // Databases
   qdc_db: {
-    username: envVars.USER_DB_NEW,
-    password: envVars.PASSWORD_DB_NEW,
-    database: envVars.NAME_DB_NEW,
-    host: envVars.HOST_DB_NEW,
-    dialect: envVars.QDC_MSSQL_DBDIALECT,
-    port: envVars.DB_PORT,
+    username: envVars.QDC_MYSQL_USER,
+    password: envVars.QDC_MYSQL_PASSWORD,
+    database: envVars.QDC_MYSQL_NAME,
+    host: envVars.QDC_MYSQL_HOST,
+    dialect: envVars.QDC_MYSQL_DBDIALECT,
+    port: envVars.QDC_MYSQL_PORT,
     dialectOptions: {
       connectTimeout: 60000,
       acquireTimeout: 60000,
@@ -109,6 +117,44 @@ const config = {
       idle: 10000,
     },
     searchPath: 'mt_sys',
+  },
+  maria_db: {
+    username: envVars.MARIADB_USER,
+    password: envVars.MARIADB_PASSWORD,
+    database: envVars.MARIADB_NAME,
+    host: envVars.MARIADB_HOST,
+    dialect: envVars.MARIADB_DBDIALECT,
+    port: envVars.MARIADB_PORT,
+    dialectOptions: {
+      connectTimeout: 60000,
+      acquireTimeout: 60000,
+      timeout: 60000,
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  },
+  postgres: {
+    username: envVars.POSTGRES_USER,
+    password: envVars.POSTGRES_PASSWORD,
+    database: envVars.POSTGRES_NAME,
+    host: envVars.POSTGRES_HOST,
+    dialect: envVars.POSTGRES_DBDIALECT,
+    port: envVars.POSTGRES_PORT,
+    dialectOptions: {
+      connectTimeout: 60000,
+      acquireTimeout: 60000,
+      timeout: 60000,
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
   },
   platform_db: {
     username: envVars.PLATFORM_DB_USER,
