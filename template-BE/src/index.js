@@ -1,23 +1,24 @@
 const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
-const seedDashboardData = require('./seeders/dashboardDataSeeder');
-const { sequelize } = require('./models');
+const { connectToMySQL } = require('./config/mysql');
+const { connectToMariaDB } = require('./config/mariadb');
+const { connectToPostgres } = require('./config/postgres');
 
 const startServer = async () => {
   try {
     // Test database connection
-    logger.info('Testing database connection...');
-    await sequelize.authenticate();
-    logger.info('Database connection established successfully.');
+    await connectToMySQL();
+    await connectToPostgres();
+    // await connectToMariaDB();
 
     // Sync models
-    logger.info('Syncing database models...');
-    await sequelize.sync({ alter: true });
-    logger.info('Database models synced successfully.');
+    // logger.info('Syncing database models...');
+    // await sequelize.sync({ alter: true });
+    // logger.info('Database models synced successfully.');
 
     // Seed initial data
-    await seedDashboardData();
+    // await seedDashboardData();
 
     // Start server
     const server = app.listen(config.port, () => {
