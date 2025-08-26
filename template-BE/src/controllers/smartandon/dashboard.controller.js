@@ -2,6 +2,21 @@ const path = require('path');
 const fs = require('fs');
 const { newMachineInput } = require('../../models');
 
+const defaultController = (req, res, next) => {
+  try {
+    res.status(200).json({
+      status: 'success',
+      message: 'Dashboard API is working',
+      data: {
+        version: '1.0.0',
+        endpoints: ['/dashboard', '/dashboard/metrics', '/dashboard/data', '/dashboard/machine-stop-input'],
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getDashboardData = (req, res, next) => {
   try {
     const dataPath = path.resolve(__dirname, '../../data/dashboardData');
@@ -16,7 +31,6 @@ const getDashboardData = (req, res, next) => {
 const saveMachineStopInput = async (req, res, next) => {
   try {
     const { fid, errorID, machineName, lineName, problemDescription } = req.body;
-    
     if (!machineName || !lineName || !problemDescription) {
       return res.status(400).json({ status: 'fail', message: 'Missing required fields' });
     }
@@ -35,12 +49,8 @@ const saveMachineStopInput = async (req, res, next) => {
   }
 };
 
-
-
-
-
-
 module.exports = {
   getDashboardData,
   saveMachineStopInput,
+  defaultController,
 };
