@@ -101,7 +101,7 @@
 <script setup>
 import { ref } from 'vue'
 import loginPhoto from '@/assets/images/plant_1.jpg';
-
+import api from '@/apis/CommonAPI'
 const name = ref('')
 const noreg = ref('')
 const phone = ref('')
@@ -121,32 +121,33 @@ const onRegister = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch('http://localhost:3000/api/auth/register', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json' 
-      },
-      body: JSON.stringify({
-        name: name.value,
-        noreg: noreg.value,
-        phone: phone.value,
-      }),
+    const response = await api.post('/auth/register', {
+      name: name.value,
+      noreg: noreg.value,
+      phone: phone.value,
     })
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}))
-      throw new Error(data.message || 'Registration failed. Please try again.')
+    if (response?.status === 201 || response?.status === 200) {
+      success.value = 'Registration successful!'
+      setTimeout(() => {
+        success.value = ''
+        window.location.href = '/#/app/dashboard'
+      }, 3000)
+      name.value = ''
+      noreg.value = ''
+      phone.value = ''
+      setTimeout(() => {
+        window.location.href = '/#/auth/login'
+      }, 1000)
+    } else {
+      const errorData = response?.response?.data
+      if (errorData && errorData.errors) {
+        throw new Error(errorData.errors[0] || 'Registration failed. Please try again.')
+      } else if (errorData && errorData.message) {
+        throw new Error(errorData.message || 'Registration failed. Please try again.')
+      } else {
+        throw new Error('Registration failed. Please try again.')
+      }
     }
-    success.value = 'Registration successful!'
-    setTimeout(() => {
-      success.value = ''
-      window.location.href = '/#/app/dashboard'
-    }, 3000)
-    name.value = ''
-    noreg.value = ''
-    phone.value = ''
-    setTimeout(() => {
-      window.location.href = '/#/auth/login'
-    }, 1000)
   } catch (e) {
     error.value = e.message || 'Registration failed. Please try again.'
     setTimeout(() => {

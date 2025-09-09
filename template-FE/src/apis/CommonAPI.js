@@ -41,7 +41,9 @@ export default {
         let detailUrl = url
         if(params == '?'){
             detailUrl = process.env.VUE_APP_API_URL + `${url}`
-        }else{
+        }else if (!params || params == ''){
+            detailUrl = process.env.VUE_APP_API_URL + `${url}`
+        } else{
             detailUrl = process.env.VUE_APP_API_URL + `${url}/search${params}`
         }
         console.log('DATA URL', detailUrl)
