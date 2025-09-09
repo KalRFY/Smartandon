@@ -122,6 +122,68 @@ exports.downloadTemplate = async (req, res, next) => {
 
 const mime = require('mime-types');
 
+exports.getAllProblems = async (req, res, next) => {
+  try {
+    const {
+      startDate,
+      finishDate,
+      line,
+      machineName,
+      problem,
+      problemCategory
+    } = req.query;
+
+    // Build query parameters
+    const params = {
+      startDate: startDate || undefined,
+      finishDate: finishDate || undefined,
+      line: line || undefined,
+      machineName: machineName || undefined,
+      problem: problem || undefined,
+      problemCategory: problemCategory || undefined,
+    };
+
+    // Remove undefined parameters
+    Object.keys(params).forEach(key => {
+      if (params[key] === undefined) {
+        delete params[key];
+      }
+    });
+
+    // Query to get all problems without pagination
+    let query = `
+      SELECT * FROM v_current_error_2 
+      WHERE 1=1
+    `;
+    
+    if (startDate) query += ' AND DATE(fend_time) >= :startDate';
+    if (finishDate) query += ' AND DATE(fend_time) <= :finishDate';
+    if (line) query += ' AND fline = :line';
+    if (machineName) query += ' AND fmc_name = :machineName';
+    if (problem) {
+      query += ' AND ferror_name LIKE :problem';
+      params.problem = `%${params.problem}%`;
+    }
+    if (problemCategory) query += ' AND problemCategory = :problemCategory';
+    
+    query += ' ORDER BY fend_time DESC';
+
+    const results = await sequelize.query(query, {
+      replacements: params,
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    res.json({
+      success: true,
+      data: results,
+      total: results.length
+    });
+  } catch (error) {
+    console.error('Error fetching all problems:', error);
+    next(error);
+  }
+};
+
 exports.getImageController = async (req, res) => {
   const pathImage = `${req.query.path}`;
   const folderPath = path.dirname(pathImage);
@@ -148,4 +210,205 @@ exports.getImageController = async (req, res) => {
   });
 
   ps.pipe(res);
+};
+
+exports.downloadExcel = async (req, res, next) => {
+  try {
+    if (!XLSXPopulate) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send('xlsx-populate module is not available');
+    }
+
+    const { startDate, finishDate, machineName, line, problem, problemCategory } = req.query;
+
+    // Build where clause for filtering (same as getProblemView)
+    let whereClause = 'WHERE fid IS NOT NULL';
+    const replacements = {};
+
+    if (startDate || finishDate) {
+      if (startDate == finishDate) {
+        whereClause += ` AND fstart_time LIKE '%${startDate}%'`;
+        whereClause += ` AND fstart_time LIKE '%${finishDate}%'`;
+      } else {
+        if (startDate) {
+          whereClause += ` AND fstart_time >= '${startDate}'`;
+          replacements.startDate = startDate;
+        }
+        if (finishDate) {
+          whereClause += ` AND fend_time <= '${finishDate}'`;
+          replacements.finishDate = finishDate;
+        }
+      }
+    }
+    if (machineName) {
+      whereClause += ` AND fmc_name LIKE '%${machineName}%'`;
+    }
+    if (line) {
+      whereClause += ` AND line_id = ${line}`;
+    }
+    if (problem) {
+      whereClause += ` AND ferror_name LIKE '%${problem}%'`;
+    }
+
+    if (problemCategory) {
+      whereClause += ` AND (problemCategory = ${problemCategory}`;
+      if (problemCategory == 3) {
+        whereClause += ` 
+          OR (
+            ((fdur >= 120 AND fdur < 659) AND (line_id = 1 OR line_id = 2)) OR
+            ((fdur >= 120 AND fdur < 359) AND (line_id IN (3,4,5,6))) OR
+            (fdur >= 15 AND fdur < 179 AND line_id = 7)
+          )
+        `;
+      } else if (problemCategory == 4) {
+        whereClause += ` 
+          OR (
+          ((fdur >= 659) AND (line_id = 1 OR line_id = 2)) OR
+          ((fdur >= 359) AND (line_id IN (3,4,5,6))) OR
+          (fdur >= 179 AND line_id = 7)
+        )
+        `;
+      }
+      whereClause += `)`;
+    }
+
+    // Query data with the same structure as getProblemView
+    const dataQuery = `
+      SELECT
+        fid,
+        line_id,
+        fline,
+        fmc_name,
+        fmaker,
+        foperation_no,
+        freg,
+        fbit,
+        ferror_name,
+        ferror_detail,
+        fstart_time,
+        fend_time,
+        fdur,
+        foperator,
+        fshift,
+        freal_prob,
+        fav_categoty,
+        froot_cause,
+        fstep_repair,
+        fpart_change,
+        fpermanet_cm,
+        fwhy_analisys,
+        fpdf_report,
+        fimage,
+        fDescImage,
+        tmp,
+        fpermanet_cm_lama,
+        fyokoten,
+        fyokoten_date,
+        fyokoten_pic,
+        fiveWhyLhApprove,
+        fiveWhyShApprove,
+        fiveWhyLhFeedback,
+        fiveWhyShFeedback,
+        cmLhApprove,
+        cmShApprove,
+        cmLhFeedback,
+        cmShFeedback,
+        temporaryAction,
+        cmDhApprove,
+        cmDhFeedback,
+        cmTlApprove,
+        cmTlFeedback,
+        fattachment,
+        id_m_problem_member,
+        id_member_thema,
+        fname_theme_member,
+        fimage_member,
+        why1_img,
+        fstep_new,
+        gapIlustrasi,
+        why2_img,
+        why12_img,
+        why22_img,
+        oCategory,
+        qCategory,
+        problemCategory,
+        file_report
+      FROM v_current_error_2
+      ${whereClause}
+      ORDER BY fid ASC
+    `;
+
+    console.log('Excel Download Query:', dataQuery);
+    const [problemsData] = await sequelize.query(dataQuery, { replacements });
+
+    // Create Excel workbook
+    const workbook = await XLSXPopulate.fromBlankAsync();
+    const sheet = workbook.sheet(0);
+
+    // Set headers
+    const headers = [
+      'ID', 'Line ID', 'Line', 'Machine Name', 'Maker', 'Operation No', 
+      'Reg', 'Bit', 'Problem Name', 'Problem Detail', 'Start Time', 
+      'End Time', 'Duration', 'Operator', 'Shift', 'Real Problem',
+      'AV Category', 'Root Cause', 'Step Repair', 'Part Change',
+      'Permanent CM', 'Why Analysis', 'PDF Report', 'Image',
+      'Desc Image', 'Temp', 'Permanent CM Lama', 'Yokoten',
+      'Yokoten Date', 'Yokoten PIC', '5Why LH Approve', '5Why SH Approve',
+      '5Why LH Feedback', '5Why SH Feedback', 'CM LH Approve', 'CM SH Approve',
+      'CM LH Feedback', 'CM SH Feedback', 'Temporary Action', 'CM DH Approve',
+      'CM DH Feedback', 'CM TL Approve', 'CM TL Feedback', 'Attachment',
+      'Problem Member ID', 'Member Theme ID', 'Member Theme Name', 'Member Image',
+      'Why 1 Image', 'Step New', 'Gap Illustration', 'Why 2 Image',
+      'Why 12 Image', 'Why 22 Image', 'O Category', 'Q Category',
+      'Problem Category', 'File Report'
+    ];
+
+    headers.forEach((header, index) => {
+      sheet.cell(1, index + 1).value(header).style('bold', true);
+    });
+
+    // Fill data
+    problemsData.forEach((problem, rowIndex) => {
+      const row = rowIndex + 2;
+      const values = [
+        problem.fid, problem.line_id, problem.fline, problem.fmc_name,
+        problem.fmaker, problem.foperation_no, problem.freg, problem.fbit,
+        problem.ferror_name, problem.ferror_detail, problem.fstart_time,
+        problem.fend_time, problem.fdur, problem.foperator, problem.fshift,
+        problem.freal_prob, problem.fav_categoty, problem.froot_cause,
+        problem.fstep_repair, problem.fpart_change, problem.fpermanet_cm,
+        problem.fwhy_analisys, problem.fpdf_report, problem.fimage,
+        problem.fDescImage, problem.tmp, problem.fpermanet_cm_lama,
+        problem.fyokoten, problem.fyokoten_date, problem.fyokoten_pic,
+        problem.fiveWhyLhApprove, problem.fiveWhyShApprove,
+        problem.fiveWhyLhFeedback, problem.fiveWhyShFeedback,
+        problem.cmLhApprove, problem.cmShApprove, problem.cmLhFeedback,
+        problem.cmShFeedback, problem.temporaryAction, problem.cmDhApprove,
+        problem.cmDhFeedback, problem.cmTlApprove, problem.cmTlFeedback,
+        problem.fattachment, problem.id_m_problem_member, problem.id_member_thema,
+        problem.fname_theme_member, problem.fimage_member, problem.why1_img,
+        problem.fstep_new, problem.gapIlustrasi, problem.why2_img,
+        problem.why12_img, problem.why22_img, problem.oCategory,
+        problem.qCategory, problem.problemCategory, problem.file_report
+      ];
+
+      values.forEach((value, colIndex) => {
+        sheet.cell(row, colIndex + 1).value(value);
+      });
+    });
+
+    // Auto-size columns
+    sheet.usedRange().style('autoWidth', true);
+
+    // Set response headers for file download
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="problems_export_${new Date().toISOString().split('T')[0]}.xlsx"`);
+
+    // Send the Excel file
+    const buffer = await workbook.outputAsync();
+    res.send(buffer);
+
+  } catch (error) {
+    console.error('Error generating Excel file:', error);
+    next(error);
+  }
 };
