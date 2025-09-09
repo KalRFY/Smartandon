@@ -1,4 +1,3 @@
-<!-- TableActions.vue -->
 <template>
   <CRow class="mb-3">
     <CCol>
@@ -125,6 +124,7 @@
 
 <script>
 import { CRow, CCol, CButton, CFormLabel, CButtonGroup } from '@coreui/vue'
+import axios from 'axios'
 
 export default {
   name: 'TableActions',
@@ -141,6 +141,34 @@ export default {
       type: Boolean,
       default: false,
     },
+    filterStartDate: {
+      type: String,
+      default: ''
+    },
+    filterFinishDate: {
+      type: String,
+      default: ''
+    },
+    selectedLine: {
+      type: [String, Number],
+      default: null
+    },
+    selectedMachineName: {
+      type: [String, Number],
+      default: null
+    },
+    selectedProblem: {
+      type: String,
+      default: ''
+    },
+    selectedProblemCategory: {
+      type: [String, Number],
+      default: null
+    },
+    problemsData: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {
@@ -161,7 +189,7 @@ export default {
         this.selectedFiltered = filtered
         this.$emit('filteredCategory', filtered)
       }
-    }
+    },
   },
 }
 </script>

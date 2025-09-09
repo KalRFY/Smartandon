@@ -4,10 +4,12 @@
       <CCard>
         <CCardBody>
           <TableActions
+            ref="tableActions"
             @freq="$emit('freq')"
             @ltb="$emit('ltb')"
-            @download="$emit('download')"
             @filterCategory="onFilterCategory"
+            @download="$emit('download')"
+            :problemsData="problems"
           />
 
           <hr />

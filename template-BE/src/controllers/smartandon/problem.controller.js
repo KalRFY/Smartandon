@@ -86,12 +86,13 @@ const getProblemView = async (req, res, next) => {
     const { limitView } = req.query;
 
     console.log('Limit View:', limitView);
+    console.log('Limit:', limit);
 
     let limitClause = `LIMIT ${limit} OFFSET ${offset}`;
-    // if (limitView == 0) {
-    //   limitClause = ``;
-    //   console.log('Iyaaaaa');
-    // }
+    if (limitView == 0) {
+      limitClause = ``;
+      console.log('Iyaaaaa');
+    }
     console.log('Limit Clauseee:', limitClause);
 
     // Build where clause for date filtering
@@ -160,7 +161,6 @@ const getProblemView = async (req, res, next) => {
     //   whereClause += `)`;
     // }
 
-    console.log('KONTOL');
     console.log(whereClause);
 
     // Query total count

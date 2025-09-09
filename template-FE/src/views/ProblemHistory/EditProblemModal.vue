@@ -1,5 +1,4 @@
 <template>
-
   <CModal
     :visible="visible"
     @close="$emit('close')"

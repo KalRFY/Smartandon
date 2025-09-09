@@ -62,7 +62,7 @@
           @goToPage="goToPage"
           @freq="freq"
           @ltb="ltb"
-          @download="download"
+          @download="downloadExcel"
           @filterCategory="onFilterCategory"
         />
       </div>
@@ -566,7 +566,7 @@ export default {
         finishDate: formatDateToISO(problemData.fend_time) || '',
         durationMin: problemData.fdur || '',
         problemCategory: problemData.problemCategory || '',
-        itemTemporaryAction: problemData.temporaryAction || '',
+        itemTemporaryAction: problemData.itemTemporaryAction || '',
         rootcauses5Why: problemData.freal_prob || '',
 
         tambahAnalysisTerjadi: (() => {
@@ -597,8 +597,8 @@ export default {
         whyLamaImage: problemData.why2_img || '',
         countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
         attachmentMeeting: problemData.attachmentMeeting || '',
-        comments5WhySH: problemData.fiveWhyShFeedback || '',
-        comments5WhyLH: problemData.fiveWhyLhFeedback || '',
+        comments5WhySH: problemData.comments5WhySH || '',
+        comments5WhyLH: problemData.comments5WhyLH || '',
         commentsCountermeasure: problemData.commentsCountermeasure || '',
         file_report: problemData.file_report || '',
         uploadFile: problemData.uploadFile || '',
@@ -855,8 +855,118 @@ export default {
       // console.log('Filter time1: ', filterStartDate, filterFinishDate, selectedLine, selectedMachineName, selectedProblem, problemCategory);
     },
 
-    download() {
-      alert('Download')
+    async fetchAllProblemsForExport() {
+      this.tableLoading = true; // Show loading indicator for export
+      try {
+        const params = {
+          limit: 0,
+          startDate: this.filterStartDate || undefined,
+          finishDate: this.filterFinishDate || undefined,
+          line: this.selectedLine || undefined,
+          machineName: this.selectedMachineName ? this.machineOptions.find(m => m.id === this.selectedMachineName)?.label : undefined,
+          problem: this.selectedProblem || undefined,
+          problemCategory: this.selectedProblemCategory || undefined,
+        };
+
+        console.log('[Export] Fetching all problems with params:', params);
+        const response = await axios.get('/api/smartandon/problemView', { params });
+        console.log('[Export] Received data for export:', response.data.data);
+
+        // Fetch tambahAnalysis data and merge it, similar to fetchProblems
+        const analysisResponse = await axios.get('/api/smartandon/tambahAnalysis');
+        const allAnalysis = analysisResponse.data;
+
+        const terjadiAnalysis = allAnalysis.filter(item => item.analisys_category === 'TERJADI');
+        const lamaAnalysis = allAnalysis.filter(item => item.analisys_category === 'LAMA');
+
+        const problemsWithAnalysis = response.data.data.map(problem => {
+          return {
+            ...problem,
+            terjadiAnalysis: terjadiAnalysis.filter(item => item.id_problem === problem.fid),
+            lamaAnalysis: lamaAnalysis.filter(item => item.id_problem === problem.fid),
+          };
+        });
+
+        return problemsWithAnalysis;
+      } catch (error) {
+        console.error('Error fetching all problems for export:', error);
+        alert('Error fetching data for export: ' + error.message);
+        return [];
+      } finally {
+        this.tableLoading = false; // Hide loading indicator
+      }
+    },
+
+    async downloadExcel() {
+      try {
+        const XLSX = await import('xlsx');
+        console.log('XLSX object:', XLSX);
+
+        const problemsToExport = await this.fetchAllProblemsForExport();
+
+        if (problemsToExport.length === 0) {
+          console.log('No data to download after fetching.');
+          alert('Tidak ada data untuk diunduh');
+          return;
+        }
+        console.log('Problems to export:', problemsToExport, 'length:', problemsToExport.length);
+
+        // Prepare data for Excel - only include specific columns
+        const formattedData = problemsToExport.map(problem => ({
+          Date: problem.fend_time ? new Date(problem.fend_time).toLocaleDateString() : '',
+          Machine: problem.fmc_name || '',
+          Problem: problem.ferror_name || '',
+          PIC: problem.foperator || '',
+          Line: problem.fline || '',
+          Duration: problem.fdur || '',
+          ProblemCategory: this.getProblemCategoryLabel(problem.problemCategory)
+        }));
+
+        // Create worksheet with formatted data
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+        // Set column widths for better readability
+        const columnWidths = [
+          { wch: 15 }, // Date
+          { wch: 20 }, // Machine
+          { wch: 30 }, // Problem
+          { wch: 20 }, // PIC
+          { wch: 10 }, // Line
+          { wch: 10 }, // Duration
+          { wch: 15 }  // ProblemCategory
+        ];
+        worksheet['!cols'] = columnWidths;
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Problems Data');
+
+        // Generate Excel file
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+        // Trigger download
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `problems_export_${new Date().toISOString().split('T')[0]}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        console.log('Excel file generated and download triggered.');
+      } catch (error) {
+        console.error('Error generating Excel file:', error);
+        alert('Error generating Excel file: ' + error.message);
+      }
+    },
+    getProblemCategoryLabel(categoryId) {
+      const categories = {
+        1: 'Small',
+        2: 'Chokotei', 
+        3: 'LTB',
+        4: 'SLTR',
+      };
+      return categories[categoryId] || 'Unknown';
     },
 
     async loadInitialData() {

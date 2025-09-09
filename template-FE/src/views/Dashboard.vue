@@ -1,21 +1,4 @@
 <template>
-  
-  <CRow class="mb-3">
-    <!-- <CCol sm="11" style="font-size: xx-large; font-weight: bold;">
-      Smartandon
-    </CCol>
-    <CCol sm="1" style="font-size: xx-large; font-weight: bold;">
-
-      <CButton color="dark" class="position-relative" style="font-weight: bold;"
-        @click="() => { visibleEnd = !visibleEnd }">
-        NEW
-        <CBadge color="danger" position="top-end" shape="rounded-pill">
-          99+ <span class="visually-hidden">unread messages</span>
-        </CBadge>
-      </CButton>
-    </CCol> -->
-  </CRow>
-
   <CRow class="mb-3">
     <CCol lg="3" class="mb-3">
       <CCard style="width: 100%; height: 100%;">
@@ -143,6 +126,7 @@
                     <CTableHeaderCell scope="col">Line</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
+                    <!-- <CTableHeaderCell scope="col">Action</CTableHeaderCell> -->
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -162,6 +146,9 @@
                         <label style="font-size: x-small; font-weight: bold; width: 100px; color: white;">{{ problem.fdur }} Minutes</label>
                       </CButton>
                     </CTableDataCell>
+                    <!-- <CTableDataCell>
+                      <CButton color="success" shape="rounded-pill" style="color: white; font-size: x-small; font-weight: bold; width: 100%; height: 100%;">Open Problem</CButton>
+                    </CTableDataCell> -->
                   </CTableRow>
                 </CTableBody>
               </CTable>
@@ -192,13 +179,13 @@
                         <CCol>
                           Target:
                           {{
-                            oeeTarget.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? 'N/A'
+                            oeeTarget.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.ftarget
                           }}
                         </CCol>
                         <CCol>
                           Actual:
                           {{
-                            oeeActual.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? 'N/A'
+                            oeeActual.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.factual
                           }}
                         </CCol>
                       </CRow>
@@ -283,6 +270,11 @@
     </CModal>
   </div>
 </template>
+
+
+
+
+
 
 <script>
 import { ref } from 'vue'
@@ -725,6 +717,13 @@ export default {
       this.problemActive = [];
     } finally {
       this.loadingProblemActive = false;
+    }
+    try {
+      const response = await axios.get('/api/smartandon/oeeDataSmartandon')
+      this.oeeDataSmartandon = response.data
+      console.log("OEE Target: " + this.oeeDataSmartandon);
+    } catch (error) {
+      console.log('Failed to fetch oee target:', error)
     }
     try {
       const response = await axios.get('/api/smartandon/oeeTarget')
