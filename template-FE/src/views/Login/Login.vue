@@ -87,7 +87,7 @@
 <script setup>
 import { ref } from 'vue'
 import loginPhoto from '@/assets/images/plant_1.jpg';
-
+import api from '@/apis/CommonAPI'
 const password = ref('')
 const isLoading = ref(false)
 const error = ref('')
@@ -106,32 +106,24 @@ const onLogin = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch('http://localhost:3000/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        noreg: noreg.value,
-        password: password.value,
-      }),
+    const response = await api.post('/auth/login', {
+      noreg: noreg.value,
+      password: password.value,
     })
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}))
-      throw new Error(data.message || 'Login failed. Please try again.')
+    if (response?.status === 200) {
+        success.value = 'Login successful!'
+        setTimeout(() => {
+          success.value = ''
+          window.location.href = '/#/app/dashboard'
+        }, 3000)
+        const data = response.data
+        console.log('Login data:', data)
+        localStorage.setItem('token', data.token)
+        noreg.value = ''
+        password.value = ''
+    } else {
+      throw new Error(response?.response?.data?.message || 'Login failed. Please try again.')
     }
-    success.value = 'Login successful!'
-    setTimeout(() => {
-      success.value = ''
-      window.location.href = '/#/app/dashboard'
-    }, 3000)
-    const data = await response.json()
-    localStorage.setItem('token', data.token)
-    noreg.value = ''
-    password.value = ''
-    setTimeout(() => {
-      window.location.href = '/#/app/dashboard'
-    }, 1000)
   } catch (e) {
     error.value = e.message || 'Login failed. Please try again.'
     console.error('Login error:', e)
