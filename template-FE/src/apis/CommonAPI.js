@@ -44,7 +44,7 @@ export default {
         }else if (!params || params == ''){
             detailUrl = process.env.VUE_APP_API_URL + `${url}`
         } else{
-            detailUrl = process.env.VUE_APP_API_URL + `${url}/search${params}`
+            detailUrl = process.env.VUE_APP_API_URL + `${url}?search=${encodeURIComponent(JSON.stringify(params))}`
         }
         console.log('DATA URL', detailUrl)
         console.log('DATA CONFIG', config)
@@ -88,8 +88,14 @@ export default {
     },
 
     async put(url, id, params, callback) {
+        let detailUrl;
+        if (id) {
+            detailUrl = `${url}/${id}`;
+        } else {
+            detailUrl = url;
+        }
         const request = await axios
-            .put(process.env.VUE_APP_API_URL + `${url}/edit/${id}`, params, {
+            .put(process.env.VUE_APP_API_URL + `${detailUrl}`, params, {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.id_token,
                 },
