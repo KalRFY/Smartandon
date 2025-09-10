@@ -294,7 +294,17 @@ export default {
       this.error = null
 
       try {
-        // Check if all filter data is empty or null
+        // If filterStartDate is empty, set it to first day of current month
+        if (!filters.filterStartDate) {
+          const now = new Date()
+          const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+          const yyyy = firstDay.getFullYear()
+          const mm = String(firstDay.getMonth() + 1).padStart(2, '0')
+          const dd = String(firstDay.getDate()).padStart(2, '0')
+          filters.filterStartDate = `${yyyy}-${mm}-${dd}`
+          this.filterStartDate = filters.filterStartDate
+        }
+
         const {
           filterStartDate = this.filterStartDate,
           filterFinishDate = this.filterFinishDate,
