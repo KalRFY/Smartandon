@@ -31,10 +31,11 @@ export default {
         // process.env.VUE_APP_STANDALONE_SINGLE_SPA == 'true' ? 
         //     localStorage.setItem('id_token', process.env.VUE_APP_TKN)
         //     : console.log('STANDALONE_SINGLE_SPA FALSE')
-
+        // const token = localStorage.getItem('id_token')
+        const token = localStorage.getItem('token')
         let config = {
             headers: { 
-                Authorization: 'Bearer ' + localStorage.id_token,
+                Authorization: 'Bearer ' + token,
             },
         }
 
@@ -46,8 +47,6 @@ export default {
         } else{
             detailUrl = process.env.VUE_APP_API_URL + `${url}?search=${encodeURIComponent(JSON.stringify(params))}`
         }
-        console.log('DATA URL', detailUrl)
-        console.log('DATA CONFIG', config)
         const request = axios
             .get(detailUrl, config)
             .then((response) => {
