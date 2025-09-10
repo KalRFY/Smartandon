@@ -1361,6 +1361,7 @@ import { cilClock } from '@coreui/icons'
 import { CIcon } from '@coreui/icons-vue'
 import LegendStatus from '@/views/ProblemHistory/components/LegendStatus.vue'
 import AnalysisTreeList from '@/components/AnalysisTreeList.vue'
+import api from '@/apis/CommonAPI'
 
 export default {
   name: 'EditProblemModal',
@@ -2256,34 +2257,41 @@ export default {
     
     onMounted(async () => {
       try {
-        const res = await fetch('/api/smartandon/member')
-        const data = await res.json()
-        console.log('PIC options data:', data)
-        picOptions.value = Array.isArray(data)
-          ? data.map((m) => ({
-            value: String(m.fid) || m.name,
-            label: m.fname,
-          }))
-          : []
+        const res = await api.get('/smartandon/member')
+        if (res.status === 200) {
+          const data = res.data.data || res.data
+          console.log('PIC options data:', data)
+          picOptions.value = Array.isArray(data)
+            ? data.map((m) => ({
+              value: String(m.fid) || m.name,
+              label: m.fname,
+            }))
+            : []
+        } else {
+          throw new Error(`Failed to load members, status: ${res.status}`)
+        }
       } catch (e) {
         picOptions.value = []
       }
 
       // Load sparepart options from problem history
       try {
-        const sparepartRes = await fetch('/api/smartandon/spareparts')
-        const sparepartData = await sparepartRes.json()
-        console.log('Sparepart options data:', sparepartData)
-        
-        // Handle both direct array and wrapped response
-        const spareparts = sparepartData.data || sparepartData
-        sparepartOptions.value = Array.isArray(spareparts)
-          ? spareparts.map((sp) => ({
-              id: sp.sparepart_id,
-              label: sp.sparepart_nm,
-            }))
-          : []
-        console.log('Processed sparepart options:', sparepartOptions.value)
+        const sparepartRes = await api.get('/smartandon/spareparts')
+        if (sparepartRes.status === 200) {
+          console.log('Sparepart options data:', sparepartRes)
+
+          // Handle both direct array and wrapped response
+          const spareparts = sparepartRes.data.data || sparepartRes
+          sparepartOptions.value = Array.isArray(spareparts)
+            ? spareparts.map((sp) => ({
+                id: sp.sparepart_id,
+                label: sp.sparepart_nm,
+              }))
+            : []
+          console.log('Processed sparepart options:', sparepartOptions.value)
+        } else {
+          throw new Error(`Failed to load spareparts, status: ${sparepartRes.status}`)
+        }
       } catch (e) {
         console.error('Error loading spareparts:', e)
         sparepartOptions.value = []
