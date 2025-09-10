@@ -34,15 +34,11 @@ export default {
 
     onMounted(async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/user/user', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        })
-        if (!response.ok) throw new Error('Failed to fetch user')
-        const data = await response.json()
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`
+        const response = await api.get('/user/user')
+        console.log("User data:", response)
+        if (response.status !== 200) throw new Error('Failed to fetch user')
+        const data = response.data
         userName.value = data.user.name || userName.value
         photo.value = data.user.photo || null
       } catch (e) {

@@ -72,18 +72,18 @@ const getProblem = async (req, res, next) => {
 const getProblemView = async (req, res, next) => {
   try {
     console.log(`===============================${req}===============================`);
-    console.log(req);
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 100;
+    const search = JSON.parse(req.query.search || '{}');
+    const page = parseInt(search.page) || 1;
+    const limit = parseInt(search.limit) || 100;
     const offset = (page - 1) * limit;
 
-    const { startDate } = req.query;
-    const { finishDate } = req.query;
-    const { machineName } = req.query;
-    const { line } = req.query;
-    const { problem } = req.query;
-    const { problemCategory } = req.query;
-    const { limitView } = req.query;
+    const { startDate } = search;
+    const { finishDate } = search;
+    const { machineName } = search;
+    const { line } = search;
+    const { problem } = search;
+    const { problemCategory } = search;
+    const { limitView } = search;
 
     console.log('Limit View:', limitView);
     console.log('Limit:', limit);

@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import api from '../../apis/CommonAPI'
 import { useRouter } from 'vue-router'
 import EditProblemModal from './EditProblemModal.vue'
@@ -380,10 +379,13 @@ export default {
           params,
         )
 
-        const response = await axios.get('/api/smartandon/problemView', {
-          params,
+        const response = await api.get('/smartandon/problemView', {
+          ...params,
         })
-
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch problems, status: ' + response.status)
+        }
+        console.log('[RepeatFlowChecker] API response:', response)
         console.log(
           '[RepeatFlowChecker] ProblemHistory received data from backend:',
           response.data.data,
@@ -397,9 +399,15 @@ export default {
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
 
         // Fetch tambahAnalysis data and store it
-        const analysisResponse = await axios.get('/api/smartandon/tambahAnalysis')
-        this.tambahAnalysisData = analysisResponse.data
+        const analysisResponse = await api.get('/smartandon/tambahAnalysis')
+        if (analysisResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch tambahAnalysis, status: ' +
+              analysisResponse.status,
+          )
+        }
 
+        this.tambahAnalysisData = analysisResponse.data
         const allAnalysis = analysisResponse.data
         console.log('Filtered Analysis:', allAnalysis);
         // console.log('Filter Analysis All:', this.filteredAnalysis);
@@ -459,9 +467,12 @@ export default {
       try {
         this.tableLoading = true
         this.modalLoading = true
-        const response = await axios.get(
-          `/api/smartandon/problemId/${problem.fid}`,
+        const response = await api.get(
+          `/smartandon/problemId/${problem.fid}`,
         )
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch problem, status: ' + response.status)
+        }
         const problemData = response.data
         console.log('Problem data:', problemData)
         this.submit = this.mapProblemDataToSubmit(problemData)
@@ -470,9 +481,15 @@ export default {
           JSON.stringify(this.submit, null, 2),
         )
 
-        const analysisResponse = await axios.get(
-          '/api/smartandon/tambahAnalysis',
+        const analysisResponse = await api.get(
+          '/smartandon/tambahAnalysis',
         )
+        if (analysisResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch tambahAnalysis, status: ' +
+              analysisResponse.status,
+          )
+        }
 
         const allAnalysis = analysisResponse.data
         const filteredAnalysis = allAnalysis.filter(
@@ -747,15 +764,15 @@ export default {
           }
         })
 
-        const response = await axios.put('/api/smartandon/update', formData)
-
-        if (response.data.status === 'success') {
+        const response = await api.put('/smartandon/update', null, formData)
+        console.log('Update response:', response)
+        if (response.status === 200) {
           alert('Input updated successfully')
           this.visibleLiveDemo = false
           this.submit = this.getInitialSubmitData()
           this.fetchProblems(this.currentPage)
         } else {
-          alert('Failed to update input')
+          throw new Error('Failed to update input, status: ' + response.status)
         }
       } catch (error) {
         console.error(error)
@@ -879,12 +896,19 @@ export default {
         };
 
         console.log('[Export] Fetching all problems with params:', params);
-        const response = await axios.get('/api/smartandon/problemView', { params });
+        const response = await api.get('/smartandon/problemView', {...params} );
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch problems for export, status: ' + response.status);
+        }
         console.log('[Export] Received data for export:', response.data.data);
 
         // Fetch tambahAnalysis data and merge it, similar to fetchProblems
-        const analysisResponse = await axios.get('/api/smartandon/tambahAnalysis');
+        const analysisResponse = await api.get('/smartandon/tambahAnalysis');
+        if (analysisResponse.status !== 200) {
+          throw new Error('Failed to fetch tambahAnalysis, status: ' + analysisResponse.status);
+        }
         const allAnalysis = analysisResponse.data;
+        console.log("ALL ANALYSIS: ", allAnalysis);
 
         const terjadiAnalysis = allAnalysis.filter(item => item.analisys_category === 'TERJADI');
         const lamaAnalysis = allAnalysis.filter(item => item.analisys_category === 'LAMA');
@@ -984,19 +1008,34 @@ export default {
       this.error = null
 
       try {
-        const machineResponse = await axios.get('/api/smartandon/machine')
+        const machineResponse = await api.get('/smartandon/machine')
+        if (machineResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch machines, status: ' + machineResponse.status,
+          )
+        }
         this.machineOptions = machineResponse.data.map((machine) => ({
           id: machine.fid,
           label: machine.fmc_name,
         }))
 
-        const lineResponse = await axios.get('/api/smartandon/line')
+        const lineResponse = await api.get('/smartandon/line')
+        if (lineResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch lines, status: ' + lineResponse.status,
+          )
+        }
         this.lineOptions = lineResponse.data.map((line) => ({
           id: line.fid,
           label: line.fline,
         }))
 
-        const memberResponse = await axios.get('/api/smartandon/member')
+        const memberResponse = await api.get('/smartandon/member')
+        if (memberResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch members, status: ' + memberResponse.status,
+          )
+        }
            console.log('RAW machineResponse:', machineResponse.data)
     console.log('RAW lineResponse:', lineResponse.data)
 
