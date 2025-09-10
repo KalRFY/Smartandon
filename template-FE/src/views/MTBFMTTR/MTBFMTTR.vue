@@ -126,6 +126,7 @@ import {
   CRow,
   CCol,
 } from '@coreui/vue'
+import api from '../../apis/CommonAPI'
 
 const chartModes = [
   { value: 'mtbf', label: 'MTBF' },
@@ -141,7 +142,7 @@ const filterTypes = [
 
 const currentTime = ref('')
 const now = new Date()
-const days = [
+const days = [  
   'Sunday',
   'Monday',
   'Tuesday',
@@ -213,8 +214,8 @@ function setFilterType(val) {
 }
 
 const getApiEndpoint = () => {
-  if (chartViewMode.value === 'mtbf') return '/api/mtbfmttr/mtbf'
-  if (chartViewMode.value === 'mttr') return '/api/mtbfmttr/mttr'
+  if (chartViewMode.value === 'mtbf') return '/mtbfmttr/mtbf'
+  if (chartViewMode.value === 'mttr') return '/mtbfmttr/mttr'
   return '/api/mtbfmttr/mtbfmttr'
 }
 
@@ -227,12 +228,12 @@ const fetchAllData = async () => {
   try {
     const endpoint = getApiEndpoint()
     const url = `${endpoint}?startDate=${startDate.value}&endDate=${endDate.value}&type=${filterType.value}`
-    const response = await fetch(url)
-    const result = await response.json()
-    if (result.status === 200 && Array.isArray(result.data)) {
+    const response = await api.get(url)
+    const result = response.data
+    console.log('Fetch URL:', response)
+    if (response.status === 200 && Array.isArray(result?.data)) {
       const mapped = {}
       if (filterType.value === 'machines') {
-        // Group data by lineId, each containing array of machines with mtbf/mttr
         result.data.forEach((item) => {
           const id =
             flineMap[item.fline] ||
@@ -278,6 +279,7 @@ const fetchAllData = async () => {
       apiData.value = mapped
     } else {
       apiData.value = {}
+      throw new Error('Failed to fetch MTBF/MTTR data, status: ' + response.status)
     }
   } catch (e) {
     apiData.value = {}
