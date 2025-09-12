@@ -96,9 +96,6 @@ const smartAndonRoutes = [
     path: '/tambahAnalysis',
     route: tambahAnalysis,
   },
-];
-
-const GaugeRoutes = [
   {
     path: '/gauge',
     route: GaugeRoute,
@@ -110,11 +107,7 @@ const GaugeRoutes = [
 ];
 
 smartAndonRoutes.forEach((route) => {
-  router.use(`/smartandon/${route.path}`, route.route);
-});
-
-GaugeRoutes.forEach((route) => {
-  router.use(`/qdc/${route.path}`, route.route);
+  router.use(route.path, route.route);
 });
 
 if (config.env === 'dev' || config.env === 'local') {
