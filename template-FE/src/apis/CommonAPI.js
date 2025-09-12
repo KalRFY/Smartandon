@@ -31,21 +31,22 @@ export default {
         // process.env.VUE_APP_STANDALONE_SINGLE_SPA == 'true' ? 
         //     localStorage.setItem('id_token', process.env.VUE_APP_TKN)
         //     : console.log('STANDALONE_SINGLE_SPA FALSE')
-
+        // const token = localStorage.getItem('id_token')
+        const token = localStorage.getItem('token')
         let config = {
             headers: { 
-                Authorization: 'Bearer ' + localStorage.id_token,
+                Authorization: 'Bearer ' + token,
             },
         }
 
         let detailUrl = url
         if(params == '?'){
             detailUrl = process.env.VUE_APP_API_URL + `${url}`
-        }else{
-            detailUrl = process.env.VUE_APP_API_URL + `${url}/search${params}`
+        }else if (!params || params == ''){
+            detailUrl = process.env.VUE_APP_API_URL + `${url}`
+        } else{
+            detailUrl = process.env.VUE_APP_API_URL + `${url}?search=${encodeURIComponent(JSON.stringify(params))}`
         }
-        console.log('DATA URL', detailUrl)
-        console.log('DATA CONFIG', config)
         const request = axios
             .get(detailUrl, config)
             .then((response) => {
@@ -86,8 +87,14 @@ export default {
     },
 
     async put(url, id, params, callback) {
+        let detailUrl;
+        if (id) {
+            detailUrl = `${url}/${id}`;
+        } else {
+            detailUrl = url;
+        }
         const request = await axios
-            .put(process.env.VUE_APP_API_URL + `${url}/edit/${id}`, params, {
+            .put(process.env.VUE_APP_API_URL + `${detailUrl}`, params, {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.id_token,
                 },

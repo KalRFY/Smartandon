@@ -199,7 +199,6 @@
 <script>
 import { ref } from 'vue'
 import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText } from '@coreui/vue';
-import axios from 'axios';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
@@ -266,7 +265,10 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('/api/smartandon/spareparts');
+      const response = await api.get('/smartandon/spareparts');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch spareparts, status: ' + response.status);
+      }
       this.spareparts = response.data?.data || response.data;
       this.sparepartsOption = this.spareparts.map(sparepart => ({
         id: sparepart.sparepart_id,
@@ -278,11 +280,12 @@ export default {
     try {
       this.loadingProblemActive = true;
       this.limitView = 0;
-      const response = await axios.get('/api/smartandon/problemView', {
-        params: { 
+      const response = await api.get('/smartandon/problemView', {
           limitView: 0,
-        }
       });
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch active problems, status: ' + response.status);
+      }
       this.problemActive = response.data?.data || response.data;
       console.log('Filtered active problems:', this.problemActive);
     } catch (error) {
@@ -292,13 +295,19 @@ export default {
       this.loadingProblemActive = false;
     }
     try {
-      const response = await axios.get('/api/smartandon/qcc-m-types');
+      const response = await api.get('/smartandon/qcc-m-types');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch qcc_m_types, status: ' + response.status);
+      }
       this.types = response.data?.data || response.data;
     } catch (error) {
       console.error('Failed to fetch qcc_m_types:', error);
     }
     try {
-      const response = await axios.get('/api/smartandon/line');
+      const response = await api.get('/smartandon/line');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch lines, status: ' + response.status);
+      }
       this.lines = response.data?.data || response.data;
       this.lineOptions = this.lines.map(line => ({
         id: line.fid,
@@ -308,7 +317,10 @@ export default {
       console.error('Failed to fetch lines:', error);
     }
     try {
-      const response = await axios.get('/api/smartandon/machine');
+      const response = await api.get('/smartandon/machine');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch machines, status: ' + response.status);
+      }
       this.machines = response.data?.data || response.data;
       this.machineOptions = this.machines.map(machine => ({
         id: machine.fid,
@@ -318,7 +330,10 @@ export default {
       console.error('Failed to fetch machines:', error);
     }
     try {
-      const response = await axios.get('/api/smartandon/problemId');
+      const response = await api.get('/smartandon/problemId');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch problems, status: ' + response.status);
+      }
       this.problems = response.data?.data || response.data;
       this.problemOption = this.problems.map(problem => ({
         id: problem.fid,
@@ -328,7 +343,10 @@ export default {
       console.error('Failed to fetch problems:', error);
     }
     try {
-      const response = await axios.get('/api/smartandon/oee');
+      const response = await api.get('/smartandon/oee');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch oee, status: ' + response.status);
+      }
       this.oee = response.data?.data || response.data;
       this.oeeOption = this.oee.map(oeeValue => ({
         id: oeeValue.GROUP_NAME,
@@ -339,7 +357,10 @@ export default {
       console.error('Failed to fetch oee:', error);
     }
     try {
-      const response = await axios.get('/api/smartandon/member');
+      const response = await api.get('/smartandon/member');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch member, status: ' + response.status);
+      }
       this.members = response.data?.data || response.data;
       this.memberOption = this.members.map(member => ({
         id: member.fid,

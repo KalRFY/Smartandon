@@ -140,49 +140,66 @@ const AppSidebarNav = defineComponent({
                   {
                     active: props.isActive,
                     href: props.href,
-                    onClick: async(e) => { 
-                      e.preventDefault(); 
-                      e.stopPropagation();
-                      await e.target.parentNode.classList.add("breadcrumbsNav");
-                      await e.target.parentNode.setAttribute('breadcrumbs',
-                      JSON.stringify({"active":false,"name":item.name,"path":""/*"#"+item.to*/}))
-                      listBreadcrumbsNav = '';  
-                      getBreadCrumbs(e.target);
-                      localStorage.breadcrumbs=JSON.stringify(JSON.parse('['+
-                        (item.name==='Home'?'':'{"name":"Home","path":"#/dc/dashboard"},')+
-                        listBreadcrumbsNav+']'));
-                        // console.log(listBreadcrumbsNav);
-                        // console.log(localStorage.breadcrumbs);
-                      
-                      try{
-                      document.getElementById("breadcrumbsChangeValue").click();
-                      }catch(e){
+                    onClick: async (e) => {
+                      if (typeof e?.preventDefault === 'function') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                      if (e && e.target && e.target.parentNode) {
+                        await e.target.parentNode.classList.add("breadcrumbsNav");
+                        await e.target.parentNode.setAttribute('breadcrumbs',
+                          JSON.stringify({"active": false, "name": item.name, "path": ""}));
+                      }
+
+                      let breadcrumbsArray = [];
+
+                      if (item.name !== 'Home') {
+                        breadcrumbsArray.push({ name: 'Home', path: '#/dc/dashboard' });
+                      }
+
+                      if (listBreadcrumbsNav) {
+                        try {
+                          const parsedList = JSON.parse('[' + listBreadcrumbsNav + ']');
+                          breadcrumbsArray = breadcrumbsArray.concat(parsedList);
+                        } catch (err) {
+                          console.error('Gagal parse breadcrumbs:', err);
+                        }
+                      }
+
+                      localStorage.breadcrumbs = JSON.stringify(breadcrumbsArray);
+
+                      // console.log(listBreadcrumbsNav);
+                      // console.log(localStorage.breadcrumbs);
+
+                      try {
+                        document.getElementById("breadcrumbsChangeValue").click();
+                      } catch (e) {
                         console.log(e);
                       }
                       let href = props.href;
-                      if(href.indexOf('http://')>=0){
-                        window.open(href.substring(href.indexOf('http://'),href.length)
-                        +'?id_token='+localStorage.id_token,'_blank')
-                      }else if(href.indexOf('https://')>=0){
-                        window.open(href.substring(href.indexOf('https://'),href.length)
-                        +'?id_token='+localStorage.id_token,'_blank')
-                      }else{
+                      if (href.indexOf('http://') >= 0) {
+                        window.open(href.substring(href.indexOf('http://'), href.length)
+                          + '?id_token=' + localStorage.id_token, '_blank')
+                      } else if (href.indexOf('https://') >= 0) {
+                        window.open(href.substring(href.indexOf('https://'), href.length)
+                          + '?id_token=' + localStorage.id_token, '_blank')
+                      } else {
                         await props.navigate();
                       }
                       let appName = '';
-                      if(item.applicationId){
-                        
-                        let responseAppAuthorized = await utils.dcQueryApi('/api/application/view','POST','id=' + item.applicationId );
-                        if(responseAppAuthorized.status===200){
+                      if (item.applicationId) {
+
+                        let responseAppAuthorized = await utils.dcQueryApi('/api/application/view', 'POST', 'id=' + item.applicationId);
+                        if (responseAppAuthorized.status === 200) {
                           appName = responseAppAuthorized.data.name;
                         }
-                        try{
-                        document.getElementById('headerLabel1').innerHTML  = process.env.VUE_APP_HEADER_LABEL+' - '+appName;
-                        document.getElementById('headerLabel2').innerHTML  = process.env.VUE_APP_HEADER_LABEL+' - '+appName;
-                        }catch(e){
+                        try {
+                          document.getElementById('headerLabel1').innerHTML = process.env.VUE_APP_HEADER_LABEL + ' - ' + appName;
+                          document.getElementById('headerLabel2').innerHTML = process.env.VUE_APP_HEADER_LABEL + ' - ' + appName;
+                        } catch (e) {
                           console.log(e);
                         }
-                      } 
+                      }
                     },
                   },
                   {
