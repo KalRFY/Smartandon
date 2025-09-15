@@ -1,20 +1,19 @@
-  <template>
-
-    <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="
-      (event) =>
-        $store.commit({
-          type: 'updateSidebarVisible',
-          value: event,
-        })
-    ">
-      <CSidebarBrand>
-        <img src="../assets/brand/Toyota_logo.png" class="img-fluid sidebar-brand-full" width="200" height="200" />
-        <img src="../assets/brand/Toyota_logo.png" class="sidebar-brand-narrow" width="36" height="10" />
-      </CSidebarBrand>
-      <AppSidebarNav v-bind:nav="nav" />
-      <CSidebarToggler id="SidebarToggler" class="d-none d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
-    </CSidebar>
-  </template>
+<template>
+  <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="
+    (event) =>
+      $store.commit({
+        type: 'updateSidebarVisible',
+        value: event,
+      })
+  ">
+    <CSidebarBrand>
+      <img src="../assets/brand/Toyota_logo.png" class="img-fluid sidebar-brand-full" width="200" height="200" />
+      <img src="../assets/brand/Toyota_logo.png" class="sidebar-brand-narrow" width="36" height="10" />
+    </CSidebarBrand>
+    <AppSidebarNav v-bind:nav="nav" />
+    <CSidebarToggler id="SidebarToggler" class="d-none d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
+  </CSidebar>
+</template>
 
   <script>
   import { computed } from 'vue'
@@ -82,20 +81,20 @@
             parentId: 'ROOT',
 
           items: [
-            {
-              component: 'CNavItem',
-              to: '/app/Dashboard2',
-              name: 'Dashboard',
-              icon: 'cilHome',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/DashboardDataDisplay',
-              name: 'Dashboard Data Display',
-              icon: 'cilListNumbered',
-              parentId: 'ROOT',
-            },
+            // {
+            //   component: 'CNavItem',
+            //   to: '/app/Dashboard2',
+            //   name: 'Dashboard',
+            //   icon: 'cilHome',
+            //   parentId: 'ROOT',
+            // },
+            // {
+            //   component: 'CNavItem',
+            //   to: '/app/DashboardDataDisplay',
+            //   name: 'Dashboard Data Display',
+            //   icon: 'cilListNumbered',
+            //   parentId: 'ROOT',
+            // },
             {
               component: 'CNavItem',
               to: '/app/MTBFMTTR',
@@ -119,6 +118,13 @@
             },
             {
               component: 'CNavItem',
+              to: '/app/CMFollowup',
+              name: 'CM Followup',
+              icon: 'cilCalendar',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
               to: '/app/ProblemHistory',
               name: 'Problem History',
               icon: 'cilHistory',
@@ -126,9 +132,9 @@
             },
             {
               component: 'CNavItem',
-              to: '/app/CMFollowup',
-              name: 'CM Followup',
-              icon: 'cilCalendar',
+              to: '/app/EditDataSmartandon',
+              name: 'Edit Data Smartandon',
+              icon: 'cilHistory',
               parentId: 'ROOT',
             },
           ]

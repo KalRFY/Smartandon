@@ -103,7 +103,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import {
   CContainer,
   CRow,
@@ -128,6 +127,7 @@ import {
 } from '@coreui/vue'
 import { Search } from 'lucide-vue-next'
 import LegendStatus from '@/components/LTBSummary/LegendStatus.vue'
+import api from '@/apis/CommonAPI'
 import BarChart from '@/components/BarChart.vue'
 
 const LINE_MAP = {
@@ -329,7 +329,10 @@ export default {
     async fetchData() {
       this.isLoading = true
       try {
-        const response = await axios.get(process.env.VUE_APP_HOST + '/api/summary/ltb-summary')
+        const response = await api.get('/summary/ltb-summary')
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch LTB summary, status: ' + response.status)
+        }
         let raw = response.data.data.delayProblems
         raw = Array.isArray(raw[0]) ? raw[0] : raw
         console.log('▶️ RAW SAMPLE:', raw[0])

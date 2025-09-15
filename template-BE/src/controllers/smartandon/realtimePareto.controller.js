@@ -19,6 +19,7 @@ const defaultController = async (req, res) => {
 };
 
 const getAvCategoryController = async (req, res, next) => {
+  
   try {
     const avCategory = [
         { value: "MESIN", label: "MESIN" },

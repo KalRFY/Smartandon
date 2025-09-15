@@ -191,7 +191,7 @@ import {
   BarChart2,
 } from 'lucide-vue-next'
 import ProductionLineSection from './ProductionLineSection.vue'
-import axios from 'axios'
+import api from '@/apis/CommonAPI'
 
 export default {
   name: 'RealtimePareto',
@@ -259,9 +259,10 @@ export default {
     })
 
     const fetchAvCategories = async () => {
+      console.log('Fetching AV categories')
       try {
-        const response = await axios.get('api/realtime-pareto/av-category')
-        if (response.data && response.data.data) {
+        const response = await api.get('/realtime-pareto/av-category', null)
+        if (response.status === 200) {
           avCategories.value = [
             { value: '', label: 'Select category' },
             ...response.data.data.map((item) => ({
@@ -269,6 +270,8 @@ export default {
               label: item.label,
             })),
           ]
+        } else {
+          throw new Error('Failed to fetch AV categories')
         }
       } catch (err) {
         console.error('Error fetching AV categories:', err)
@@ -335,15 +338,10 @@ export default {
         endDateFetch.value = endDateParam
       }
       try {
-        const result = await axios.get(
-          `api/realtime-pareto/realtime-pareto?group=${group}&order=${order}&avCategory=${avCategoty}&fline=${fline}&startDate=${startDateParam}&endDate=${endDateParam}`,
+        const result = await api.get(
+          `/realtime-pareto/realtime-pareto?group=${group}&order=${order}&avCategory=${avCategoty}&fline=${fline}&startDate=${startDateParam}&endDate=${endDateParam}`,
         )
-        console.log('Fetched production lines:', result.data)
         productionLines.value = result.data.data
-        console.log(
-          'Production lines:',
-          JSON.stringify(productionLines.value, null, 2),
-        )
         dataLoaded.value = false
         setTimeout(() => {
           dataLoaded.value = true

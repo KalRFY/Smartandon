@@ -62,7 +62,7 @@
           @goToPage="goToPage"
           @freq="freq"
           @ltb="ltb"
-          @download="download"
+          @download="downloadExcel"
           @filterCategory="onFilterCategory"
         />
       </div>
@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import api from '../../apis/CommonAPI'
 import { useRouter } from 'vue-router'
 import EditProblemModal from './EditProblemModal.vue'
@@ -294,7 +293,6 @@ export default {
       this.error = null
 
       try {
-        // Check if all filter data is empty or null
         const {
           filterStartDate = this.filterStartDate,
           filterFinishDate = this.filterFinishDate,
@@ -312,10 +310,19 @@ export default {
           (!selectedProblem || selectedProblem === '') &&
           (!problemCategory || problemCategory === null)
 
+        // If all filters are empty (initial load), set default start date to first day of current month
         if (allFiltersEmpty) {
           console.log(
-            '[RepeatFlowChecker] All filters empty, calling resetFilters',
+            '[RepeatFlowChecker] All filters empty, setting default start date to first day of month',
           )
+          const now = new Date()
+          const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+          const yyyy = firstDay.getFullYear()
+          const mm = String(firstDay.getMonth() + 1).padStart(2, '0')
+          const dd = String(firstDay.getDate()).padStart(2, '0')
+          filters.filterStartDate = `${yyyy}-${mm}-${dd}`
+          this.filterStartDate = filters.filterStartDate
+
           this.resetFilters()
           // After resetFilters, update filters to cleared state
           filters = {
@@ -357,12 +364,12 @@ export default {
         const params = {
           page,
           limit,
-          startDate: filters.filterStartDate || undefined,
-          finishDate: filters.filterFinishDate || undefined,
-          line: filters.selectedLine || undefined,
+          startDate: filters.filterStartDate && filters.filterStartDate !== '' ? filters.filterStartDate : undefined,
+          finishDate: filters.filterFinishDate && filters.filterFinishDate !== '' ? filters.filterFinishDate : undefined,
+          line: filters.selectedLine && filters.selectedLine !== null ? filters.selectedLine : undefined,
           machineName: machineLabel || undefined,
-          problem: filters.selectedProblem || undefined,
-          problemCategory: filters.problemCategory || undefined,
+          problem: filters.selectedProblem && filters.selectedProblem !== '' ? filters.selectedProblem : undefined,
+          problemCategory: filters.problemCategory !== null ? filters.problemCategory : undefined,
         }
 
         console.log(
@@ -370,10 +377,15 @@ export default {
           params,
         )
 
-        const response = await axios.get('/api/smartandon/problemView', {
-          params,
-        })
+        console.log('[FE Debug] ProblemHistory params to send:', params)
 
+        const response = await api.get('/smartandon/problemView', {
+          search: JSON.stringify(params),
+        })
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch problems, status: ' + response.status)
+        }
+        console.log('[RepeatFlowChecker] API response:', response)
         console.log(
           '[RepeatFlowChecker] ProblemHistory received data from backend:',
           response.data.data,
@@ -387,9 +399,15 @@ export default {
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
 
         // Fetch tambahAnalysis data and store it
-        const analysisResponse = await axios.get('/api/smartandon/tambahAnalysis')
-        this.tambahAnalysisData = analysisResponse.data
+        const analysisResponse = await api.get('/smartandon/tambahAnalysis')
+        if (analysisResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch tambahAnalysis, status: ' +
+              analysisResponse.status,
+          )
+        }
 
+        this.tambahAnalysisData = analysisResponse.data
         const allAnalysis = analysisResponse.data
         console.log('Filtered Analysis:', allAnalysis);
         // console.log('Filter Analysis All:', this.filteredAnalysis);
@@ -425,6 +443,8 @@ export default {
         this.selectedMachineName = filters.selectedMachineName
         this.selectedProblem = filters.selectedProblem
         this.selectedProblemCategory = filters.problemCategory
+        // Save filters to storage
+        this.saveFiltersToStorage()
       } catch (error) {
         this.error = 'Failed to fetch problems: ' + error.message
         console.error(this.error)
@@ -442,16 +462,50 @@ export default {
       this.selectedProblemCategory = null
       // Reset currentPage explicitly on filter reset
       this.currentPage = 1
+      // Clear stored filters
+      localStorage.removeItem('problemHistoryFilters')
       // Removed fetchProblems call here to prevent infinite recursion
+    },
+
+    loadFiltersFromStorage() {
+      const stored = localStorage.getItem('problemHistoryFilters')
+      if (stored) {
+        const filters = JSON.parse(stored)
+        console.log('[Filter Persistence] Loaded filters from storage:', filters)
+        this.filterStartDate = filters.filterStartDate || ''
+        this.filterFinishDate = filters.filterFinishDate || ''
+        this.selectedLine = filters.selectedLine || null
+        this.selectedMachineName = filters.selectedMachineName || null
+        this.selectedProblem = filters.selectedProblem || ''
+        this.selectedProblemCategory = filters.selectedProblemCategory || null
+      } else {
+        console.log('[Filter Persistence] No filters found in storage')
+      }
+    },
+
+    saveFiltersToStorage() {
+      const filters = {
+        filterStartDate: this.filterStartDate,
+        filterFinishDate: this.filterFinishDate,
+        selectedLine: this.selectedLine,
+        selectedMachineName: this.selectedMachineName,
+        selectedProblem: this.selectedProblem,
+        selectedProblemCategory: this.selectedProblemCategory,
+      }
+      console.log('[Filter Persistence] Saving filters to storage:', filters)
+      localStorage.setItem('problemHistoryFilters', JSON.stringify(filters))
     },
 
     async onClickInput(problem) {
       try {
         this.tableLoading = true
         this.modalLoading = true
-        const response = await axios.get(
-          `/api/smartandon/problemId/${problem.fid}`,
+        const response = await api.get(
+          `/smartandon/problemId/${problem.fid}`,
         )
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch problem, status: ' + response.status)
+        }
         const problemData = response.data
         console.log('Problem data:', problemData)
         this.submit = this.mapProblemDataToSubmit(problemData)
@@ -460,9 +514,15 @@ export default {
           JSON.stringify(this.submit, null, 2),
         )
 
-        const analysisResponse = await axios.get(
-          '/api/smartandon/tambahAnalysis',
+        const analysisResponse = await api.get(
+          '/smartandon/tambahAnalysis',
         )
+        if (analysisResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch tambahAnalysis, status: ' +
+              analysisResponse.status,
+          )
+        }
 
         const allAnalysis = analysisResponse.data
         const filteredAnalysis = allAnalysis.filter(
@@ -566,7 +626,7 @@ export default {
         finishDate: formatDateToISO(problemData.fend_time) || '',
         durationMin: problemData.fdur || '',
         problemCategory: problemData.problemCategory || '',
-        itemTemporaryAction: problemData.temporaryAction || '',
+        itemTemporaryAction: problemData.itemTemporaryAction || '',
         rootcauses5Why: problemData.freal_prob || '',
 
         tambahAnalysisTerjadi: (() => {
@@ -597,8 +657,8 @@ export default {
         whyLamaImage: problemData.why2_img || '',
         countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
         attachmentMeeting: problemData.attachmentMeeting || '',
-        comments5WhySH: problemData.fiveWhyShFeedback || '',
-        comments5WhyLH: problemData.fiveWhyLhFeedback || '',
+        comments5WhySH: problemData.comments5WhySH || '',
+        comments5WhyLH: problemData.comments5WhyLH || '',
         commentsCountermeasure: problemData.commentsCountermeasure || '',
         file_report: problemData.file_report || '',
         uploadFile: problemData.uploadFile || '',
@@ -737,15 +797,15 @@ export default {
           }
         })
 
-        const response = await axios.put('/api/smartandon/update', formData)
-
-        if (response.data.status === 'success') {
+        const response = await api.put('/smartandon/update', null, formData)
+        console.log('Update response:', response)
+        if (response.status === 200) {
           alert('Input updated successfully')
           this.visibleLiveDemo = false
           this.submit = this.getInitialSubmitData()
           this.fetchProblems(this.currentPage)
         } else {
-          alert('Failed to update input')
+          throw new Error('Failed to update input, status: ' + response.status)
         }
       } catch (error) {
         console.error(error)
@@ -855,8 +915,125 @@ export default {
       // console.log('Filter time1: ', filterStartDate, filterFinishDate, selectedLine, selectedMachineName, selectedProblem, problemCategory);
     },
 
-    download() {
-      alert('Download')
+    async fetchAllProblemsForExport() {
+      this.tableLoading = true; // Show loading indicator for export
+      try {
+        const params = {
+          limit: 0,
+          startDate: this.filterStartDate || undefined,
+          finishDate: this.filterFinishDate || undefined,
+          line: this.selectedLine || undefined,
+          machineName: this.selectedMachineName ? this.machineOptions.find(m => m.id === this.selectedMachineName)?.label : undefined,
+          problem: this.selectedProblem || undefined,
+          problemCategory: this.selectedProblemCategory || undefined,
+        };
+
+        console.log('[Export] Fetching all problems with params:', params);
+        const response = await api.get('/smartandon/problemView', {...params} );
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch problems for export, status: ' + response.status);
+        }
+        console.log('[Export] Received data for export:', response.data.data);
+
+        // Fetch tambahAnalysis data and merge it, similar to fetchProblems
+        const analysisResponse = await api.get('/smartandon/tambahAnalysis');
+        if (analysisResponse.status !== 200) {
+          throw new Error('Failed to fetch tambahAnalysis, status: ' + analysisResponse.status);
+        }
+        const allAnalysis = analysisResponse.data;
+        console.log("ALL ANALYSIS: ", allAnalysis);
+
+        const terjadiAnalysis = allAnalysis.filter(item => item.analisys_category === 'TERJADI');
+        const lamaAnalysis = allAnalysis.filter(item => item.analisys_category === 'LAMA');
+
+        const problemsWithAnalysis = response.data.data.map(problem => {
+          return {
+            ...problem,
+            terjadiAnalysis: terjadiAnalysis.filter(item => item.id_problem === problem.fid),
+            lamaAnalysis: lamaAnalysis.filter(item => item.id_problem === problem.fid),
+          };
+        });
+
+        return problemsWithAnalysis;
+      } catch (error) {
+        console.error('Error fetching all problems for export:', error);
+        alert('Error fetching data for export: ' + error.message);
+        return [];
+      } finally {
+        this.tableLoading = false; // Hide loading indicator
+      }
+    },
+
+    async downloadExcel() {
+      try {
+        const XLSX = await import('xlsx');
+        console.log('XLSX object:', XLSX);
+
+        const problemsToExport = await this.fetchAllProblemsForExport();
+
+        if (problemsToExport.length === 0) {
+          console.log('No data to download after fetching.');
+          alert('Tidak ada data untuk diunduh');
+          return;
+        }
+        console.log('Problems to export:', problemsToExport, 'length:', problemsToExport.length);
+
+        // Prepare data for Excel - only include specific columns
+        const formattedData = problemsToExport.map(problem => ({
+          Date: problem.fend_time ? new Date(problem.fend_time).toLocaleDateString() : '',
+          Machine: problem.fmc_name || '',
+          Problem: problem.ferror_name || '',
+          PIC: problem.foperator || '',
+          Line: problem.fline || '',
+          Duration: problem.fdur || '',
+          ProblemCategory: this.getProblemCategoryLabel(problem.problemCategory)
+        }));
+
+        // Create worksheet with formatted data
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+        // Set column widths for better readability
+        const columnWidths = [
+          { wch: 15 }, // Date
+          { wch: 20 }, // Machine
+          { wch: 30 }, // Problem
+          { wch: 20 }, // PIC
+          { wch: 10 }, // Line
+          { wch: 10 }, // Duration
+          { wch: 15 }  // ProblemCategory
+        ];
+        worksheet['!cols'] = columnWidths;
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Problems Data');
+
+        // Generate Excel file
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+        // Trigger download
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `problems_export_${new Date().toISOString().split('T')[0]}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        console.log('Excel file generated and download triggered.');
+      } catch (error) {
+        console.error('Error generating Excel file:', error);
+        alert('Error generating Excel file: ' + error.message);
+      }
+    },
+    getProblemCategoryLabel(categoryId) {
+      const categories = {
+        1: 'Small',
+        2: 'Chokotei', 
+        3: 'LTB',
+        4: 'SLTR',
+      };
+      return categories[categoryId] || 'Unknown';
     },
 
     async loadInitialData() {
@@ -864,28 +1041,44 @@ export default {
       this.error = null
 
       try {
-        const machineResponse = await axios.get('/api/smartandon/machine')
+        const machineResponse = await api.get('/smartandon/machine')
+        if (machineResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch machines, status: ' + machineResponse.status,
+          )
+        }
         this.machineOptions = machineResponse.data.map((machine) => ({
           id: machine.fid,
           label: machine.fmc_name,
         }))
 
-        const lineResponse = await axios.get('/api/smartandon/line')
+        const lineResponse = await api.get('/smartandon/line')
+        if (lineResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch lines, status: ' + lineResponse.status,
+          )
+        }
         this.lineOptions = lineResponse.data.map((line) => ({
           id: line.fid,
           label: line.fline,
         }))
 
-        const memberResponse = await axios.get('/api/smartandon/member')
-           console.log('RAW machineResponse:', machineResponse.data)
-    console.log('RAW lineResponse:', lineResponse.data)
+        const memberResponse = await api.get('/smartandon/member')
+        if (memberResponse.status !== 200) {
+          throw new Error(
+            'Failed to fetch members, status: ' + memberResponse.status,
+          )
+        }
+        
+        console.log('RAW machineResponse:', machineResponse.data)
+        console.log('RAW lineResponse:', lineResponse.data)
 
         this.memberOption = memberResponse.data.map((member) => ({
           id: member.fid,
           label: member.fname,
         }))
 
-        await this.fetchProblems(this.currentPage)
+        // Fetch will be called in created after loading filters
       } catch (error) {
         this.error = 'Failed to load initial data: ' + error.message
         console.error(error)
@@ -897,6 +1090,18 @@ export default {
 
   async created() {
     await this.loadInitialData()
+    this.loadFiltersFromStorage()
+    // Wait for next tick to ensure filters are reactive before fetching
+    this.$nextTick(async () => {
+      await this.fetchProblems(this.currentPage, {
+        filterStartDate: this.filterStartDate,
+        filterFinishDate: this.filterFinishDate,
+        selectedLine: this.selectedLine,
+        selectedMachineName: this.selectedMachineName,
+        selectedProblem: this.selectedProblem,
+        problemCategory: this.selectedProblemCategory,
+      })
+    })
   },
 }
 </script>

@@ -1,5 +1,4 @@
 <template>
-
   <CModal
     :visible="visible"
     @close="$emit('close')"
@@ -1202,18 +1201,84 @@
           <CCard>
             <CCardBody>
               <label style="font-size: medium; font-weight: bold;" class="form-label">Sparepart</label>
-              <Treeselect
-                id="sparepartSelect"
-                v-model="localSubmit.sparepart"
-                :options="sparepartOptions"
-                :searchable="true"
-                :clearable="true"
-                :children="false"
-                placeholder="Select or input sparepart"
-                :value-consists-of="['id']"
-                :value-key="'id'"
-                :label-key="'label'"
-              />
+              <div v-if="sparepartList.length === 0">
+                <CButton color="primary" @click="showSparepartForm = true">Tambah Sparepart</CButton>
+              </div>
+              <div v-if="showSparepartForm" class="d-flex align-items-center mb-2">
+                <Treeselect
+                  id="sparepartSelect"
+                  v-model="sparepartForm.sparepart"
+                  :options="sparepartOptions"
+                  :searchable="true"
+                  :clearable="true"
+                  :children="false"
+                  placeholder="Select or input sparepart"
+                  :value-consists-of="['id']"
+                  :value-key="'id'"
+                  :label-key="'label'"
+                  class="me-2"
+                  style="width: 300px"
+                />
+                <CFormInput
+                  v-model="sparepartForm.price"
+                  placeholder="Price"
+                  type="number"
+                  class="me-2"
+                  style="width: 100px"
+                />
+                <CFormInput
+                  v-model="sparepartForm.vendor"
+                  placeholder="Vendor"
+                  class="me-2"
+                  style="width: 150px"
+                />
+                <CFormSelect
+                  v-model="sparepartForm.status"
+                  class="me-2"
+                  style="width: 150px"
+                >
+                  <option disabled value="">Status</option>
+                  <option value="Available">Available</option>
+                  <option value="Ordered">Ordered</option>
+                  <option value="Not Available">Not Available</option>
+                </CFormSelect>
+                <CButton color="success" class="me-2" @click="submitSparepart">Submit</CButton>
+                <CButton color="secondary" @click="cancelSparepart">Cancel</CButton>
+              </div>
+              <div v-if="sparepartList.length > 0">
+                <CTable bordered hover responsive>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell>No</CTableHeaderCell>
+                      <CTableHeaderCell>Sparepart</CTableHeaderCell>
+                      <CTableHeaderCell>Price</CTableHeaderCell>
+                      <CTableHeaderCell>Vendor</CTableHeaderCell>
+                      <CTableHeaderCell>Status</CTableHeaderCell>
+                      <CTableHeaderCell>Actions</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    <CTableRow v-for="(sparepart, index) in sparepartList" :key="index">
+                      <CTableDataCell>{{ index + 1 }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.sparepart?.label || '' }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.price }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.vendor }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.status }}</CTableDataCell>
+                      <CTableDataCell>
+                        <CButton color="warning" size="sm" class="me-2" @click="editSparepart(index)">Edit</CButton>
+                        <CButton color="danger" size="sm" @click="removeSparepart(index)">Remove</CButton>
+                      </CTableDataCell>
+                    </CTableRow>
+                  </CTableBody>
+                </CTable>
+                <CButton
+                  color="primary"
+                  class="mt-2"
+                  @click="showSparepartForm = true"
+                >
+                  Tambah Sparepart
+                </CButton>
+              </div>
             </CCardBody>
           </CCard>
         </CCol>
@@ -1358,10 +1423,12 @@ import {
   CTable,
 } from '@coreui/vue'
 import Treeselect from 'vue3-treeselect'
+import Multiselect from 'vue-multiselect'
 import { cilClock } from '@coreui/icons'
 import { CIcon } from '@coreui/icons-vue'
 import LegendStatus from '@/views/ProblemHistory/components/LegendStatus.vue'
 import AnalysisTreeList from '@/components/AnalysisTreeList.vue'
+import api from '@/apis/CommonAPI'
 
 export default {
   name: 'EditProblemModal',
@@ -1380,6 +1447,7 @@ export default {
     CSpinner,
     CTable,
     Treeselect,
+    Multiselect,
     cilClock,
     LegendStatus,
     AnalysisTreeList,
@@ -1525,6 +1593,7 @@ export default {
     }
 
     const localSubmit = ref({
+      sparepart: null,
       tambahAnalysisTerjadi: parseTambahAnalysis(submitData.value?.tambahAnalysisTerjadi || '[]'),
       ...(submitData.value || {}),
       rootcauses5Why: parseFrealProb(submitData.value?.freal_prob),
@@ -1753,6 +1822,12 @@ export default {
           submitData.value.yokoten
           ? JSON.parse(submitData.value.yokoten)
           : []
+      sparepartList.value = Array.isArray(submitData.value?.sparepartList)
+        ? submitData.value.sparepartList
+        : typeof submitData.value?.sparepartList === 'string' &&
+          submitData.value.sparepartList
+          ? JSON.parse(submitData.value.sparepartList)
+          : []
     })
     const onMachineInput = () => {
       console.log('Machine input changed:', localSubmit.value.machineName)
@@ -1844,6 +1919,7 @@ export default {
           countermeasureKenapaLamaList.value,
         )
         localSubmit.value.yokotenList = mapPicToLabel(yokotenList.value)
+        localSubmit.value.sparepartList = sparepartList.value
 
         // Prepare tambahAnalysis data - ensure we have valid arrays
         const tambahAnalysisTerjadiData = convertTreeNodeToBackend(localSubmit.value.tambahAnalysisTerjadi || [])
@@ -1898,6 +1974,7 @@ export default {
           qCategory: localSubmit.value.qCategory ?? '',
           cmKenapaLama: localSubmit.value.countermeasureKenapaLamaList ?? [],
           cmKenapaTerjadi: localSubmit.value.countermeasureKenapaTerjadiList ?? [],
+          sparepartList: localSubmit.value.sparepartList ?? [],
         }
 
         console.log('Submit data formatted:', submitDataFormatted)
@@ -2253,42 +2330,76 @@ export default {
 
     const picOptions = ref([])
     const sparepartOptions = ref([])
-    // const sparepartOption = ref([])
-    
+    const sparepartList = ref([])
+    const showSparepartForm = ref(false)
+    const sparepartForm = ref({
+      sparepart: null,
+      price: '',
+      vendor: '',
+      status: ''
+    })
+
+    const nameWithLang = (option) => {
+      return `${option.label} — [${option.id}]`
+    }
+
+    const onSparepartSearch = async (searchQuery) => {
+      console.log('onSparepartSearch called with:', searchQuery);
+      try {
+        const params = { limit: 100 };
+        if (searchQuery) {
+          params.search = searchQuery;
+        }
+        console.log('Calling API with params:', params);
+        const sparepartRes = await api.get('/smartandon/spareparts', { params });
+        console.log('API response status:', sparepartRes.status);
+        if (sparepartRes.status === 200) {
+          console.log('Sparepart options data for search:', searchQuery, sparepartRes.data);
+
+          // Handle both direct array and wrapped response
+          const spareparts = sparepartRes.data.data || sparepartRes.data;
+          sparepartOptions.value = Array.isArray(spareparts)
+            ? spareparts.map((sp) => ({
+                id: sp.sparepart_id,
+                label: sp.sparepart_nm,
+                price: sp.price || '',
+                vendor: sp.vendor || '',
+                status: sp.status || '',
+              })).sort((a, b) => a.label.localeCompare(b.label))
+            : [];
+          console.log('Processed sparepart options:', sparepartOptions.value);
+          console.log('Sparepart options length:', sparepartOptions.value.length);
+          console.log('First few sparepart options:', sparepartOptions.value.slice(0, 5));
+        } else {
+          throw new Error(`Failed to load spareparts, status: ${sparepartRes.status}`);
+        }
+      } catch (e) {
+        console.error('Error loading spareparts for search:', e);
+        sparepartOptions.value = [];
+      }
+    };
+
     onMounted(async () => {
       try {
-        const res = await fetch('/api/smartandon/member')
-        const data = await res.json()
-        console.log('PIC options data:', data)
-        picOptions.value = Array.isArray(data)
-          ? data.map((m) => ({
-            value: String(m.fid) || m.name,
-            label: m.fname,
-          }))
-          : []
+        const res = await api.get('/smartandon/member')
+        if (res.status === 200) {
+          const data = res.data.data || res.data
+          console.log('PIC options data:', data)
+          picOptions.value = Array.isArray(data)
+            ? data.map((m) => ({
+              value: String(m.fid) || m.name,
+              label: m.fname,
+            }))
+            : []
+        } else {
+          throw new Error(`Failed to load members, status: ${res.status}`)
+        }
       } catch (e) {
         picOptions.value = []
       }
 
-      // Load sparepart options from problem history
-      try {
-        const sparepartRes = await fetch('/api/smartandon/spareparts')
-        const sparepartData = await sparepartRes.json()
-        console.log('Sparepart options data:', sparepartData)
-        
-        // Handle both direct array and wrapped response
-        const spareparts = sparepartData.data || sparepartData
-        sparepartOptions.value = Array.isArray(spareparts)
-          ? spareparts.map((sp) => ({
-              id: sp.sparepart_id,
-              label: sp.sparepart_nm,
-            }))
-          : []
-        console.log('Processed sparepart options:', sparepartOptions.value)
-      } catch (e) {
-        console.error('Error loading spareparts:', e)
-        sparepartOptions.value = []
-      }
+      // Load initial sparepart options
+      await onSparepartSearch('')
     })
 
     const addRootcause = () => {
@@ -2345,6 +2456,35 @@ export default {
       }
     }
 
+    const submitSparepart = () => {
+      if (typeof sparepartForm.value._editIdx === 'number') {
+        sparepartList.value[sparepartForm.value._editIdx] = { ...sparepartForm.value }
+        delete sparepartForm.value._editIdx
+      } else {
+        sparepartList.value.push({ ...sparepartForm.value })
+      }
+      showSparepartForm.value = false
+      sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '' }
+    }
+
+    const editSparepart = (idx) => {
+      const item = sparepartList.value[idx]
+      if (item) {
+        sparepartForm.value = { ...item }
+        showSparepartForm.value = true
+        sparepartForm.value._editIdx = idx
+      }
+    }
+
+    const removeSparepart = (idx) => {
+      sparepartList.value.splice(idx, 1)
+    }
+
+    const cancelSparepart = () => {
+      showSparepartForm.value = false
+      sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '' }
+    }
+
     const statusClass = (status) => {
       if (status === 1 || status === '1') return 'status-approved'
       if (status === 0 || status === '0') return 'status-rejected'
@@ -2387,6 +2527,16 @@ export default {
       editCountermeasureKenapaLama,
       removeCountermeasureKenapaLama,
       picOptions,
+      sparepartOptions,
+      sparepartList,
+      showSparepartForm,
+      sparepartForm,
+      submitSparepart,
+      editSparepart,
+      removeSparepart,
+      cancelSparepart,
+      nameWithLang,
+      onSparepartSearch,
       editStepRepair,
       editingStepRepair,
       yokotenForm,
@@ -2563,5 +2713,9 @@ export default {
 .status-pending {
   background-color: white;
   border-color: #ccc;
+}
+
+.vue-treeselect__menu {
+  z-index: 9999;
 }
 </style>
