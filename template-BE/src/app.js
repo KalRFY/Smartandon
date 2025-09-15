@@ -6,7 +6,6 @@ const compression = require('compression');
 const cors = require('cors');
 const passport = require('passport');
 const httpStatus = require('http-status');
-// const schedule = require('node-schedule');
 const bodyParser = require('body-parser');
 const path = require('path');
 const config = require('./config/config');

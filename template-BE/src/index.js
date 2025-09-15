@@ -11,16 +11,8 @@ const startServer = async () => {
     await connectToMySQL();
     await connectToPostgres();
     // await connectToMariaDB();
+    // on premise
 
-    // Sync models
-    // logger.info('Syncing database models...');
-    // await sequelize.sync({ alter: true });
-    // logger.info('Database models synced successfully.');
-
-    // Seed initial data
-    // await seedDashboardData();
-
-    // Start server
     const server = app.listen(config.port, () => {
       logger.info(`Listening on port ${config.port}`);
     });
