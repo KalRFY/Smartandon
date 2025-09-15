@@ -59,6 +59,7 @@
     "vue-json-excel": "^0.3.0",
     "vue-loading-overlay": "^6.0.6",
     "vue-marquee-text-component": "^2.0.1",
+    "vue-multiselect": "^3.3.1",
     "vue-nav-tabs": "^0.5.7",
     "vue-next-timeline": "^0.2.1",
     "vue-router": "^4.0.12",
