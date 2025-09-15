@@ -1,3 +1,5 @@
+Smartandon2/
+
 # Folders to ignore
 dist/
 node_modules/
@@ -44,7 +46,6 @@ Thumbs.db
 *.zip
 *~
 *.jpg
-*.jpeg
 *.png
 
 # Ignore all Excel files

@@ -130,6 +130,13 @@
               icon: 'cilHistory',
               parentId: 'ROOT',
             },
+            {
+              component: 'CNavItem',
+              to: '/app/EditDataSmartandon',
+              name: 'Edit Data Smartandon',
+              icon: 'cilHistory',
+              parentId: 'ROOT',
+            },
           ]
         },
         {
