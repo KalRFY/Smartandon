@@ -1,21 +1,5 @@
 <template>
   <CRow class="mb-3">
-    <!-- <CCol sm="11" style="font-size: xx-large; font-weight: bold;">
-      Smartandon
-    </CCol>
-    <CCol sm="1" style="font-size: xx-large; font-weight: bold;">
-
-      <CButton color="dark" class="position-relative" style="font-weight: bold;"
-        @click="() => { visibleEnd = !visibleEnd }">
-        NEW
-        <CBadge color="danger" position="top-end" shape="rounded-pill">
-          99+ <span class="visually-hidden">unread messages</span>
-        </CBadge>
-      </CButton>
-    </CCol> -->
-  </CRow>
-
-  <CRow class="mb-3">
     <CCol lg="3" class="mb-3">
       <CCard style="width: 100%; height: 100%;">
         <CCardBody class="d-flex flex-column align-items-center justify-content-center">
@@ -28,6 +12,7 @@
               />
             </div>
           </CRow>
+          
           <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif; text-align: center;">
             Smartandon
           </CRow>
@@ -141,6 +126,7 @@
                     <CTableHeaderCell scope="col">Line</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
+                    <!-- <CTableHeaderCell scope="col">Action</CTableHeaderCell> -->
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -160,6 +146,9 @@
                         <label style="font-size: x-small; font-weight: bold; width: 100px; color: white;">{{ problem.fdur }} Minutes</label>
                       </CButton>
                     </CTableDataCell>
+                    <!-- <CTableDataCell>
+                      <CButton color="success" shape="rounded-pill" style="color: white; font-size: x-small; font-weight: bold; width: 100%; height: 100%;">Open Problem</CButton>
+                    </CTableDataCell> -->
                   </CTableRow>
                 </CTableBody>
               </CTable>
@@ -190,13 +179,13 @@
                         <CCol>
                           Target:
                           {{
-                            oeeTarget.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? 'N/A'
+                            oeeTarget.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.ftarget
                           }}
                         </CCol>
                         <CCol>
                           Actual:
                           {{
-                            oeeActual.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? 'N/A'
+                            oeeActual.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.factual
                           }}
                         </CCol>
                       </CRow>
@@ -281,6 +270,11 @@
     </CModal>
   </div>
 </template>
+
+
+
+
+
 
 <script>
 import { ref } from 'vue'
@@ -599,7 +593,227 @@ export default {
     }
   },
 
+  async created() {
+    this.startAutoRefresh();
+  },
+  beforeUnmount() {
+    this.stopAutoRefresh();
+  },
   methods: {
+    async fetchDashboardData() {
+      try {
+        const responseMachines = await axios.get('/api/smartandon/machine');
+        this.machines = responseMachines.data;
+        this.machineOptions = responseMachines.data.map((machine) => ({
+          id: machine.fid,
+          label: machine.fmc_name,
+        }));
+      } catch (error) {
+        console.error('Failed to fetch machines:', error);
+      }
+      try {
+        const responseLines = await axios.get('/api/smartandon/line');
+        this.lines = responseLines.data;
+        this.lineOptions = responseLines.data.map((line) => ({
+          id: line.fid,
+          label: line.fline,
+        }));
+      } catch (error) {
+        console.error('Failed to fetch lines:', error);
+      }
+      try {
+        this.loadingProblemActive = true;
+        this.limitView = 0;
+        console.log('[FE Debug] Dashboard params to send:', { limitView: 0 })
+
+        const responseProblems = await axios.get('/api/smartandon/problemView', {
+          params: {
+            search: JSON.stringify({
+              limitView: 0,
+            }),
+          },
+        });
+        this.problemActive = responseProblems.data.data;
+        console.log('Filtered active problems:', this.problemActive);
+      } catch (error) {
+        console.error('Failed to fetch active problems:', error);
+        this.problemActive = [];
+      } finally {
+        this.loadingProblemActive = false;
+      }
+      try {
+        const responseOeeData = await axios.get('/api/smartandon/oeeDataSmartandon');
+        this.oeeDataSmartandon = responseOeeData.data;
+        console.log('OEE Target: ' + this.oeeDataSmartandon);
+      } catch (error) {
+        console.log('Failed to fetch oee target:', error);
+      }
+      try {
+        const responseOeeTarget = await axios.get('/api/smartandon/oeeTarget');
+        this.oeeTarget = responseOeeTarget.data;
+        this.oeeOption = responseOeeTarget.data.map((oeeTargets) => ({
+          id: oeeTargets.GROUP_NAME,
+          label: oeeTargets.TAG_NAME,
+          labelOeeTarget: oeeTargets.REG_VALUE,
+        }));
+        console.log('OEE Target: ' + this.oeeTarget);
+      } catch (error) {
+        console.log('Failed to fetch oee target:', error);
+      }
+      try {
+        const responseOeeActual = await axios.get('/api/smartandon/oeeActual');
+        this.oeeActual = responseOeeActual.data;
+      } catch (error) {
+        console.log('Failed to fetch oee actual:', error);
+      }
+      try {
+        const responseOeePlan = await axios.get('/api/smartandon/oeePlan');
+        this.oeePlan = responseOeePlan.data;
+      } catch (error) {
+        console.log('Failed to fetch oee plan:', error);
+      }
+      try {
+        const responseOee = await axios.get('/api/smartandon/oee');
+        this.oee = responseOee.data;
+        this.oeeOption = responseOee.data.map((oeeValue) => ({
+          id: oeeValue.GROUP_NAME,
+          label: oeeValue.TAG_NAME,
+          labelOee: oeeValue.REG_VALUE,
+        }));
+        const uniqueOee = {};
+        this.oee.forEach((item) => {
+          if (!uniqueOee[item.DEV_NAME]) {
+            uniqueOee[item.DEV_NAME] = parseFloat(item.REG_VALUE);
+          }
+        });
+        const maxOeeValue = Math.max(...Object.values(uniqueOee));
+        this.chartDataPerLine = Object.entries(uniqueOee).map(([devName, value]) => {
+          const normalizedValue = (value / maxOeeValue) * 100;
+          return {
+            label: devName,
+            series: [normalizedValue],
+            options: {
+              chart: {
+                height: 250,
+                type: 'radialBar',
+                offsetY: 0,
+                sparkline: {
+                  enabled: true,
+                },
+              },
+              plotOptions: {
+                radialBar: {
+                  startAngle: -90,
+                  endAngle: 90,
+                  track: {
+                    background: '#e7e7e7',
+                    strokeWidth: '150%',
+                    margin: 5,
+                    dropShadow: {
+                      enabled: true,
+                      top: 2,
+                      left: 0,
+                      color: '#999',
+                      opacity: 1,
+                      blur: 2,
+                    },
+                  },
+                  hollow: {
+                    size: '50%',
+                  },
+                  dataLabels: {
+                    name: {
+                      show: false,
+                    },
+                    value: {
+                      offsetY: -2,
+                      fontSize: '16px',
+                      formatter: function (val) {
+                        if (val >= 99.9) {
+                          return '99.99%';
+                        }
+                        return val.toFixed(2) + '%';
+                      },
+                    },
+                  },
+                },
+              },
+              fill: {
+                type: 'gradient',
+                gradient: {
+                  shade: 'light',
+                  shadeIntensity: 0.4,
+                  inverseColors: false,
+                  opacityFrom: 1,
+                  opacityTo: 1,
+                  stops: [0, 50, 53, 91],
+                },
+              },
+              labels: [devName],
+              yaxis: {
+                max: 100,
+              },
+            },
+          };
+        });
+        const cumulativeOeeData = {};
+        this.oee.forEach((item) => {
+          if (!cumulativeOeeData[item.DEV_NAME]) {
+            cumulativeOeeData[item.DEV_NAME] = parseFloat(item.REG_VALUE);
+          }
+        });
+        this.cumulativeOeeSeries = Object.values(cumulativeOeeData);
+        this.cumulativeOeeOptions = {
+          chart: {
+            type: 'polarArea',
+            height: 275,
+          },
+          labels: Object.keys(cumulativeOeeData),
+          fill: {
+            opacity: 0.8,
+          },
+          stroke: {
+            width: 1,
+            colors: undefined,
+          },
+          yaxis: {
+            show: true,
+            min: 0,
+            max: Math.max(...Object.values(cumulativeOeeData)) * 1.1,
+          },
+          legend: {
+            position: 'right',
+          },
+          responsive: [
+            {
+              breakpoint: 480,
+              options: {
+                chart: {
+                  height: 300,
+                },
+                legend: {
+                  position: 'bottom',
+                },
+              },
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Failed to fetch or process OEE data:', error);
+      }
+    },
+    startAutoRefresh() {
+      this.fetchDashboardData();
+      this.autoRefreshInterval = setInterval(() => {
+        this.fetchDashboardData();
+      }, 30000); // 30 seconds
+    },
+    stopAutoRefresh() {
+      if (this.autoRefreshInterval) {
+        clearInterval(this.autoRefreshInterval);
+        this.autoRefreshInterval = null;
+      }
+    },
     async onClickInput() {
       try {
         const response = await fetch('http://localhost:3000/api/user/user', {
@@ -618,7 +832,6 @@ export default {
       this.visibleLiveDemo = true;
       console.log("User: " + this.submit.operatorName);
     },
-
     async saveSubmit() {
       console.log('Submitting data:', this.submit);
       let machineNameToSubmit = null;
@@ -684,209 +897,6 @@ export default {
       }
       return '';
     },
-  },
-
-  async created() {
-    try {
-      const response = await axios.get('/api/smartandon/machine')
-      this.machines = response.data
-      this.machineOptions = response.data.map((machine) => ({
-        id: machine.fid,
-        label: machine.fmc_name,
-      }))
-    } catch (error) {
-      console.error('Failed to fetch machines:', error)
-    }
-    try {
-      const response = await axios.get('/api/smartandon/line')
-      this.lines = response.data
-      this.lineOptions = response.data.map((line) => ({
-        id: line.fid,
-        label: line.fline,
-      }))
-    } catch (error) {
-      console.error('Failed to fetch lines:', error)
-    }
-    try {
-      this.loadingProblemActive = true;
-      this.limitView = 0;
-      const response = await axios.get('/api/smartandon/problemView', {
-        params: { 
-          limitView: 0,
-        }
-      });
-      // Filter hanya problem di line ini
-      this.problemActive = response.data.data
-      console.log('Filtered active problems:', this.problemActive);
-    } catch (error) {
-      console.error('Failed to fetch active problems:', error);
-      this.problemActive = [];
-    } finally {
-      this.loadingProblemActive = false;
-    }
-    try {
-      const response = await axios.get('/api/smartandon/oeeTarget')
-      this.oeeTarget = response.data
-      this.oeeOption = response.data.map(oeeTargets => ({
-        id: oeeTargets.GROUP_NAME,
-        label: oeeTargets.TAG_NAME,
-        labelOeeTarget: oeeTargets.REG_VALUE
-      }));
-      console.log("OEE Target: " + this.oeeTarget);
-    } catch (error) {
-      console.log('Failed to fetch oee target:', error)
-    }
-    try {
-      const response = await axios.get('/api/smartandon/oeeActual')
-      this.oeeActual = response.data
-    } catch (error) {
-      console.log('Failed to fetch oee actual:', error)
-    }
-    try {
-      const response = await axios.get('/api/smartandon/oeePlan')
-      this.oeePlan = response.data
-    } catch (error) {
-      console.log('Failed to fetch oee plan:', error)
-    }
-    try {
-      const response = await axios.get('/api/smartandon/oee');
-      this.oee = response.data;
-      this.oeeOption = response.data.map(oeeValue => ({
-        id: oeeValue.GROUP_NAME,
-        label: oeeValue.TAG_NAME,
-        labelOee: oeeValue.REG_VALUE
-      }));
-      // Group OEE data by DEV_NAME and prepare chart data per line
-      const uniqueOee = {};
-      this.oee.forEach(item => {
-        if (!uniqueOee[item.DEV_NAME]) {
-          uniqueOee[item.DEV_NAME] = parseFloat(item.REG_VALUE);
-        }
-      });
-      const maxOeeValue = Math.max(...Object.values(uniqueOee));
-      this.chartDataPerLine = Object.entries(uniqueOee).map(([devName, value]) => {
-        const normalizedValue = (value / maxOeeValue) * 100;
-        return {
-          label: devName,
-          series: [normalizedValue],
-          options: {
-            chart: {
-              height: 250,
-              type: 'radialBar',
-              offsetY: 0,
-              sparkline: {
-                enabled: true
-              }
-            },
-            plotOptions: {
-              radialBar: {
-                startAngle: -90,
-                endAngle: 90,
-                track: {
-                  background: '#e7e7e7',
-                  strokeWidth: '150%',
-                  margin: 5,
-                  dropShadow: {
-                    enabled: true,
-                    top: 2,
-                    left: 0,
-                    color: '#999',
-                    opacity: 1,
-                    blur: 2
-                  }
-                },
-                hollow: {
-                  size: '50%',
-                },
-                dataLabels: {
-                  name: {
-                    show: false
-                  },
-                  value: {
-                    offsetY: -2,
-                    fontSize: '16px',
-                    formatter: function (val) {
-                      if (val >= 99.9) {
-                        return '99.99%';
-                      }
-                      return val.toFixed(2) + '%';
-                    }
-                  }
-                }
-              }
-            },
-            fill: {
-              type: 'gradient',
-              gradient: {
-                shade: 'light',
-                shadeIntensity: 0.4,
-                inverseColors: false,
-                opacityFrom: 1,
-                opacityTo: 1,
-                stops: [0, 50, 53, 91]
-              },
-            },
-            labels: [devName],
-            yaxis: {
-              max: 100
-            }
-          }
-        };
-      });
-
-      // New cumulative OEE polar area chart data
-      const cumulativeOeeData = {};
-      this.oee.forEach(item => {
-        if (!cumulativeOeeData[item.DEV_NAME]) {
-          cumulativeOeeData[item.DEV_NAME] = parseFloat(item.REG_VALUE);
-        }
-      });
-      this.cumulativeOeeSeries = Object.values(cumulativeOeeData);
-      this.cumulativeOeeOptions = {
-        chart: {
-          type: 'polarArea',
-          height: 275,
-        },
-        labels: Object.keys(cumulativeOeeData),
-        fill: {
-          opacity: 0.8
-        },
-        stroke: {
-          width: 1,
-          colors: undefined
-        },
-        yaxis: {
-          show: true,
-          min: 0,
-          max: Math.max(...Object.values(cumulativeOeeData)) * 1.1
-        },
-        legend: {
-          position: 'right'
-        },
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              height: 300
-            },
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }]
-      }
-    } catch (error) {
-      console.error('Failed to fetch or process OEE data:', error);
-    }
-      // Fetch current logged-in user info and set operatorName
-      // try {
-      //   const userResponse = await axios.get('/api/user/user');
-      //   if (userResponse.data && userResponse.data.user && userResponse.data.user.fname) {
-      //     this.submit.operatorName = userResponse.data.user.fname;
-      //   }
-      // } catch (error) {
-      //   console.error('Failed to fetch current user info:', error);
-      // }
   },
 }
 </script>
