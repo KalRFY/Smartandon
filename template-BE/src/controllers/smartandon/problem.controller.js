@@ -73,6 +73,7 @@ const getProblemView = async (req, res, next) => {
   try {
     console.log(`===============================${req}===============================`);
     const search = JSON.parse(req.query.search || '{}');
+    console.log('[BE Debug] Received search params:', search);
     const page = parseInt(search.page) || 1;
     const limit = parseInt(search.limit) || 100;
     const offset = (page - 1) * limit;

@@ -43,21 +43,21 @@
             <CCol>
               <CCol class="md-6">
                 <label for="lineSelect" class="form-label">Line</label>
-                <Treeselect
-                  id="lineSelect"
-                  :model-value="selectedLine"
-                  @update:model-value="$emit('update:selectedLine', $event)"
-                  :multiple="false"
-                  :flat="true"
-                  :options="lineOptions"
-                  :searchable="true"
-                  :clearable="true"
-                  placeholder="Select or input line"
-                  @input="$emit('machineInput')"
-                  :value-consists-of="['id']"
-                  :value-key="'id'"
-                  :label-key="'label'"
-                />
+              <Treeselect
+                id="lineSelect"
+                :model-value="selectedLine"
+                @update:model-value="handleLineUpdate"
+                :multiple="false"
+                :flat="true"
+                :options="lineOptions"
+                :searchable="true"
+                :clearable="true"
+                placeholder="Select or input line"
+                @input="$emit('machineInput')"
+                :value-consists-of="['id']"
+                :value-key="'id'"
+                :label-key="'label'"
+              />
               </CCol>
             </CCol>
 
@@ -68,17 +68,15 @@
               <Treeselect
                 id="selectedMachineName"
                 :model-value="selectedMachineName"
-                @update:model-value="
-                  $emit('update:selectedMachineName', $event)
-                "
+                @update:model-value="handleMachineUpdate"
                 :options="machineOptions"
                 :searchable="true"
                 :clearable="true"
                 :children="false"
                 placeholder="Select or input machine"
                 @input="$emit('machineInput')"
-                :value-consists-of="['label']"
-                :value-key="'selectedMachineName'"
+                :value-consists-of="['id']"
+                :value-key="'id'"
                 :label-key="'label'"
               />
             </CCol>
@@ -218,5 +216,17 @@ export default {
     'reset',
     'machineInput',
   ],
+
+  methods: {
+    handleLineUpdate(value) {
+      console.log('[Treeselect Debug] Line updated:', value)
+      this.$emit('update:selectedLine', value)
+    },
+
+    handleMachineUpdate(value) {
+      console.log('[Treeselect Debug] Machine updated:', value)
+      this.$emit('update:selectedMachineName', value)
+    },
+  },
 }
 </script>

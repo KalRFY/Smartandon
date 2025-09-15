@@ -624,9 +624,13 @@ export default {
       try {
         this.loadingProblemActive = true;
         this.limitView = 0;
+        console.log('[FE Debug] Dashboard params to send:', { limitView: 0 })
+
         const responseProblems = await axios.get('/api/smartandon/problemView', {
           params: {
-            limitView: 0,
+            search: JSON.stringify({
+              limitView: 0,
+            }),
           },
         });
         this.problemActive = responseProblems.data.data;

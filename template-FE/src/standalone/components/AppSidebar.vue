@@ -81,20 +81,20 @@
             parentId: 'ROOT',
 
           items: [
-            {
-              component: 'CNavItem',
-              to: '/app/Dashboard2',
-              name: 'Dashboard',
-              icon: 'cilHome',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/DashboardDataDisplay',
-              name: 'Dashboard Data Display',
-              icon: 'cilListNumbered',
-              parentId: 'ROOT',
-            },
+            // {
+            //   component: 'CNavItem',
+            //   to: '/app/Dashboard2',
+            //   name: 'Dashboard',
+            //   icon: 'cilHome',
+            //   parentId: 'ROOT',
+            // },
+            // {
+            //   component: 'CNavItem',
+            //   to: '/app/DashboardDataDisplay',
+            //   name: 'Dashboard Data Display',
+            //   icon: 'cilListNumbered',
+            //   parentId: 'ROOT',
+            // },
             {
               component: 'CNavItem',
               to: '/app/MTBFMTTR',
@@ -118,16 +118,16 @@
             },
             {
               component: 'CNavItem',
-              to: '/app/ProblemHistory',
-              name: 'Problem History',
-              icon: 'cilHistory',
+              to: '/app/CMFollowup',
+              name: 'CM Followup',
+              icon: 'cilCalendar',
               parentId: 'ROOT',
             },
             {
               component: 'CNavItem',
-              to: '/app/CMFollowup',
-              name: 'CM Followup',
-              icon: 'cilCalendar',
+              to: '/app/ProblemHistory',
+              name: 'Problem History',
+              icon: 'cilHistory',
               parentId: 'ROOT',
             },
           ]
