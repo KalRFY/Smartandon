@@ -3,7 +3,7 @@ const { sequelize } = require('../models');
 const { generateLoginToken } = require('../utils/authUtils');
 
 const getLastId = async () => {
-  const query = `SELECT MAX(id) AS lastId FROM qcc_m_users`;
+  const query = `SELECT MAX(fid) AS lastId FROM tb_mt_member`;
   const result = await sequelize.query(query, {
     type: sequelize.QueryTypes.SELECT,
   });
