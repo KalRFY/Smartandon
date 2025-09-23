@@ -293,7 +293,6 @@ export default {
       this.error = null
 
       try {
-        // Check if all filter data is empty or null
         const {
           filterStartDate = this.filterStartDate,
           filterFinishDate = this.filterFinishDate,
@@ -311,10 +310,19 @@ export default {
           (!selectedProblem || selectedProblem === '') &&
           (!problemCategory || problemCategory === null)
 
+        // If all filters are empty (initial load), set default start date to first day of current month
         if (allFiltersEmpty) {
           console.log(
-            '[RepeatFlowChecker] All filters empty, calling resetFilters',
+            '[RepeatFlowChecker] All filters empty, setting default start date to first day of month',
           )
+          const now = new Date()
+          const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+          const yyyy = firstDay.getFullYear()
+          const mm = String(firstDay.getMonth() + 1).padStart(2, '0')
+          const dd = String(firstDay.getDate()).padStart(2, '0')
+          filters.filterStartDate = `${yyyy}-${mm}-${dd}`
+          this.filterStartDate = filters.filterStartDate
+
           this.resetFilters()
           // After resetFilters, update filters to cleared state
           filters = {
@@ -356,12 +364,12 @@ export default {
         const params = {
           page,
           limit,
-          startDate: filters.filterStartDate || undefined,
-          finishDate: filters.filterFinishDate || undefined,
-          line: filters.selectedLine || undefined,
+          startDate: filters.filterStartDate && filters.filterStartDate !== '' ? filters.filterStartDate : undefined,
+          finishDate: filters.filterFinishDate && filters.filterFinishDate !== '' ? filters.filterFinishDate : undefined,
+          line: filters.selectedLine && filters.selectedLine !== null ? filters.selectedLine : undefined,
           machineName: machineLabel || undefined,
-          problem: filters.selectedProblem || undefined,
-          problemCategory: filters.problemCategory || undefined,
+          problem: filters.selectedProblem && filters.selectedProblem !== '' ? filters.selectedProblem : undefined,
+          problemCategory: filters.problemCategory !== null ? filters.problemCategory : undefined,
         }
 
         console.log(
@@ -369,8 +377,10 @@ export default {
           params,
         )
 
+        console.log('[FE Debug] ProblemHistory params to send:', params)
+
         const response = await api.get('/smartandon/problemView', {
-          ...params,
+          search: JSON.stringify(params),
         })
         if (response.status !== 200) {
           throw new Error('Failed to fetch problems, status: ' + response.status)
@@ -433,6 +443,8 @@ export default {
         this.selectedMachineName = filters.selectedMachineName
         this.selectedProblem = filters.selectedProblem
         this.selectedProblemCategory = filters.problemCategory
+        // Save filters to storage
+        this.saveFiltersToStorage()
       } catch (error) {
         this.error = 'Failed to fetch problems: ' + error.message
         console.error(this.error)
@@ -450,7 +462,38 @@ export default {
       this.selectedProblemCategory = null
       // Reset currentPage explicitly on filter reset
       this.currentPage = 1
+      // Clear stored filters
+      localStorage.removeItem('problemHistoryFilters')
       // Removed fetchProblems call here to prevent infinite recursion
+    },
+
+    loadFiltersFromStorage() {
+      const stored = localStorage.getItem('problemHistoryFilters')
+      if (stored) {
+        const filters = JSON.parse(stored)
+        console.log('[Filter Persistence] Loaded filters from storage:', filters)
+        this.filterStartDate = filters.filterStartDate || ''
+        this.filterFinishDate = filters.filterFinishDate || ''
+        this.selectedLine = filters.selectedLine || null
+        this.selectedMachineName = filters.selectedMachineName || null
+        this.selectedProblem = filters.selectedProblem || ''
+        this.selectedProblemCategory = filters.selectedProblemCategory || null
+      } else {
+        console.log('[Filter Persistence] No filters found in storage')
+      }
+    },
+
+    saveFiltersToStorage() {
+      const filters = {
+        filterStartDate: this.filterStartDate,
+        filterFinishDate: this.filterFinishDate,
+        selectedLine: this.selectedLine,
+        selectedMachineName: this.selectedMachineName,
+        selectedProblem: this.selectedProblem,
+        selectedProblemCategory: this.selectedProblemCategory,
+      }
+      console.log('[Filter Persistence] Saving filters to storage:', filters)
+      localStorage.setItem('problemHistoryFilters', JSON.stringify(filters))
     },
 
     async onClickInput(problem) {
@@ -1026,15 +1069,16 @@ export default {
             'Failed to fetch members, status: ' + memberResponse.status,
           )
         }
-           console.log('RAW machineResponse:', machineResponse.data)
-    console.log('RAW lineResponse:', lineResponse.data)
+        
+        console.log('RAW machineResponse:', machineResponse.data)
+        console.log('RAW lineResponse:', lineResponse.data)
 
         this.memberOption = memberResponse.data.map((member) => ({
           id: member.fid,
           label: member.fname,
         }))
 
-        await this.fetchProblems(this.currentPage)
+        // Fetch will be called in created after loading filters
       } catch (error) {
         this.error = 'Failed to load initial data: ' + error.message
         console.error(error)
@@ -1046,6 +1090,18 @@ export default {
 
   async created() {
     await this.loadInitialData()
+    this.loadFiltersFromStorage()
+    // Wait for next tick to ensure filters are reactive before fetching
+    this.$nextTick(async () => {
+      await this.fetchProblems(this.currentPage, {
+        filterStartDate: this.filterStartDate,
+        filterFinishDate: this.filterFinishDate,
+        selectedLine: this.selectedLine,
+        selectedMachineName: this.selectedMachineName,
+        selectedProblem: this.selectedProblem,
+        problemCategory: this.selectedProblemCategory,
+      })
+    })
   },
 }
 </script>
