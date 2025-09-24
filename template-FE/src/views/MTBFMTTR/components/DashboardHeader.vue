@@ -20,32 +20,24 @@
   </CCard>
 </template>
 
-<script>
+<script setup>
 import { CCard, CCardHeader } from '@coreui/vue'
 import { User } from 'lucide-vue-next'
 
-export default {
-  name: 'DashboardHeader',
-  components: {
-    CCard,
-    CCardHeader,
-    User,
+defineProps({
+  username: {
+    type: String,
+    required: true,
   },
-  props: {
-    username: {
-      type: String,
-      required: true,
-    },
-    currentDate: {
-      type: String,
-      required: true,
-    },
-    currentTime: {
-      type: String,
-      required: true,
-    },
+  currentDate: {
+    type: String,
+    required: true,
   },
-}
+  currentTime: {
+    type: String,
+    required: true,
+  },
+})
 </script>
 
 <style scoped>

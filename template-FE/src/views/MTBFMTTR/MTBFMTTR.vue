@@ -69,7 +69,7 @@
                 >
                   No data available for {{ getLineTitle(lineId) }}
                 </div>
-                <apexchart
+                <ApexChart
                   v-else
                   :options="getChartOptions(lineId)"
                   :series="getChartSeries(lineId)"
@@ -97,7 +97,7 @@
                 <div v-if="!hasData(lineId)" class="empty-message">
                   No data available for {{ getLineTitle(lineId) }}
                 </div>
-                <apexchart
+                <ApexChart
                   v-else
                   :options="getChartOptions(lineId)"
                   :series="getChartSeries(lineId)"
@@ -127,6 +127,7 @@ import {
   CCol,
 } from '@coreui/vue'
 import api from '../../apis/CommonAPI'
+const username = ref('Admin User')
 
 const chartModes = [
   { value: 'mtbf', label: 'MTBF' },
@@ -216,7 +217,7 @@ function setFilterType(val) {
 const getApiEndpoint = () => {
   if (chartViewMode.value === 'mtbf') return '/mtbfmttr/mtbf'
   if (chartViewMode.value === 'mttr') return '/mtbfmttr/mttr'
-  return '/api/mtbfmttr/mtbfmttr'
+  return '/mtbfmttr/mtbfmttr'
 }
 
 function safeArray(val) {
@@ -766,14 +767,6 @@ onMounted(() => {
   }, 1000)
   fetchAllData()
 })
-</script>
-
-<script>
-export default {
-  components: {
-    apexchart: ApexChart,
-  },
-}
 </script>
 
 <style scoped>

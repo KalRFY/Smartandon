@@ -11,8 +11,7 @@
             <CFormInput
               type="date"
               id="start-date"
-              :value="startDate"
-              @input="$emit('update:startDate', $event.target.value)"
+              v-model="startDateModel"
             />
           </CInputGroup>
         </CCol>
@@ -26,8 +25,7 @@
             <CFormInput
               type="date"
               id="end-date"
-              :value="endDate"
-              @input="$emit('update:endDate', $event.target.value)"
+              v-model="endDateModel"
             />
           </CInputGroup>
         </CCol>
@@ -36,7 +34,7 @@
           <CButton
             color="primary"
             class="w-100 d-flex align-items-center justify-content-center"
-            @click="$emit('search')"
+            @click="emit('search')"
           >
             <SearchIcon class="me-2" size="16" /> Search
           </CButton>
@@ -51,39 +49,45 @@
               <CBadge
                 color="info"
                 class="quick-filter-badge"
-                @click="$emit('selectTimeRange', 'today')"
-                >Today</CBadge
+                @click="emit('selectTimeRange', 'today')"
               >
+                Today
+              </CBadge>
               <CBadge
                 color="info"
                 class="quick-filter-badge"
-                @click="$emit('selectTimeRange', 'lastWeek')"
-                >Last Week</CBadge
+                @click="emit('selectTimeRange', 'lastWeek')"
               >
+                Last Week
+              </CBadge>
               <CBadge
                 color="info"
                 class="quick-filter-badge"
-                @click="$emit('selectTimeRange', 'lastMonth')"
-                >Last Month</CBadge
+                @click="emit('selectTimeRange', 'lastMonth')"
               >
+                Last Month
+              </CBadge>
               <CBadge
                 color="info"
                 class="quick-filter-badge"
-                @click="$emit('selectTimeRange', 'lastQuarter')"
-                >Last Quarter</CBadge
+                @click="emit('selectTimeRange', 'lastQuarter')"
               >
+                Last Quarter
+              </CBadge>
               <CBadge
                 color="info"
                 class="quick-filter-badge"
-                @click="$emit('selectTimeRange', 'thisYear')"
-                >This Year</CBadge
+                @click="emit('selectTimeRange', 'thisYear')"
               >
+                This Year
+              </CBadge>
               <CBadge
                 color="info"
                 class="quick-filter-badge"
-                @click="$emit('selectTimeRange', 'lastYear')"
-                >Last Year</CBadge
+                @click="emit('selectTimeRange', 'lastYear')"
               >
+                Last Year
+              </CBadge>
             </div>
           </div>
         </CCol>
@@ -92,7 +96,8 @@
   </CCard>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
 import {
   CCard,
   CCardBody,
@@ -107,34 +112,28 @@ import {
 } from '@coreui/vue'
 import { Clock, Search as SearchIcon } from 'lucide-vue-next'
 
-export default {
-  name: 'SearchPanel',
-  components: {
-    CCard,
-    CCardBody,
-    CRow,
-    CCol,
-    CFormInput,
-    CInputGroup,
-    CInputGroupText,
-    CBadge,
-    CFormLabel,
-    CButton,
-    Clock,
-    SearchIcon,
+const props = defineProps({
+  startDate: {
+    type: String,
+    required: true,
   },
-  props: {
-    startDate: {
-      type: String,
-      required: true,
-    },
-    endDate: {
-      type: String,
-      required: true,
-    },
+  endDate: {
+    type: String,
+    required: true,
   },
-  emits: ['update:startDate', 'update:endDate', 'search', 'selectTimeRange'],
-}
+})
+
+const emit = defineEmits(['update:startDate', 'update:endDate', 'search', 'selectTimeRange'])
+
+const startDateModel = computed({
+  get: () => props.startDate,
+  set: (value) => emit('update:startDate', value),
+})
+
+const endDateModel = computed({
+  get: () => props.endDate,
+  set: (value) => emit('update:endDate', value),
+})
 </script>
 
 <style scoped>

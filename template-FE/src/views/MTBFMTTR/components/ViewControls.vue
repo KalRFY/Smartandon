@@ -11,7 +11,7 @@
                     :color="
                       chartViewMode === 'mtbf' ? 'primary' : 'outline-primary'
                     "
-                    @click="$emit('update:chartViewMode', 'mtbf')"
+                    @click="emit('update:chartViewMode', 'mtbf')"
                   >
                     <Clock size="16" class="me-1" /> MTBF
                   </CButton>
@@ -19,7 +19,7 @@
                     :color="
                       chartViewMode === 'mttr' ? 'primary' : 'outline-primary'
                     "
-                    @click="$emit('update:chartViewMode', 'mttr')"
+                    @click="emit('update:chartViewMode', 'mttr')"
                   >
                     <Tool size="16" class="me-1" /> MTTR
                   </CButton>
@@ -29,7 +29,7 @@
                         ? 'primary'
                         : 'outline-primary'
                     "
-                    @click="$emit('update:chartViewMode', 'comparison')"
+                    @click="emit('update:chartViewMode', 'comparison')"
                   >
                     <BarChart2 size="16" class="me-1" /> Comparison
                   </CButton>
@@ -43,7 +43,7 @@
   </CRow>
 </template>
 
-<script>
+<script setup>
 import {
   CCard,
   CCardBody,
@@ -54,27 +54,14 @@ import {
 } from '@coreui/vue'
 import { Clock, Tool, BarChart2 } from 'lucide-vue-next'
 
-export default {
-  name: 'ViewControls',
-  components: {
-    CCard,
-    CCardBody,
-    CRow,
-    CCol,
-    CButtonGroup,
-    CButton,
-    Clock,
-    Tool,
-    BarChart2,
+defineProps({
+  chartViewMode: {
+    type: String,
+    required: true,
   },
-  props: {
-    chartViewMode: {
-      type: String,
-      required: true,
-    },
-  },
-  emits: ['update:chartViewMode'],
-}
+})
+
+const emit = defineEmits(['update:chartViewMode'])
 </script>
 
 <style scoped>
