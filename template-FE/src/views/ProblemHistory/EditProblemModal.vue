@@ -2351,7 +2351,7 @@ export default {
           params.search = searchQuery;
         }
         console.log('Calling API with params:', params);
-        const sparepartRes = await api.get('/smartandon/spareparts', { params });
+        const sparepartRes = await api.get('/sparepart/spareparts', { params });
         console.log('API response status:', sparepartRes.status);
         if (sparepartRes.status === 200) {
           console.log('Sparepart options data for search:', searchQuery, sparepartRes.data);
@@ -2381,7 +2381,7 @@ export default {
 
     onMounted(async () => {
       try {
-        const res = await api.get('/smartandon/member')
+        const res = await api.get('/member/member')
         if (res.status === 200) {
           const data = res.data.data || res.data
           console.log('PIC options data:', data)
@@ -2560,37 +2560,37 @@ export default {
       console.log('displayImg_problem called, localSubmit:', this.localSubmit)
       if (this.localSubmit?.whyImage) {
         console.log('displayImg_problem whyImage:', this.localSubmit.whyImage)
-        return `/api/smartandon/image?path=${this.localSubmit.whyImage}`
+        return `/api/download/image?path=${this.localSubmit.whyImage}`
       }
       return ''
     },
     display_attachmentImg() {
       if (this.localSubmit?.attachmentMeeting) {
-        return `/api/smartandon/image?path=${this.localSubmit.attachmentMeeting}`
+        return `/api/download/image?path=${this.localSubmit.attachmentMeeting}`
       }
       return ''
     },
     displayWhyLamaImage() {
       if (this.localSubmit?.whyLamaImage) {
-        return `/api/smartandon/image?path=${this.localSubmit.whyLamaImage}`
+        return `/api/download/image?path=${this.localSubmit.whyLamaImage}`
       }
       return ''
     },
     displayUploadImgImage() {
       if (this.localSubmit?.uploadImage) {
-        return `/api/smartandon/image?path=${this.localSubmit.uploadImage}`
+        return `/api/download/image?path=${this.localSubmit.uploadImage}`
       }
       return ''
     },
     displayActualImage() {
       if (this.localSubmit?.actualImage) {
-        return `/api/smartandon/image?path=${this.localSubmit.actualImage}`
+        return `/api/download/image?path=${this.localSubmit.actualImage}`
       }
       return ''
     },
     displayStandardImage() {
       if (this.localSubmit?.standartImage) {
-        return `/api/smartandon/image?path=${this.localSubmit.standartImage}`
+        return `/api/download/image?path=${this.localSubmit.standartImage}`
       }
       return ''
     },
@@ -2620,7 +2620,7 @@ export default {
         this.localSubmit.problems
       ) {
         let url = `${window.location.origin
-          }/api/smartandon/download-report?fid=${encodeURIComponent(
+          }/api/download/download-report?fid=${encodeURIComponent(
             this.localSubmit.fidProblem,
           )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
         console.log('Download URL:', url)
@@ -2642,7 +2642,7 @@ export default {
     },
     downloadTemplateFile() {
       if (this.localSubmit.fidProblem) {
-        const url = `api/smartandon/download-template?fid=${encodeURIComponent(
+        const url = `api/download/download-template?fid=${encodeURIComponent(
           this.localSubmit.fidProblem,
         )}`
         window.open(url, '_blank')

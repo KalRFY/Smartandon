@@ -10,22 +10,16 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { CFormLabel, CCol } from '@coreui/vue'
 
-export default {
-  name: 'LoadingState',
-  components: {
-    CFormLabel,
-    CCol,
+
+defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
   },
-  props: {
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-  },
-}
+})
 </script>
 
 <style scoped>

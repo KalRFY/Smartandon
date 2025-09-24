@@ -41,42 +41,33 @@
   </CPagination>
 </template>
 
-<script>
+<script setup>
 import { CPagination, CPaginationItem } from '@coreui/vue'
 
-export default {
-  name: 'PaginationControls',
-  components: {
-    CPagination,
-    CPaginationItem,
-  },
 
-  props: {
-    currentPage: {
-      type: Number,
-      required: true,
-      default: 1,
-    },
-    totalPages: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    visiblePages: {
-      type: Array,
-      default: () => [],
-    },
+const props = defineProps({
+  currentPage: {
+    type: Number,
+    required: true,
+    default: 1,
   },
-
-  emits: ['goToPage'],
-
-  methods: {
-    handlePageChange(page) {
-      if (page !== this.currentPage && page >= 1 && page <= this.totalPages) {
-        this.$emit('goToPage', page)
-      }
-    },
+  totalPages: {
+    type: Number,
+    required: true,
+    default: 0,
   },
+  visiblePages: {
+    type: Array,
+    default: () => [],
+  },
+})
+
+const emit = defineEmits(['goToPage'])
+
+const handlePageChange = (page) => {
+  if (page !== props.currentPage && page >= 1 && page <= props.totalPages) {
+    emit('goToPage', page)
+  }
 }
 </script>
 

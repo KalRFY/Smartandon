@@ -21,10 +21,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "LegendStatus",
-};
+<script setup>
+// This component is a pure template component with no props or methods
 </script>
 
 <style>

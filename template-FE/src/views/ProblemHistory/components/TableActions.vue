@@ -122,75 +122,66 @@
   
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import { CRow, CCol, CButton, CFormLabel, CButtonGroup } from '@coreui/vue'
-import axios from 'axios'
 
-export default {
-  name: 'TableActions',
-  components: {
-    CRow,
-    CCol,
-    CButton,
-    CFormLabel,
-    CButtonGroup,
+const props = defineProps({
+  isLoading: {
+    type: Boolean,
+    default: false,
   },
-  emits: ['freq', 'ltb', 'download', 'filterCategory'],
-  props: {
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-    filterStartDate: {
-      type: String,
-      default: ''
-    },
-    filterFinishDate: {
-      type: String,
-      default: ''
-    },
-    selectedLine: {
-      type: [String, Number],
-      default: null
-    },
-    selectedMachineName: {
-      type: [String, Number],
-      default: null
-    },
-    selectedProblem: {
-      type: String,
-      default: ''
-    },
-    selectedProblemCategory: {
-      type: [String, Number],
-      default: null
-    },
-    problemsData: {
-      type: Array,
-      default: () => []
-    }
+  filterStartDate: {
+    type: String,
+    default: ''
   },
-  data() {
-    return {
-      selectedCategory: 0,
-      selectedFiltered: 0,
-    }
+  filterFinishDate: {
+    type: String,
+    default: ''
   },
-  methods: {
-    onClickFilter(category) {
-      if (!this.isLoading) {
-        this.selectedCategory = category
-        console.log(`[RepeatFlowChecker] TableActions button clicked with category: ${category}`)
-        this.$emit('filterCategory', category)
-      }
-    },
-    onClickFilterWhyCm(filtered) {
-      if (!this.isLoading) {
-        this.selectedFiltered = filtered
-        this.$emit('filteredCategory', filtered)
-      }
-    },
+  selectedLine: {
+    type: [String, Number],
+    default: null
   },
+  selectedMachineName: {
+    type: [String, Number],
+    default: null
+  },
+  selectedProblem: {
+    type: String,
+    default: ''
+  },
+  selectedProblemCategory: {
+    type: [String, Number],
+    default: null
+  },
+  problemsData: {
+    type: Array,
+    default: () => []
+  }
+})
+
+// Emits
+const emit = defineEmits(['freq', 'ltb', 'download', 'filterCategory'])
+
+// State
+const selectedCategory = ref(0)
+const selectedFiltered = ref(0)
+
+// Methods
+const onClickFilter = (category) => {
+  if (!props.isLoading) {
+    selectedCategory.value = category
+    console.log(`[RepeatFlowChecker] TableActions button clicked with category: ${category}`)
+    emit('filterCategory', category)
+  }
+}
+
+const onClickFilterWhyCm = (filtered) => {
+  if (!props.isLoading) {
+    selectedFiltered.value = filtered
+    emit('filteredCategory', filtered)
+  }
 }
 </script>
 

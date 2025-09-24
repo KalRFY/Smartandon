@@ -131,7 +131,7 @@
   </CRow>
 </template>
 
-<script>
+<script setup>
 import {
   CRow,
   CCol,
@@ -150,132 +150,106 @@ import TableActions from './TableActions.vue'
 import LoadingState from './LoadingState.vue'
 import PaginationControls from './PaginationControls.vue'
 
-export default {
-  name: 'ProblemsTable',
-  components: {
-    CRow,
-    CCol,
-    CCard,
-    CCardHeader,
-    CCardBody,
-    CTable,
-    CTableHead,
-    CTableBody,
-    CTableHeaderCell,
-    CTableRow,
-    CTableDataCell,
-    CButton,
-    TableActions,
-    LoadingState,
-    PaginationControls,
+// Props
+defineProps({
+  problems: {
+    type: Array,
+    default: () => [],
   },
-
-  props: {
-    problems: {
-      type: Array,
-      default: () => [],
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    currentPage: {
-      type: Number,
-      default: 1,
-    },
-    pageSize: {
-      type: Number,
-      default: 50,
-    },
-    totalPages: {
-      type: Number,
-      default: 0,
-    },
-    visiblePages: {
-      type: Array,
-      default: () => [],
-    },
+  loading: {
+    type: Boolean,
+    default: false,
   },
-
-  emits: [
-    'editProblem',
-    'viewLtbReport',
-    'goToPage',
-    'freq',
-    'ltb',
-    'download',
-    'repeat',
-    'ltr',
-    'filterCategory',
-    'filteredCategory',
-  ],
-
-  methods: {
-    formatDate(dateString) {
-      if (!dateString) return ''
-      const date = new Date(dateString)
-      const year = date.getFullYear()
-      const month = (date.getMonth() + 1).toString().padStart(2, '0')
-      const day = date.getDate().toString().padStart(2, '0')
-      return `${year}-${month}-${day}`
-    },
-    onFilterCategory(category) {
-      console.log(`ProblemsTable emitted filterCategory with category: ${category}`)
-      this.$emit('filterCategory', category)
-    },
-    onFilterCategoryWhycm(filtered) {
-      this.$emit('filteredCategory', filtered)
-    },
-    getRowColor(problem) {
-      const analysisArray = Array.isArray(problem.terjadiAnalysis) ? problem.terjadiAnalysis : []
-      const hasTerjadi = analysisArray.some(item => item.id_problem === problem.fid)
-      const analysisArrayLama = Array.isArray(problem.lamaAnalysis) ? problem.lamaAnalysis : []
-      const hasLama = analysisArrayLama.some(item => item.id_problem === problem.fid)
-      if (!hasTerjadi && !hasLama) {
-        console.log('Row color: danger (Five Why missing)')
-        return 'danger'
-      }
-
-      // Check if any analysis item has empty fpermanet_cm
-      // const hasEmptyPermanentCm = analysisArray.some(item => {
-      //   const cm = item.fpermanet_cm
-      //   // const cmLama = item.fpermanet_cm_lama
-      //   const isCmEmpty = !cm || (Array.isArray(cm) && cm.length === 0)
-      //   // const isCmLamaEmpty = !cmLama || (Array.isArray(cmLama) && cmLama.length === 0)
-      //   return isCmEmpty
-      // })
-      if (
-        (problem.fpermanet_cm != '[]' && problem.fpermanet_cm.length !== 0) || 
-        (problem.fpermanet_cm_lama != '[]' && problem.fpermanet_cm_lama.length !== 0)) {
-        return ''
-      }
-      return 'warning'
-    },
-
-    isLtrProblem(problem) {
-      const duration = parseInt(problem.fdur) || 0
-      const lineId = parseInt(problem.line_id) || 0
-      
-      // LTR criteria based on the SQL query
-      return (
-        (problem.problemCategory == 3) || ((duration >= 120 && duration < 659) && (lineId === 1 || lineId === 2)) ||
-        ((duration >= 120 && duration < 359) && [3, 4, 5, 6].includes(lineId)) ||
-        (duration >= 15 && duration < 179 && lineId === 7)
-      )
-    },
-
-    isSltrProblem(problem) {
-      const duration = parseInt(problem.fdur) || 0
-      const lineId = parseInt(problem.line_id) || 0
-      
-      // SLTR criteria (opposite of LTR)
-      return (
-        (problem.problemCategory == 4) || (duration >= 659 && (lineId === 1 || lineId === 2)) ||
-        (duration >= 359 && [3, 4, 5, 6].includes(lineId)) ||
-        (duration >= 179 && lineId === 7)
-      )
-    },
+  currentPage: {
+    type: Number,
+    default: 1,
   },
+  pageSize: {
+    type: Number,
+    default: 50,
+  },
+  totalPages: {
+    type: Number,
+    default: 0,
+  },
+  visiblePages: {
+    type: Array,
+    default: () => [],
+  },
+})
 
+// Emits
+const emit = defineEmits([
+  'editProblem',
+  'viewLtbReport',
+  'goToPage',
+  'freq',
+  'ltb',
+  'download',
+  'repeat',
+  'ltr',
+  'filterCategory',
+  'filteredCategory',
+])
+
+// Methods
+const formatDate = (dateString) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+const onFilterCategory = (category) => {
+  console.log(`ProblemsTable emitted filterCategory with category: ${category}`)
+  emit('filterCategory', category)
+}
+
+const onFilterCategoryWhycm = (filtered) => {
+  emit('filteredCategory', filtered)
+}
+
+const getRowColor = (problem) => {
+  const analysisArray = Array.isArray(problem.terjadiAnalysis) ? problem.terjadiAnalysis : []
+  const hasTerjadi = analysisArray.some(item => item.id_problem === problem.fid)
+  const analysisArrayLama = Array.isArray(problem.lamaAnalysis) ? problem.lamaAnalysis : []
+  const hasLama = analysisArrayLama.some(item => item.id_problem === problem.fid)
+  if (!hasTerjadi && !hasLama) {
+    console.log('Row color: danger (Five Why missing)')
+    return 'danger'
+  }
+
+  if (
+    (problem.fpermanet_cm != '[]' && problem.fpermanet_cm.length !== 0) || 
+    (problem.fpermanet_cm_lama != '[]' && problem.fpermanet_cm_lama.length !== 0)) {
+    return ''
+  }
+  return 'warning'
+}
+
+const isLtrProblem = (problem) => {
+  const duration = parseInt(problem.fdur) || 0
+  const lineId = parseInt(problem.line_id) || 0
+  
+  // LTR criteria based on the SQL query
+  return (
+    (problem.problemCategory == 3) || ((duration >= 120 && duration < 659) && (lineId === 1 || lineId === 2)) ||
+    ((duration >= 120 && duration < 359) && [3, 4, 5, 6].includes(lineId)) ||
+    (duration >= 15 && duration < 179 && lineId === 7)
+  )
+}
+
+const isSltrProblem = (problem) => {
+  const duration = parseInt(problem.fdur) || 0
+  const lineId = parseInt(problem.line_id) || 0
+  
+  // SLTR criteria (opposite of LTR)
+  return (
+    (problem.problemCategory == 4) || (duration >= 659 && (lineId === 1 || lineId === 2)) ||
+    (duration >= 359 && [3, 4, 5, 6].includes(lineId)) ||
+    (duration >= 179 && lineId === 7)
+  )
 }
 </script>

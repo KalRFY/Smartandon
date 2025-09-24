@@ -137,7 +137,7 @@
   </CRow>
 </template>
 
-<script>
+<script setup>
 import {
   CRow,
   CCol,
@@ -154,79 +154,62 @@ import { Clock } from 'lucide-vue-next'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
-export default {
-  name: 'SearchFilters',
-  components: {
-    CRow,
-    CCol,
-    CCard,
-    CCardHeader,
-    CCardBody,
-    CFormLabel,
-    CInputGroup,
-    CInputGroupText,
-    CFormInput,
-    CButton,
-    Clock,
-    Treeselect,
+// Props
+defineProps({
+  filterStartDate: {
+    type: String,
+    default: '',
   },
-
-  props: {
-    filterStartDate: {
-      type: String,
-      default: '',
-    },
-    filterFinishDate: {
-      type: String,
-      default: '',
-    },
-    selectedLine: {
-      type: [String, Number],
-      default: null,
-    },
-    selectedMachineName: {
-      type: [String, Number],
-      default: null,
-    },
-    selectedProblem: {
-      type: String,
-      default: '',
-    },
-    lineOptions: {
-      type: Array,
-      default: () => [],
-    },
-    machineOptions: {
-      type: Array,
-      default: () => [],
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
+  filterFinishDate: {
+    type: String,
+    default: '',
   },
-
-  emits: [
-    'update:filterStartDate',
-    'update:filterFinishDate',
-    'update:selectedLine',
-    'update:selectedMachineName',
-    'update:selectedProblem',
-    'search',
-    'reset',
-    'machineInput',
-  ],
-
-  methods: {
-    handleLineUpdate(value) {
-      console.log('[Treeselect Debug] Line updated:', value)
-      this.$emit('update:selectedLine', value)
-    },
-
-    handleMachineUpdate(value) {
-      console.log('[Treeselect Debug] Machine updated:', value)
-      this.$emit('update:selectedMachineName', value)
-    },
+  selectedLine: {
+    type: [String, Number],
+    default: null,
   },
+  selectedMachineName: {
+    type: [String, Number],
+    default: null,
+  },
+  selectedProblem: {
+    type: String,
+    default: '',
+  },
+  lineOptions: {
+    type: Array,
+    default: () => [],
+  },
+  machineOptions: {
+    type: Array,
+    default: () => [],
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+// Emits
+const emit = defineEmits([
+  'update:filterStartDate',
+  'update:filterFinishDate',
+  'update:selectedLine',
+  'update:selectedMachineName',
+  'update:selectedProblem',
+  'search',
+  'reset',
+  'machineInput',
+])
+
+// Methods
+const handleLineUpdate = (value) => {
+  console.log('[Treeselect Debug] Line updated:', value)
+  emit('update:selectedLine', value)
+}
+
+const handleMachineUpdate = (value) => {
+  console.log('[Treeselect Debug] Machine updated:', value)
+  emit('update:selectedMachineName', value)
 }
 </script>
