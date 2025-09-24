@@ -11,8 +11,8 @@
             <CFormInput 
               id="startDate" 
               type="date" 
-              :model-value="filterStartDate"
-              @update:model-value="$emit('update:filterStartDate', $event)" 
+              v-model="filterStartDateModel"
+              :disabled="loading"
             />
           </CInputGroup>
         </CCol>
@@ -26,38 +26,38 @@
             <CFormInput 
               id="finishDate" 
               type="date" 
-              :model-value="filterFinishDate"
-              @update:model-value="$emit('update:filterFinishDate', $event)" 
+              v-model="filterFinishDateModel"
+              :disabled="loading"
             />
           </CInputGroup>
         </CCol>
 
         <CCol class="md-3">
           <CFormLabel for="lineSelect">Line</CFormLabel>
-            <Treeselect 
-              id="lineSelect"
-              :model-value="selectedLine"
-              @update:model-value="$emit('update:selectedLine', $event)"
-              :options="lineOptions"
-              :multiple="false"
-              :searchable="true"
-              :clearable="true"
-              placeholder="Select line"
-            />
+          <Treeselect 
+            id="lineSelect"
+            v-model="selectedLineModel"
+            :options="lineOptions"
+            :multiple="false"
+            :searchable="true"
+            :clearable="true"
+            :disabled="loading"
+            placeholder="Select line"
+          />
         </CCol>
 
         <CCol class="md-3">
           <CFormLabel for="selectedMachineName">Machine Name</CFormLabel>
-            <Treeselect 
-              id="selectedMachineName"
-              :model-value="selectedMachineName"
-              @update:model-value="$emit('update:selectedMachineName', $event)"
-              :options="machineOptions"
-              :multiple="false"
-              :searchable="true"
-              :clearable="true"
-              placeholder="Select machine"
-            />
+          <Treeselect 
+            id="selectedMachineName"
+            v-model="selectedMachineNameModel"
+            :options="machineOptions"
+            :multiple="false"
+            :searchable="true"
+            :clearable="true"
+            :disabled="loading"
+            placeholder="Select machine"
+          />
         </CCol>
       </CRow>
 
@@ -71,15 +71,15 @@
             <CFormInput
               id="keyword"
               placeholder="Search machine, problem, countermeasure, or PIC"
-              :model-value="searchKeyword"
-              @update:model-value="$emit('update:searchKeyword', $event)"
+              v-model="searchKeywordModel"
+              :disabled="loading"
             />
           </CInputGroup>
         </CCol>
 
         <CCol md="1" class="px-1">
           <CFormLabel>Category</CFormLabel>
-          <CFormSelect :model-value="selectedCategory" @update:model-value="$emit('update:selectedCategory', $event)">
+          <CFormSelect v-model="selectedCategoryModel" :disabled="loading">
             <option value="">All</option>
             <option value="Taskforce">TASKFORCE</option>
             <option value="Thema">Focus Thema Member</option>
@@ -88,7 +88,7 @@
 
         <CCol md="1" class="px-1">
           <CFormLabel>Shift</CFormLabel>
-          <CFormSelect :model-value="selectedShift" @update:model-value="$emit('update:selectedShift', $event)">
+          <CFormSelect v-model="selectedShiftModel" :disabled="loading">
             <option value="">All</option>
             <option value="Red">Red Shift</option>
             <option value="White">White Shift</option>
@@ -105,7 +105,7 @@
             style="width: 100%" 
             color="dark" 
             variant="outline" 
-            @click="$emit('reset')"
+            @click="emit('reset')"
           >
             Reset
           </CButton>
@@ -115,7 +115,7 @@
             :disabled="loading" 
             style="width: 100%" 
             color="primary" 
-            @click="$emit('search')"
+            @click="emit('search')"
           >
             Search
           </CButton>
@@ -125,7 +125,7 @@
   </CCard>
 </template>
 
-<script>
+<script setup>
 import {
   CRow,
   CCol,
@@ -139,52 +139,69 @@ import {
   CButton,
 } from '@coreui/vue'
 import { Clock, Search } from 'lucide-vue-next'
+import { computed } from 'vue'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
-export default {
-  name: 'SearchFilters',
-  components: {
-    CRow,
-    CCol,
-    CCard,
-    CCardBody,
-    CFormLabel,
-    CInputGroup,
-    CInputGroupText,
-    CFormInput,
-    CFormSelect,
-    CButton,
-    Clock,
-    Search,
-    Treeselect,
-  },
+const props = defineProps({
+  filterStartDate: { type: String, default: '' },
+  filterFinishDate: { type: String, default: '' },
+  selectedLine: { type: [String, Number], default: '' },
+  selectedMachineName: { type: [String, Number], default: '' },
+  searchKeyword: { type: String, default: '' },
+  selectedCategory: { type: String, default: '' },
+  selectedShift: { type: String, default: '' },
+  lineOptions: { type: Array, default: () => [] },
+  machineOptions: { type: Array, default: () => [] },
+  loading: { type: Boolean, default: false },
+})
 
-  props: {
-    filterStartDate: String,
-    filterFinishDate: String,
-    selectedLine: [String, Number],
-    selectedMachineName: [String, Number],
-    searchKeyword: String,
-    selectedCategory: String,
-    selectedShift: String,
-    lineOptions: { type: Array, default: () => [] },
-    machineOptions: { type: Array, default: () => [] },
-    loading: { type: Boolean, default: false },
-  },
+const emit = defineEmits([
+  'update:filterStartDate',
+  'update:filterFinishDate',
+  'update:selectedLine',
+  'update:selectedMachineName',
+  'update:searchKeyword',
+  'update:selectedCategory',
+  'update:selectedShift',
+  'search',
+  'reset',
+])
 
-  emits: [
-    'update:filterStartDate',
-    'update:filterFinishDate',
-    'update:selectedLine',
-    'update:selectedMachineName',
-    'update:searchKeyword',
-    'update:selectedCategory',
-    'update:selectedShift',
-    'search',
-    'reset',
-  ],
-}
+const filterStartDateModel = computed({
+  get: () => props.filterStartDate,
+  set: (value) => emit('update:filterStartDate', value)
+})
+
+const filterFinishDateModel = computed({
+  get: () => props.filterFinishDate,
+  set: (value) => emit('update:filterFinishDate', value)
+})
+
+const selectedLineModel = computed({
+  get: () => props.selectedLine,
+  set: (value) => emit('update:selectedLine', value)
+})
+
+const selectedMachineNameModel = computed({
+  get: () => props.selectedMachineName,
+  set: (value) => emit('update:selectedMachineName', value)
+})
+
+const searchKeywordModel = computed({
+  get: () => props.searchKeyword,
+  set: (value) => emit('update:searchKeyword', value)
+})
+
+const selectedCategoryModel = computed({
+  get: () => props.selectedCategory,
+  set: (value) => emit('update:selectedCategory', value)
+})
+
+const selectedShiftModel = computed({
+  get: () => props.selectedShift,
+  set: (value) => emit('update:selectedShift', value)
+})
 </script>
 
 <style scoped>

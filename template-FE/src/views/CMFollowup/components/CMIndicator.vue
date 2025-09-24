@@ -24,24 +24,24 @@
     </CCard>
 </template>
 
-<script>
-export default {
-    name: "CMIndicator",
-    props: {
-        data: {
-            type: Array,
-            required: true,
-        },
+<script setup>
+import { computed } from 'vue'
+import {
+  CCard,
+  CCardBody,
+  CRow,
+  CCol
+} from '@coreui/vue'
+
+const props = defineProps({
+    data: {
+        type: Array,
+        required: true,
     },
-    computed: {
-        doneCount() {
-            return this.data.filter(item => item.status === 'OK').length;
-        },
-        notYetCount() {
-            return this.data.filter(item => item.status === 'NOT YET').length;
-        },
-    },
-};
+})
+
+const doneCount = computed(() => props.data.filter(item => item.status === 'OK').length)
+const notYetCount = computed(() => props.data.filter(item => item.status === 'NOT YET').length)
 </script>
 
 <style scoped>

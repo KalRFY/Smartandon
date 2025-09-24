@@ -7,23 +7,16 @@
   </CRow>
 
   <SearchFilters 
-    :filterStartDate="filters.start_date" 
-    :filterFinishDate="filters.end_date"
-    :selectedLine="filters.line" 
-    :selectedMachineName="filters.machine" 
-    :searchKeyword="filters.keyword"
-    :selectedCategory="filters.category" 
-    :selectedShift="filters.shift" 
+    v-model:filterStartDate="filters.start_date" 
+    v-model:filterFinishDate="filters.end_date"
+    v-model:selectedLine="filters.line" 
+    v-model:selectedMachineName="filters.machine" 
+    v-model:searchKeyword="filters.keyword"
+    v-model:selectedCategory="filters.category" 
+    v-model:selectedShift="filters.shift" 
     :lineOptions="lineOptions"
     :machineOptions="machineOptions" 
     :loading="loading"
-    @update:filterStartDate="val => filters.start_date = val"
-    @update:filterFinishDate="val => filters.end_date = val" 
-    @update:selectedLine="val => filters.line = val"
-    @update:selectedMachineName="val => filters.machine = val"
-    @update:searchKeyword="val => filters.keyword = val"
-    @update:selectedCategory="val => filters.category = val" 
-    @update:selectedShift="val => filters.shift = val"
     @search="fetchCMFollowup" 
     @reset="resetFilters" 
   />
@@ -43,14 +36,15 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { CRow, CCol } from '@coreui/vue'
 import dayjs from 'dayjs'
 import api from '@/apis/CommonAPI'
 import { getCMFollowup } from '@/apis/cmFollowup'
 
-import SearchFilters from '@/views/CMFollowup/components/SearchFilters.vue'
-import ProblemsTable from '@/views/CMFollowup/components/ProblemsTable.vue'
-import CMIndicator from '@/views/CMFollowup/components/CMIndicator.vue'
-import LoadingState from '@/views/CMFollowup/components/LoadingState.vue'
+import SearchFilters from './components/SearchFilters.vue'
+import ProblemsTable from './components/ProblemsTable.vue'
+import CMIndicator from './components/CMIndicator.vue'
+import LoadingState from './components/LoadingState.vue'
 
 const filters = ref({
   line: '',                 
@@ -73,10 +67,6 @@ const getLineLabel = id => lineOptions.value.find(l => l.id === id)?.label
 const getMachineLabel = id => machineOptions.value.find(m => m.id === id)?.label
 
 const filteredData = computed(() => {
-  if (filters.value.category === "Thema") {
-    return []
-  }
-
   return tableData.value.filter(item => {
     const lineMatch = filters.value.line ? item.line === getLineLabel(filters.value.line) : true
     const machineMatch = filters.value.machine ? item.machine === getMachineLabel(filters.value.machine) : true
@@ -88,10 +78,14 @@ const filteredData = computed(() => {
       item.countermeasure.toLowerCase().includes(keyword) ||
       item.pic.toLowerCase().includes(keyword)
 
-      let categoryMatch = true
-      if (filters.value.category === "Taskforce") {
-        categoryMatch = item.problem?.toLowerCase().includes("taskforce")
-      }
+    let categoryMatch = true
+    if (filters.value.category === "Taskforce") {
+      categoryMatch = item.problem?.toLowerCase().includes("taskforce")
+    } else if (filters.value.category === "Thema") {
+      // Add your specific logic for Thema category here
+      categoryMatch = item.problem?.toLowerCase().includes("thema") || 
+      item.category?.toLowerCase().includes("thema")
+    }
 
     return lineMatch && machineMatch && searchMatch && categoryMatch
   })
@@ -146,12 +140,6 @@ async function fetchCMFollowup() {
     }
 
     let rawData = await getCMFollowup(apiFilters)
-
-    if (filters.value.category === "Thema") {
-      console.log("Filtering for Thema category")
-      rawData = []
-    }
-
     tableData.value = rawData
   } catch (err) {
     console.error('Error fetching CMFollowup data:', err)
@@ -185,3 +173,20 @@ onMounted(() => {
   loadInitialData().then(fetchCMFollowup)
 })
 </script>
+
+<style scoped>
+.cm-followup-container {
+  padding: 0;
+}
+
+h3 {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  color: #718096;
+  margin-bottom: 1.5rem;
+}
+</style>

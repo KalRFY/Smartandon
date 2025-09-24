@@ -107,7 +107,7 @@ const appRoutes = [
     path: '/app/CMFollowup',
     name: 'CMFollowup',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/CMFollowup.vue'),
+      import(/* webpackChunkName: "reports" */ '@/views/CMFollowup/CMFollowup.vue'),
     meta: {
       requiresAuth: true,
       title: 'CM Followup',
