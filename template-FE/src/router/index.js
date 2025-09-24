@@ -53,7 +53,7 @@ const appRoutes = [
     name: 'DashboardDataDisplay',
     component: () =>
       import(
-        /* webpackChunkName: "reports" */ '@/views/DashboardDataDisplay.vue'
+        /* webpackChunkName: "reports" */ '@/views/DashboardDataDisplay/DashboardDataDisplay.vue'
       ),
     meta: {
       requiresAuth: true,

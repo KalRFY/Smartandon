@@ -1,380 +1,268 @@
 <template>
-  <CContainer fuild>
-    <CCol>Smartandon</CCol>
-  </CContainer>
   <div>
-    <CRow>
-      <CCol class="mb-3">
-        <CTable v-if="types.length" bordered hover responsive>
-          <CTableHead>
-            <CTableRow>
-              <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-              <CTableHeaderCell scope="col">Type ID</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Type Name</CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
-          <CTableBody>
-            <CTableRow  v-for="type in types" :key="type.type_id">
-              <CTableDataCell>{{ type.type_id }}</CTableDataCell>
-              <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
-            </CTableRow>
-          </CTableBody>
-        </CTable>
-        <p v-else>Loading data...</p>
-      </CCol>
-    </CRow>
+    <PageHeader title="Smartandon" />
+    
+    <DataTable
+      :data="types"
+      :columns="typesColumns"
+      key-field="type_id"
+      loading-text="Loading data..."
+    />
+
+    <DataTable
+      :data="spareparts"
+      :columns="sparepartsColumns"
+      key-field="sparepart_id"
+      loading-text="Loading spareparts..."
+    />
+
+    <DataTable
+      :data="lines"
+      :columns="linesColumns"
+      key-field="fid"
+      loading-text="Loading data..."
+    />
+
+    <DataTable
+      :data="problems"
+      :columns="problemsColumns"
+      key-field="fid"
+      loading-text="Loading data..."
+    />
+
+    <DataTable
+      :data="machines"
+      :columns="machinesColumns"
+      key-field="fid"
+      loading-text="Loading data..."
+    />
+
+    <DataTable
+      :data="oee"
+      :columns="oeeColumns"
+      key-field="CLIENT_HDL"
+      loading-text="Loading data..."
+    />
+
+    
+    <DataTable
+      :data="members"
+      :columns="membersColumns"
+      key-field="fid"
+      loading-text="Loading data..."
+    />
+
+    <ActiveProblemsTable :problem-active="problemActive" />
+
     <CContainer fluid>
     </CContainer>
   </div>
-
-  <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="spareparts.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <CTableHeaderCell scope="col">ID</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Sparepart</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow v-for="sparepart in spareparts" :key="sparepart.sparepart_id">
-            <CTableDataCell>{{ sparepart.sparepart_id }}</CTableDataCell>
-            <CTableDataCell>{{ sparepart.sparepart_nm }}</CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading spareparts...</p>
-    </CCol>
-  </CRow>
-
-  <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="lines.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-            <CTableHeaderCell scope="col">fid</CTableHeaderCell>
-            <CTableHeaderCell scope="col">fline</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow v-for="line in lines" :key="line.fid">
-            <CTableDataCell>{{ line.fid }}</CTableDataCell>
-            <CTableDataCell>{{ line.fline }}</CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading data...</p>
-    </CCol>
-  </CRow>
-  
-  <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="problems.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-            <CTableHeaderCell scope="col">fid</CTableHeaderCell>
-            <CTableHeaderCell scope="col">ferror_name</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow v-for="problem in problems" :key="problem.fid">
-            <CTableDataCell>{{ problem.fid }}</CTableDataCell>
-            <CTableDataCell>{{ problem.ferror_name }}</CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading data...</p>
-    </CCol>
-  </CRow>
-
-  <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="types.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-            <CTableHeaderCell scope="col">fid</CTableHeaderCell>
-            <CTableHeaderCell scope="col">fmc_name</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow v-for="machine in machines" :key="machine.fid">
-            <CTableDataCell>{{ machine.fid }}</CTableDataCell>
-            <CTableDataCell>{{ machine.fmc_name }}</CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading data...</p>
-    </CCol>
-  </CRow>
-  <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="oee.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-             <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-            <CTableHeaderCell scope="col">OEE</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Value</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow v-for="oeeValue in oee" :key="oeeValue.CLIENT_HDL">
-
-            <CTableDataCell>{{ oeeValue.GROUP_NAME }}</CTableDataCell>
-            <CTableDataCell>{{ oeeValue.TAG_NAME }}</CTableDataCell>
-            <CTableDataCell>{{ oeeValue.REG_VALUE }}</CTableDataCell>
-
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading data...</p>
-    </CCol>
-  </CRow>
-
-  <CRow>
-    <CCol class="mb-3">
-      <CTable v-if="members.length" bordered hover responsive>
-        <CTableHead>
-          <CTableRow>
-            <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-            <CTableHeaderCell scope="col">Member Id</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Member Name</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-        <CTableBody>
-          <CTableRow v-for="member in members" :key="member.fid">
-            <CTableDataCell>{{ member.fid }}</CTableDataCell>
-            <CTableDataCell>{{ member.fname }}</CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
-      <p v-else>Loading data...</p>
-    </CCol>
-  </CRow>
-
-  <CRow class="mb-3">
-    <CCol>
-      <CCard>
-        <CTable>
-          <CTableHead>
-            <CTableRow>
-              <CTableHeaderCell scope="col">No</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
-              <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
-          <CTableBody>
-            <!-- <CTableRow v-if="loadingProblemActive">
-              <CTableDataCell colspan="6" class="text-center">Loading...</CTableDataCell>
-            </CTableRow>
-            <CTableRow v-else-if="problemActive.length === 0">
-              <CTableDataCell colspan="6" class="text-center">No active problems</CTableDataCell>
-            </CTableRow> -->
-            <CTableRow v-for="(problem, idx) in problemActive" :key="problem.fid">
-              <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
-              <CTableDataCell>{{ problem.fmc_name }}</CTableDataCell>
-              <CTableDataCell>{{ problem.foperator }}</CTableDataCell>
-              <CTableDataCell>{{ problem.fline }}</CTableDataCell>
-              <CTableDataCell>{{ problem.ferror_name }}</CTableDataCell>
-              <CTableDataCell>{{ problem.fdur }}</CTableDataCell>
-            </CTableRow>
-          </CTableBody>
-        </CTable>
-      </CCard>
-    </CCol>
-  </CRow>
-
-
-
-
-
 </template>
 
-<script>
-import { ref } from 'vue'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText } from '@coreui/vue';
-import { CChart } from '@coreui/vue-chartjs'
-import ApexCharts from 'vue3-apexcharts'
-import MainChartExample from './charts/MainChartExample'
-import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
-import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
-import api from '../apis/CommonAPI'
-import { 
-  AlertTriangle, 
-  Clock, 
-  Timer, 
-  History, 
-  BarChart2, 
-  FileText,
-  ChartColumnIncreasing, 
-  BookText 
-} from 'lucide-vue-next';
-import { useRouter } from 'vue-router';
-import Treeselect from 'vue3-treeselect'
-import 'vue3-treeselect/dist/vue3-treeselect.css'
+<script setup>
+import { ref, onMounted } from 'vue'
+import { CContainer } from '@coreui/vue'
+import PageHeader from './components/PageHeader.vue'
+import DataTable from './components/DataTable.vue'
+import ActiveProblemsTable from './components/ActiveProblemsTable.vue'
+import api from '@/apis/CommonAPI'
 
-export default {
-  name: 'DashboardDataDisplay',
-  components: {
-    MainChartExample,
-    WidgetsStatsA,
-    WidgetsStatsD,
-    AlertTriangle,
-    Clock,
-    Timer,
-    History,
-    BarChart2,
-    FileText,
-    ChartColumnIncreasing,
-    BookText,
-    CChart,
-    ApexCharts,
-    CTable,
-    CTableHead,
-    CTableBody,
-    CTableRow,
-    CTableHeaderCell,
-    CTableDataCell,
-    Treeselect,
-  },
-  data() {
-    return {
-      types: [],
-      lines: [],
-      linesOptions: [],
-      machines: [],
-      machineOptions: [],
-      problems: [],
-      problemOption: [],
-      oee: [],
-      oeeOption: [],
-      members: [],
-      memberOption: [],
-      spareparts: [],
-      sparepartsOption: [],
-      problemActive: [],
-      loadingProblemActive: false,
-      limitView: 0
-    };
-  },
-  async created() {
-    try {
-      const response = await api.get('/smartandon/spareparts');
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch spareparts, status: ' + response.status);
-      }
-      this.spareparts = response.data?.data || response.data;
-      this.sparepartsOption = this.spareparts.map(sparepart => ({
-        id: sparepart.sparepart_id,
-        label: sparepart.sparepart_nm
-      }));
-    } catch (error) {
-      console.error('Failed to fetch spareparts:', error);
+const types = ref([])
+const lines = ref([])
+const linesOptions = ref([])
+const machines = ref([])
+const machineOptions = ref([])
+const problems = ref([])
+const problemOption = ref([])
+const oee = ref([])
+const oeeOption = ref([])
+const members = ref([])
+const memberOption = ref([])
+const spareparts = ref([])
+const sparepartsOption = ref([])
+const problemActive = ref([])
+const loadingProblemActive = ref(false)
+const limitView = ref(0)
+
+const typesColumns = ref([
+  { key: 'type_id', label: 'Type ID' },
+  { key: 'type_nm', label: 'Type Name' }
+])
+
+const sparepartsColumns = ref([
+  { key: 'sparepart_id', label: 'ID' },
+  { key: 'sparepart_nm', label: 'Sparepart' }
+])
+
+const linesColumns = ref([
+  { key: 'fid', label: 'fid' },
+  { key: 'fline', label: 'fline' }
+])
+
+const problemsColumns = ref([
+  { key: 'fid', label: 'fid' },
+  { key: 'ferror_name', label: 'ferror_name' }
+])
+
+const machinesColumns = ref([
+  { key: 'fid', label: 'fid' },
+  { key: 'fmc_name', label: 'fmc_name' }
+])
+
+const oeeColumns = ref([
+  { key: 'GROUP_NAME', label: 'Line' },
+  { key: 'TAG_NAME', label: 'OEE' },
+  { key: 'REG_VALUE', label: 'Value' }
+])
+
+const membersColumns = ref([
+  { key: 'fid', label: 'Member Id' },
+  { key: 'fname', label: 'Member Name' }
+])
+
+const fetchSpareparts = async () => {
+  try {
+    const response = await api.get('/smartandon/spareparts')
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch spareparts, status: ' + response.status)
     }
-    try {
-      this.loadingProblemActive = true;
-      this.limitView = 0;
-      const response = await api.get('/smartandon/problemView', {
-          limitView: 0,
-      });
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch active problems, status: ' + response.status);
-      }
-      this.problemActive = response.data?.data || response.data;
-      console.log('Filtered active problems:', this.problemActive);
-    } catch (error) {
-      console.error('Failed to fetch active problems:', error);
-      this.problemActive = [];
-    } finally {
-      this.loadingProblemActive = false;
+    spareparts.value = response.data?.data || response.data
+    sparepartsOption.value = spareparts.value.map(sparepart => ({
+      id: sparepart.sparepart_id,
+      label: sparepart.sparepart_nm
+    }))
+  } catch (error) {
+    console.error('Failed to fetch spareparts:', error)
+  }
+}
+
+const fetchProblemActive = async () => {
+  try {
+    loadingProblemActive.value = true
+    limitView.value = 0
+    const response = await api.get('/smartandon/problemView', {
+      limitView: 0,
+    })
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch active problems, status: ' + response.status)
     }
-    try {
-      const response = await api.get('/smartandon/qcc-m-types');
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch qcc_m_types, status: ' + response.status);
-      }
-      this.types = response.data?.data || response.data;
-    } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error);
+    problemActive.value = response.data?.data || response.data
+    console.log('Filtered active problems:', problemActive.value)
+  } catch (error) {
+    console.error('Failed to fetch active problems:', error)
+    problemActive.value = []
+  } finally {
+    loadingProblemActive.value = false
+  }
+}
+
+const fetchTypes = async () => {
+  try {
+    const response = await api.get('/smartandon/qcc-m-types')
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch qcc_m_types, status: ' + response.status)
     }
-    try {
-      const response = await api.get('/smartandon/line');
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch lines, status: ' + response.status);
-      }
-      this.lines = response.data?.data || response.data;
-      this.lineOptions = this.lines.map(line => ({
-        id: line.fid,
-        label: line.fline
-      }));
-    } catch (error) {
-      console.error('Failed to fetch lines:', error);
+    types.value = response.data?.data || response.data
+  } catch (error) {
+    console.error('Failed to fetch qcc_m_types:', error)
+  }
+}
+
+const fetchLines = async () => {
+  try {
+    const response = await api.get('/smartandon/line')
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch lines, status: ' + response.status)
     }
-    try {
-      const response = await api.get('/smartandon/machine');
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch machines, status: ' + response.status);
-      }
-      this.machines = response.data?.data || response.data;
-      this.machineOptions = this.machines.map(machine => ({
-        id: machine.fid,
-        label: machine.fmc_name
-      }));
-    } catch (error) {
-      console.error('Failed to fetch machines:', error);
+    lines.value = response.data?.data || response.data
+    linesOptions.value = lines.value.map(line => ({
+      id: line.fid,
+      label: line.fline
+    }))
+  } catch (error) {
+    console.error('Failed to fetch lines:', error)
+  }
+}
+
+const fetchMachines = async () => {
+  try {
+    const response = await api.get('/smartandon/machine')
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch machines, status: ' + response.status)
     }
-    try {
-      const response = await api.get('/smartandon/problemId');
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch problems, status: ' + response.status);
-      }
-      this.problems = response.data?.data || response.data;
-      this.problemOption = this.problems.map(problem => ({
-        id: problem.fid,
-        label: problem.ferror_name
-      }));
-    } catch (error) {
-      console.error('Failed to fetch problems:', error);
+    machines.value = response.data?.data || response.data
+    machineOptions.value = machines.value.map(machine => ({
+      id: machine.fid,
+      label: machine.fmc_name
+    }))
+  } catch (error) {
+    console.error('Failed to fetch machines:', error)
+  }
+}
+
+const fetchProblems = async () => {
+  try {
+    const response = await api.get('/smartandon/problemId')
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch problems, status: ' + response.status)
     }
-    try {
-      const response = await api.get('/smartandon/oee');
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch oee, status: ' + response.status);
-      }
-      this.oee = response.data?.data || response.data;
-      this.oeeOption = this.oee.map(oeeValue => ({
-        id: oeeValue.GROUP_NAME,
-        label: oeeValue.TAG_NAME,
-        labelOee: oeeValue.REG_VALUE
-      }));
-    } catch (error) {
-      console.error('Failed to fetch oee:', error);
+    problems.value = response.data?.data || response.data
+    problemOption.value = problems.value.map(problem => ({
+      id: problem.fid,
+      label: problem.ferror_name
+    }))
+  } catch (error) {
+    console.error('Failed to fetch problems:', error)
+  }
+}
+
+const fetchOee = async () => {
+  try {
+    const response = await api.get('/smartandon/oee')
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch oee, status: ' + response.status)
     }
-    try {
-      const response = await api.get('/smartandon/member');
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch member, status: ' + response.status);
-      }
-      this.members = response.data?.data || response.data;
-      this.memberOption = this.members.map(member => ({
-        id: member.fid,
-        label: member.fname
-      }));
-    } catch (error) {
-      console.error('Failed to fetch member:', error);
+    oee.value = response.data?.data || response.data
+    oeeOption.value = oee.value.map(oeeValue => ({
+      id: oeeValue.GROUP_NAME,
+      label: oeeValue.TAG_NAME,
+      labelOee: oeeValue.REG_VALUE
+    }))
+  } catch (error) {
+    console.error('Failed to fetch oee:', error)
+  }
+}
+
+const fetchMembers = async () => {
+  try {
+    const response = await api.get('/smartandon/member')
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch member, status: ' + response.status)
     }
-  },
-};
+    members.value = response.data?.data || response.data
+    memberOption.value = members.value.map(member => ({
+      id: member.fid,
+      label: member.fname
+    }))
+  } catch (error) {
+    console.error('Failed to fetch member:', error)
+  }
+}
+
+onMounted(async () => {
+  await Promise.all([
+    fetchSpareparts(),
+    fetchProblemActive(),
+    fetchTypes(),
+    fetchLines(),
+    fetchMachines(),
+    fetchProblems(),
+    fetchOee(),
+    fetchMembers(),
+  ])
+})
 </script>
 
 <style scoped>
-p {
-  font-style: italic;
-}
+/* Main dashboard styles */
 </style>
