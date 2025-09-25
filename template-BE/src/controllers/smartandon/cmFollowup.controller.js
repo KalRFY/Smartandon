@@ -1,5 +1,6 @@
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
+const ExcelJS = require('exceljs');
 
 const getFollowups = async (req, res, next) => {
   try {
@@ -81,7 +82,48 @@ const getFollowups = async (req, res, next) => {
       schedule: r.schedule ? r.schedule.split(',').map(Number) : [],
     }));
 
-    res.status(httpStatus.OK).json(data);
+    if (download === 'excel') {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Countermeasure Data');
+
+      worksheet.columns = [
+        { header: 'No', key: 'no', width: 5 },
+        { header: 'Line', key: 'line', width: 12 },
+        { header: 'Machine', key: 'machine', width: 20 },
+        { header: 'Date', key: 'date', width: 20 },
+        { header: 'Problem Description', key: 'problem', width: 40 },
+        { header: 'Duration (min)', key: 'duration', width: 15 },
+        { header: 'Rootcause', key: 'rootcause', width: 30 },
+        { header: 'Countermeasure', key: 'countermeasure', width: 40 },
+        { header: 'Due Date', key: 'dueDate', width: 20 },
+        { header: 'PIC', key: 'pic', width: 20 },
+        { header: 'Status', key: 'status', width: 15 }
+      ];
+
+      data.forEach(row => {
+        worksheet.addRow(row);
+      });
+
+      const startDate = start || 'all';
+      const finishDate = finish || 'all';
+      const fileName = `Countermeasure Data - ${startDate} to ${finishDate}.xlsx`;
+
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      );
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+      await workbook.xlsx.write(res);
+      return res.end();
+    }
+
+    res.status(httpStatus.OK).json({
+      message: 'Success to get countermeasure followup',
+      data,
+      cntCmNotYet: data.filter(d => d.status === 'NOT YET').length,
+      cntCmOk: data.filter(d => d.status === 'OK').length
+    });
   } catch (error) {
     next(error);
   }
