@@ -234,6 +234,7 @@ export default {
         },
         colors: ['#007bff'],
         title: {
+          text: 'LTB Summary by Month',
           align: 'left',
           style: {
             fontSize: '16px',

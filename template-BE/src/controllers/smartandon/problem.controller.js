@@ -90,11 +90,18 @@ const getProblemView = async (req, res, next) => {
     console.log('Limit:', limit);
 
     let limitClause = `LIMIT ${limit} OFFSET ${offset}`;
+    let groupClause = '';
     if (limitView == 0) {
       limitClause = ``;
       console.log('Iyaaaaa');
     }
+    if (limitView == 'group') {
+      groupClause = 'GROUP BY DATE(fstart_time)';
+      limitClause = '';
+      console.log('Group Clause:', groupClause);
+    }
     console.log('Limit Clauseee:', limitClause);
+
 
     // Build where clause for date filtering
     let whereClause = 'WHERE fid IS NOT NULL';
@@ -102,15 +109,14 @@ const getProblemView = async (req, res, next) => {
 
     if (startDate || finishDate) {
       if (startDate == finishDate) {
-        whereClause += ` AND fstart_time LIKE '%${startDate}%'`;
-        whereClause += ` AND fstart_time LIKE '%${finishDate}%'`;
+        whereClause += ` AND DATE(fstart_time) LIKE '%${startDate}%'`;
       } else {
         if (startDate) {
-          whereClause += ` AND fstart_time >= '${startDate}'`;
+          whereClause += ` AND DATE(fstart_time) >= '${startDate}'`;
           replacements.startDate = startDate;
         }
         if (finishDate) {
-          whereClause += ` AND fend_time <= '${finishDate}'`;
+          whereClause += ` AND DATE(fend_time) <= '${finishDate}'`;
           replacements.finishDate = finishDate;
         }
       }
@@ -147,7 +153,7 @@ const getProblemView = async (req, res, next) => {
       whereClause += `)`;
     }
 
-    if (limitView == 0) {
+    if (limitView == 'Current') {
       whereClause += ` AND fend_time IS NULL`;
     }
 
@@ -174,8 +180,7 @@ const getProblemView = async (req, res, next) => {
     const { total } = countResult[0];
 
     // Query paginated data
-    const dataQuery = `
-      SELECT
+    let selectFields = `
         fid,
         line_id,
         fline,
@@ -234,16 +239,21 @@ const getProblemView = async (req, res, next) => {
         qCategory,
         problemCategory,
         file_report
+    `;
+    let orderBy = 'ORDER BY fid ASC';
+    if (limitView == 'group') {
+      selectFields = 'DATE(fstart_time) as date, COUNT(*) as count';
+      orderBy = 'ORDER BY date ASC';
+    }
+    const dataQuery = `
+      SELECT ${selectFields}
       FROM v_current_error_2
       ${whereClause}
-      ORDER BY fid ASC
+      ${groupClause}
+      ${orderBy}
       ${limitClause}
     `;
     
-
-
-
-
     console.log('Problem View Query:', dataQuery);
     console.log('Problem View');
 
@@ -447,6 +457,7 @@ const updateProblem = async (req, res, next) => {
       itemTemporaryAction,
       rootcauses5Why,
       stepRepair,
+      stepRepairNew,
       partChange,
       countermeasureKenapaTerjadi,
       yokoten,
@@ -504,6 +515,7 @@ const updateProblem = async (req, res, next) => {
       itemTemporaryAction,
       rootcauses5Why,
       stepRepair,
+      stepRepairNew,
       partChange,
       countermeasureKenapaTerjadi,
       yokoten,
@@ -777,7 +789,7 @@ const updateProblem = async (req, res, next) => {
     if (oCategory) {
       updateField += `, t1.oCategory = :oCategory`;
     }
-    if (stepRepair) {
+    if (stepRepair && stepRepair.length > 0) {
       updateField += `, t1.fstep_repair = :stepRepair`;
     }
     if (partChange) {
@@ -892,6 +904,41 @@ const updateProblem = async (req, res, next) => {
     }
     if (countermeasureKenapaLama) {
       updateField += `, t1.fpermanet_cm_lama = :countermeasureKenapaLama`;
+    }
+    if (stepRepairNew !== undefined) {
+      try {
+        let parsedStepRepairNew = stepRepairNew;
+
+        // If stepRepairNew is a string, parse it as JSON
+        if (typeof stepRepairNew === 'string') {
+          try {
+            parsedStepRepairNew = JSON.parse(stepRepairNew);
+            console.log('stepRepairNew parsed from string:', parsedStepRepairNew.length, 'items');
+          } catch (parseError) {
+            console.warn('stepRepairNew is a string but not valid JSON, treating as empty array');
+            parsedStepRepairNew = [];
+          }
+        }
+
+        // Validate that parsedStepRepairNew is an array
+        if (!Array.isArray(parsedStepRepairNew)) {
+          console.warn('stepRepairNew is not an array, converting to empty array');
+          replacements.stepRepairNew = JSON.stringify([]);
+        } else {
+          // Remove 'id' field from each item to match expected format
+          parsedStepRepairNew = parsedStepRepairNew.map(item => {
+            const { id, ...rest } = item;
+            return rest;
+          });
+          replacements.stepRepairNew = JSON.stringify(parsedStepRepairNew);
+          console.log('stepRepairNew data saved:', parsedStepRepairNew.length, 'items');
+        }
+        updateField += `, t1.fstep_new = :stepRepairNew`;
+      } catch (error) {
+        console.error('Error processing stepRepairNew data:', error);
+        replacements.stepRepairNew = JSON.stringify([]);
+        updateField += `, t1.fstep_new = :stepRepairNew`;
+      }
     }
     
     console.log('Replacements:', replacements);
@@ -1107,9 +1154,34 @@ const updateProblem = async (req, res, next) => {
   }
 };
 
+const deleteProblem = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log('Deleting problem with ID:', id);
+
+    // Delete from tb_error_log_2 table
+    const deleteQuery = `
+      DELETE FROM tb_error_log_2
+      WHERE fid = :id
+    `;
+    const [result] = await sequelize.query(deleteQuery, {
+      replacements: { id },
+    });
+
+    if (result.affectedRows === 0) {
+      return res.status(httpStatus.NOT_FOUND).json({ message: 'Problem not found' });
+    }
+
+    res.status(httpStatus.OK).json({ message: 'Problem deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getProblem,
   getProblemView,
   getProblemById,
   updateProblem,
+  deleteProblem,
 };

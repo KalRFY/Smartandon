@@ -3,6 +3,7 @@ const fs = require('fs');
 const { newMachineInput } = require('../../models');
 
 const getDashboardData = (req, res, next) => {
+  
   try {
     const dataPath = path.resolve(__dirname, '../../data/dashboardData');
     const rawData = fs.readFileSync(dataPath);

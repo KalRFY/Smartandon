@@ -4,6 +4,7 @@ const { registerSchema, loginSchema } = require('../../schema/authSchema');
 const { registerService, loginService } = require('../../services/authServices');
 
 const defaultController = async (req, res) => {
+  
   return res.status(httpStatus.OK).json({
     message: 'Welcome to the Smart Andon API Authentication Controller',
     status: httpStatus.OK,

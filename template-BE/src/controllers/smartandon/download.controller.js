@@ -6,6 +6,7 @@ const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
 
 let XLSXPopulate;
+
 try {
   XLSXPopulate = require('xlsx-populate');
 } catch (error) {

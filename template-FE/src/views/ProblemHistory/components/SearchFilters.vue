@@ -42,7 +42,7 @@
 
             <CCol>
               <CCol class="md-6">
-                <label for="lineSelect" class="form-label">Line</label>
+              <label for="lineSelect" class="form-label">Line</label>
               <Treeselect
                 id="lineSelect"
                 :model-value="selectedLine"
