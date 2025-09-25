@@ -6,7 +6,7 @@
         <CCardHeader style="font-weight: bold; font-size: medium;">Search</CCardHeader>
         <CCardBody>
           <CRow>
-            <CCol>
+            <CCol md="3" class="mb-3">
               <CFormLabel for="startDate">Start</CFormLabel>
               <CInputGroup>
                 <CInputGroupText id="basic-addon1">
@@ -23,7 +23,7 @@
               </CInputGroup>
             </CCol>
 
-            <CCol>
+            <CCol md="3" class="mb-3">
               <CFormLabel for="finishDate">Finish</CFormLabel>
               <CInputGroup>
                 <CInputGroupText id="basic-addon2">
@@ -40,7 +40,7 @@
               </CInputGroup>
             </CCol>
 
-            <CCol>
+            <CCol md="3" class="mb-3">
               <CCol class="md-6">
               <label for="lineSelect" class="form-label">Line</label>
               <Treeselect
@@ -61,7 +61,7 @@
               </CCol>
             </CCol>
 
-            <CCol>
+            <CCol md="3" class="mb-3">
               <label for="selectedMachineName" class="form-label"
                 >Machine Name</label
               >
@@ -100,8 +100,8 @@
 
           <hr />
 
-          <CRow class="mb-3">
-            <CCol sm="2">
+          <CRow>
+            <CCol sm="2" class="mb-3">
               <CButton
                 :disabled="loading"
                 style="width: 100%"
@@ -112,7 +112,7 @@
                 Reset
               </CButton>
             </CCol>
-            <CCol sm="10">
+            <CCol sm="10" class="mb-3">
               <CButton
                 :disabled="loading"
                 style="width: 100%"

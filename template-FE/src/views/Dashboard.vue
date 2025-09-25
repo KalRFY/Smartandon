@@ -192,16 +192,16 @@
   </CRow>
 
   <CRow class="mb-3">
-    <CCol md="6">
+    <CCol lg="6" class="mb-3">
       <CCard>
         <!-- <CCardHeader>Problem Frequency</CCardHeader> -->
         <CCardBody>
           <CRow class="mb-3">
             <CCol>
-              <div style="border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);background-color: white;">
+              <div style="border-radius: 9px; height: 100%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
                 <CCardBody>
                   <CRow>
-                    <CCol>
+                    <CCol class="mb-3">
                       <CInputGroup>
                         <CInputGroupText id="basic-addon1">
                           <label>Start</label>
@@ -215,7 +215,7 @@
                         />
                       </CInputGroup>
                     </CCol>
-                    <CCol>
+                    <CCol class="mb-3">
                       <CInputGroup>
                         <CInputGroupText id="basic-addon2">
                           <label>Finish</label>
@@ -229,7 +229,7 @@
                         />
                       </CInputGroup>
                     </CCol>
-                    <CCol md="2">
+                    <CCol sm="3" class="mb-3">
                       <Treeselect
                         id="lineFilterSelect"
                         v-model="filterLine"
@@ -245,10 +245,10 @@
                       />
                       <small v-if="lineOptions.length === 0" class="text-muted">Loading lines...</small>
                     </CCol>
-                    <CCol sm="2">
+                    <CCol class="mb-3">
                       <CButton
                         :disabled="loading"
-                        style="width: 100%; font-weight: bold; font-size: x-small; color: white; height: 100%;"
+                        style="width: 100%; font-weight: bold; font-size: x-small; color: white;"
                         color="info"
                         @click="onSearch"
                       >
@@ -274,16 +274,17 @@
         </CCardBody>
       </CCard>
     </CCol>
-    <CCol md="6">
+
+    <CCol lg="6" class="mb-3">
       <CCard>
         <!-- <CCardHeader>LTR</CCardHeader> -->
         <CCardBody>
           <CRow class="mb-3">
             <CCol>
-              <div style="border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);background-color: white;">
+              <div style="border-radius: 9px; height: 100%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
                 <CCardBody>
                   <CRow>
-                    <CCol>
+                    <CCol class="mb-3">
                       <CInputGroup>
                         <CInputGroupText id="ltr-start-addon">
                           <label>Start</label>
@@ -297,7 +298,7 @@
                         />
                       </CInputGroup>
                     </CCol>
-                    <CCol>
+                    <CCol class="mb-3">
                       <CInputGroup>
                         <CInputGroupText id="ltr-finish-addon">
                           <label>Finish</label>
@@ -311,7 +312,7 @@
                         />
                       </CInputGroup>
                     </CCol>
-                    <CCol md="2">
+                    <CCol sm="3" class="mb-3">
                       <Treeselect
                         id="ltrLineFilterSelect"
                         v-model="ltrLine"
@@ -320,19 +321,19 @@
                         :options="lineOptions"
                         :searchable="true"
                         :clearable="true"
-                        placeholder="Select line"
+                        placeholder="Line"
                         :value-consists-of="['id']"
                         :value-key="'id'"
                         :label-key="'label'"
                       />
                       <small v-if="lineOptions.length === 0" class="text-muted">Loading lines...</small>
                     </CCol>
-                    <CCol sm="2">
+                    <CCol class="mb-3">
                       <CButton
                         :disabled="loading"
-                        style="width: 100%; font-weight: bold; font-size: x-small; color: white; height: 100%;"
+                        style="width: 100%; font-weight: bold; font-size: x-small; color: white;"
                         color="info"
-                        @click="onLtrSearch"
+                        @click="onSearch"
                       >
                         <Search size="16" />
                       </CButton>
@@ -528,7 +529,7 @@ export default {
           width: [4]
         },
         title: {
-          text: 'Frekuensi Masalah'
+          text: 'Frequency Problem'
         },
         dataLabels: {
           enabled: true,
@@ -542,12 +543,12 @@ export default {
         },
         yaxis: [{
           title: {
-            text: 'Frekuensi Masalah',
+            text: 'Frequency Problem',
           },
         }],
       },
       problemFrequencySeries: [{
-        name: 'Frekuensi Masalah',
+        name: 'Frequency Problem',
         type: 'column',
         data: []
       }],
@@ -917,7 +918,7 @@ export default {
   methods: {
     async fetchDashboardData() {
       try {
-        const responseMachines = await axios.get('/api/smartandon/machine');
+        const responseMachines = await api.get('/smartandon/machine');
         this.machines = responseMachines.data;
         this.machineOptions = responseMachines.data.map((machine) => ({
           id: machine.fid,
@@ -927,9 +928,8 @@ export default {
         console.error('Failed to fetch machines:', error);
       }
 
-
       try {
-        const responseLines = await axios.get('/api/smartandon/line');
+        const responseLines = await api.get('/smartandon/line');
         console.log('[FE Debug] Line API response:', responseLines.data);
         this.lines = responseLines.data;
         this.lineOptions = responseLines.data.map((line) => ({
@@ -946,13 +946,7 @@ export default {
         this.limitView = 0;
         console.log('[FE Debug] Dashboard params to send:', { limitView: 0 })
 
-        const responseProblems = await axios.get('/api/smartandon/problemView', {
-          params: {
-            search: JSON.stringify({
-              limitView: 'Current',
-            }),
-          },
-        });
+        const responseProblems = await api.get('/smartandon/problemView', { search: JSON.stringify({ limitView: 'Current' }) });
         this.problemActive = responseProblems.data.data;
         console.log('Filtered active problems:', this.problemActive);
       } catch (error) {
@@ -969,14 +963,14 @@ export default {
       await this.fetchLtrData();
 
       try {
-        const responseOeeData = await axios.get('/api/smartandon/oeeDataSmartandon');
+        const responseOeeData = await api.get('/smartandon/oeeDataSmartandon');
         this.oeeDataSmartandon = responseOeeData.data;
         console.log('OEE Target: ' + this.oeeDataSmartandon);
       } catch (error) {
         console.log('Failed to fetch oee target:', error);
       }
       try {
-        const responseOeeTarget = await axios.get('/api/smartandon/oeeTarget');
+        const responseOeeTarget = await api.get('/smartandon/oeeTarget');
         this.oeeTarget = responseOeeTarget.data;
         this.oeeOption = responseOeeTarget.data.map((oeeTargets) => ({
           id: oeeTargets.GROUP_NAME,
@@ -988,19 +982,19 @@ export default {
         console.log('Failed to fetch oee target:', error);
       }
       try {
-        const responseOeeActual = await axios.get('/api/smartandon/oeeActual');
+        const responseOeeActual = await api.get('/smartandon/oeeActual');
         this.oeeActual = responseOeeActual.data;
       } catch (error) {
         console.log('Failed to fetch oee actual:', error);
       }
       try {
-        const responseOeePlan = await axios.get('/api/smartandon/oeePlan');
+        const responseOeePlan = await api.get('/smartandon/oeePlan');
         this.oeePlan = responseOeePlan.data;
       } catch (error) {
         console.log('Failed to fetch oee plan:', error);
       }
       try {
-        const responseOee = await axios.get('/api/smartandon/oee');
+        const responseOee = await api.get('/smartandon/oee');
         this.oee = responseOee.data;
         this.oeeOption = responseOee.data.map((oeeValue) => ({
           id: oeeValue.GROUP_NAME,
@@ -1147,11 +1141,7 @@ export default {
         console.log('[FE Debug] Start Date:', this.filterStartDate);
         console.log('[FE Debug] Finish Date:', this.filterFinishDate);
 
-        const historyResponse = await axios.get('/api/smartandon/problemView', {
-            params: {
-                search: JSON.stringify(chartParams)
-            }
-        });
+        const historyResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(chartParams) });
 
         if (historyResponse.data && historyResponse.data.data) {
             const groupedData = historyResponse.data.data;
@@ -1209,11 +1199,7 @@ export default {
         console.log('[FE Debug] LTR Start Date:', this.ltrStartDate);
         console.log('[FE Debug] LTR Finish Date:', this.ltrFinishDate);
 
-        const ltrResponse = await axios.get('/api/smartandon/problemView', {
-            params: {
-                search: JSON.stringify(ltrParams)
-            }
-        });
+        const ltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(ltrParams) });
 
         if (ltrResponse.data && ltrResponse.data.data) {
             const ltrGroupedData = ltrResponse.data.data;
@@ -1324,7 +1310,7 @@ export default {
           };
           
           console.log('Payload to send:', payload);
-          const response = await axios.put('/api/smartandon/problemMachine', payload);
+          const response = await api.put('/smartandon/problemMachine', null, payload);
           if (response && response.status >= 200 && response.status < 300) {
             alert('Input saved successfully');
             this.visibleLiveDemo = false;
@@ -1356,14 +1342,7 @@ export default {
         console.log('Selected Machine Object:', selectedMachine);
         console.log('Machine Name to search:', machineName);
 
-        const responseProblems = await axios.get('/api/smartandon/problemView', {
-          params: {
-            search: JSON.stringify({
-              machineName: machineName,
-              limitView: 0, // Set to 0 to get all problems without limit
-            }),
-          },
-        });
+        const responseProblems = await api.get('/smartandon/problemView', { search: JSON.stringify({ machineName: machineName, limitView: 0 }) });
 
         console.log('API Response:', responseProblems.data);
 
@@ -1415,13 +1394,7 @@ export default {
           // No problems found for this machine, try loading all problems as fallback
           console.log('No problems found for this machine, trying to load all problems...');
           try {
-            const fallbackResponse = await axios.get('/api/smartandon/problemView', {
-              params: {
-                search: JSON.stringify({
-                  limitView: 0, // Set to 0 to get all problems without limit
-                }),
-              },
-            });
+            const fallbackResponse = await api.get('/smartandon/problemView', { search: JSON.stringify({ limitView: 0 }) });
 
             if (fallbackResponse.data && fallbackResponse.data.data && fallbackResponse.data.data.length > 0) {
               // Extract unique problem names and remove duplicates (case-insensitive)

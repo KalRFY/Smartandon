@@ -1,6 +1,6 @@
 <template>
   <CRow class="mb-3">
-    <CCol>
+    <CCol class="mb-3">
       <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
         <CCardBody>
           <CRow>
@@ -87,7 +87,7 @@
         </div>
       </CRow>
     </CCol> -->
-    <CCol sm="2">
+    <CCol sm="2" class="mb-3">
       <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
         <CCardBody>
           <CRow>
