@@ -16,9 +16,11 @@
     </CContainer>
     <CHeaderDivider />
     <CContainer fluid style="height: 19px !important; min-height: 19px; ">
-      <div class="breadcrumbs">
-        <AppBreadcrumb />
-      </div>
+      <CRow>
+        <CCol>
+          <AppBreadcrumb />
+        </CCol>
+      </CRow>
     </CContainer>
   </CHeader>
 </template>

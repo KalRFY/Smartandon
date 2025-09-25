@@ -24,12 +24,24 @@ export default {
   //       breadcrumbsJsonValue: [{"active":false,"name":"Home","path":"#/dc/dashboard"}]
   //     }
   // },
-  methods: {
-    breadcrumbsStrJsonValueChange(){
-      // console.log('mf-header '+localStorage.breadcrumbs);
-      // console.log('mf-header '+JSON.parse(localStorage.breadcrumbs))
-      this.breadcrumbsJsonValue = JSON.parse(localStorage.breadcrumbs)
+  data() {
+      return {
+        breadcrumbsJsonValue: [{"active":false,"name":"Home","path":"#/dc/dashboard"}]
+      }
     },
+    mounted() {
+      this.breadcrumbsStrJsonValueChange()
+    },
+    methods: {
+      breadcrumbsStrJsonValueChange(){
+        // console.log('mf-header '+localStorage.breadcrumbs);
+        // console.log('mf-header '+JSON.parse(localStorage.breadcrumbs))
+        if (localStorage.breadcrumbs) {
+          this.breadcrumbsJsonValue = JSON.parse(localStorage.breadcrumbs)
+        } else {
+          this.breadcrumbsJsonValue = [{"active":false,"name":"Home","path":"#/dc/dashboard"}]
+        }
+      },
     onClickBreadcrumb(e){
       let nextBreadCrumbLiElement = e.target.parentNode.nextElementSibling;
       while(nextBreadCrumbLiElement){

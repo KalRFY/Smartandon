@@ -44,7 +44,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import dayjs from 'dayjs'
-import axios from 'axios'
+import api from '@/apis/CommonAPI'
 import { getCMFollowup } from '@/apis/cmFollowup'
 
 import SearchFilters from '@/views/CMFollowup/components/SearchFilters.vue'
@@ -101,9 +101,13 @@ async function loadInitialData() {
   loading.value = true
   try {
     const [machineResponse, lineResponse] = await Promise.all([
-      axios.get('/api/smartandon/machine'),
-      axios.get('/api/smartandon/line')
+      api.get('/smartandon/machine'),
+      api.get('/smartandon/line')
     ])
+
+    if (machineResponse.status !== 200 || lineResponse.status !== 200) {
+      throw new Error('Failed to load line/machine data')
+    }
 
     machineOptions.value = (machineResponse.data || []).map(m => ({
       id: m.fid,
