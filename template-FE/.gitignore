@@ -46,6 +46,10 @@ Thumbs.db
 *.jpg
 *.jpeg
 *.png
+*.pdf
+*.jfif
+*.xlsm
+*.txt
 
 # Ignore all Excel files
 *.xls
@@ -54,6 +58,10 @@ Thumbs.db
 *.xlsb
 *.xltx
 *.xltm
+
+.env
+
+.env.dev
 
 # Ignore temporary Excel files (created when Excel files are open)
 ~$*.xls

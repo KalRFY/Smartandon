@@ -98,7 +98,7 @@
             {
               component: 'CNavItem',
               to: '/app/MTBFMTTR',
-              name: 'MTBF-MTTR',
+              name: 'MTBF MTTR',
               icon: 'cilSpeedometer',
               parentId: 'ROOT',
             },
@@ -134,7 +134,7 @@
               component: 'CNavItem',
               to: '/app/EditDataSmartandon',
               name: 'Edit Data Smartandon',
-              icon: 'cilHistory',
+              icon: 'cilClipboard',
               parentId: 'ROOT',
             },
           ]

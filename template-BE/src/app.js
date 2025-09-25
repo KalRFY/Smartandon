@@ -78,6 +78,11 @@ app.get('/', (req, res) => {
   });
 });
 
+// Handle Chrome DevTools specific route to prevent errors
+app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+  res.status(404).json({ message: 'Not found' });
+});
+
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
   // Log only essential request information instead of the entire request object

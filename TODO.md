@@ -1,25 +1,18 @@
-# Sparepart Implementation TODO
+# TODO: Add Download Functionality for LTB Reports in Problems Table
 
-## Completed ✅
-- [x] Fixed sparepart table to loop over `sparepartList` instead of `sparepartOptions`
-- [x] Added form to add/edit spareparts with Treeselect, price, vendor, and status fields
-- [x] Added "Tambah Sparepart" button when no spareparts exist
-- [x] Added "Tambah Sparepart" button when spareparts already exist
-- [x] Updated table to display: No, Sparepart Name, Price, Vendor, Status, Actions
-- [x] Added edit and remove functionality for spareparts
-- [x] Updated save function to include sparepart data
-- [x] Added sparepart data loading from existing records
-- [x] Exposed sparepart functions and variables to template
+## Completed Tasks
+- [x] Modified ProblemsTable.vue to add a "Download LTB Report" button next to the "View LTB Report" button
+- [x] Added 'downloadLtbReport' event to ProblemsTable.vue emits array
+- [x] Added downloadLtbReport method in ProblemHistory.vue to handle download functionality
+- [x] Added @downloadLtbReport event listener in ProblemHistory.vue template
+- [x] Verified backend has /smartandon/download-report endpoint that accepts fid and problem query parameters
 
-## Next Steps 🔄
-- [ ] Test the sparepart functionality in the browser
-- [ ] Verify data is properly saved to backend
-- [ ] Check if backend needs updates to handle sparepart data
-- [ ] Test loading existing sparepart data when editing problems
-- [ ] Add validation for required sparepart fields
+## Next Steps
+- [ ] Test the download functionality by running the application and clicking the download button
+- [ ] Ensure the downloaded file has the correct filename and content
+- [ ] Handle any potential errors or edge cases (e.g., missing files, network issues)
 
-## Notes 📝
-- Sparepart form includes: Treeselect for sparepart selection, price input, vendor input, status dropdown
-- Status options: Available, Ordered, Not Available
-- Form follows the same pattern as countermeasure forms
-- Data is saved as `sparepartList` in the submit data
+## Notes
+- The download URL uses: `${process.env.VUE_APP_API_URL}/smartandon/download-report?fid=${encodeURIComponent(problem.fid)}&problem=${encodeURIComponent(problem.ferror_name)}`
+- Backend logic first checks for file_report in database, then falls back to latest file in reports/Uploads/{fid}_{problem} folder
+- Frontend creates a download link and triggers the download programmatically

@@ -115,35 +115,33 @@
                     v-if="displayUploadImgImage"
                     @click="showFullSizeImageUpload = true"
                   />
+                  <CModal
+                    :visible="showFullSizeImageUpload"
+                    @update:visible="val => showFullSizeImageUpload = val"
+                    @close="showFullSizeImageUpload = false"
+                    size="lg"
+                    aria-labelledby="fullSizeImageLabel"
+                    centered
+                  >
+                    <CModalHeader>
+                      <CModalTitle id="fullSizeImageLabel">Upload Image Preview</CModalTitle>
+                    </CModalHeader>
+      
+                    <CModalBody style="text-align: center;">
+                      <img :src="displayUploadImgImage" style="max-width: 100%; max-height: 80vh;" />
+                    </CModalBody>
+      
+                    <CModalFooter>
+                      <CButton color="secondary" size="sm" @click="showFullSizeImageUpload = false">Close</CButton>
+                    </CModalFooter>
+                    
+                  </CModal>
                 </CCol>
               </CRow>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-
-      <CModal
-        :visible="showFullSizeImageUpload"
-        @update:visible="val => showFullSizeImageUpload = val"
-        @close="showFullSizeImageUpload = false"
-        size="lg"
-        aria-labelledby="fullSizeImageLabel"
-        centered
-      >
-        <CModalHeader>
-          <CModalTitle id="fullSizeImageLabel">Upload Image Preview</CModalTitle>
-        </CModalHeader>
-
-        <CModalBody style="text-align: center;">
-          <img :src="displayUploadImgImage" style="max-width: 100%; max-height: 80vh;" />
-        </CModalBody>
-
-        <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImageUpload = false">Close</CButton>
-        </CModalFooter>
-        
-      </CModal>
-
       <CRow class="mb-3">
         <CCol>
           <CCard>
@@ -175,34 +173,32 @@
                     v-if="displayStandardImage"
                     @click="showFullSizeImageStandart = true"
                   />
+                  <CModal
+                    :visible="showFullSizeImageStandart"
+                    @update:visible="val => showFullSizeImageStandart = val"
+                    @close="showFullSizeImageStandart = false"
+                    size="lg"
+                    aria-labelledby="fullSizeImageStandartLabel"
+                    centered
+                  >
+                    <CModalHeader>
+                      <CModalTitle id="fullSizeImageStandartLabel">Standart Image Preview</CModalTitle>
+                    </CModalHeader>
+      
+                    <CModalBody style="text-align: center;">
+                      <img :src="displayStandardImage" style="max-width: 100%; max-height: 80vh;" />
+                    </CModalBody>
+      
+                    <CModalFooter>
+                      <CButton color="secondary" size="sm" @click="showFullSizeImageStandart = false">Close</CButton>
+                    </CModalFooter>
+                  </CModal>
                 </CCol>
               </CRow>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-
-      <CModal
-        :visible="showFullSizeImageStandart"
-        @update:visible="val => showFullSizeImageStandart = val"
-        @close="showFullSizeImageStandart = false"
-        size="lg"
-        aria-labelledby="fullSizeImageStandartLabel"
-        centered
-      >
-        <CModalHeader>
-          <CModalTitle id="fullSizeImageStandartLabel">Standart Image Preview</CModalTitle>
-        </CModalHeader>
-
-        <CModalBody style="text-align: center;">
-          <img :src="displayStandardImage" style="max-width: 100%; max-height: 80vh;" />
-        </CModalBody>
-
-        <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImageStandart = false">Close</CButton>
-        </CModalFooter>
-      </CModal>
-
       <CRow class="mb-3">
         <CCol>
           <CCard>
@@ -234,34 +230,32 @@
                     v-if="displayActualImage"
                     @click="showFullSizeImageActual = true"
                   />
+                  <CModal
+                    :visible="showFullSizeImageActual"
+                    @update:visible="val => showFullSizeImageActual = val"
+                    @close="showFullSizeImageActual = false"
+                    size="lg"
+                    aria-labelledby="fullSizeImageActualLabel"
+                    centered
+                  >
+                    <CModalHeader>
+                      <CModalTitle id="fullSizeImageActualLabel">Actual Image Preview</CModalTitle>
+                    </CModalHeader>
+      
+                    <CModalBody style="text-align: center;">
+                      <img :src="displayActualImage" style="max-width: 100%; max-height: 80vh;" />
+                    </CModalBody>
+      
+                    <CModalFooter>
+                      <CButton color="secondary" size="sm" @click="showFullSizeImageActual = false">Close</CButton>
+                    </CModalFooter>
+                  </CModal>
                 </CCol>
               </CRow>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-
-      <CModal
-        :visible="showFullSizeImageActual"
-        @update:visible="val => showFullSizeImageActual = val"
-        @close="showFullSizeImageActual = false"
-        size="lg"
-        aria-labelledby="fullSizeImageActualLabel"
-        centered
-      >
-        <CModalHeader>
-          <CModalTitle id="fullSizeImageActualLabel">Actual Image Preview</CModalTitle>
-        </CModalHeader>
-
-        <CModalBody style="text-align: center;">
-          <img :src="displayActualImage" style="max-width: 100%; max-height: 80vh;" />
-        </CModalBody>
-
-        <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImageActual = false">Close</CButton>
-        </CModalFooter>
-      </CModal>
-
       <CRow md="12" class="mb-3">
         <CCol>
           <label style="font-size: medium; font-weight: bold;" class="form-label">Gap Between Standar and Actual</label>
@@ -535,35 +529,33 @@
                     v-if="displayImg_problem"
                     @click="showFullSizeImage = true"
                   />
+                  <CModal
+                    :visible="showFullSizeImage"
+                    @update:visible="val => showFullSizeImage = val"
+                    @close="showFullSizeImage = false"
+                    size="lg"
+                    aria-labelledby="fullSizeImageLabel"
+                    centered
+                  >
+                    <CModalHeader>
+                      <CModalTitle id="fullSizeImageLabel">5 Why (Kenapa Terjadi) Image Preview</CModalTitle>
+                    </CModalHeader>
+      
+                    <CModalBody style="text-align: center;">
+                      <img :src="displayImg_problem" style="max-width: 100%; max-height: 80vh;" />
+                    </CModalBody>
+      
+                    <CModalFooter>
+                      <CButton color="secondary" size="sm" @click="showFullSizeImage = false">Close</CButton>
+                    </CModalFooter>
+                    
+                  </CModal>
                 </CCol>
               </CRow>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-
-      <CModal
-        :visible="showFullSizeImage"
-        @update:visible="val => showFullSizeImage = val"
-        @close="showFullSizeImage = false"
-        size="lg"
-        aria-labelledby="fullSizeImageLabel"
-        centered
-      >
-        <CModalHeader>
-          <CModalTitle id="fullSizeImageLabel">5 Why (Kenapa Terjadi) Image Preview</CModalTitle>
-        </CModalHeader>
-
-        <CModalBody style="text-align: center;">
-          <img :src="displayImg_problem" style="max-width: 100%; max-height: 80vh;" />
-        </CModalBody>
-
-        <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImage = false">Close</CButton>
-        </CModalFooter>
-        
-      </CModal>
-
       <CRow md="12" class="mb-3">
         <CCol>
           <CCard>
@@ -585,35 +577,33 @@
                     v-if="displayWhyLamaImage"
                     @click="showFullSizeImageLama = true"
                   />
+                  <CModal
+                    :visible="showFullSizeImageLama"
+                    @update:visible="val => showFullSizeImageLama = val"
+                    @close="showFullSizeImageLama = false"
+                    size="lg"
+                    aria-labelledby="fullSizeImageLabel"
+                    centered
+                  >
+                    <CModalHeader>
+                      <CModalTitle id="fullSizeImageLabel">5 Why (Kenapa Lama) Image Preview</CModalTitle>
+                    </CModalHeader>
+      
+                    <CModalBody style="text-align: center;">
+                      <img :src="displayWhyLamaImage" style="max-width: 100%; max-height: 80vh;" />
+                    </CModalBody>
+      
+                    <CModalFooter>
+                      <CButton color="secondary" size="sm" @click="showFullSizeImageLama = false">Close</CButton>
+                    </CModalFooter>
+                    
+                  </CModal>
                 </CCol>
               </CRow>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-
-      <CModal
-        :visible="showFullSizeImageLama"
-        @update:visible="val => showFullSizeImageLama = val"
-        @close="showFullSizeImageLama = false"
-        size="lg"
-        aria-labelledby="fullSizeImageLabel"
-        centered
-      >
-        <CModalHeader>
-          <CModalTitle id="fullSizeImageLabel">5 Why (Kenapa Lama) Image Preview</CModalTitle>
-        </CModalHeader>
-
-        <CModalBody style="text-align: center;">
-          <img :src="displayWhyLamaImage" style="max-width: 100%; max-height: 80vh;" />
-        </CModalBody>
-
-        <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImageLama = false">Close</CButton>
-        </CModalFooter>
-        
-      </CModal>
-      
       <CRow md="12" class="mb-3">
         <CCol>
           <CCard>
@@ -704,49 +694,21 @@
           </CCard>
         </CCol>
       </CRow>
-      <!-- Step Repair New - Primary Section -->
       <CRow md="12" class="mb-3">
         <CCol>
-          <CCard class="border-primary">
-            <CCardBody class="pb-2">
+          <CCard>
+            <CCardBody>
               <CRow>
                 <CCol>
-                  <div class="d-flex align-items-center mb-3">
-                    <CIcon icon="cil-star" class="text-primary me-2" />
-                    <label style="font-size: large; font-weight: bold; color: #0d6efd;" class="form-label mb-0">Step Repair New (Primary)</label>
-                    <small class="text-muted ms-2">- Main step repair tracking with detailed timing</small>
-                  </div>
-                  <StepRepairTable
-                    v-model="localSubmit.stepRepairNew"
-                    title="Step Repair New"
-                    :max-items="15"
-                    @validation-change="onStepRepairValidationChange"
-                  />
-                </CCol>
-              </CRow>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-
-      <!-- Step Repair Old - Hidden unless has data -->
-      <CRow md="12" class="mb-3" v-if="hasLegacyStepRepairData">
-        <CCol>
-          <CCard class="mb-3 border-warning">
-            <CCardBody class="pb-2">
-              <CRow>
-                <CCol>
-                  <div class="d-flex align-items-center mb-3">
-                    <CIcon icon="cil-history" class="text-warning me-2" />
-                    <label style="font-size: medium; font-weight: bold; color: #fd7e14;" class="form-label mb-0">Step Repair (Legacy Data)</label>
-                    <small class="text-muted ms-2">- Legacy format (hidden when empty)</small>
-                  </div>
+                  <label style="font-size: medium; font-weight: bold;" class="form-label">Step Repair</label>
                   <CTable bordered>
                     <CTableHead>
                       <CTableRow>
                         <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
                         <CTableHeaderCell>Description</CTableHeaderCell>
-                        <CTableHeaderCell style="width: 120px">Actions</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 120px"
+                          >Actions</CTableHeaderCell
+                        >
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
@@ -760,7 +722,9 @@
                             type="text"
                             v-model="item.stepDesc"
                             placeholder="Enter description"
-                            :disabled="!editingStepRepair || !editingStepRepair[item.id]"
+                            :disabled="
+                              !editingStepRepair || !editingStepRepair[item.id]
+                            "
                           />
                         </CTableDataCell>
                         <CTableDataCell>
@@ -771,7 +735,12 @@
                             @click="editStepRepair(index)"
                           >
                             <CIcon
-                              :icon="editingStepRepair && editingStepRepair[localSubmit.stepRepair[index].id] === true ? 'cil-paper-plane' : 'cil-pencil'"
+                              :icon="
+                                editingStepRepair &&
+                                editingStepRepair[localSubmit.stepRepair[index].id] === true
+                                  ? 'cil-paper-plane'
+                                  : 'cil-pencil'
+                              "
                             />
                           </CButton>
                           <CButton
@@ -801,16 +770,137 @@
           </CCard>
         </CCol>
       </CRow>
-      <!-- <CRow md="12" class="mb-3">
+      <CRow md="12" class="mb-3">
         <CCol>
-                  <StepRepairTable
-                    v-model="localSubmit.stepRepairNew"
-                    title="Step Repair New"
-                    :max-items="15"
-                    @validation-change="onStepRepairValidationChange"
-                  />
+          <CCard>
+            <CCardBody>
+              <CRow>
+                <CCol>
+                  <label style="font-size: medium; font-weight: bold;" class="form-label">Step Repair New</label>
+                  <CTable bordered>
+                    <CTableHead>
+                      <CTableRow>
+                        <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
+                        <CTableHeaderCell>Description</CTableHeaderCell>
+                        <CTableHeaderCell>Actual Time (Min)</CTableHeaderCell>
+                        <CTableHeaderCell>Ideal Time (Min)</CTableHeaderCell>
+                        <CTableHeaderCell>Q6 Category</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 120px"
+                          >Actions</CTableHeaderCell
+                        >
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody>
+                      <CTableRow
+                        v-for="(item, index) in localSubmit.stepRepairNew"
+                        :key="item.id"
+                      >
+                        <CTableDataCell>{{ index + 1 }}</CTableDataCell>
+                        <CTableDataCell style="width: 50%">
+                          <CFormInput
+                            type="text"
+                            v-model="item.stepDesc"
+                            placeholder="Enter description"
+                            :disabled="
+                              !editingStepRepairNew || !editingStepRepairNew[item.id]
+                            "
+                          />
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 10%;">
+                          <CFormInput
+                            type="number"
+                            v-model="item.actualTime"
+                            placeholder="Enter actual time"
+                            :disabled="
+                              !editingStepRepairNew || !editingStepRepairNew[item.id]
+                            "
+                          />
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 10%;">
+                          <CFormInput
+                            type="number"
+                            v-model="item.idealTime"
+                            placeholder="Enter ideal time"
+                            :disabled="
+                              !editingStepRepairNew || !editingStepRepairNew[item.id]
+                            "
+                          />
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 20%;">
+                          <CFormSelect
+                            aria-describedby="Q6 Category"
+                            feedbackInvalid="Please select the Q6 Category."
+                            id="q6CategorySelect"
+                            required
+                            v-model="item.quick6"
+                            :disabled="
+                              !editingStepRepairNew || !editingStepRepairNew[item.id]
+                            "
+                          >
+                            <option value="quick6">Choose Q6 Category...</option>
+                            <option value="Q1">
+                              Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))
+                            </option>
+                            <option value="Q2">
+                              Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)
+                            </option>
+                            <option value="Q3">
+                              Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)
+                            </option>
+                            <option value="Q4">
+                              Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
+                            </option>
+                            <option value="Q5">
+                              Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))
+                            </option>
+                            <option value="Q6">
+                              Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
+                            </option>
+                          </CFormSelect>
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          <CButton
+                            color="primary"
+                            size="sm"
+                            class="me-2"
+                            @click="editStepRepairNew(index)"
+                          >
+                            <CIcon
+                              :icon="
+                                editingStepRepairNew &&
+                                editingStepRepairNew[localSubmit.stepRepairNew[index].id] === true
+                                  ? 'cil-paper-plane'
+                                  : 'cil-pencil'
+                              "
+                            />
+                          </CButton>
+                          <CButton
+                            color="danger"
+                            size="sm"
+                            @click="deleteStepRepairNew(index)"
+                          >
+                            <CIcon icon="cil-trash" />
+                          </CButton>
+                        </CTableDataCell>
+                      </CTableRow>
+                    </CTableBody>
+                  </CTable>
+                  <CButton
+                    color="success"
+                    size="sm"
+                    class="mt-2"
+                    style="color: white"
+                    @click="addStepRepairNew"
+                    v-if="localSubmit.stepRepairNew.length < 5"
+                  >
+                    Add Step Repair
+                  </CButton>
+                </CCol>
+              </CRow>
+            </CCardBody>
+          </CCard>
         </CCol>
-      </CRow> -->
+      </CRow>
       <CRow md="12" class="mb-3">
         <CCol>
           <CCard>
@@ -1326,30 +1416,9 @@
       </CRow>
       <CRow md="12" class="mb-3">
         <CCol>
-          <!-- Legend Status -->
-          <CRow class="mb-4">
-            <CCol>
-              <div class="d-flex align-items-center justify-content-center gap-4 p-3 bg-light rounded">
-                <div class="d-flex align-items-center gap-2">
-                  <div class="status-circle status-none"></div>
-                  <small class="text-muted">none</small>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                  <div class="status-circle status-comment"></div>
-                  <small class="text-muted">comment</small>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                  <div class="status-circle status-delay"></div>
-                  <small class="text-muted">delay</small>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                  <div class="status-circle status-approved"></div>
-                  <small class="text-muted">approved</small>
-                </div>
-              </div>
-            </CCol>
-          </CRow>
-
+          <CCol>
+            <LegendStatus class="mb-4" />
+          </CCol>
           <CCard>
             <CCardBody>
               <CRow>
@@ -1362,14 +1431,10 @@
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
-                    <CCol>TL Check</CCol>
                     <CCol>GL Check</CCol>
                     <CCol>SH Check</CCol>
                   </CRow>
                   <CRow class="text-center py-3">
-                    <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyTlApprove)" />
-                    </CCol>
                     <CCol>
                       <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyLhApprove)" />
                     </CCol>
@@ -1377,6 +1442,7 @@
                       <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyShApprove)" />
                     </CCol>
                   </CRow>
+
 
                   <h5 class="mt-4">Approval Status Countermeasure</h5>
                   <CRow class="text-center mb-3">
@@ -1403,14 +1469,8 @@
                   </CRow>
 
                   <h5 class="mt-4">Approval Status Departement Head</h5>
-                  <CRow class="text-center mb-3">
-                    <CCol>
-                      <CButton size="sm" color="success" @click="onApprove('counter', 'dph')">Approve</CButton>
-                      <CButton size="sm" color="info" class="ms-2" @click="onComment('counter', 'dph')">Comment</CButton>
-                    </CCol>
-                  </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
-                    <CCol>Dph Check</CCol>
+                    <CCol>DPH Check</CCol>
                   </CRow>
                   <CRow class="justify-content-center text-center py-3 mb-4">
                     <CCol xs="auto">
@@ -1422,6 +1482,7 @@
             </CCardBody>
           </CCard>
         </CCol>
+
       </CRow>
       <CRow md="12" class="mb-3">
         <CCol>
@@ -1603,32 +1664,20 @@ export default {
     }
 
     const parseStepRepairNew = (stepRepairNew) => {
-      console.log('parseStepRepairNew called with:', stepRepairNew)
-      console.log('Type of stepRepairNew:', typeof stepRepairNew)
-      if (!stepRepairNew) {
-        console.log('stepRepairNew is empty, returning []')
-        return []
-      }
+      if (!stepRepairNew) return []
       try {
         let parsed = stepRepairNew
         if (typeof stepRepairNew === 'string') {
-          console.log('Parsing stepRepairNew as string')
           parsed = JSON.parse(stepRepairNew)
-          console.log('Parsed result:', parsed)
         }
-        if (!Array.isArray(parsed)) {
-          console.log('Parsed result is not an array:', parsed)
-          return []
-        }
-        const result = parsed.map((item, index) => ({
+        if (!Array.isArray(parsed)) return []
+        return parsed.map((item, index) => ({
           id: item.id || index + 1,
           stepDesc: item.stepDesc || '',
           quick6: item.quick6 || '',
           idealTime: item.idealTime || 0,
           actualTime: item.actualTime || 0,
         }))
-        console.log('Final parsed stepRepairNew result:', result)
-        return result
       } catch (error) {
         console.error('Error parsing stepRepairNew:', error)
         return []
@@ -1711,14 +1760,11 @@ export default {
       comments5WhyLH: submitData.value?.fiveWhyLhFeedback || '',
     })
 
-    console.log('Initial localSubmit setup:', JSON.stringify(localSubmit.value, null, 2))
-    console.log('Initial stepRepairNew from setup:', localSubmit.value.stepRepairNew)
-
     const validatedCustom01 = ref(false)
     const isSaving = ref(false)
     const editingRootcauses = ref({})
     const editingStepRepair = ref({})
-
+    const editingStepRepairNew = ref({})
 
     const initializeEditingRootcauses = (rootcausesArray) => {
       const editingState = {}
@@ -1793,7 +1839,16 @@ export default {
       editingStepRepair.value = editingState
     }
 
-
+    const initializeEditingStepRepairNew = (stepRepairNewArray) => {
+      console.log('Initializing editingStepRepairNew with:', stepRepairNewArray)
+      const editingState = {}
+      stepRepairNewArray.forEach((item) => {
+        const stepDesc = item.stepDesc || ''
+        editingState[item.id] = stepDesc.trim() === '' ? true : false
+      })
+      console.log('Editing state for step repair new:', editingState)
+      editingStepRepairNew.value = editingState
+    }
 
     watch(submitData, (newVal) => {
       let rootcausesArray = []
@@ -1888,15 +1943,12 @@ export default {
         console.log('Default stepRepair array:', stepRepairArray)
       }
 
-      const stepRepairNewArray = parseStepRepairNew(newVal?.stepRepairNew)
-      console.log('stepRepairNewArray result:', stepRepairNewArray)
-      localSubmit.value.stepRepairNew = stepRepairNewArray
+      const stepRepairNewArray = parseStepRepairNew(newVal?.fstep_new)
 
       Object.assign(localSubmit.value, newVal || {});
       localSubmit.value.rootcauses5Why = rootcausesArray;
       localSubmit.value.stepRepair = stepRepairArray;
       localSubmit.value.stepRepairNew = stepRepairNewArray;
-      console.log('Final localSubmit.stepRepairNew:', localSubmit.value.stepRepairNew)
       localSubmit.value.fiveWhyLhApprove = newVal.fiveWhyLhApprove;
       localSubmit.value.fiveWhyShApprove = newVal.fiveWhyShApprove;
       localSubmit.value.fiveWhyLhFeedback = newVal.fiveWhyLhFeedback;
@@ -1925,6 +1977,7 @@ export default {
       )
       initializeEditingRootcauses(rootcausesArray)
       initializeEditingStepRepair(stepRepairArray)
+      initializeEditingStepRepairNew(stepRepairNewArray)
       countermeasureKenapaTerjadiList.value = Array.isArray(
         newVal.countermeasureKenapaTerjadi,
       )
@@ -1982,11 +2035,11 @@ export default {
 
         if (localSubmit.value.avCategory === '1') {
           avCategories = 'MESIN'
-        } else if (localSubmit.value.avCategory === '2') {
+        } else if (avCategory === '2') {
           avCategories = 'DIES'
-        } else if (localSubmit.value.avCategory === '3') {
+        } else if (avCategory === '3') {
           avCategories = 'TOOL'
-        } else if (localSubmit.value.avCategory === '4') {
+        } else if (avCategory === '4') {
           avCategories = 'COOLANT'
         }
 
@@ -2075,8 +2128,7 @@ export default {
           problemCategory: localSubmit.value.problemCategory ?? '',
           itemTemporaryAction: localSubmit.value.itemTemporaryAction ?? '',
           rootcauses5Why: localSubmit.value.rootcauses5Why ?? [],
-          ...( (localSubmit.value.stepRepair ?? []).filter(item => item.stepDesc && item.stepDesc.trim().length > 0).length > 0 && { stepRepair: (localSubmit.value.stepRepair ?? []).filter(item => item.stepDesc && item.stepDesc.trim().length > 0) } ),
-          stepRepairNew: localSubmit.value.stepRepairNew ?? [],
+          stepRepair: localSubmit.value.stepRepair ?? [],
           partChange: localSubmit.value.partChange ?? '',
           countermeasureKenapaTerjadi:
             localSubmit.value.countermeasureKenapaTerjadiList ?? [],
@@ -2582,11 +2634,78 @@ export default {
       }
     }
 
+    const addStepRepairNew = () => {
+      if (!localSubmit.value.stepRepairNew) {
+        localSubmit.value.stepRepairNew = []
+      }
+      if (localSubmit.value.stepRepairNew.length < 5) {
+        const newId = localSubmit.value.stepRepairNew.length
+          ? Math.max(...localSubmit.value.stepRepairNew.map((item) => item.id)) + 1
+          : 1
+        localSubmit.value.stepRepairNew.push({
+          id: newId,
+          stepDesc: '',
+          actualTime: 0,
+          idealTime: 0,
+          quick6: ''
+        })
+      }
+    }
 
+    const deleteStepRepairNew = (index) => {
+      if (
+        !localSubmit.value.stepRepairNew ||
+        !localSubmit.value.stepRepairNew[index]
+      ) {
+        return
+      }
+      if (Array.isArray(localSubmit.value.stepRepairNew)) {
+        localSubmit.value.stepRepairNew.splice(index, 1)
+      } else {
+        localSubmit.value.stepRepairNew = []
+      }
+    }
 
-
-
-
+    const editStepRepairNew = (index) => {
+      console.log('editStepRepairNew called with index:', index)
+      console.log('localSubmit.stepRepairNew:', localSubmit.value.stepRepairNew)
+      if (
+        !localSubmit.value.stepRepairNew ||
+        !Array.isArray(localSubmit.value.stepRepairNew)
+      ) {
+        console.error(
+          'editStepRepairNew: stepRepairNew is not an array or is undefined',
+        )
+        return
+      }
+      if (index < 0 || index >= localSubmit.value.stepRepairNew.length) {
+        console.error('editStepRepairNew: index out of bounds', index)
+        return
+      }
+      const item = localSubmit.value.stepRepairNew[index]
+      if (!item || typeof item.id === 'undefined') {
+        console.error(
+          'editStepRepairNew: item or item.id is undefined for index',
+          index,
+        )
+        return
+      }
+      const id = item.id
+      console.log('editStepRepairNew id:', id)
+      console.log('editingStepRepair:', editingStepRepair.value)
+      const currentState = editingStepRepair.value[id]
+      if (!currentState || currentState === false) {
+        editingStepRepair.value = {
+          ...editingStepRepair.value,
+          [id]: true,
+        }
+      } else if (currentState === true) {
+        editingStepRepair.value = {
+          ...editingStepRepair.value,
+          [id]: false,
+        }
+      }
+    }
 
     const submitSparepart = () => {
       if (typeof sparepartForm.value._editIdx === 'number') {
@@ -2618,65 +2737,17 @@ export default {
     }
 
     const statusClass = (status) => {
-      if (status === 1 || status === '1' || status === 'approved') return 'status-approved'
-      if (status === 0 || status === '0' || status === 'rejected') return 'status-rejected'
-      if (status === 'comment') return 'status-comment'
-      if (status === 'delay') return 'status-delay'
-      if (status === 'none' || status === null || status === undefined) return 'status-none'
+      if (status === 1 || status === '1') return 'status-approved'
+      if (status === 0 || status === '0') return 'status-rejected'
       return 'status-pending'
     }
 
     const onApprove = (section, role) => {
       console.log('Approve', section, role)
-      // Add logic to handle approval based on section and role
-      if (section === '5why') {
-        if (role === 'tl') {
-          localSubmit.value.fiveWhyTlApprove = 'approved'
-        } else if (role === 'gl') {
-          localSubmit.value.fiveWhyLhApprove = 'approved'
-        } else if (role === 'sh') {
-          localSubmit.value.fiveWhyShApprove = 'approved'
-        }
-      } else if (section === 'counter') {
-        if (role === 'tl') {
-          localSubmit.value.cmTlApprove = 'approved'
-        } else if (role === 'gl') {
-          localSubmit.value.cmLhApprove = 'approved'
-        } else if (role === 'sh') {
-          localSubmit.value.cmShApprove = 'approved'
-        } else if (role === 'dph') {
-          localSubmit.value.cmDhApprove = 'approved'
-        }
-      }
     }
 
     const onComment = (section, role) => {
       console.log('Comment', section, role)
-      // Add logic to handle comment based on section and role
-      if (section === '5why') {
-        if (role === 'tl') {
-          localSubmit.value.fiveWhyTlApprove = 'comment'
-        } else if (role === 'gl') {
-          localSubmit.value.fiveWhyLhApprove = 'comment'
-        } else if (role === 'sh') {
-          localSubmit.value.fiveWhyShApprove = 'comment'
-        }
-      } else if (section === 'counter') {
-        if (role === 'tl') {
-          localSubmit.value.cmTlApprove = 'comment'
-        } else if (role === 'gl') {
-          localSubmit.value.cmLhApprove = 'comment'
-        } else if (role === 'sh') {
-          localSubmit.value.cmShApprove = 'comment'
-        } else if (role === 'dph') {
-          localSubmit.value.cmDhApprove = 'comment'
-        }
-      }
-    }
-
-    const onStepRepairValidationChange = (validation) => {
-      console.log('Step Repair validation changed:', validation)
-      // Handle validation state if needed
     }
 
     return {
@@ -2730,10 +2801,12 @@ export default {
       deleteRootcause,
       addStepRepair,
       deleteStepRepair,
+      addStepRepairNew,
+      deleteStepRepairNew,
+      editStepRepairNew,
       statusClass,
       onApprove,
       onComment,
-      onStepRepairValidationChange,
     }
   },
   computed: {
@@ -2790,79 +2863,6 @@ export default {
         return `${process.env.VUE_APP_API_URL}/smartandon/image?path=${this.localSubmit.standartImage}`
       }
       return ''
-    },
-    hasLegacyStepRepairData() {
-      const stepRepair = this.localSubmit?.stepRepair
-
-      // Handle empty string, null, undefined
-      if (!stepRepair) {
-        return false
-      }
-
-      // Handle empty string specifically
-      if (stepRepair === '') {
-        return false
-      }
-
-      // Handle empty array
-      if (Array.isArray(stepRepair) && stepRepair.length === 0) {
-        return false
-      }
-
-      // Handle array with items - check if any item has meaningful data
-      if (Array.isArray(stepRepair) && stepRepair.length > 0) {
-        // Check if any item has actual content (not just empty strings)
-        const hasMeaningfulData = stepRepair.some(item => {
-          if (!item || typeof item !== 'object') return false
-
-          // Check if stepDesc has content (main field for step repair)
-          const stepDesc = item.stepDesc || item.description || ''
-          if (typeof stepDesc === 'string' && stepDesc.trim() !== '') {
-            return true
-          }
-
-          // Check other fields that might indicate real data
-          const hasOtherData = item.actualTime > 0 ||
-                              item.idealTime > 0 ||
-                              (item.quick6 && item.quick6.trim() !== '')
-
-          return hasOtherData
-        })
-
-        return hasMeaningfulData
-      }
-
-      // Handle string data that might contain actual step repair data
-      if (typeof stepRepair === 'string' && stepRepair.trim() !== '') {
-        try {
-          const parsed = JSON.parse(stepRepair)
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            // Apply the same meaningful data check to parsed array
-            const hasMeaningfulData = parsed.some(item => {
-              if (!item || typeof item !== 'object') return false
-
-              const stepDesc = item.stepDesc || item.description || ''
-              if (typeof stepDesc === 'string' && stepDesc.trim() !== '') {
-                return true
-              }
-
-              const hasOtherData = item.actualTime > 0 ||
-                                  item.idealTime > 0 ||
-                                  (item.quick6 && item.quick6.trim() !== '')
-
-              return hasOtherData
-            })
-
-            return hasMeaningfulData
-          }
-          return false
-        } catch {
-          // If it's a non-empty string that's not valid JSON, consider it as having data
-          return true
-        }
-      }
-
-      return false
     },
   },
   data() {
@@ -2998,21 +2998,6 @@ export default {
 .status-pending {
   background-color: white;
   border-color: #ccc;
-}
-
-.status-none {
-  background-color: white;
-  border-color: #ccc;
-}
-
-.status-comment {
-  background-color: #f9ca24;
-  border-color: #f9ca24;
-}
-
-.status-delay {
-  background-color: #e55353;
-  border-color: #e55353;
 }
 
 .vue-treeselect__menu {
