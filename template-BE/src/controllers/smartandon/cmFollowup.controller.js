@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
 
 const getFollowups = async (req, res, next) => {
+  
   try {
     const { start, finish, line, machine, shift, keyword } = req.query;
 

@@ -25,8 +25,8 @@ const path = require('path');
 
 
 const filledColor = [];
-const generateCellDuration = (sheet, duration, startColumn = 'AM', startRow = 17) => {
-  const totalCell = duration / 10;
+const generateCellDuration = (sheet, duration, startColumn = 'AM', startRow = 17, color = '0000FF') => {
+  const totalCell = Math.min(Math.max(Math.floor(duration / 10), duration > 0 ? 1 : 0), 50); // At least 1 cell if duration > 0, cap at 50 cells (500 minutes)
 
   const columnToIndex = (column) => {
     let sum = 0;
@@ -50,10 +50,6 @@ const generateCellDuration = (sheet, duration, startColumn = 'AM', startRow = 17
   const startColumnIndex = columnToIndex(startColumn);
 
   for (let i = 0; i < totalCell; i++) {
-    if (i > 49) {
-      break;
-    }
-
     const currentColumnIndex = startColumnIndex + i;
     const currentColumn = indexToColumn(currentColumnIndex);
 
@@ -68,7 +64,7 @@ const generateCellDuration = (sheet, duration, startColumn = 'AM', startRow = 17
           type: 'pattern',
           pattern: 'darkDown',
           foreground: {
-            rgb: '0000FF',
+            rgb: color,
           },
           background: {
             theme: 3,
@@ -78,6 +74,62 @@ const generateCellDuration = (sheet, duration, startColumn = 'AM', startRow = 17
       });
 
     filledColor.push(`${currentColumn}${startRow}`);
+  }
+};
+
+const generateGapDuration = (sheet, idealDuration, actualDuration, startColumn = 'AM', startRow = 17) => {
+  const idealCells = Math.min(Math.max(Math.floor(idealDuration / 10), idealDuration > 0 ? 1 : 0), 50);
+  const actualCells = Math.min(Math.max(Math.floor(actualDuration / 10), actualDuration > 0 ? 1 : 0), 50);
+
+  const columnToIndex = (column) => {
+    let sum = 0;
+    for (let i = 0; i < column.length; i++) {
+      sum *= 26;
+      sum += column.charCodeAt(i) - 'A'.charCodeAt(0) + 1;
+    }
+    return sum;
+  };
+
+  const indexToColumn = (index) => {
+    let column = '';
+    while (index > 0) {
+      const mod = (index - 1) % 26;
+      column = String.fromCharCode(65 + mod) + column;
+      index = Math.floor((index - 1) / 26);
+    }
+    return column;
+  };
+
+  const startColumnIndex = columnToIndex(startColumn);
+
+  // Color the gap between ideal and actual (if actual > ideal)
+  if (actualCells > idealCells) {
+    for (let i = idealCells; i < actualCells; i++) {
+      const currentColumnIndex = startColumnIndex + i;
+      const currentColumn = indexToColumn(currentColumnIndex);
+
+      if (filledColor.includes(`${currentColumn}${startRow}`)) {
+        continue;
+      }
+
+      sheet
+        .cell(`${currentColumn}${startRow}`)
+        .style({
+          fill: {
+            type: 'pattern',
+            pattern: 'darkDown',
+            foreground: {
+              rgb: 'FF0000', // Red for gap
+            },
+            background: {
+              theme: 3,
+              tint: 0.4,
+            },
+          },
+        });
+
+      filledColor.push(`${currentColumn}${startRow}`);
+    }
   }
 };
 
@@ -220,6 +272,9 @@ const q6 = [{
 ];
 
 const generatedStepRepairCellDuration = async (res, problemData, uraianData, fullPath) => {
+  // Clear the filledColor array to ensure clean state for each Excel generation
+  filledColor.length = 0;
+
   const workbook = await XLSXPopulate.fromFileAsync(fullPath);
   const sheet = workbook.sheet(0);
   const startTime = moment(problemData.fstart_time);
@@ -257,22 +312,25 @@ const generatedStepRepairCellDuration = async (res, problemData, uraianData, ful
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     for (let i = 17; i < 17 + 6; i++) {
       const element = jsonStepRepair[idxAct];
-      sheet.cell(`W${i}`).value(no);
-      sheet.cell(`X${i}`).value(element.stepDesc);
-      sheet.cell(`AI${i}`).value(element.actualTime);
-      sheet.cell(`CK${i}`).value(element.quick6);
+      if (element) {
+        sheet.cell(`W${i}`).value(no);
+        sheet.cell(`X${i}`).value(element.stepDesc);
+        sheet.cell(`AI${i}`).value(element.actualTime);
+        sheet.cell(`CK${i}`).value(element.quick6);
 
-      sheet.cell(`W${i + idxOffsetStd}`).value(no);
-      sheet.cell(`X${i + idxOffsetStd}`).value(element.stepDesc);
-      sheet.cell(`AI${i + idxOffsetStd}`).value(element.idealTime);
-      sheet.cell(`CK${i + idxOffsetStd}`).value(element.quick6);
+        sheet.cell(`W${i + idxOffsetStd}`).value(no);
+        sheet.cell(`X${i + idxOffsetStd}`).value(element.stepDesc);
+        sheet.cell(`AI${i + idxOffsetStd}`).value(element.idealTime);
+        sheet.cell(`CK${i + idxOffsetStd}`).value(element.quick6);
 
-      generateCellDuration(sheet, element.actualTime, 'AM', i);
-      generateCellDuration(sheet, element.idealTime, 'AM', i + idxOffsetStd);
+        generateCellDuration(sheet, element.actualTime, 'AM', i, '0000FF'); // Blue for actual
+        generateCellDuration(sheet, element.idealTime, 'AM', i + idxOffsetStd, '00FF00'); // Green for ideal
+        generateGapDuration(sheet, element.idealTime, element.actualTime, 'AM', i);
 
-      idxAct++;
-      no++;
-      initialDurationIdx++;
+        idxAct++;
+        no++;
+        initialDurationIdx++;
+      }
     }
 
     const groupedSteps = jsonStepRepair.reduce((acc, step) => {
@@ -687,5 +745,7 @@ module.exports = {
     generatedStepRepairCellDuration,
     mappedImageFile,
     sanitizeCountermeasureData,
-    debugCountermeasureData
+    debugCountermeasureData,
+    generateCellDuration,
+    generateGapDuration
 };

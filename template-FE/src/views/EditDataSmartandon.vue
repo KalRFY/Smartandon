@@ -1,207 +1,179 @@
 <template>
   <CRow class="mb-3">
-    <CCol lg="3" class="mb-3">
-      <CCard style="width: 100%; height: 100%;">
-        <CCardBody class="d-flex flex-column align-items-center justify-content-center">
-          <CRow class="mb-3">
-            <div style="text-align: center;">
-              <img
-              alt="Smartandon Image"
-              src="../standalone/assets/images/icon.png"
-              style="max-width: 50%; height: auto; display: inline-block;"
-              />
-            </div>
-          </CRow>
-          
-          <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif; text-align: center;">
-            Smartandon
-          </CRow>
-        
-          <CRow style="width: 100%;">
-            <hr style="width: 100%;" />
-          </CRow>
-          
-          <CRow>
-            Welcome to Smartandon
-          </CRow>
-        </CCardBody>
-      </CCard>
-    </CCol>
-
-    <CCol lg="9" style="height: 100%;">
-      
-      <div class="dashboard-cards-container">
-        <div
-          v-for="(card, index) in dashboardCards"
-          :key="index"
-          class="dashboard-card-wrapper"
-        >
-          <CCard style="height: 100%;" class="dashboard-card h-100" :color="card.color">
-            <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-              <div class="icon-container mb-3">
-                <component :is="card.icon" :size="30" :stroke-width="1" />
-              </div>
-              <h4>{{ card.title }}</h4>
-              <!-- <p class="card-description">{{ card.description }}</p> -->
-              <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-            </CCardBody>
-          </CCard>
-        </div>
-      </div>
-      <!-- <CCard>
+    <CCol>
+      <CCard>
+        <CCardHeader style="font-weight: bold; font-size: medium;">
+          Add New Machines
+        </CCardHeader>
         <CCardBody>
-          <CCol class="mb-3">
-             <CRow class="mb-3" style="font-size: x-large; font-weight: bold; font-family: 'Inter', sans-serif;">
-              Smartandon
-            </CRow>
-          </CCol>
+          <CRow class="mb-3">
+            <CCol md="6">
+              <label style="font-size: small;" class="form-label">Machine Name</label>
+              <CFormInput
+                id="machineName"
+                required
+                type="text"
+                aria-describedby="machineName"
+                v-model="selectedMachine.fmc_name"
+              />
+            </CCol>
+            <CCol md="3">
+              <label style="font-size: small;" class="form-label">Maker</label>
+              <Treeselect
+                id="makerSelect"
+                v-model="selectedMachine.fmaker"
+                :options="makerOptions"
+                :searchable="true"
+                :clearable="true"
+                placeholder="Select maker"
+                :value-consists-of="['id']"
+                :value-key="'id'"
+                :label-key="'label'"
+              />
+            </CCol>
+            <CCol md="3">
+              <label style="font-size: small;" for="lineSelect" class="form-label">Line</label>
+              <Treeselect
+                id="lineSelect"
+                v-model="selectedMachine.lineId"
+                :options="lineOptions"
+                :searchable="true"
+                :clearable="true"
+                placeholder="Select line"
+                :value-consists-of="['id']"
+                :value-key="'id'"
+                :label-key="'label'"
+              />
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CCol md="6">
+              <label style="font-size: small;" class="form-label">Serial Number</label>
+              <CFormInput
+                id="fsn"
+                type="text"
+                v-model="selectedMachine.fsn"
+              />
+            </CCol>
+            <CCol md="3">
+              <label style="font-size: small;" class="form-label">Machine Type</label>
+              <CFormInput
+                id="type"
+                type="text"
+                v-model="selectedMachine.ftype"
+              />
+            </CCol>
+            <CCol md="3">
+              <label style="font-size: small;" class="form-label">Operation No</label>
+              <CFormInput
+                id="operationNo"
+                type="text"
+                v-model="selectedMachine.foperation_no"
+              />
+            </CCol>
+          </CRow>
           <CRow>
+            <CCol md="9">
+              <label style="font-size: small;" class="form-label">Machine Description</label>
+              <CFormInput
+                id="description"
+                type="text"
+                v-model="selectedMachine.fop_desc"
+              />
+            </CCol>
+            <CCol md="3">
+              <label style="font-size: small;" class="form-label">Weight</label>
+              <CFormInput
+                id="weight"
+                type="number"
+                v-model="selectedMachine.fweight"
+                placeholder="in kg"
+              />
+            </CCol>
+          </CRow>
+          <hr></hr>
+          <CRow class="mb-3">
             <CCol>
+              <CFormCheck
+                id="agreeTermsNew"
+                v-model="agreeTermsNew"
+                label="I agree to the terms and conditions for adding new machine data"
+              />
+            </CCol>
+          </CRow>
+          <CRow class="mb-3" md="12">
+            <CCol>
+              <CButton
+                style="width: 100%"
+                color="primary"
+                @click="saveNewMachine"
+                :disabled="!agreeTermsNew"
+              >
+                Save New Machine
+              </CButton>
             </CCol>
           </CRow>
         </CCardBody>
-      </CCard> -->
+      </CCard>
+
+
     </CCol>
   </CRow>
-  <CButton
-    class="mb-3"
-    style="width: 100%; font-size: 18px; font-weight: bold"
-    color="primary"
-    @click="onClickInput"
-    shape="rounded-pill"
-    >
-    Machine Stop Input
-  </CButton>
-
-  <COffcanvas placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
-    <COffcanvasHeader>
-      <COffcanvasTitle>Offcanvas</COffcanvasTitle>
-      <CCloseButton class="text-reset" @click="() => { visibleEnd = false }" />
-    </COffcanvasHeader>
-    <COffcanvasBody>
-      Content for the offcanvas goes here. You can place just about any Bootstrap component or
-      custom elements here.
-    </COffcanvasBody>
-  </COffcanvas>
-
-  <!-- <CCol class="mb-3">
-    <CButton variant="outline" style="width: 100%; font-weight: bold;" color="dark" @click="download">Search</CButton>
-  </CCol> -->
-  <div>
-    <!-- <CRow>
-      <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-4">
-        <CCard class="dashboard-card h-100" :color="card.color">
-          <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-            <div class="icon-container mb-3">
-              <component :is="card.icon" :size="30" :stroke-width="1" />
-            </div>
-            <h4>{{ card.title }}</h4> -->
-    <!-- <p class="card-description">{{ card.description }}</p> -->
-    <!-- <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow> -->
-  </div>
-
-  <CAccordion class="mb-3" active-item-key="1" style="width: 100%;">
-    <CAccordionItem :item-key="1">
-      <CAccordionHeader>
-        <CRow>
-          <CCol>
-            <CCardTitle style="font-size: large; font-weight: bold;">
-              Current Problems
-            </CCardTitle>
-          </CCol>
-        </CRow>
-      </CAccordionHeader>
-      <CAccordionBody>
-        <CRow>
-          <CCol>
-            <CTable>
-                <CTableHead>
+  <CRow>
+    <CCol>
+      <CCard>
+        <CCardHeader style="font-weight: bold; font-size: medium;">All Machines</CCardHeader>
+        <CCardBody>
+          <CRow>
+            <CCol class="mb-3">
+              <CTable bordered hover responsive>
+                <CTableHead color="dark">
                   <CTableRow>
                     <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Machine Name</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Maker</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
-                    <!-- <CTableHeaderCell scope="col">Action</CTableHeaderCell> -->
+                    <CTableHeaderCell scope="col">Serial Number</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Weight</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Type</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Operation</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Description</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Edit</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Action</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  <CTableRow v-if="loadingProblemActive">
-                    <CTableDataCell colspan="6" class="text-center">Loading...</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow v-else-if="problemActive.length === 0">
-                    <CTableDataCell colspan="6" class="text-center">No active problems</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow v-for="(problem, idx) in problemActive" :key="problem.fid">
-                    <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.fmc_name }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.fline }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.ferror_name }}</CTableDataCell>
+                  <CTableRow v-for="(machine,idx) in machines" :key="machine.fid">
+                    <CTableDataCell>{{ idx + 1}}</CTableDataCell>
+                    <CTableDataCell>{{ machine.fmc_name }}</CTableDataCell>
+                    <CTableDataCell>{{ machine.fmaker}}</CTableDataCell>
+                    <CTableDataCell>{{ machine.fline}}</CTableDataCell>
+                    <CTableDataCell>{{ machine.fsn }}</CTableDataCell>
+                    <CTableDataCell>{{ machine.fweight}}</CTableDataCell>
+                    <CTableDataCell>{{ machine.ftype}}</CTableDataCell>
+                    <CTableDataCell>{{ machine.foperation_no}}</CTableDataCell>
+                    <CTableDataCell>{{ machine.fop_desc}}</CTableDataCell>
                     <CTableDataCell>
-                      <CButton :color="Number(problem.fdur) > 30 ? 'primary' : 'warning'">
-                        <label style="font-size: x-small; font-weight: bold; width: 100px; color: white;">{{ problem.fdur }} Minutes</label>
+                      <CButton
+                        color="info"
+                        style="font-size: x-small; color: white; font-weight: bold; width: 100%;"
+                        @click="openEditMachineModal(machine)"
+                      >
+                        Edit
                       </CButton>
                     </CTableDataCell>
-                    <!-- <CTableDataCell>
-                      <CButton color="success" shape="rounded-pill" style="color: white; font-size: x-small; font-weight: bold; width: 100%; height: 100%;">Open Problem</CButton>
-                    </CTableDataCell> -->
+                    <CTableDataCell>
+                      <CButton
+                        color="danger"
+                        style="font-size: x-small; color: white; font-weight: bold;"
+                        @click="openDeleteMachineModal(machine)"
+                      >
+                        Delete
+                      </CButton>
+                    </CTableDataCell>
                   </CTableRow>
                 </CTableBody>
               </CTable>
-          </CCol>
-        </CRow>
-      </CAccordionBody>
-    </CAccordionItem>
-  </CAccordion>
-
-  <CRow>
-    <CCol>
-      <CCard class="mb-3">
-        <CCardBody>
-          <CRow lg="12">
-            <CCol lg="6">
-              <CRow>
-                <CCol lg="3" class="mb-3" v-for="(chartData, index) in chartDataPerLine" :key="index">
-                  <div
-                    :class="getLineCardClass(chartData.label)"
-                    style="border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);
-                    background-color: white;"
-                  >
-                    <CCardBody style="height: 100%;">
-                      <CRow>
-                        <CCardTitle style="font-size: small; height: 35px;">{{ chartData.label }}</CCardTitle>
-                      </CRow>
-                      <CRow>
-                        <CCol>
-                          Target:
-                          {{
-                            oeeTarget.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.ftarget
-                          }}
-                        </CCol>
-                        <CCol>
-                          Actual:
-                          {{
-                            oeeActual.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.factual
-                          }}
-                        </CCol>
-                      </CRow>
-                      <ApexCharts :options="chartData.options" :series="chartData.series" type="radialBar" height="250" />
-                    </CCardBody>
-                  </div>
-                </CCol>
-              </CRow>
-            </CCol>
-            <CCol lg="6">
-              <div style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); height: 100%;" color="dark" variant="outline">
-                <CCardBody style="height: 100%;">
-                  <CCardTitle style="font-size: medium; height: 35px; color: black;">Cumulative OEE per Line</CCardTitle>
-                  <ApexCharts :options="cumulativeOeeOptions" :series="cumulativeOeeSeries" type="polarArea" height="350" />
-                </CCardBody>
-              </div>
             </CCol>
           </CRow>
         </CCardBody>
@@ -210,75 +182,141 @@
   </CRow>
 
   <div>
-    <CModal :visible="visibleLiveDemo" @close="
-      () => {
-        visibleLiveDemo = false
-      }
-    " aria-labelledby="LiveDemoExampleLabel">
+      <CModal :visible="visibleLiveDemo" @close="
+        () => {
+          visibleLiveDemo = false
+          }
+      " aria-labelledby="LiveDemoExampleLabel">
       <CModalHeader>
-        <CModalTitle id="LiveDemoExampleLabel">Machine Stop Input</CModalTitle>
+        <CModalTitle id="LiveDemoExampleLabel">Machines</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CForm class="row g-3 needs-validation" novalidate :validated="validatedCustom01"
-          @submit="handleSubmitCustom01">
-          <CCol md="8">
-            <label for="machineSelect" class="form-label">Machine Name</label>
-            <Treeselect id="machineSelect" v-model="submit.machineName" :options="machineOptions" :searchable="true"
-              :clearable="true" :children="false" placeholder="Select or input machine" @input="onMachineInput"
-              :value-consists-of="['id']" :value-key="'id'" :label-key="'label'" />
-          </CCol>
-          <CCol md="4">
-            <label for="machineSelect" class="form-label">Line</label>
-            <Treeselect id="lineSelect" v-model="submit.line" :multiple="false" :flat="true" :options="lineOptions"
-              :searchable="true" :clearable="true" placeholder="Select or input line" @input="onMachineInput"
-              :value-consists-of="['id']" :value-key="'id'" :label-key="'label'" />
-          </CCol>
-          <!-- <CCol md="4">
-              <CFormSelect
-                aria-describedby="validationCustom04Feedback"
-                feedbackInvalid="Please select the line."
-                id="lineSelect"
-                label="Line"
+        <CForm>
+          <CRow class="mb-3">
+            <CCol md="8">
+              <label style="font-size: small; font-weight: bold;" class="form-label">Machine Name</label>
+              <CFormInput
+                id="machineName"
                 required
-                v-model="submit.line"
-              >
-                <option selected disabled value="">Choose Line...</option>
-                <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
-              </CFormSelect>
-          </CCol> -->
-          <CCol md="12">
-            <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Problems" required
-              v-model="submit.problems" />
-          </CCol>
-          <CCol xs="12">
-            <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
-              label="Agree to terms and conditions" required type="checkbox" v-model="submit.agreeTerms" />
-          </CCol>
+                type="text"
+                aria-describedby="machineName"
+                v-model="selectedMachine.fmc_name"
+              />
+            </CCol>
+            <CCol md="4">
+              <label style="font-size: small; font-weight: bold;" class="form-label">Maker</label>
+              <Treeselect
+                id="makerSelect"
+                v-model="selectedMachine.fmaker"
+                :options="makerOptions"
+                :searchable="true"
+                :clearable="true"
+                placeholder="Select maker"
+                :value-consists-of="['id']"
+                :value-key="'id'"
+                :label-key="'label'"
+              />
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CCol md="12">
+              <label style="font-size: small; font-weight: bold;" for="lineSelect" class="form-label">Line</label>
+              <Treeselect
+                id="lineSelect"
+                v-model="selectedMachine.lineId"
+                :options="lineOptions"
+                :searchable="true"
+                :clearable="true"
+                placeholder="Select line"
+                :value-consists-of="['id']"
+                :value-key="'id'"
+                :label-key="'label'"
+              />
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CCol md="8">
+              <label style="font-size: small; font-weight: bold;" class="form-label">Serial Number</label>
+              <CFormInput
+                id="fsn"
+                type="text"
+                v-model="selectedMachine.fsn"
+              />
+            </CCol>
+            <CCol md="4">
+              <label style="font-size: small; font-weight: bold;" class="form-label">Machine Type</label>
+              <CFormInput
+                id="type"
+                type="text"
+                v-model="selectedMachine.ftype"
+              />
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CCol md="12">
+              <label style="font-size: small; font-weight: bold;" class="form-label">Operation No</label>
+              <CFormInput
+                id="operationNo"
+                type="text"
+                v-model="selectedMachine.foperation_no"
+              />
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CCol md="8">
+              <label style="font-size: small; font-weight: bold;" class="form-label">Machine Description</label>
+              <CFormInput
+                id="description"
+                type="text"
+                v-model="selectedMachine.fop_desc"
+              />
+            </CCol>
+            <CCol md="4">
+              <label style="font-size: small; font-weight: bold;" class="form-label">Weight</label>
+              <CFormInput
+                id="weight"
+                type="number"
+                v-model="selectedMachine.fweight"
+                placeholder="in kg"
+              />
+            </CCol>
+          </CRow>
         </CForm>
+
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" @click="
-          () => {
-            visibleLiveDemo = false
-          }
-        ">
-          Close
-        </CButton>
-
-        <CButton color="primary" @click="saveSubmit">Submit</CButton>
+        <CCol>
+          <CFormCheck
+            id="agreeTerms"
+            v-model="agreeTerms"
+            label="I agree to the terms and conditions for updating machine data"
+          />
+        </CCol>
+        <CButton color="secondary" @click="closeEditMachineModal">Close</CButton>
+        <CButton color="primary" @click="saveMachine" :disabled="!agreeTerms">Save</CButton>
       </CModalFooter>
     </CModal>
   </div>
+
+  <!-- Delete Confirmation Modal -->
+  <CModal :visible="visibleDeleteModal" @close="closeDeleteMachineModal" aria-labelledby="DeleteModalLabel">
+    <CModalHeader>
+      <CModalTitle id="DeleteModalLabel">Confirm Delete</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <p>Are you sure you want to delete the machine <strong>{{ machineToDelete?.fmc_name }}</strong>?</p>
+      <p class="text-danger">This action cannot be undone.</p>
+    </CModalBody>
+    <CModalFooter>
+      <CButton color="secondary" @click="closeDeleteMachineModal">Cancel</CButton>
+      <CButton color="danger" @click="confirmDeleteMachine">Delete</CButton>
+    </CModalFooter>
+  </CModal>
 </template>
-
-
-
-
-
 
 <script>
 import { ref } from 'vue'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordionItem } from '@coreui/vue';
+import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordionItem, CFormCheck, CRow, CCol } from '@coreui/vue';
 import axios from 'axios';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
@@ -310,8 +348,11 @@ export default {
       types: [],
       lines: [],
       linesOptions: [],
+      makers: [],
+      makerOptions: [],
       machines: [],
       machineOptions: [],
+      lineOptions: [],
       oee: [],
       oeeOption: [],
       oeeTarget: [],
@@ -325,152 +366,192 @@ export default {
       visibleEnd: false,
       problemActive: [],
       loadingProblemActive: false,
-
-
       visibleLiveDemo: false,
+      visibleDeleteModal: false,
+      machineToDelete: null,
+      selectedMachine: {
+        fmc_name: '',
+        fmaker: null,
+        selectedLine: null,
+        lineId: null,
+        fsn: '',
+        ftype: '',
+        foperation_no: '',
+        fop_desc: '',
+        fweight: '',
+        is_deleted: 0
+      },
+      agreeTerms: false,
+      agreeTermsNew: false,
+      isEdit: false,
+
       submit: {
         machineName: null,
         lineName: null,
         operatorName: null,
         problems: null,
       },
-
-      seriesChart: [],
-      chartRadialOptions: {
-        chart: {
-          height: 350,
-          type: 'radialBar',
-        },
-        plotOptions: {
-          radialBar: {
-            hollow: {
-              size: '70%',
-            },
-            dataLabels: {
-              name: {
-                fontSize: '22px',
-              },
-              value: {
-                fontSize: '16px',
-                formatter: function (val) {
-                  if (typeof val === 'string') {
-                    if (val === '1000' || val === '100') {
-                      return '99.9%';
-                    }
-                    const numVal = parseFloat(val);
-                    if (!isNaN(numVal)) {
-                      let displayVal = numVal;
-                      if (displayVal >= 100) {
-                        displayVal = 99.9;
-                      }
-                      return displayVal.toFixed(2) + '%';
-                    }
-                  } else if (typeof val === 'number' && !isNaN(val)) {
-                    if (val === 1000 || val === 100) {
-                      return '99.9%';
-                    }
-                    let displayVal = val;
-                    if (displayVal >= 100) {
-                      displayVal = 99.9;
-                    }
-                    return displayVal.toFixed(2) + '%';
-                  }
-                  return val;
-                }
-              }
-            }
-          }
-        },
-        labels: [],
-      },
-
-      series: [{
-        name: 'Income',
-        type: 'column',
-        data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-      }, {
-        name: 'Cashflow',
-        type: 'column',
-        data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
-      }, {
-        name: 'Revenue',
-        type: 'line',
-        data: [20, 29, 37, 36, 44, 45, 50, 58]
-      }],
-      chartOptions: {
-        chart: {
-          height: 350,
-          type: 'line',
-          stacked: false,
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          width: [1, 1, 4],
-        },
-        title: {
-          text: 'XYZ - Stock Analysis (2009 - 2016)',
-          align: 'left',
-          offsetX: 110,
-        },
-        xaxis: {
-          categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-        },
-        yaxis: [
-          {
-            seriesName: 'Income',
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#008FFB',
-            },
-            labels: {
-              style: {
-                colors: '#008FFB',
-              },
-            },
-            title: {
-              text: 'Income (thousand crores)',
-              style: {
-                color: '#008FFB',
-              },
-            },
-            tooltip: {
-              enabled: true,
-            },
-          },
-          {
-            seriesName: 'Cashflow',
-            opposite: true,
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#00E396',
-            },
-            labels: {
-              style: {
-                colors: '#00E396',
-              },
-            },
-            title: {
-              text: 'Operating Cashflow (thousand crores)',
-              style: {
-                color: '#00E396',
-              },
-            },
-          },
-          {
-            seriesName: 'Revenue',
-            opposite: true,
-          },
-        ],
-      },
     }
+  },
+  methods: {
+    openEditMachineModal(machine) {
+      this.selectedMachine = { ...machine };
+      // Set lineId based on line_id
+      const matchingLine = this.lineOptions.find(line => line.id === machine.line_id);
+      this.selectedMachine.lineId = matchingLine ? matchingLine.id : null;
+      // Set fmaker based on maker
+      const matchingMaker = this.makerOptions.find(maker => maker.label === machine.fmaker);
+      this.selectedMachine.fmaker = matchingMaker ? matchingMaker.id : machine.fmaker;
+      // Parse weight to number, converting TON to KG if present
+      if (this.selectedMachine.fweight && typeof this.selectedMachine.fweight === 'string') {
+        if (this.selectedMachine.fweight.toUpperCase().includes('TON')) {
+          const weightNum = parseFloat(this.selectedMachine.fweight.replace(/ TON/i, '').replace(/TON/i, ''));
+          if (!isNaN(weightNum)) {
+            this.selectedMachine.fweight = weightNum * 1000; // Convert TON to KG
+          }
+        } else if (this.selectedMachine.fweight.toUpperCase().includes('KG')) {
+          const weightNum = parseFloat(this.selectedMachine.fweight.replace(/ KG/i, '').replace(/KG/i, ''));
+          this.selectedMachine.fweight = isNaN(weightNum) ? '' : weightNum;
+        }
+      }
+      this.visibleLiveDemo = true;
+    },
+    closeEditMachineModal() {
+      this.visibleLiveDemo = false;
+      this.selectedMachine = {
+        fmc_name: '',
+        fmaker: null,
+        selectedLine: null,
+        lineId: null,
+        fsn: '',
+        ftype: '',
+        foperation_no: '',
+        fop_desc: '',
+        fweight: '',
+        is_deleted: 0
+      };
+      this.agreeTerms = false;
+    },
+    async saveMachine() {
+      if (!this.selectedMachine.fmc_name || this.selectedMachine.fmc_name.length < 8 || this.selectedMachine.fmc_name.length > 20) {
+        alert('Machine Name must be 8-20 characters long.');
+        return;
+      }
+      // Set fline from selected selectedLine
+      if (this.selectedMachine.selectedLine) {
+        this.selectedMachine.lineId = this.selectedMachine.selectedLine.id;
+        this.selectedMachine.fline = this.selectedMachine.selectedLine.label;
+      }
+      // Add KG unit to weight if not present
+      if (this.selectedMachine.fweight && this.selectedMachine.fweight !== '' && !this.selectedMachine.fweight.toString().toUpperCase().includes('KG')) {
+        this.selectedMachine.fweight = this.selectedMachine.fweight + ' KG';
+      }
+      console.log('Updating machine data:', this.selectedMachine);
+      try {
+        const response = await api.put('/smartandon/machine', this.selectedMachine.fid, this.selectedMachine);
+        if (response.status === 200) {
+          console.log('Machine updated successfully:', response.data);
+          alert('Machine saved successfully');
+          this.closeEditMachineModal();
+          // Refresh machine list
+          const machineResponse = await api.get('/smartandon/machine');
+          this.machines = machineResponse.data?.data || machineResponse.data;
+          this.machineOptions = this.machines.map(machine => ({
+            id: machine.fid,
+            label: machine.fmc_name
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to save machine:', error);
+        alert('Failed to save machine: ' + error.message);
+      }
+    },
+    async saveNewMachine() {
+      if (!this.selectedMachine.fmc_name || this.selectedMachine.fmc_name.length < 8 || this.selectedMachine.fmc_name.length > 20) {
+        alert('Machine Name must be 8-20 characters long.');
+        return;
+      }
+      // Set fline from lineId
+      if (this.selectedMachine.lineId) {
+        const lineObj = this.lineOptions.find(l => l.id == this.selectedMachine.lineId);
+        this.selectedMachine.fline = lineObj ? lineObj.label : '';
+        console.log('FE: Setting fline:', this.selectedMachine.fline, 'from lineId:', this.selectedMachine.lineId);
+      }
+      // Add KG unit to weight if not present
+      if (this.selectedMachine.fweight && this.selectedMachine.fweight !== '' && !this.selectedMachine.fweight.toString().toUpperCase().includes('KG')) {
+        this.selectedMachine.fweight = this.selectedMachine.fweight + ' KG';
+      }
+      // Set is_deleted to 0 explicitly before sending
+      this.selectedMachine.is_deleted = 0;
+      console.log('FE: Sending new machine data:', this.selectedMachine);
+      try {
+        const response = await api.post('/smartandon/newMachine', this.selectedMachine);
+        console.log('FE: Response from backend:', response);
+        if (response.status === 201) {
+          alert('New machine added successfully');
+          this.resetNewMachineForm();
+          // Refresh machine list
+          const machineResponse = await api.get('/smartandon/machine');
+          this.machines = machineResponse.data?.data || machineResponse.data;
+          this.machineOptions = this.machines.map(machine => ({
+            id: machine.fid,
+            label: machine.fmc_name
+          }));
+        }
+      } catch (error) {
+        console.error('FE: Error adding new machine:', error);
+        alert('Failed to add new machine: ' + error.message);
+      }
+    },
+    resetNewMachineForm() {
+      this.selectedMachine = {
+        fmc_name: '',
+        fmaker: null,
+        selectedLine: null,
+        lineId: null,
+        fsn: '',
+        ftype: '',
+        foperation_no: '',
+        fop_desc: '',
+        fweight: '',
+        is_deleted: 0
+      };
+      this.agreeTermsNew = false;
+    },
+    openDeleteMachineModal(machine) {
+      this.machineToDelete = machine;
+      this.visibleDeleteModal = true;
+    },
+    closeDeleteMachineModal() {
+      this.visibleDeleteModal = false;
+      this.machineToDelete = null;
+    },
+    async confirmDeleteMachine() {
+      if (!this.machineToDelete) return;
+
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(process.env.VUE_APP_API_URL + '/smartandon/machine/' + this.machineToDelete.fid, {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        });
+        if (response.status === 200) {
+          alert('Machine deleted successfully');
+          this.closeDeleteMachineModal();
+          // Refresh machine list
+          const machineResponse = await api.get('/smartandon/machine');
+          this.machines = machineResponse.data?.data || machineResponse.data;
+          this.machineOptions = this.machines.map(machine => ({
+            id: machine.fid,
+            label: machine.fmc_name
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to delete machine:', error);
+        alert('Failed to delete machine: ' + error.message);
+      }
+    },
   },
 
   components: {
@@ -498,405 +579,50 @@ export default {
     Treeselect,
     ApexCharts,
   },
-  setup() {
-    const router = useRouter()
-
-    const progressGroupExample1 = [
-      { title: 'Monday', value1: 34, value2: 78 },
-      { title: 'Tuesday', value1: 56, value2: 94 },
-      { title: 'Wednesday', value1: 12, value2: 67 },
-      { title: 'Thursday', value1: 43, value2: 91 },
-      { title: 'Friday', value1: 22, value2: 73 },
-      { title: 'Saturday', value1: 53, value2: 82 },
-      { title: 'Sunday', value1: 9, value2: 69 },
-    ]
-    const progressGroupExample2 = [
-      { title: 'Male', icon: 'cil-user', value: 53 },
-      { title: 'Female', icon: 'cil-user-female', value: 43 },
-    ]
-    const progressGroupExample3 = [
-      {
-        title: 'Organic Search',
-        icon: 'cib-google',
-        percent: 56,
-        value: '191,235',
-      },
-      { title: 'Facebook', icon: 'cib-facebook', percent: 15, value: '51,223' },
-      { title: 'Twitter', icon: 'cib-twitter', percent: 11, value: '37,564' },
-      { title: 'LinkedIn', icon: 'cib-linkedin', percent: 8, value: '27,319' },
-    ]
-    const tableExample = []
-
-    const dashboardCards = [
-      {
-        title: 'MTBF',
-        icon: 'Clock',
-        description: 'Mean Time Between Failures metrics',
-        color: 'info',
-        route: '/app/MTBFMTTR',
-      },
-      {
-        title: 'Problem History',
-        icon: 'History',
-        description: 'Historical issues and resolutions',
-        color: 'primary',
-        route: '/app/ProblemHistory',
-      },
-      {
-        title: 'Realtime Pareto',
-        icon: 'BarChart2',
-        description: 'Live Pareto analysis of issues',
-        color: 'success',
-        route: '/app/RealtimeParetto',
-      },
-      {
-        title: 'LTB Report Status',
-        icon: 'FileText',
-        description: 'Last Time Buy reporting and analysis',
-        color: 'secondary',
-        route: '/app/LTBSummary',
-      },
-      {
-        title: 'CM Followup',
-        icon: 'CalendarClock',
-        description: 'Countermeasure tracking and follow-up monitoring',
-        color: 'secondary',
-        route: '/app/CMFollowup',
-      },
-      {
-        title: 'TPM System',
-        icon: 'FileText',
-        description: 'TPM System',
-        color: 'secondary',
-        route: '/app/tpm-redirect',
-      },
-      {
-        title: 'Order Spareparts',
-        icon: 'BarChart2',
-        description: 'Order Spareparts',
-        color: 'secondary',
-        route: '/app/order-spareparts-redirect',
-      },
-    ]
-
-    const navigateTo = (route) => {
-      router.push(route)
-    }
-
-    return {
-      tableExample,
-      progressGroupExample1,
-      progressGroupExample2,
-      progressGroupExample3,
-      dashboardCards,
-      navigateTo,
-    }
-  },
 
   async created() {
-    this.startAutoRefresh();
-  },
-  beforeUnmount() {
-    this.stopAutoRefresh();
-  },
-  methods: {
-    async fetchDashboardData() {
-      try {
-        const responseMachines = await axios.get('/api/smartandon/machine');
-        this.machines = responseMachines.data;
-        this.machineOptions = responseMachines.data.map((machine) => ({
-          id: machine.fid,
-          label: machine.fmc_name,
-        }));
-      } catch (error) {
-        console.error('Failed to fetch machines:', error);
+    try {
+      const response = await api.get('/smartandon/spareparts');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch spareparts, status: ' + response.status);
       }
+      this.spareparts = response.data?.data || response.data;
+      this.sparepartsOption = this.spareparts.map(sparepart => ({
+        id: sparepart.sparepart_id,
+        label: sparepart.sparepart_nm
+      }));
+    } catch (error) {
+      console.error('Failed to fetch spareparts:', error);
+    }
+    try {
+      const response = await api.get('/smartandon/machine');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch machines, status: ' + response.status);
+      }
+      this.machines = response.data?.data || response.data;
+      this.machineOptions = this.machines.map(machine => ({
+        id: machine.fid,
+        label: machine.fmc_name
+      }));
+      // Extract unique makers from machines data, excluding 'unknown'
+      this.makerOptions = [...new Set(this.machines.map(machine => machine.fmaker).filter(maker => maker && maker.trim() !== '' && maker.toLowerCase() !== 'unknown'))].map(maker => ({
+        id: maker,
+        label: maker
+      }));
+      // Fetch lines from dedicated endpoint
       try {
-        const responseLines = await axios.get('/api/smartandon/line');
-        this.lines = responseLines.data;
-        this.lineOptions = responseLines.data.map((line) => ({
+        const lineResponse = await api.get('/smartandon/line');
+        this.lineOptions = lineResponse.data.map(line => ({
           id: line.fid,
-          label: line.fline,
+          label: line.fline
         }));
       } catch (error) {
         console.error('Failed to fetch lines:', error);
+        this.lineOptions = [];
       }
-      try {
-        this.loadingProblemActive = true;
-        this.limitView = 0;
-        console.log('[FE Debug] Dashboard params to send:', { limitView: 0 })
-
-        const responseProblems = await axios.get('/api/smartandon/problemView', {
-          params: {
-            search: JSON.stringify({
-              limitView: 0,
-            }),
-          },
-        });
-        this.problemActive = responseProblems.data.data;
-        console.log('Filtered active problems:', this.problemActive);
-      } catch (error) {
-        console.error('Failed to fetch active problems:', error);
-        this.problemActive = [];
-      } finally {
-        this.loadingProblemActive = false;
-      }
-      try {
-        const responseOeeData = await axios.get('/api/smartandon/oeeDataSmartandon');
-        this.oeeDataSmartandon = responseOeeData.data;
-        console.log('OEE Target: ' + this.oeeDataSmartandon);
-      } catch (error) {
-        console.log('Failed to fetch oee target:', error);
-      }
-      try {
-        const responseOeeTarget = await axios.get('/api/smartandon/oeeTarget');
-        this.oeeTarget = responseOeeTarget.data;
-        this.oeeOption = responseOeeTarget.data.map((oeeTargets) => ({
-          id: oeeTargets.GROUP_NAME,
-          label: oeeTargets.TAG_NAME,
-          labelOeeTarget: oeeTargets.REG_VALUE,
-        }));
-        console.log('OEE Target: ' + this.oeeTarget);
-      } catch (error) {
-        console.log('Failed to fetch oee target:', error);
-      }
-      try {
-        const responseOeeActual = await axios.get('/api/smartandon/oeeActual');
-        this.oeeActual = responseOeeActual.data;
-      } catch (error) {
-        console.log('Failed to fetch oee actual:', error);
-      }
-      try {
-        const responseOeePlan = await axios.get('/api/smartandon/oeePlan');
-        this.oeePlan = responseOeePlan.data;
-      } catch (error) {
-        console.log('Failed to fetch oee plan:', error);
-      }
-      try {
-        const responseOee = await axios.get('/api/smartandon/oee');
-        this.oee = responseOee.data;
-        this.oeeOption = responseOee.data.map((oeeValue) => ({
-          id: oeeValue.GROUP_NAME,
-          label: oeeValue.TAG_NAME,
-          labelOee: oeeValue.REG_VALUE,
-        }));
-        const uniqueOee = {};
-        this.oee.forEach((item) => {
-          if (!uniqueOee[item.DEV_NAME]) {
-            uniqueOee[item.DEV_NAME] = parseFloat(item.REG_VALUE);
-          }
-        });
-        const maxOeeValue = Math.max(...Object.values(uniqueOee));
-        this.chartDataPerLine = Object.entries(uniqueOee).map(([devName, value]) => {
-          const normalizedValue = (value / maxOeeValue) * 100;
-          return {
-            label: devName,
-            series: [normalizedValue],
-            options: {
-              chart: {
-                height: 250,
-                type: 'radialBar',
-                offsetY: 0,
-                sparkline: {
-                  enabled: true,
-                },
-              },
-              plotOptions: {
-                radialBar: {
-                  startAngle: -90,
-                  endAngle: 90,
-                  track: {
-                    background: '#e7e7e7',
-                    strokeWidth: '150%',
-                    margin: 5,
-                    dropShadow: {
-                      enabled: true,
-                      top: 2,
-                      left: 0,
-                      color: '#999',
-                      opacity: 1,
-                      blur: 2,
-                    },
-                  },
-                  hollow: {
-                    size: '50%',
-                  },
-                  dataLabels: {
-                    name: {
-                      show: false,
-                    },
-                    value: {
-                      offsetY: -2,
-                      fontSize: '16px',
-                      formatter: function (val) {
-                        if (val >= 99.9) {
-                          return '99.99%';
-                        }
-                        return val.toFixed(2) + '%';
-                      },
-                    },
-                  },
-                },
-              },
-              fill: {
-                type: 'gradient',
-                gradient: {
-                  shade: 'light',
-                  shadeIntensity: 0.4,
-                  inverseColors: false,
-                  opacityFrom: 1,
-                  opacityTo: 1,
-                  stops: [0, 50, 53, 91],
-                },
-              },
-              labels: [devName],
-              yaxis: {
-                max: 100,
-              },
-            },
-          };
-        });
-        const cumulativeOeeData = {};
-        this.oee.forEach((item) => {
-          if (!cumulativeOeeData[item.DEV_NAME]) {
-            cumulativeOeeData[item.DEV_NAME] = parseFloat(item.REG_VALUE);
-          }
-        });
-        this.cumulativeOeeSeries = Object.values(cumulativeOeeData);
-        this.cumulativeOeeOptions = {
-          chart: {
-            type: 'polarArea',
-            height: 275,
-          },
-          labels: Object.keys(cumulativeOeeData),
-          fill: {
-            opacity: 0.8,
-          },
-          stroke: {
-            width: 1,
-            colors: undefined,
-          },
-          yaxis: {
-            show: true,
-            min: 0,
-            max: Math.max(...Object.values(cumulativeOeeData)) * 1.1,
-          },
-          legend: {
-            position: 'right',
-          },
-          responsive: [
-            {
-              breakpoint: 480,
-              options: {
-                chart: {
-                  height: 300,
-                },
-                legend: {
-                  position: 'bottom',
-                },
-              },
-            },
-          ],
-        };
-      } catch (error) {
-        console.error('Failed to fetch or process OEE data:', error);
-      }
-    },
-    startAutoRefresh() {
-      this.fetchDashboardData();
-      this.autoRefreshInterval = setInterval(() => {
-        this.fetchDashboardData();
-      }, 30000); // 30 seconds
-    },
-    stopAutoRefresh() {
-      if (this.autoRefreshInterval) {
-        clearInterval(this.autoRefreshInterval);
-        this.autoRefreshInterval = null;
-      }
-    },
-    async onClickInput() {
-      try {
-        const response = await fetch('http://localhost:3000/api/user/user', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        if (!response.ok) throw new Error('Failed to fetch user');
-        const data = await response.json();
-        this.submit.operatorName = data.user.name || '';
-      } catch (error) {
-        console.error('Failed to fetch current user info:', error);
-      }
-      this.visibleLiveDemo = true;
-      console.log("User: " + this.submit.operatorName);
-    },
-    async saveSubmit() {
-      console.log('Submitting data:', this.submit);
-      let machineNameToSubmit = null;
-      if (this.submit.machineName) {
-        if (typeof this.submit.machineName === 'object' && this.submit.machineName.id) {
-          machineNameToSubmit = this.submit.machineName.id;
-        } else if (typeof this.submit.machineName === 'number') {
-          machineNameToSubmit = this.submit.machineName;
-        }
-      }
-      if (!machineNameToSubmit) {
-        alert('Please input or select machine name');
-      } else if (!this.submit.line) {
-        alert('Please input line');
-      } else if (!this.submit.problems) {
-        alert('Please input problems');
-      } else if (!this.submit.agreeTerms) {
-        alert('You must agree to terms and conditions before submitting');
-      } else {
-        try {
-          // Generate current timestamp for fstart_time
-          const currentTime = new Date();
-          const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
-          
-          const payload = {
-            fmc_id: machineNameToSubmit,
-            lineName: this.submit.lineName,
-            ferror_name: this.submit.problems,
-            fstart_time: formattedTime
-          };
-          
-          console.log('Payload to send:', payload);
-          const response = await axios.put('/api/smartandon/problemMachine', payload);
-          if (response && response.status >= 200 && response.status < 300) {
-            alert('Input saved successfully');
-            this.visibleLiveDemo = false;
-            this.submit = {};
-          } else {
-            alert('Failed to save input');
-          }
-        } catch (error) {
-          console.log(error.message);
-          alert('Error saving input: ' + error.message);
-        }
-      }
-    },
-    onMachineInput(value) {
-      this.submit.machineName = value || {}
-    },
-    getLineCardClass(lineLabel) {
-      // Normalisasi nama line: lowercase dan trim spasi
-      const normalize = str => (str || '').toString().trim().toLowerCase();
-      const normalizedLabel = normalize(lineLabel);
-
-      const problem = this.problemActive.find(
-        p => normalize(p.fline) === normalizedLabel
-      );
-      if (problem) {
-        if (Number(problem.fdur) > 30) {
-          return "line-danger";
-        }
-        return 'line-warning';
-      }
-      return '';
-    },
+    } catch (error) {
+      console.error('Failed to fetch machines:', error);
+    }
   },
 }
 </script>
@@ -906,70 +632,6 @@ export default {
   transition: transform 0.3s, box-shadow 0.3s;
   border-radius: 10px;
   overflow: hidden;
-}
-
-.dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.icon-container {
-  width: 60px;
-  height: 60px;
-  padding: 15px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-description {
-  color: rgb(80, 106, 113);
-  margin-top: 10px;
-}
-
-p {
-  font-style: italic;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-.dashboard-cards-container {
-  display: flex;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-}
-
-.dashboard-cards-container::-webkit-scrollbar {
-  height: 8px;
-}
-
-.dashboard-cards-container::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-
-.dashboard-card-wrapper {
-  flex: 0 0 auto;
-  width: calc((100% - 40px) / 5); /* 5 cards visible with some margin */
-  margin-right: 10px;
-}
-
-.dashboard-card-wrapper:last-child {
-  margin-right: 0;
-}
-
-.line-danger {
-  background-color: white !important;
-  border: 4px solid red !important;
-}
-
-.line-warning {
-  background-color: white!important;
-  border: 4px solid orange !important;
 }
 
 </style>

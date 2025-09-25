@@ -6,10 +6,11 @@ process.env.VUE_APP_STANDALONE_SINGLE_SPA == 'true' ?
 
 export default {
     async getCommon(url, params, callback) {
+        const token = localStorage.getItem('token')
         const request = await axios
             .get(process.env.VUE_APP_API_URL + `/api/common${url}${params}`, {
                 headers: {
-                    Authorization: 'Bearer ' + localStorage.id_token,
+                    Authorization: 'Bearer ' + token,
                 },
             })
             .then((response) => {
@@ -73,10 +74,11 @@ export default {
     },
 
     async post(url, params, callback) {
+        const token = localStorage.getItem('token')
         const request = await axios
             .post(process.env.VUE_APP_API_URL + `${url}`, params, {
                 headers: {
-                    Authorization: 'Bearer ' + localStorage.id_token,
+                    Authorization: 'Bearer ' + token,
                 },
             })
             .then((response) => {
@@ -95,6 +97,7 @@ export default {
     },
 
     async put(url, id, params, callback) {
+        const token = localStorage.getItem('token')
         let detailUrl;
         if (id) {
             detailUrl = `${url}/${id}`;
@@ -104,7 +107,7 @@ export default {
         const request = await axios
             .put(process.env.VUE_APP_API_URL + `${detailUrl}`, params, {
                 headers: {
-                    Authorization: 'Bearer ' + localStorage.id_token,
+                    Authorization: 'Bearer ' + token,
                 },
             })
             .then((response) => {
@@ -123,10 +126,11 @@ export default {
     },
     
     async delete(url, id, callback) {
+        const token = localStorage.getItem('token')
         const request = await axios
             .delete(process.env.VUE_APP_API_URL + `${url}/delete/${id}`, {
                 headers: {
-                    Authorization: 'Bearer ' + localStorage.id_token,
+                    Authorization: 'Bearer ' + token,
                 },
             })
             .then((response) => {

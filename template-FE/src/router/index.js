@@ -27,37 +27,50 @@ const appRoutes = [
   },
   {
     path: '/app/MTBFMTTR',
-    name: 'MTBFMTTR',
+    name: 'MTB FMTTR',
     component: () =>
       import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR/MTBFMTTR.vue'),
     meta: {
       requiresAuth: true,
-      title: 'MTBFMTTR',
+      title: 'MTBF MTTR',
     },
   },
   {
     path: '/app/RealtimeParetto',
-    name: 'RealtimeParetto',
+    name: 'Realtime Paretto',
     component: () =>
       import(
         /* webpackChunkName: "reports" */ '@/views/RealtimeParetto/RealtimeParetto.vue'
       ),
     meta: {
       requiresAuth: true,
-      title: 'RealtimeParetto',
+      title: 'Realtime Paretto',
     },
   },
 
   {
     path: '/app/DashboardDataDisplay',
-    name: 'DashboardDataDisplay',
+    name: 'Dashboard Data Display',
     component: () =>
       import(
         /* webpackChunkName: "reports" */ '@/views/DashboardDataDisplay.vue'
       ),
     meta: {
       requiresAuth: true,
-      title: 'DashboardDataDisplay',
+      title: 'Dashboard Data Display',
+    },
+  },
+
+  {
+    path: '/app/EditDataSmartandon',
+    name: 'Edit Data Smartandon',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/EditDataSmartandon.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Edit Data Smartandon',
     },
   },
   // Add the uncommented Quality Operational route
@@ -83,7 +96,7 @@ const appRoutes = [
   },
   {
     path: '/app/ProblemHistory',
-    name: 'ProblemHistory',
+    name: 'Problem History',
     component: () =>
       import(
         /* webpackChunkName: "reports" */ '@/views/ProblemHistory/ProblemHistory.vue'
@@ -95,7 +108,7 @@ const appRoutes = [
   },
   {
     path: '/app/LTBSummary',
-    name: 'LTBSummary',
+    name: 'LTB Summary',
     component: () =>
       import(/* webpackChunkName: "reports" */ '@/views/LTBSummary.vue'),
     meta: {
@@ -105,7 +118,7 @@ const appRoutes = [
   },
   {
     path: '/app/CMFollowup',
-    name: 'CMFollowup',
+    name: 'CM Followup',
     component: () =>
       import(/* webpackChunkName: "reports" */ '@/views/CMFollowup.vue'),
     meta: {
@@ -116,7 +129,7 @@ const appRoutes = [
   /*define other routes in here*/
   {
     path: '/app/tpm-redirect',
-    name: 'RedirectTPM',
+    name: 'Redirect TPM',
     component: () =>
       import(/* webpackChunkName: "redirect-tpm" */ '@/views/RedirectTPM.vue'),
     meta: {
@@ -126,7 +139,7 @@ const appRoutes = [
   },
   {
     path: '/app/order-spareparts-redirect',
-    name: 'RedirectOrderSpareparts',
+    name: 'Redirect Order Spareparts',
     component: () =>
       import(/* webpackChunkName: "redirect-order-spareparts" */ '@/views/RedirectOrderSpareparts.vue'),
     meta: {

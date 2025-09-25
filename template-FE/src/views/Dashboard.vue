@@ -1,4 +1,5 @@
 <template>
+  
   <CRow class="mb-3">
     <CCol lg="3" class="mb-3">
       <CCard style="width: 100%; height: 100%;">
@@ -24,6 +25,7 @@
           <CRow>
             Welcome to Smartandon
           </CRow>
+
         </CCardBody>
       </CCard>
     </CCol>
@@ -83,26 +85,6 @@
       custom elements here.
     </COffcanvasBody>
   </COffcanvas>
-
-  <!-- <CCol class="mb-3">
-    <CButton variant="outline" style="width: 100%; font-weight: bold;" color="dark" @click="download">Search</CButton>
-  </CCol> -->
-  <div>
-    <!-- <CRow>
-      <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-4">
-        <CCard class="dashboard-card h-100" :color="card.color">
-          <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-            <div class="icon-container mb-3">
-              <component :is="card.icon" :size="30" :stroke-width="1" />
-            </div>
-            <h4>{{ card.title }}</h4> -->
-    <!-- <p class="card-description">{{ card.description }}</p> -->
-    <!-- <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow> -->
-  </div>
 
   <CAccordion class="mb-3" active-item-key="1" style="width: 100%;">
     <CAccordionItem :item-key="1">
@@ -209,10 +191,178 @@
     </CCol>
   </CRow>
 
+  <CRow class="mb-3">
+    <CCol md="6">
+      <CCard>
+        <!-- <CCardHeader>Problem Frequency</CCardHeader> -->
+        <CCardBody>
+          <CRow class="mb-3">
+            <CCol>
+              <div style="border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);background-color: white;">
+                <CCardBody>
+                  <CRow>
+                    <CCol>
+                      <CInputGroup>
+                        <CInputGroupText id="basic-addon1">
+                          <label>Start</label>
+                        </CInputGroupText>
+                        <CFormInput
+                          id="startDate"
+                          type="date"
+                          v-model="filterStartDate"
+                          aria-label="Start Date"
+                          aria-describedby="basic-addon1"
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol>
+                      <CInputGroup>
+                        <CInputGroupText id="basic-addon2">
+                          <label>Finish</label>
+                        </CInputGroupText>
+                        <CFormInput
+                          id="finishDate"
+                          type="date"
+                          v-model="filterFinishDate"
+                          aria-label="Finish Date"
+                          aria-describedby="basic-addon2"
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol md="2">
+                      <Treeselect
+                        id="lineFilterSelect"
+                        v-model="filterLine"
+                        :multiple="false"
+                        :flat="true"
+                        :options="lineOptions"
+                        :searchable="true"
+                        :clearable="true"
+                        placeholder="Line"
+                        :value-consists-of="['id']"
+                        :value-key="'id'"
+                        :label-key="'label'"
+                      />
+                      <small v-if="lineOptions.length === 0" class="text-muted">Loading lines...</small>
+                    </CCol>
+                    <CCol sm="2">
+                      <CButton
+                        :disabled="loading"
+                        style="width: 100%; font-weight: bold; font-size: x-small; color: white; height: 100%;"
+                        color="info"
+                        @click="onSearch"
+                      >
+                        <Search size="16" />
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </div>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <ApexCharts
+                :key="formatKey"
+                :options="problemFrequencyOptions"
+                :series="problemFrequencySeries"
+                type="line"
+                height="350"
+              />
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+    </CCol>
+    <CCol md="6">
+      <CCard>
+        <!-- <CCardHeader>LTR</CCardHeader> -->
+        <CCardBody>
+          <CRow class="mb-3">
+            <CCol>
+              <div style="border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);background-color: white;">
+                <CCardBody>
+                  <CRow>
+                    <CCol>
+                      <CInputGroup>
+                        <CInputGroupText id="ltr-start-addon">
+                          <label>Start</label>
+                        </CInputGroupText>
+                        <CFormInput
+                          id="ltrStartDate"
+                          type="date"
+                          v-model="ltrStartDate"
+                          aria-label="LTR Start Date"
+                          aria-describedby="ltr-start-addon"
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol>
+                      <CInputGroup>
+                        <CInputGroupText id="ltr-finish-addon">
+                          <label>Finish</label>
+                        </CInputGroupText>
+                        <CFormInput
+                          id="ltrFinishDate"
+                          type="date"
+                          v-model="ltrFinishDate"
+                          aria-label="LTR Finish Date"
+                          aria-describedby="ltr-finish-addon"
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol md="2">
+                      <Treeselect
+                        id="ltrLineFilterSelect"
+                        v-model="ltrLine"
+                        :multiple="false"
+                        :flat="true"
+                        :options="lineOptions"
+                        :searchable="true"
+                        :clearable="true"
+                        placeholder="Select line"
+                        :value-consists-of="['id']"
+                        :value-key="'id'"
+                        :label-key="'label'"
+                      />
+                      <small v-if="lineOptions.length === 0" class="text-muted">Loading lines...</small>
+                    </CCol>
+                    <CCol sm="2">
+                      <CButton
+                        :disabled="loading"
+                        style="width: 100%; font-weight: bold; font-size: x-small; color: white; height: 100%;"
+                        color="info"
+                        @click="onLtrSearch"
+                      >
+                        <Search size="16" />
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </div>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <ApexCharts
+                :key="ltrFormatKey"
+                :options="ltrOptions"
+                :series="ltrSeries"
+                type="line"
+                height="350"
+              />
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+    </CCol>
+  </CRow>
+
   <div>
     <CModal :visible="visibleLiveDemo" @close="
       () => {
-        visibleLiveDemo = false
+        visibleLiveDemo = false;
+        resetForm();
       }
     " aria-labelledby="LiveDemoExampleLabel">
       <CModalHeader>
@@ -229,37 +379,82 @@
           </CCol>
           <CCol md="4">
             <label for="machineSelect" class="form-label">Line</label>
-            <Treeselect id="lineSelect" v-model="submit.line" :multiple="false" :flat="true" :options="lineOptions"
-              :searchable="true" :clearable="true" placeholder="Select or input line" @input="onMachineInput"
-              :value-consists-of="['id']" :value-key="'id'" :label-key="'label'" />
+            <CFormInput
+              id="lineDisplay"
+              v-model="submit.lineName"
+              readonly
+              placeholder="Line will be auto-filled when machine is selected"
+            />
           </CCol>
-          <!-- <CCol md="4">
-              <CFormSelect
-                aria-describedby="validationCustom04Feedback"
-                feedbackInvalid="Please select the line."
-                id="lineSelect"
-                label="Line"
-                required
-                v-model="submit.line"
-              >
-                <option selected disabled value="">Choose Line...</option>
-                <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
-              </CFormSelect>
-          </CCol> -->
           <CCol md="12">
-            <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Problems" required
-              v-model="submit.problems" />
+            <CFormInput
+              feedbackInvalid="Please Login"
+              id="User"
+              label="Operator"
+              required
+              disabled
+              :placeholder="loadingUser ? 'Loading user...' : 'Auto-filled from login'"
+              v-model="submit.operatorName" />
           </CCol>
-          <CCol xs="12">
-            <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
-              label="Agree to terms and conditions" required type="checkbox" v-model="submit.agreeTerms" />
+          
+          <CCol md="12">
+            <CRow>
+              <CCol md="4">
+                <label for="problemsSearchSelect" class="form-label">Problems</label>
+              </CCol>
+              <CCol md="8">
+                <CTooltip
+                  content="Check this box if you want to enter a new problem that is not in the existing list. Uncheck to select from the searchable list of existing problems."
+                  placement="right"
+                >
+                  <template #toggler="{ id, on }">
+                    <CFormCheck
+                      :id="id"
+                      label="New Problem"
+                      v-model="isNewProblem"
+                      v-on="on"
+                    />
+                  </template>
+                </CTooltip>
+              </CCol>
+            </CRow>
+  
+            <!-- Manual Input for New Problems -->
+            <CCol md="12" v-if="isNewProblem">
+              <CFormInput
+                feedbackInvalid="Please input the problems"
+                id="Problems"
+                required
+                placeholder="Enter new problem description..."
+                v-model="submit.problems" />
+            </CCol>
+  
+            <!-- Search Select for Existing Problems -->
+            <CCol md="12" v-else>
+              <ModelSelect
+                id="problemsSearchSelect"
+                v-model="submit.problems"
+                :options="problemSearchOptions"
+                :disabled="problemSearchOptions.length <= 1 || problemSearchOptions[0].text === 'Select a machine first' || problemSearchOptions[0].text === 'Loading problems...'"
+                placeholder="Type to search problems..."
+                required
+              />
+            </CCol>
+            <CRow class="mb-3">
+    
+            </CRow>
+            <CCol xs="12">
+              <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
+                label="Sudah Benar" required type="checkbox" v-model="submit.agreeTerms" />
+            </CCol>
           </CCol>
         </CForm>
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" @click="
           () => {
-            visibleLiveDemo = false
+            visibleLiveDemo = false;
+            resetForm();
           }
         ">
           Close
@@ -271,14 +466,10 @@
   </div>
 </template>
 
-
-
-
-
-
 <script>
 import { ref } from 'vue'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordionItem } from '@coreui/vue';
+import moment from 'moment'
+import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordionItem, CTooltip } from '@coreui/vue';
 import axios from 'axios';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
@@ -296,10 +487,14 @@ import {
   CalendarClock,
   ChartColumnIncreasing,
   BookText,
+  Search,
 } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
+import { CFormSelect } from '@coreui/vue'
+import { ModelSelect } from 'vue-search-select'
+import "vue-search-select/dist/VueSearchSelect.css"
 const visibleStaticBackdropDemo = ref(false);
 const visibleEnd = ref(false)
 
@@ -307,11 +502,107 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      filterStartDate: moment().subtract(30, 'days').format('YYYY-MM-DD'),
+      filterFinishDate: moment().format('YYYY-MM-DD'),
+      filterLine: null,
+      // LTR Chart data properties
+      ltrStartDate: moment().subtract(30, 'days').format('YYYY-MM-DD'),
+      ltrFinishDate: moment().format('YYYY-MM-DD'),
+      ltrLine: null,
+      problemFrequencyData: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Frequency Problem',
+            backgroundColor: '#f87979',
+            data: [],
+          },
+        ],
+      },
+      problemFrequencyOptions: {
+        chart: {
+          height: 350,
+          type: 'line',
+        },
+        stroke: {
+          width: [4]
+        },
+        title: {
+          text: 'Frekuensi Masalah'
+        },
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [0]
+        },
+        xaxis: {
+          type: 'datetime',
+          labels: {
+            format: 'MMM dd',
+          },
+        },
+        yaxis: [{
+          title: {
+            text: 'Frekuensi Masalah',
+          },
+        }],
+      },
+      problemFrequencySeries: [{
+        name: 'Frekuensi Masalah',
+        type: 'column',
+        data: []
+      }],
+      // LTR Chart options and series
+      ltrOptions: {
+        chart: {
+          height: 350,
+          type: 'line',
+        },
+        colors: ['#FF0000'],
+        plotOptions: {
+          bar: {
+            borderRadius: 4,
+          },
+        },
+        stroke: {
+          width: [4]
+        },
+        title: {
+          text: 'LTR - Long Time Repair'
+        },
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [0]
+        },
+        xaxis: {
+          type: 'datetime',
+          labels: {
+            format: 'MMM dd',
+          },
+        },
+        yaxis: [{
+          title: {
+            text: 'Jumlah LTR',
+          },
+        }],
+      },
+      ltrSeries: [{
+        name: 'Jumlah LTR',
+        type: 'column',
+        data: []
+      }],
+      ltrFormatKey: 0,
       types: [],
       lines: [],
       linesOptions: [],
+      lineOptions: [],
       machines: [],
       machineOptions: [],
+      problemSelectOptions: [
+        { value: '', label: 'Select a machine first' }
+      ],
+      problemSearchOptions: [
+        { value: '', text: 'Select a machine first' }
+      ],
       oee: [],
       oeeOption: [],
       oeeTarget: [],
@@ -328,9 +619,12 @@ export default {
 
 
       visibleLiveDemo: false,
+      loadingUser: false,
+      isNewProblem: false,
       submit: {
         machineName: null,
         lineName: null,
+        fline: '',
         operatorName: null,
         problems: null,
       },
@@ -472,6 +766,23 @@ export default {
       },
     }
   },
+  watch: {
+    // Add watcher for machineName changes
+    'submit.machineName': function(newVal) {
+      this.onMachineInput(newVal);
+    },
+    // Add watcher for new problem checkbox
+    isNewProblem: function() {
+      this.onNewProblemToggle();
+    },
+    // Add watcher for lineOptions to debug loading
+    lineOptions: {
+      handler(newVal) {
+        console.log('[FE Debug] Line options updated:', newVal);
+      },
+      immediate: true
+    }
+  },
 
   components: {
     MainChartExample,
@@ -486,6 +797,7 @@ export default {
     CalendarClock,
     ChartColumnIncreasing,
     BookText,
+    Search,
     CChart,
     ApexCharts,
     CTable,
@@ -496,6 +808,9 @@ export default {
     CTableDataCell,
     CoffCanvas,
     Treeselect,
+    CFormSelect,
+    ModelSelect,
+    CTooltip,
     ApexCharts,
   },
   setup() {
@@ -529,7 +844,7 @@ export default {
 
     const dashboardCards = [
       {
-        title: 'MTBF',
+        title: 'MTBF MTTR',
         icon: 'Clock',
         description: 'Mean Time Between Failures metrics',
         color: 'info',
@@ -611,15 +926,20 @@ export default {
       } catch (error) {
         console.error('Failed to fetch machines:', error);
       }
+
+
       try {
         const responseLines = await axios.get('/api/smartandon/line');
+        console.log('[FE Debug] Line API response:', responseLines.data);
         this.lines = responseLines.data;
         this.lineOptions = responseLines.data.map((line) => ({
           id: line.fid,
           label: line.fline,
         }));
+        console.log('[FE Debug] Line options created:', this.lineOptions);
       } catch (error) {
         console.error('Failed to fetch lines:', error);
+        this.lineOptions = [];
       }
       try {
         this.loadingProblemActive = true;
@@ -629,7 +949,7 @@ export default {
         const responseProblems = await axios.get('/api/smartandon/problemView', {
           params: {
             search: JSON.stringify({
-              limitView: 0,
+              limitView: 'Current',
             }),
           },
         });
@@ -641,6 +961,13 @@ export default {
       } finally {
         this.loadingProblemActive = false;
       }
+
+      // Call fetchChartData
+      await this.fetchChartData();
+
+      // Call fetchLtrData
+      await this.fetchLtrData();
+
       try {
         const responseOeeData = await axios.get('/api/smartandon/oeeDataSmartandon');
         this.oeeDataSmartandon = responseOeeData.data;
@@ -802,6 +1129,118 @@ export default {
         console.error('Failed to fetch or process OEE data:', error);
       }
     },
+    async fetchChartData() {
+      // Fetch historical data for the frequency chart
+      try {
+        const chartParams = {
+            startDate: this.filterStartDate,
+            finishDate: this.filterFinishDate,
+            limitView: 'group',
+        };
+
+        // Add line filter if selected
+        if (this.filterLine) {
+          chartParams.line = this.filterLine;
+        }
+
+        console.log('[FE Debug] Sending chart request with params:', chartParams);
+        console.log('[FE Debug] Start Date:', this.filterStartDate);
+        console.log('[FE Debug] Finish Date:', this.filterFinishDate);
+
+        const historyResponse = await axios.get('/api/smartandon/problemView', {
+            params: {
+                search: JSON.stringify(chartParams)
+            }
+        });
+
+        if (historyResponse.data && historyResponse.data.data) {
+            const groupedData = historyResponse.data.data;
+            console.log('[FE Debug] Raw chart data from API:', groupedData);
+            console.log('[FE Debug] Number of data points received:', groupedData.length);
+
+            const sortedData = groupedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+            console.log('[FE Debug] Sorted chart data:', sortedData);
+
+            const websiteBlogData = sortedData.map(item => [new Date(item.date).getTime(), item.count]);
+            console.log('[FE Debug] Website blog data for chart:', websiteBlogData);
+
+            this.problemFrequencyData = {
+                labels: sortedData.map(item => item.date),
+                datasets: [
+                    {
+                        label: 'Frequency Problem',
+                        backgroundColor: '#f87979',
+                        data: sortedData.map(item => item.count),
+                    },
+                ],
+            };
+
+            this.problemFrequencySeries[0].data = websiteBlogData;
+            console.log('[FE Debug] Updated problemFrequencySeries:', this.problemFrequencySeries);
+
+            // Check if start date year is not current year
+            const startYear = new Date(this.filterStartDate).getFullYear();
+            const currentYear = new Date().getFullYear();
+            const format = startYear !== currentYear ? 'MMM dd yyyy' : 'MMM dd';
+            console.log('Filter year:', startYear, 'Current year:', currentYear, 'Format:', format);
+            this.problemFrequencyOptions.xaxis.labels.format = format;
+            this.formatKey += 1; // Force re-render of ApexCharts to update label format
+        }
+      } catch (error) {
+        console.error('Failed to fetch problem history for chart:', error);
+      }
+    },
+    async fetchLtrData() {
+      // Fetch historical data for the LTR chart
+      try {
+        const ltrParams = {
+            startDate: this.ltrStartDate,
+            finishDate: this.ltrFinishDate,
+            limitView: 'group',
+            problemCategory: 3, // Filter for LTR category
+        };
+
+        // Add line filter if selected
+        if (this.ltrLine) {
+          ltrParams.line = this.ltrLine;
+        }
+
+        console.log('[FE Debug] Sending LTR request with params:', ltrParams);
+        console.log('[FE Debug] LTR Start Date:', this.ltrStartDate);
+        console.log('[FE Debug] LTR Finish Date:', this.ltrFinishDate);
+
+        const ltrResponse = await axios.get('/api/smartandon/problemView', {
+            params: {
+                search: JSON.stringify(ltrParams)
+            }
+        });
+
+        if (ltrResponse.data && ltrResponse.data.data) {
+            const ltrGroupedData = ltrResponse.data.data;
+            console.log('[FE Debug] Raw LTR data from API:', ltrGroupedData);
+            console.log('[FE Debug] Number of LTR data points received:', ltrGroupedData.length);
+
+            const ltrSortedData = ltrGroupedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+            console.log('[FE Debug] Sorted LTR data:', ltrSortedData);
+
+            const ltrWebsiteBlogData = ltrSortedData.map(item => [new Date(item.date).getTime(), item.count]);
+            console.log('[FE Debug] LTR Website blog data for chart:', ltrWebsiteBlogData);
+
+            this.ltrSeries[0].data = ltrWebsiteBlogData;
+            console.log('[FE Debug] Updated ltrSeries:', this.ltrSeries);
+
+            // Check if start date year is not current year
+            const ltrStartYear = new Date(this.ltrStartDate).getFullYear();
+            const ltrCurrentYear = new Date().getFullYear();
+            const ltrFormat = ltrStartYear !== ltrCurrentYear ? 'MMM dd yyyy' : 'MMM dd';
+            console.log('LTR Filter year:', ltrStartYear, 'Current year:', ltrCurrentYear, 'Format:', ltrFormat);
+            this.ltrOptions.xaxis.labels.format = ltrFormat;
+            this.ltrFormatKey += 1; // Force re-render of ApexCharts to update label format
+        }
+      } catch (error) {
+        console.error('Failed to fetch LTR data for chart:', error);
+      }
+    },
     startAutoRefresh() {
       this.fetchDashboardData();
       this.autoRefreshInterval = setInterval(() => {
@@ -815,22 +1254,36 @@ export default {
       }
     },
     async onClickInput() {
+      this.loadingUser = true;
       try {
-        const response = await fetch('http://localhost:3000/api/user/user', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        if (!response.ok) throw new Error('Failed to fetch user');
-        const data = await response.json();
-        this.submit.operatorName = data.user.name || '';
+        const response = await api.get('/user/user');
+
+        if (response && response.data && response.data.user && response.data.user.name) {
+          this.submit.operatorName = response.data.user.name;
+          console.log("User fetched successfully:", this.submit.operatorName);
+        } else {
+          throw new Error('Invalid user data received from API');
+        }
       } catch (error) {
         console.error('Failed to fetch current user info:', error);
+        this.submit.operatorName = '';
+
+        // Handle different error types
+        if (error.response) {
+          if (error.response.status === 401) {
+            alert('Authentication failed. Please login again.');
+          } else {
+            alert(`Error loading user: ${error.response.statusText || 'API Error'}`);
+          }
+        } else if (error.message) {
+          alert(`Error loading user: ${error.message}`);
+        } else {
+          alert('Error loading user: Unknown error occurred');
+        }
+      } finally {
+        this.loadingUser = false;
       }
       this.visibleLiveDemo = true;
-      console.log("User: " + this.submit.operatorName);
     },
     async saveSubmit() {
       console.log('Submitting data:', this.submit);
@@ -844,10 +1297,16 @@ export default {
       }
       if (!machineNameToSubmit) {
         alert('Please input or select machine name');
-      } else if (!this.submit.line) {
-        alert('Please input line');
-      } else if (!this.submit.problems) {
-        alert('Please input problems');
+      } else if (!this.submit.fline) {
+        alert('Please input the line');
+      } else if (!this.submit.operatorName) {
+        alert('Please wait for operator name to be loaded');
+      } else if (!this.submit.problems || this.submit.problems === '') {
+        if (this.isNewProblem) {
+          alert('Please enter a new problem description');
+        } else {
+          alert('Please select a problem');
+        }
       } else if (!this.submit.agreeTerms) {
         alert('You must agree to terms and conditions before submitting');
       } else {
@@ -858,8 +1317,9 @@ export default {
           
           const payload = {
             fmc_id: machineNameToSubmit,
-            lineName: this.submit.lineName,
+            lineName: this.submit.fline,
             ferror_name: this.submit.problems,
+            foperator: this.submit.operatorName,
             fstart_time: formattedTime
           };
           
@@ -878,8 +1338,235 @@ export default {
         }
       }
     },
+    async fetchProblemsByMachine(machineId) {
+      try {
+        // Reset problem options while loading
+        this.problemSelectOptions = [
+          { value: '', label: 'Loading problems...' }
+        ];
+        this.problemSearchOptions = [
+          { value: '', text: 'Loading problems...' }
+        ];
+
+        // Find the machine name from the selected machine ID
+        const selectedMachine = this.machines.find(m => m.fid === machineId);
+        const machineName = selectedMachine ? selectedMachine.fmc_name : '';
+
+        console.log('Selected Machine ID:', machineId);
+        console.log('Selected Machine Object:', selectedMachine);
+        console.log('Machine Name to search:', machineName);
+
+        const responseProblems = await axios.get('/api/smartandon/problemView', {
+          params: {
+            search: JSON.stringify({
+              machineName: machineName,
+              limitView: 0, // Set to 0 to get all problems without limit
+            }),
+          },
+        });
+
+        console.log('API Response:', responseProblems.data);
+
+        if (responseProblems.data && responseProblems.data.data && responseProblems.data.data.length > 0) {
+          // Extract unique problem names and remove duplicates (case-insensitive)
+          const problemNames = responseProblems.data.data
+            .map(problem => problem.ferror_name)
+            .filter(Boolean) // Remove null/undefined/empty values
+            .map(problem => problem.trim()) // Remove leading/trailing whitespace
+            .filter(problem => problem.length > 0) // Remove empty strings after trimming
+            .map(problem => problem.toLowerCase()); // Convert to lowercase for comparison
+
+          // Remove duplicates using case-insensitive comparison
+          const uniqueProblems = [...new Set(problemNames)]
+            .map(lowerCaseName => {
+              // Find the original case version from the original data
+              const original = responseProblems.data.data.find(problem =>
+                problem.ferror_name && problem.ferror_name.trim().toLowerCase() === lowerCaseName
+              );
+              return original ? original.ferror_name.trim() : lowerCaseName;
+            });
+
+          // Sort problems alphabetically for better UX (case-insensitive)
+          uniqueProblems.sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+
+          console.log(`Removed duplicates: ${problemNames.length - uniqueProblems.length} duplicates found, ${uniqueProblems.length} unique problems remaining`);
+
+          // Format for CFormSelect
+          this.problemSelectOptions = [
+            { value: '', label: 'Select a problem...' },
+            ...uniqueProblems.map((problem, index) => ({
+              value: problem,
+              label: problem,
+            }))
+          ];
+
+          // Format for ModelSelect
+          this.problemSearchOptions = [
+            { value: '', text: 'Select a problem...' },
+            ...uniqueProblems.map((problem, index) => ({
+              value: problem,
+              text: problem,
+            }))
+          ];
+
+          console.log(`Fetched ${uniqueProblems.length} unique problems for machine ${machineName}:`, uniqueProblems);
+          console.log('Updated problemSearchOptions:', this.problemSearchOptions);
+        } else {
+          // No problems found for this machine, try loading all problems as fallback
+          console.log('No problems found for this machine, trying to load all problems...');
+          try {
+            const fallbackResponse = await axios.get('/api/smartandon/problemView', {
+              params: {
+                search: JSON.stringify({
+                  limitView: 0, // Set to 0 to get all problems without limit
+                }),
+              },
+            });
+
+            if (fallbackResponse.data && fallbackResponse.data.data && fallbackResponse.data.data.length > 0) {
+              // Extract unique problem names and remove duplicates (case-insensitive)
+              const problemNames = fallbackResponse.data.data
+                .map(problem => problem.ferror_name)
+                .filter(Boolean)
+                .map(problem => problem.trim())
+                .filter(problem => problem.length > 0)
+                .map(problem => problem.toLowerCase());
+
+              // Remove duplicates using case-insensitive comparison
+              const uniqueProblems = [...new Set(problemNames)]
+                .map(lowerCaseName => {
+                  const original = fallbackResponse.data.data.find(problem =>
+                    problem.ferror_name && problem.ferror_name.trim().toLowerCase() === lowerCaseName
+                  );
+                  return original ? original.ferror_name.trim() : lowerCaseName;
+                });
+
+              uniqueProblems.sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+
+              console.log(`Fallback: Removed duplicates: ${problemNames.length - uniqueProblems.length} duplicates found, ${uniqueProblems.length} unique problems remaining`);
+
+              this.problemSelectOptions = [
+                { value: '', label: 'Select a problem (all machines)...' },
+                ...uniqueProblems.map((problem, index) => ({
+                  value: problem,
+                  label: problem,
+                }))
+              ];
+
+              // Format for VueSearchSelect
+              this.problemSearchOptions = [
+                { name: 'Select a problem (all machines)...' },
+                ...uniqueProblems.map((problem, index) => ({
+                  name: problem,
+                }))
+              ];
+
+              console.log(`Fallback: Fetched ${uniqueProblems.length} problems from all machines:`, uniqueProblems);
+            } else {
+              this.problemSelectOptions = [
+                { value: '', label: 'No problems found in database' }
+              ];
+              this.problemSearchOptions = [
+                { name: 'No problems found in database' }
+              ];
+            }
+          } catch (fallbackError) {
+            console.error('Fallback API call also failed:', fallbackError);
+            this.problemSelectOptions = [
+              { value: '', label: 'Error loading problems' }
+            ];
+            this.problemSearchOptions = [
+              { name: 'Error loading problems' }
+            ];
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch problems for machine:', error);
+        this.problemSelectOptions = [
+          { value: '', label: 'Error loading problems' }
+        ];
+        this.problemSearchOptions = [
+          { name: 'Error loading problems' }
+        ];
+      }
+    },
     onMachineInput(value) {
       this.submit.machineName = value || {}
+
+      // Auto-populate line when machine is selected
+      if (value && typeof value === 'object' && value.id) {
+        const selectedMachine = this.machines.find(m => m.fid === value.id);
+        if (selectedMachine) {
+          this.submit.lineName = selectedMachine.fline;
+          this.submit.line = selectedMachine.fline;
+          this.submit.fline = selectedMachine.fline;
+
+          // Fetch problems for this specific machine
+          this.fetchProblemsByMachine(value.id);
+        }
+      } else if (value && typeof value === 'number') {
+        const selectedMachine = this.machines.find(m => m.fid === value);
+        if (selectedMachine) {
+          this.submit.lineName = selectedMachine.fline;
+          this.submit.line = selectedMachine.fline;
+          this.submit.fline = selectedMachine.fline;
+
+          // Fetch problems for this specific machine
+          this.fetchProblemsByMachine(value);
+        }
+      } else {
+        // Clear line when machine is cleared
+        this.submit.lineName = '';
+        this.submit.line = '';
+        this.submit.fline = '';
+
+        // Reset problem options when machine is cleared
+        this.problemSelectOptions = [
+          { value: '', label: 'Select a machine first' }
+        ];
+        this.problemSearchOptions = [
+          { value: '', text: 'Select a machine first' }
+        ];
+      }
+    },
+    onNewProblemToggle() {
+      // Clear the problems field when switching between new and existing
+      this.submit.problems = null;
+    },
+    resetForm() {
+      // Reset all form fields to initial state
+      this.submit = {
+        machineName: null,
+        lineName: null,
+        fline: '',
+        operatorName: null,
+        problems: null,
+      };
+      this.isNewProblem = false;
+      this.problemSelectOptions = [
+        { value: '', label: 'Select a machine first' }
+      ];
+      this.problemSearchOptions = [
+        { value: '', text: 'Select a machine first' }
+      ];
+      // Reset chart filters
+      this.filterLine = null;
+    },
+    onSearch() {
+      console.log('[FE Debug] Search clicked with filters:', {
+        startDate: this.filterStartDate,
+        finishDate: this.filterFinishDate,
+        line: this.filterLine
+      });
+      this.fetchChartData();
+    },
+    onLtrSearch() {
+      console.log('[FE Debug] LTR Search clicked with filters:', {
+        startDate: this.ltrStartDate,
+        finishDate: this.ltrFinishDate,
+        line: this.ltrLine
+      });
+      this.fetchLtrData();
     },
     getLineCardClass(lineLabel) {
       // Normalisasi nama line: lowercase dan trim spasi
