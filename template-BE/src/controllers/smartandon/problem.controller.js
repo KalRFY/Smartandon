@@ -489,6 +489,19 @@ const updateProblem = async (req, res, next) => {
       lastReportFile,
       oCategory,
       qCategory,
+      fiveWhyTlApprove,
+      fiveWhyLhApprove,
+      fiveWhyShApprove,
+      cmTlApprove,
+      cmLhApprove,
+      cmShApprove,
+      cmDhApprove,
+      fiveWhyLhFeedback,
+      fiveWhyShFeedback,
+      cmLhFeedback,
+      cmShFeedback,
+      cmTlFeedback,
+      cmDhFeedback,
     } = req.body;
     console.log('UPDATE PROBLEM BODY:', req.body);
     console.log('Problems from body:', problemDescription);
@@ -547,6 +560,19 @@ const updateProblem = async (req, res, next) => {
       qCategory,
       comments5Why,
       lastReportFile,
+      fiveWhyTlApprove,
+      fiveWhyLhApprove,
+      fiveWhyShApprove,
+      cmTlApprove,
+      cmLhApprove,
+      cmShApprove,
+      cmDhApprove,
+      fiveWhyLhFeedback,
+      fiveWhyShFeedback,
+      cmLhFeedback,
+      cmShFeedback,
+      cmTlFeedback,
+      cmDhFeedback,
     };
 
     const cmKenapaLama = countermeasureKenapaLama || [];
@@ -904,6 +930,45 @@ const updateProblem = async (req, res, next) => {
     }
     if (countermeasureKenapaLama) {
       updateField += `, t1.fpermanet_cm_lama = :countermeasureKenapaLama`;
+    }
+    // if (fiveWhyTlApprove !== undefined) {
+    //   updateField += `, t1.fiveWhyTlApprove = :fiveWhyTlApprove`;
+    // }
+    if (fiveWhyLhApprove !== undefined) {
+      updateField += `, t1.fiveWhyLhApprove = :fiveWhyLhApprove`;
+    }
+    if (fiveWhyShApprove !== undefined) {
+      updateField += `, t1.fiveWhyShApprove = :fiveWhyShApprove`;
+    }
+    if (cmTlApprove !== undefined) {
+      updateField += `, t1.cmTlApprove = :cmTlApprove`;
+    }
+    if (cmLhApprove !== undefined) {
+      updateField += `, t1.cmLhApprove = :cmLhApprove`;
+    }
+    if (cmShApprove !== undefined) {
+      updateField += `, t1.cmShApprove = :cmShApprove`;
+    }
+    if (cmDhApprove !== undefined) {
+      updateField += `, t1.cmDhApprove = :cmDhApprove`;
+    }
+    if (fiveWhyLhFeedback !== undefined) {
+      updateField += `, t1.fiveWhyLhFeedback = :fiveWhyLhFeedback`;
+    }
+    if (fiveWhyShFeedback !== undefined) {
+      updateField += `, t1.fiveWhyShFeedback = :fiveWhyShFeedback`;
+    }
+    if (cmLhFeedback !== undefined) {
+      updateField += `, t1.cmLhFeedback = :cmLhFeedback`;
+    }
+    if (cmShFeedback !== undefined) {
+      updateField += `, t1.cmShFeedback = :cmShFeedback`;
+    }
+    if (cmTlFeedback !== undefined) {
+      updateField += `, t1.cmTlFeedback = :cmTlFeedback`;
+    }
+    if (cmDhFeedback !== undefined) {
+      updateField += `, t1.cmDhFeedback = :cmDhFeedback`;
     }
     if (stepRepairNew !== undefined) {
       try {
