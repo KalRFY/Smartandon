@@ -287,20 +287,20 @@
       <CRow md="12" class="mb-3">
         <CCol>
           <label style="font-size: medium; font-weight: bold;" for="operatorSelect" class="form-label">Operator</label>
-          <Treeselect
-            id="operatorSelect"
-            v-model="localSubmit.operator"
-            :multiple="true"
-            :flat="true"
-            :options="memberOption"
-            :searchable="true"
-            :clearable="true"
-            placeholder="Select or input member"
-            @input="onMachineInput"
-            :value-consists-of="['id']"
-            :value-key="'id'"
-            :label-key="'label'"
-          />
+        <Treeselect
+          id="operatorSelect"
+          v-model="localSubmit.operator"
+          :multiple="true"
+          :flat="true"
+          :options="filteredMemberOption"
+          :searchable="true"
+          :clearable="true"
+          placeholder="Select or input member"
+          @input="onMachineInput"
+          :value-consists-of="['id']"
+          :value-key="'id'"
+          :label-key="'label'"
+        />
         </CCol>
       </CRow>
       <CRow class="mb-3">
@@ -843,13 +843,13 @@
                       >Tambah Yokoten</CButton
                     >
                   </div>
-                  <div v-if="showYokotenForm" class="d-flex align-items-center mb-2">
+                  <div v-if="showYokotenForm" class="d-flex flex-wrap align-items-center mb-2 gap-2">
                     <CFormInput
                       v-model="yokotenForm.machine"
                       placeholder="Yokoten Item"
-                      class="me-2"
+                      class="me-2 flex-grow-1 min-w-200"
                     />
-                    <CFormSelect v-model="yokotenForm.pic" class="me-2">
+                    <CFormSelect v-model="yokotenForm.pic" class="me-2 flex-shrink-0" style="min-width: 140px;">
                       <option value="">PIC</option>
                       <option
                         v-for="pic in picOptions"
@@ -862,19 +862,20 @@
                     <CFormInput
                       type="date"
                       v-model="yokotenForm.datePlan"
-                      class="me-2"
+                      class="me-2 flex-shrink-0"
+                      style="min-width: 140px;"
                     />
-                    <CFormSelect v-model="yokotenForm.judg" class="me-2">
+                    <CFormSelect v-model="yokotenForm.judg" class="me-2 flex-shrink-0" style="min-width: 140px;">
                       <option :value="false">Belum</option>
                       <option :value="true">Sudah</option>
                     </CFormSelect>
-                    <CButton color="success" class="me-2" @click="submitYokoten"
+                    <CButton color="success" class="me-2 flex-shrink-0" @click="submitYokoten"
                       >Submit</CButton
                     >
-                    <CButton color="secondary" @click="cancelYokoten">Cancel</CButton>
+                    <CButton color="secondary" class="flex-shrink-0" @click="cancelYokoten">Cancel</CButton>
                   </div>
-                  <div v-if="yokotenList.length > 0">
-                    <CTable bordered>
+                  <div v-if="yokotenList.length > 0" class="table-responsive">
+                    <CTable bordered hover responsive>
                       <CTableHead>
                         <CTableRow>
                           <CTableHeaderCell>Item Yokoten</CTableHeaderCell>
@@ -941,138 +942,145 @@
                       >Tambah Countermeasure</CButton
                     >
                   </div>
-                  <div
-                    v-if="showCountermeasureKenapaTerjadiForm"
-                    class="d-flex align-items-center mb-2"
-                  >
-                    <CFormCheck
-                      v-model="countermeasureKenapaTerjadiForm.isAction"
-                      label="Ini Action?"
-                      class="me-2"
-                    />
-                    <CFormInput
-                      v-model="countermeasureKenapaTerjadiForm.cmDesc"
-                      placeholder="Countermeasure/Action"
-                      class="me-2"
-                    />
-                    <CFormInput
-                      type="date"
-                      v-model="countermeasureKenapaTerjadiForm.datePlan"
-                      class="me-2"
-                    />
-                    <CFormSelect
-                      v-model="countermeasureKenapaTerjadiForm.category"
-                      class="me-2"
+                    <div
+                      v-if="showCountermeasureKenapaTerjadiForm"
+                      class="d-flex flex-wrap align-items-center mb-2 gap-2"
                     >
-                      <option value="">C/M Category</option>
-                      <option value="Improvement">Improvement</option>
-                      <option value="Training">Training</option>
-                      <option value="Revisi TPM">Revisi TPM</option>
-                      <option value="Sparepart">Sparepart</option>
-                    </CFormSelect>
-                    <CFormSelect
-                      v-model="countermeasureKenapaTerjadiForm.pic"
-                      class="me-2"
-                    >
-                      <option value="">PIC</option>
-                      <option
-                        v-for="pic in picOptions"
-                        :key="pic.value"
-                        :value="pic.value"
+                      <CFormCheck
+                        v-model="countermeasureKenapaTerjadiForm.isAction"
+                        label="Ini Action?"
+                        class="me-2 flex-shrink-0"
+                      />
+                      <CFormInput
+                        v-model="countermeasureKenapaTerjadiForm.cmDesc"
+                        placeholder="Countermeasure/Action"
+                        class="me-2 flex-grow-1 min-w-200"
+                      />
+                      <CFormInput
+                        type="date"
+                        v-model="countermeasureKenapaTerjadiForm.datePlan"
+                        class="me-2 flex-shrink-0"
+                        style="min-width: 140px;"
+                      />
+                      <CFormSelect
+                        v-model="countermeasureKenapaTerjadiForm.category"
+                        class="me-2 flex-shrink-0"
+                        style="min-width: 140px;"
                       >
-                        {{ pic.label }}
-                      </option>
-                    </CFormSelect>
-                    <CFormSelect
-                      v-if="
-                        typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
-                      "
-                      v-model="countermeasureKenapaTerjadiForm.judg"
-                      class="me-2"
-                    >
-                      <option value="belum">Belum</option>
-                      <option value="sudah">Sudah</option>
-                    </CFormSelect>
-                    <CFormTextarea
-                      v-if="
-                        typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
-                      "
-                      v-model="countermeasureKenapaTerjadiForm.result"
-                      placeholder="Result Notes"
-                      class="me-2"
-                      rows="2"
-                    />
-                    <CButton
-                      color="success"
-                      class="me-2"
-                      @click="submitCountermeasureKenapaTerjadi"
-                    >
-                      Submit
-                    </CButton>
-                    <CButton
-                      color="secondary"
-                      @click="cancelCountermeasureKenapaTerjadi"
-                    >
-                      Cancel
-                    </CButton>
-                  </div>
-                  <div v-if="countermeasureKenapaTerjadiList.length > 0">
-                    <CTable bordered>
-                      <CTableHead>
-                        <CTableRow>
-                          <CTableHeaderCell>Action?</CTableHeaderCell>
-                          <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
-                          <CTableHeaderCell>Plan Date</CTableHeaderCell>
-                          <CTableHeaderCell>C/M Category</CTableHeaderCell>
-                          <CTableHeaderCell>PIC</CTableHeaderCell>
-                          <CTableHeaderCell>Judge</CTableHeaderCell>
-                          <CTableHeaderCell>Result Notes</CTableHeaderCell>
-                          <CTableHeaderCell>Actions</CTableHeaderCell>
-                        </CTableRow>
-                      </CTableHead>
-                      <CTableBody>
-                        <CTableRow
-                          v-for="(item, idx) in countermeasureKenapaTerjadiList"
-                          :key="idx"
+                        <option value="">C/M Category</option>
+                        <option value="Improvement">Improvement</option>
+                        <option value="Training">Training</option>
+                        <option value="Revisi TPM">Revisi TPM</option>
+                        <option value="Sparepart">Sparepart</option>
+                      </CFormSelect>
+                      <CFormSelect
+                        v-model="countermeasureKenapaTerjadiForm.pic"
+                        class="me-2 flex-shrink-0"
+                        style="min-width: 140px;"
+                      >
+                        <option value="">PIC</option>
+                        <option
+                          v-for="pic in picOptions"
+                          :key="pic.value"
+                          :value="pic.value"
                         >
-                          <CTableDataCell>{{
-                            item.isAction ? 'Ya' : 'Tidak'
-                          }}</CTableDataCell>
-                          <CTableDataCell>{{ item.cmDesc }}</CTableDataCell>
-                          <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
-                          <CTableDataCell>{{ item.category }}</CTableDataCell>
-                          <CTableDataCell>{{
-                            picOptions.find(
-                              (opt) => String(opt.value) === String(item.pic),
-                            )?.label || item.pic
-                          }}</CTableDataCell>
-                          <CTableDataCell>
-                            <CFormSelect v-model="item.judg" disabled>
-                              <option value="belum">Belum</option>
-                              <option value="sudah">Sudah</option>
-                            </CFormSelect>
-                          </CTableDataCell>
-                          <CTableDataCell>
-                            <CFormTextarea v-model="item.result" disabled rows="2" />
-                          </CTableDataCell>
-                          <CTableDataCell>
-                            <CButton
-                              color="warning"
-                              size="sm"
-                              class="me-2"
-                              @click="editCountermeasureKenapaTerjadi(idx)"
-                              >Edit</CButton
-                            >
-                            <CButton
-                              color="danger"
-                              size="sm"
-                              @click="removeCountermeasureKenapaTerjadi(idx)"
-                              >Remove</CButton
-                            >
-                          </CTableDataCell>
-                        </CTableRow>
-                      </CTableBody>
-                    </CTable>
+                          {{ pic.label }}
+                        </option>
+                      </CFormSelect>
+                      <CFormSelect
+                        v-if="
+                          typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
+                        "
+                        v-model="countermeasureKenapaTerjadiForm.judg"
+                        class="me-2 flex-shrink-0"
+                        style="min-width: 140px;"
+                      >
+                        <option value="belum">Belum</option>
+                        <option value="sudah">Sudah</option>
+                      </CFormSelect>
+                      <CFormTextarea
+                        v-if="
+                          typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
+                        "
+                        v-model="countermeasureKenapaTerjadiForm.result"
+                        placeholder="Result Notes"
+                        class="me-2 flex-grow-1 min-w-200"
+                        rows="2"
+                      />
+                      <CButton
+                        color="success"
+                        class="me-2 flex-shrink-0"
+                        @click="submitCountermeasureKenapaTerjadi"
+                      >
+                        Submit
+                      </CButton>
+                      <CButton
+                        color="secondary"
+                        class="flex-shrink-0"
+                        @click="cancelCountermeasureKenapaTerjadi"
+                      >
+                        Cancel
+                      </CButton>
+                    </div>
+                  <div v-if="countermeasureKenapaTerjadiList.length > 0">
+                    <div class="table-responsive">
+                      <CTable bordered>
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell>Action?</CTableHeaderCell>
+                            <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
+                            <CTableHeaderCell>Plan Date</CTableHeaderCell>
+                            <CTableHeaderCell>C/M Category</CTableHeaderCell>
+                            <CTableHeaderCell>PIC</CTableHeaderCell>
+                            <CTableHeaderCell>Judge</CTableHeaderCell>
+                            <CTableHeaderCell>Result Notes</CTableHeaderCell>
+                            <CTableHeaderCell>Actions</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          <CTableRow
+                            v-for="(item, idx) in countermeasureKenapaTerjadiList"
+                            :key="idx"
+                          >
+                            <CTableDataCell>{{
+                              item.isAction ? 'Ya' : 'Tidak'
+                            }}</CTableDataCell>
+                            <CTableDataCell>{{ item.cmDesc }}</CTableDataCell>
+                            <CTableDataCell>{{ item.datePlan }}</CTableDataCell>
+                            <CTableDataCell>{{ item.category }}</CTableDataCell>
+                            <CTableDataCell>{{
+                              picOptions.find(
+                                (opt) => String(opt.value) === String(item.pic),
+                              )?.label || item.pic
+                            }}</CTableDataCell>
+                            <CTableDataCell>
+                              <CFormSelect v-model="item.judg" disabled>
+                                <option value="belum">Belum</option>
+                                <option value="sudah">Sudah</option>
+                              </CFormSelect>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CFormTextarea v-model="item.result" disabled rows="2" />
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                color="warning"
+                                size="sm"
+                                class="me-2"
+                                @click="editCountermeasureKenapaTerjadi(idx)"
+                                >Edit</CButton
+                              >
+                              <CButton
+                                color="danger"
+                                size="sm"
+                                @click="removeCountermeasureKenapaTerjadi(idx)"
+                                >Remove</CButton
+                              >
+                            </CTableDataCell>
+                          </CTableRow>
+                        </CTableBody>
+                      </CTable>
+                    </div>
                     <CButton
                       color="primary"
                       class="mt-2"
@@ -1102,26 +1110,28 @@
                   </div>
                   <div
                     v-if="showCountermeasureKenapaLamaForm"
-                    class="d-flex align-items-center mb-2"
+                    class="d-flex flex-wrap align-items-center mb-2 gap-2"
                   >
                     <CFormCheck
                       v-model="countermeasureKenapaLamaForm.isAction"
                       label="Ini Action?"
-                      class="me-2"
+                      class="me-2 flex-shrink-0"
                     />
                     <CFormInput
                       v-model="countermeasureKenapaLamaForm.cmDesc"
                       placeholder="Countermeasure/Action"
-                      class="me-2"
+                      class="me-2 flex-grow-1 min-w-200"
                     />
                     <CFormInput
                       type="date"
                       v-model="countermeasureKenapaLamaForm.datePlan"
-                      class="me-2"
+                      class="me-2 flex-shrink-0"
+                      style="min-width: 140px;"
                     />
                     <CFormSelect
                       v-model="countermeasureKenapaLamaForm.category"
-                      class="me-2"
+                      class="me-2 flex-shrink-0"
+                      style="min-width: 140px;"
                     >
                       <option value="">C/M Category</option>
                       <option value="Improvement">Improvement</option>
@@ -1131,7 +1141,8 @@
                     </CFormSelect>
                     <CFormSelect
                       v-model="countermeasureKenapaLamaForm.pic"
-                      class="me-2"
+                      class="me-2 flex-shrink-0"
+                      style="min-width: 140px;"
                     >
                       <option value="">PIC</option>
                       <option
@@ -1145,7 +1156,8 @@
                     <CFormSelect
                       v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
                       v-model="countermeasureKenapaLamaForm.judg"
-                      class="me-2"
+                      class="me-2 flex-shrink-0"
+                      style="min-width: 140px;"
                     >
                       <option value="belum">Belum</option>
                       <option value="sudah">Sudah</option>
@@ -1154,21 +1166,21 @@
                       v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
                       v-model="countermeasureKenapaLamaForm.result"
                       placeholder="Result Notes"
-                      class="me-2"
+                      class="me-2 flex-grow-1 min-w-200"
                       rows="2"
                     />
                     <CButton
                       color="success"
-                      class="me-2"
+                      class="me-2 flex-shrink-0"
                       @click="submitCountermeasureKenapaLama"
                       >Submit</CButton
                     >
-                    <CButton color="secondary" @click="cancelCountermeasureKenapaLama"
+                    <CButton color="secondary" class="flex-shrink-0" @click="cancelCountermeasureKenapaLama"
                       >Cancel</CButton
                     >
                   </div>
-                  <div v-if="countermeasureKenapaLamaList.length > 0">
-                    <CTable bordered>
+                  <div v-if="countermeasureKenapaLamaList.length > 0" class="table-responsive">
+                    <CTable bordered hover responsive>
                       <CTableHead>
                         <CTableRow>
                           <CTableHeaderCell>Action?</CTableHeaderCell>
@@ -1357,8 +1369,8 @@
                   <h5>Approval Status 5 Why</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                      <CButton size="sm" color="success" @click="onApprove('5why', 'tl')">Approve</CButton>
-                      <CButton size="sm" color="info" class="ms-2" @click="onComment('5why', 'tl')">Comment</CButton>
+                      <CButton size="sm" color="success" @click="onApprove('5why')">Approve</CButton>
+                      <CButton size="sm" color="info" class="ms-2" @click="onComment('5why')">Comment</CButton>
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1368,21 +1380,21 @@
                   </CRow>
                   <CRow class="text-center py-3">
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyTlApprove)" />
+                      <span class="status-circle" :class="statusClass(localSubmit, 'fiveWhyTlApprove')" />
                     </CCol>
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyLhApprove)" />
+                      <span class="status-circle" :class="statusClass(localSubmit, 'fiveWhyLhApprove')" />
                     </CCol>
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.fiveWhyShApprove)" />
+                      <span class="status-circle" :class="statusClass(localSubmit, 'fiveWhyShApprove')" />
                     </CCol>
                   </CRow>
 
                   <h5 class="mt-4">Approval Status Countermeasure</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                      <CButton size="sm" color="success" @click="onApprove('counter', 'tl')">Approve</CButton>
-                      <CButton size="sm" color="info" class="ms-2" @click="onComment('counter', 'tl')">Comment</CButton>
+                      <CButton size="sm" color="success" @click="onApprove('counter')">Approve</CButton>
+                      <CButton size="sm" color="info" class="ms-2" @click="onComment('counter')">Comment</CButton>
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1392,21 +1404,21 @@
                   </CRow>
                   <CRow class="text-center py-3">
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.cmTlApprove)" />
+                      <span class="status-circle" :class="statusClass(localSubmit, 'cmTlApprove')" />
                     </CCol>
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.cmLhApprove)" />
+                      <span class="status-circle" :class="statusClass(localSubmit, 'cmLhApprove')" />
                     </CCol>
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit?.cmShApprove)" />
+                      <span class="status-circle" :class="statusClass(localSubmit, 'cmShApprove')" />
                     </CCol>
                   </CRow>
 
                   <h5 class="mt-4">Approval Status Departement Head</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                      <CButton size="sm" color="success" @click="onApprove('counter', 'dph')">Approve</CButton>
-                      <CButton size="sm" color="info" class="ms-2" @click="onComment('counter', 'dph')">Comment</CButton>
+                    <CButton size="sm" color="success" @click="onApprove('dph')">Approve</CButton>
+                    <CButton size="sm" color="info" class="ms-2" @click="onComment('dph')">Comment</CButton>
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1414,9 +1426,95 @@
                   </CRow>
                   <CRow class="justify-content-center text-center py-3 mb-4">
                     <CCol xs="auto">
-                      <span class="status-circle" :class="statusClass(localSubmit?.cmDhApprove)" />
+                      <span class="status-circle" :class="statusClass(localSubmit, 'cmDhApprove')" />
                     </CCol>
                   </CRow>
+
+                  <CCard class="mt-4">
+                    <CCardHeader>
+                      <h5 class="mb-0">Five Why Comments</h5>
+                    </CCardHeader>
+                    <CCardBody>
+                      <CRow v-if="localSubmit.fiveWhyTlFeedback" class="mb-2">
+                        <CCol md="2" class="fw-bold">Five Why - TL:</CCol>
+                        <CCol md="10">
+                          <CFormTextarea
+                            v-model="localSubmit.fiveWhyTlFeedback"
+                            rows="3"
+                            readonly
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow v-if="localSubmit.fiveWhyLhFeedback" class="mb-2">
+                        <CCol md="2" class="fw-bold">Five Why - LH/GL:</CCol>
+                        <CCol md="10">
+                          <CFormTextarea
+                            v-model="localSubmit.fiveWhyLhFeedback"
+                            rows="3"
+                            readonly
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow v-if="localSubmit.fiveWhyShFeedback" class="mb-2">
+                        <CCol md="2" class="fw-bold">Five Why - SH:</CCol>
+                        <CCol md="10">
+                          <CFormTextarea
+                            v-model="localSubmit.fiveWhyShFeedback"
+                            rows="3"
+                            readonly
+                          />
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
+
+                  <CCard class="mt-4">
+                    <CCardHeader>
+                      <h5 class="mb-0">Countermeasure Comments</h5>
+                    </CCardHeader>
+                    <CCardBody>
+                      <CRow v-if="localSubmit.cmTlFeedback" class="mb-2">
+                        <CCol md="2" class="fw-bold">Countermeasure - TL:</CCol>
+                        <CCol md="10">
+                          <CFormTextarea
+                            v-model="localSubmit.cmTlFeedback"
+                            rows="3"
+                            readonly
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow v-if="localSubmit.cmLhFeedback" class="mb-2">
+                        <CCol md="2" class="fw-bold">Countermeasure - LH/GL:</CCol>
+                        <CCol md="10">
+                          <CFormTextarea
+                            v-model="localSubmit.cmLhFeedback"
+                            rows="3"
+                            readonly
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow v-if="localSubmit.cmShFeedback" class="mb-2">
+                        <CCol md="2" class="fw-bold">Countermeasure - SH:</CCol>
+                        <CCol md="10">
+                          <CFormTextarea
+                            v-model="localSubmit.cmShFeedback"
+                            rows="3"
+                            readonly
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow v-if="localSubmit.cmDhFeedback" class="mb-2">
+                        <CCol md="2" class="fw-bold">Countermeasure - DPH:</CCol>
+                        <CCol md="10">
+                          <CFormTextarea
+                            v-model="localSubmit.cmDhFeedback"
+                            rows="3"
+                            readonly
+                          />
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
                 </CCol>
               </CRow>
             </CCardBody>
@@ -1460,6 +1558,32 @@
             label="Agree to terms and conditions" required type="checkbox" v-model="localSubmit.agreeTerms" />
         </CCol>
       </CRow>
+
+      <!-- Comment Modal -->
+      <CModal
+        :visible="showCommentModal"
+        @update:visible="val => showCommentModal = val"
+        @close="cancelComment"
+        aria-labelledby="commentModalLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="commentModalLabel">
+            Add Comment for {{ currentSection === '5why' ? '5 Why' : currentSection === 'counter' ? 'Countermeasure' : currentSection === 'dph' ? 'Department Head' : 'Section' }} - {{ currentUserName }}{{ currentUserRole ? ' (' + currentUserRole + ')' : '' }}
+          </CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CFormTextarea
+            v-model="commentText"
+            placeholder="Enter your comment here... (Your name and role will be automatically added)"
+            rows="4"
+            label="Comment"
+          />
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" @click="cancelComment">Cancel</CButton>
+          <CButton color="info" @click="submitComment">Submit Comment</CButton>
+        </CModalFooter>
+      </CModal>
     </CModalBody>
     <CModalFooter>
       <CButton color="secondary" @click="$emit('close')"> Close </CButton>
@@ -1475,7 +1599,7 @@
 </template>
 
 <script>
-import { ref, watch, toRefs, onMounted } from 'vue'
+import { ref, watch, toRefs, onMounted, computed } from 'vue'
 import {
   CModal,
   CModalHeader,
@@ -1635,6 +1759,29 @@ export default {
       }
     }
 
+    const countermeasureKenapaTerjadiList = ref([])
+    const showCountermeasureKenapaTerjadiForm = ref(false)
+    const countermeasureKenapaTerjadiForm = ref({
+      isAction: false,
+      cmDesc: '',
+      datePlan: '',
+      category: '',
+      pic: '',
+      result: '',
+      judg: 'belum',
+    })
+
+    const countermeasureKenapaLamaList = ref([])
+    const showCountermeasureKenapaLamaForm = ref(false)
+    const countermeasureKenapaLamaForm = ref({
+      isAction: false,
+      cmDesc: '',
+      datePlan: '',
+      category: '',
+      pic: '',
+      judge: 'belum',
+    })
+
     const parseTambahAnalysis = (data) => {
       try {
         if (!data) return []
@@ -1647,6 +1794,27 @@ export default {
         console.error('Error parsing tambahAnalysisTerjadi:', error)
         return []
       }
+    };
+
+    const hasAnalysisContent = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return false;
+
+      const checkNode = (node) => {
+        if (!node) return false;
+        const desc = node.description || node.name || '';
+        if (desc.trim() !== '') return true;
+        if (node.subItems && Array.isArray(node.subItems)) {
+          return node.subItems.some(checkNode);
+        }
+        return false;
+      };
+
+      return arr.some(checkNode);
+    };
+
+    const hasCountermeasureContent = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return false;
+      return arr.some(item => item.cmDesc && item.cmDesc.trim() !== '');
     };
 
     // Ubah struktur backend -> struktur TreeNode (description/subItems)
@@ -1703,12 +1871,26 @@ export default {
     const localSubmit = ref({
       sparepart: null,
       tambahAnalysisTerjadi: parseTambahAnalysis(submitData.value?.tambahAnalysisTerjadi || '[]'),
+      tambahAnalisisLama: parseTambahAnalysis(submitData.value?.tambahAnalisisLama || '[]'),
       ...(submitData.value || {}),
       rootcauses5Why: parseFrealProb(submitData.value?.freal_prob),
       stepRepairArray: parseStepRepair(submitData.value?.stepRepair),
       stepRepairNew: parseStepRepairNew(submitData.value?.fstep_new),
       comments5WhySH: submitData.value?.fiveWhyShFeedback || '',
       comments5WhyLH: submitData.value?.fiveWhyLhFeedback || '',
+      fiveWhyTlApprove: submitData.value?.fiveWhyTlApprove ?? 0,
+      fiveWhyLhApprove: submitData.value?.fiveWhyLhApprove ?? 0,
+      fiveWhyShApprove: submitData.value?.fiveWhyShApprove ?? 0,
+      cmTlApprove: submitData.value?.cmTlApprove ?? 0,
+      cmLhApprove: submitData.value?.cmLhApprove ?? 0,
+      cmShApprove: submitData.value?.cmShApprove ?? 0,
+      cmDhApprove: submitData.value?.cmDhApprove ?? 0,
+      fiveWhyLhFeedback: submitData.value?.fiveWhyLhFeedback ?? '',
+      fiveWhyShFeedback: submitData.value?.fiveWhyShFeedback ?? '',
+      cmLhFeedback: submitData.value?.cmLhFeedback ?? '',
+      cmShFeedback: submitData.value?.cmShFeedback ?? '',
+      cmTlFeedback: submitData.value?.cmTlFeedback ?? '',
+      cmDhFeedback: submitData.value?.cmDhFeedback ?? '',
     })
 
     console.log('Initial localSubmit setup:', JSON.stringify(localSubmit.value, null, 2))
@@ -1792,8 +1974,6 @@ export default {
       console.log('Editing state for step repair:', editingState)
       editingStepRepair.value = editingState
     }
-
-
 
     watch(submitData, (newVal) => {
       let rootcausesArray = []
@@ -1893,22 +2073,24 @@ export default {
       localSubmit.value.stepRepairNew = stepRepairNewArray
 
       Object.assign(localSubmit.value, newVal || {});
-      localSubmit.value.rootcauses5Why = rootcausesArray;
+      localSubmit.value.tambahAnalysisTerjadi = parseTambahAnalysis(newVal?.tambahAnalysisTerjadi || '[]');
+      localSubmit.value.tambahAnalisisLama = parseTambahAnalysis(newVal?.tambahAnalisisLama || '[]');
       localSubmit.value.stepRepair = stepRepairArray;
       localSubmit.value.stepRepairNew = stepRepairNewArray;
       console.log('Final localSubmit.stepRepairNew:', localSubmit.value.stepRepairNew)
-      localSubmit.value.fiveWhyLhApprove = newVal.fiveWhyLhApprove;
-      localSubmit.value.fiveWhyShApprove = newVal.fiveWhyShApprove;
-      localSubmit.value.fiveWhyLhFeedback = newVal.fiveWhyLhFeedback;
-      localSubmit.value.fiveWhyShFeedback = newVal.fiveWhyShFeedback;
-      localSubmit.value.cmLhApprove = newVal.cmLhApprove;
-      localSubmit.value.cmShApprove = newVal.cmShApprove;
-      localSubmit.value.cmTlApprove = newVal.cmTlApprove;
-      localSubmit.value.cmDhApprove = newVal.cmDhApprove;
-      localSubmit.value.cmLhFeedback = newVal.cmLhFeedback;
-      localSubmit.value.cmShFeedback = newVal.cmShFeedback;
-      localSubmit.value.cmTlFeedback = newVal.cmTlFeedback;
-      localSubmit.value.cmDhFeedback = newVal.cmDhFeedback;
+      localSubmit.value.fiveWhyTlApprove = newVal.fiveWhyTlApprove ?? 0;
+      localSubmit.value.fiveWhyLhApprove = newVal.fiveWhyLhApprove ?? 0;
+      localSubmit.value.fiveWhyShApprove = newVal.fiveWhyShApprove ?? 0;
+      localSubmit.value.fiveWhyLhFeedback = newVal.fiveWhyLhFeedback ?? '';
+      localSubmit.value.fiveWhyShFeedback = newVal.fiveWhyShFeedback ?? '';
+      localSubmit.value.cmLhApprove = newVal.cmLhApprove ?? 0;
+      localSubmit.value.cmShApprove = newVal.cmShApprove ?? 0;
+      localSubmit.value.cmTlApprove = newVal.cmTlApprove ?? 0;
+      localSubmit.value.cmDhApprove = newVal.cmDhApprove ?? 0;
+      localSubmit.value.cmLhFeedback = newVal.cmLhFeedback ?? '';
+      localSubmit.value.cmShFeedback = newVal.cmShFeedback ?? '';
+      localSubmit.value.cmTlFeedback = newVal.cmTlFeedback ?? '';
+      localSubmit.value.cmDhFeedback = newVal.cmDhFeedback ?? '';
 
       console.log(
         'Updated localSubmit:',
@@ -1954,6 +2136,9 @@ export default {
           ? JSON.parse(submitData.value.sparepartList)
           : []
     })
+
+
+
     const onMachineInput = () => {
       console.log('Machine input changed:', localSubmit.value.machineName)
     }
@@ -2046,6 +2231,8 @@ export default {
         localSubmit.value.yokotenList = mapPicToLabel(yokotenList.value)
         localSubmit.value.sparepartList = sparepartList.value
 
+
+
         // Prepare tambahAnalysis data - ensure we have valid arrays
         const tambahAnalysisTerjadiData = convertTreeNodeToBackend(localSubmit.value.tambahAnalysisTerjadi || [])
         const tambahAnalisisLamaData = convertTreeNodeToBackend(localSubmit.value.tambahAnalisisLama || [])
@@ -2101,6 +2288,19 @@ export default {
           cmKenapaLama: localSubmit.value.countermeasureKenapaLamaList ?? [],
           cmKenapaTerjadi: localSubmit.value.countermeasureKenapaTerjadiList ?? [],
           sparepartList: localSubmit.value.sparepartList ?? [],
+          fiveWhyTlApprove: localSubmit.value.fiveWhyTlApprove ?? 0,
+          fiveWhyLhApprove: localSubmit.value.fiveWhyLhApprove ?? 0,
+          fiveWhyShApprove: localSubmit.value.fiveWhyShApprove ?? 0,
+          cmTlApprove: localSubmit.value.cmTlApprove ?? 0,
+          cmLhApprove: localSubmit.value.cmLhApprove ?? 0,
+          cmShApprove: localSubmit.value.cmShApprove ?? 0,
+          cmDhApprove: localSubmit.value.cmDhApprove ?? 0,
+          fiveWhyLhFeedback: localSubmit.value.fiveWhyLhFeedback ?? '',
+          fiveWhyShFeedback: localSubmit.value.fiveWhyShFeedback ?? '',
+          cmLhFeedback: localSubmit.value.cmLhFeedback ?? '',
+          cmShFeedback: localSubmit.value.cmShFeedback ?? '',
+          cmTlFeedback: localSubmit.value.cmTlFeedback ?? '',
+          cmDhFeedback: localSubmit.value.cmDhFeedback ?? '',
         }
 
         console.log('Submit data formatted:', submitDataFormatted)
@@ -2239,17 +2439,17 @@ export default {
     // Remove the deep watch on localSubmit to prevent recursive updates
     // Instead, use specific watchers for individual properties
 
-    const countermeasureKenapaTerjadiList = ref([])
-    const showCountermeasureKenapaTerjadiForm = ref(false)
-    const countermeasureKenapaTerjadiForm = ref({
-      isAction: false,
-      cmDesc: '',
-      datePlan: '',
-      category: '',
-      pic: '',
-      result: '',
-      judg: 'belum',
-    })
+    watch(() => [localSubmit.value.tambahAnalysisTerjadi, localSubmit.value.tambahAnalisisLama], ([terjadi, lama]) => {
+      if (hasAnalysisContent(terjadi) && hasAnalysisContent(lama)) {
+        localSubmit.value.fiveWhyTlApprove = 1;
+      }
+    }, { deep: true });
+
+    watch(() => [countermeasureKenapaTerjadiList.value, countermeasureKenapaLamaList.value], ([terjadi, lama]) => {
+      if (hasCountermeasureContent(terjadi) && hasCountermeasureContent(lama)) {
+        localSubmit.value.cmTlApprove = 1;
+      }
+    }, { deep: true });
     const yokotenForm = ref({
       machine: '',
       pic: '',
@@ -2273,7 +2473,11 @@ export default {
     const editYokoten = (idx) => {
       const item = yokotenList.value[idx]
       if (item) {
-        yokotenForm.value = { ...item }
+        const picOption = picOptions.value.find(opt => opt.label === item.pic)
+        yokotenForm.value = {
+          ...item,
+          pic: picOption ? picOption.value : item.pic
+        }
         showYokotenForm.value = true
         yokotenForm.value._editIdx = idx
       }
@@ -2327,7 +2531,11 @@ export default {
     const editCountermeasureKenapaTerjadi = (idx) => {
       const item = countermeasureKenapaTerjadiList.value[idx]
       if (item) {
-        countermeasureKenapaTerjadiForm.value = { ...item }
+        const picOption = picOptions.value.find(opt => opt.label === item.pic)
+        countermeasureKenapaTerjadiForm.value = {
+          ...item,
+          pic: picOption ? picOption.value : item.pic
+        }
         showCountermeasureKenapaTerjadiForm.value = true
         countermeasureKenapaTerjadiForm.value._editIdx = idx
       }
@@ -2346,16 +2554,6 @@ export default {
       },
     )
 
-    const countermeasureKenapaLamaList = ref([])
-    const showCountermeasureKenapaLamaForm = ref(false)
-    const countermeasureKenapaLamaForm = ref({
-      isAction: false,
-      cmDesc: '',
-      datePlan: '',
-      category: '',
-      pic: '',
-      judge: 'belum',
-    })
     const submitCountermeasureKenapaLama = () => {
       if (typeof countermeasureKenapaLamaForm.value._editIdx === 'number') {
         countermeasureKenapaLamaList.value[
@@ -2435,7 +2633,11 @@ export default {
     const editCountermeasureKenapaLama = (idx) => {
       const item = countermeasureKenapaLamaList.value[idx]
       if (item) {
-        countermeasureKenapaLamaForm.value = { ...item }
+        const picOption = picOptions.value.find(opt => opt.label === item.pic)
+        countermeasureKenapaLamaForm.value = {
+          ...item,
+          pic: picOption ? picOption.value : item.pic
+        }
         showCountermeasureKenapaLamaForm.value = true
         countermeasureKenapaLamaForm.value._editIdx = idx
       }
@@ -2457,7 +2659,15 @@ export default {
     const picOptions = ref([])
     const sparepartOptions = ref([])
     const sparepartList = ref([])
+    const filteredMemberOption = ref([])
     const showSparepartForm = ref(false)
+    const currentUserRole = ref('')
+    const currentUserName = ref('')
+    const showCommentModal = ref(false)
+    const commentText = ref('')
+    const currentSection = ref('')
+    const currentFeedbackField = ref('')
+    const currentApproveField = ref('')
     const sparepartForm = ref({
       sparepart: null,
       price: '',
@@ -2507,21 +2717,90 @@ export default {
 
     onMounted(async () => {
       try {
+        // First, fetch current user data
+        console.log('Fetching current user data...')
+        const userRes = await api.get('/user/user')
+        console.log('Current user response:', userRes)
+        let currentUserNoreg = ''
+        if (userRes.status === 200 && userRes.data && userRes.data.user) {
+          currentUserNoreg = userRes.data.user.fnoreg || userRes.data.user.noreg || ''
+          currentUserRole.value = userRes.data.user.frole || ''
+          currentUserName.value = userRes.data.user.fname || userRes.data.user.name || ''
+          console.log('Current user noreg:', currentUserNoreg)
+          console.log('Current user role:', currentUserRole.value)
+          console.log('Current user name:', currentUserName.value)
+        } else {
+          console.warn('Failed to fetch current user data')
+        }
+
+        console.log('Loading PIC options...')
         const res = await api.get('/smartandon/member')
+        console.log('API response for members:', res)
         if (res.status === 200) {
           const data = res.data.data || res.data
           console.log('PIC options data:', data)
-          picOptions.value = Array.isArray(data)
-            ? data.map((m) => ({
+
+          // Filter members by current user's noreg
+          let filteredData = data
+          if (currentUserNoreg) {
+            filteredData = data.filter(member => member.fnoreg === currentUserNoreg)
+            console.log(`Filtered members by noreg ${currentUserNoreg}:`, filteredData.length, 'members found')
+          } else {
+            console.warn('No current user noreg available, showing all members')
+          }
+
+          // Set current user role from filtered member data
+          if (filteredData.length > 0) {
+            currentUserRole.value = filteredData[0].frole || ''
+            console.log('Current user role from member data:', currentUserRole.value)
+          } else {
+            console.warn('No member data found for current user')
+          }
+
+          // Print detailed member data from tb_mt_member
+          if (Array.isArray(filteredData)) {
+            console.log('Filtered member data:')
+            filteredData.forEach(member => {
+              console.log({
+                fid: member.fid,
+                fname: member.fname,
+                fnoreg: member.fnoreg,
+                farea: member.farea,
+                fline: member.fline,
+                fshift: member.fshift,
+                frole: member.frole,
+                fwa_no: member.fwa_no,
+                approval: member.approval,
+                fmt_id: member.fmt_id,
+                fimage: member.fimage,
+                line_nm: member.line_nm,
+              })
+            })
+          }
+
+          picOptions.value = Array.isArray(filteredData)
+            ? filteredData.map((m) => ({
               value: String(m.fid) || m.name,
               label: m.fname,
             }))
             : []
+          console.log('picOptions set to:', picOptions.value)
+
+          // Also set filteredMemberOption for operator selection to the same filtered data
+          filteredMemberOption.value = Array.isArray(filteredData)
+            ? filteredData.map((m) => ({
+              id: m.fid,
+              label: m.fname,
+            }))
+            : []
+          console.log('filteredMemberOption set to:', filteredMemberOption.value)
         } else {
           throw new Error(`Failed to load members, status: ${res.status}`)
         }
       } catch (e) {
+        console.error('Error loading PIC options:', e)
         picOptions.value = []
+        filteredMemberOption.value = []
       }
 
       // Load initial sparepart options
@@ -2617,61 +2896,161 @@ export default {
       sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '' }
     }
 
-    const statusClass = (status) => {
-      if (status === 1 || status === '1' || status === 'approved') return 'status-approved'
-      if (status === 0 || status === '0' || status === 'rejected') return 'status-rejected'
-      if (status === 'comment') return 'status-comment'
+    const statusClass = (localSubmit, field) => {
+      const status = localSubmit?.[field]
+      if (status == 2 || status === 'comment') return 'status-comment'
+      if (status == 1 || status === 'approved') return 'status-approved'
+      if (status == 0 || status === 'rejected') return 'status-rejected'
       if (status === 'delay') return 'status-delay'
       if (status === 'none' || status === null || status === undefined) return 'status-none'
       return 'status-pending'
     }
 
-    const onApprove = (section, role) => {
-      console.log('Approve', section, role)
-      // Add logic to handle approval based on section and role
+    const onApprove = (section) => {
+      console.log('Approve', section)
+      console.log('Current user role:', currentUserRole.value)
+
+      // Determine which field to update based on current user's role
+      // ADMIN role is treated the same as SH (Section Head)
+      const userRole = currentUserRole.value.toLowerCase()
+      const effectiveRole = userRole === 'admin' ? 'sh' : userRole
+
+    // Update approval status based on user's role
       if (section === '5why') {
-        if (role === 'tl') {
-          localSubmit.value.fiveWhyTlApprove = 'approved'
-        } else if (role === 'gl') {
-          localSubmit.value.fiveWhyLhApprove = 'approved'
-        } else if (role === 'sh') {
-          localSubmit.value.fiveWhyShApprove = 'approved'
+        if (effectiveRole === 'tl') {
+          localSubmit.value.fiveWhyTlApprove = 1
+        } else if (effectiveRole === 'gl' || effectiveRole === 'gh' || effectiveRole === 'lh') {
+          localSubmit.value.fiveWhyLhApprove = 1
+        } else if (effectiveRole === 'sh') {
+          localSubmit.value.fiveWhyShApprove = 1
         }
       } else if (section === 'counter') {
-        if (role === 'tl') {
-          localSubmit.value.cmTlApprove = 'approved'
-        } else if (role === 'gl') {
-          localSubmit.value.cmLhApprove = 'approved'
-        } else if (role === 'sh') {
-          localSubmit.value.cmShApprove = 'approved'
-        } else if (role === 'dph') {
-          localSubmit.value.cmDhApprove = 'approved'
+        if (effectiveRole === 'tl') {
+          localSubmit.value.cmTlApprove = 1
+        } else if (effectiveRole === 'gl' || effectiveRole === 'gh' || effectiveRole === 'lh') {
+          localSubmit.value.cmLhApprove = 1
+        } else if (effectiveRole === 'sh') {
+          localSubmit.value.cmShApprove = 1
+        } else if (effectiveRole === 'dph' || effectiveRole === 'dh') {
+          localSubmit.value.cmDhApprove = 1
+        }
+      } else if (section === 'dph') {
+        if (effectiveRole === 'dph' || effectiveRole === 'dh') {
+          localSubmit.value.cmDhApprove = 1
         }
       }
     }
-
-    const onComment = (section, role) => {
-      console.log('Comment', section, role)
-      // Add logic to handle comment based on section and role
+    
+    const getFeedbackAndApproveFields = (section, effectiveRole) => {
+      let feedbackField = ''
+      let approveField = ''
       if (section === '5why') {
-        if (role === 'tl') {
-          localSubmit.value.fiveWhyTlApprove = 'comment'
-        } else if (role === 'gl') {
-          localSubmit.value.fiveWhyLhApprove = 'comment'
-        } else if (role === 'sh') {
-          localSubmit.value.fiveWhyShApprove = 'comment'
+        if (effectiveRole === 'tl') {
+          feedbackField = 'fiveWhyTlFeedback'
+          approveField = 'fiveWhyTlApprove'
+        } else if (effectiveRole === 'gl') {
+          feedbackField = 'fiveWhyLhFeedback'
+          approveField = 'fiveWhyLhApprove'
+        } else if (effectiveRole === 'sh') {
+          feedbackField = 'fiveWhyShFeedback'
+          approveField = 'fiveWhyShApprove'
         }
       } else if (section === 'counter') {
-        if (role === 'tl') {
-          localSubmit.value.cmTlApprove = 'comment'
-        } else if (role === 'gl') {
-          localSubmit.value.cmLhApprove = 'comment'
-        } else if (role === 'sh') {
-          localSubmit.value.cmShApprove = 'comment'
-        } else if (role === 'dph') {
-          localSubmit.value.cmDhApprove = 'comment'
+        if (effectiveRole === 'tl') {
+          feedbackField = 'cmTlFeedback'
+          approveField = 'cmTlApprove'
+        } else if (effectiveRole === 'gl') {
+          feedbackField = 'cmLhFeedback'
+          approveField = 'cmLhApprove'
+        } else if (effectiveRole === 'sh') {
+          feedbackField = 'cmShFeedback'
+          approveField = 'cmShApprove'
+        } else if (effectiveRole === 'dph') {
+          feedbackField = 'cmDhFeedback'
+          approveField = 'cmDhApprove'
         }
+      } else if (section === 'dph') {
+        feedbackField = 'cmDhFeedback'
+        approveField = 'cmDhApprove'
       }
+      return { feedbackField, approveField }
+    }
+
+    const onComment = (section) => {
+      console.log('Comment clicked for section:', section)
+      console.log('Current user role:', currentUserRole.value)
+
+      // Check if only DPH role can comment on DPH section
+      if (section === 'dph' && currentUserRole.value.toLowerCase() !== 'dph') {
+        alert('Only DPH users can comment on this section.')
+        return
+      }
+
+      const userRole = currentUserRole.value.toLowerCase()
+      const effectiveRole = userRole === 'admin' ? 'sh' : userRole
+
+      let feedbackField = ''
+      let approveField = ''
+
+      if (section === '5why') {
+        if (effectiveRole === 'tl') {
+          feedbackField = 'fiveWhyTlFeedback'
+          approveField = 'fiveWhyTlApprove'
+        } else if (effectiveRole === 'gl') {
+          feedbackField = 'fiveWhyLhFeedback'
+          approveField = 'fiveWhyLhApprove'
+        } else if (effectiveRole === 'sh') {
+          feedbackField = 'fiveWhyShFeedback'
+          approveField = 'fiveWhyShApprove'
+        } else {
+          feedbackField = 'fiveWhyTlFeedback'
+          approveField = 'fiveWhyTlApprove'
+        }
+      } else if (section === 'counter') {
+        if (effectiveRole === 'tl') {
+          feedbackField = 'cmTlFeedback'
+          approveField = 'cmTlApprove'
+        } else if (effectiveRole === 'gl') {
+          feedbackField = 'cmLhFeedback'
+          approveField = 'cmLhApprove'
+        } else if (effectiveRole === 'sh') {
+          feedbackField = 'cmShFeedback'
+          approveField = 'cmShApprove'
+        } else if (effectiveRole === 'dph') {
+          feedbackField = 'cmDhFeedback'
+          approveField = 'cmDhApprove'
+        } else {
+          feedbackField = 'cmTlFeedback'
+          approveField = 'cmTlApprove'
+        }
+      } else if (section === 'dph') {
+        feedbackField = 'cmDhFeedback'
+        approveField = 'cmDhApprove'
+      }
+
+      if (feedbackField && approveField) {
+        currentSection.value = section
+        currentFeedbackField.value = feedbackField
+        currentApproveField.value = approveField
+        commentText.value = localSubmit.value[feedbackField] || ''
+        showCommentModal.value = true
+      } else {
+        console.error('No feedback field found for section')
+      }
+    }
+
+    const submitComment = () => {
+      if (currentFeedbackField.value && currentApproveField.value) {
+        localSubmit.value[currentFeedbackField.value] = commentText.value.trim()
+        localSubmit.value[currentApproveField.value] = 1
+      }
+      showCommentModal.value = false
+      commentText.value = ''
+    }
+
+    const cancelComment = () => {
+      showCommentModal.value = false
+      commentText.value = ''
     }
 
     const onStepRepairValidationChange = (validation) => {
@@ -2734,8 +3113,18 @@ export default {
       onApprove,
       onComment,
       onStepRepairValidationChange,
+      filteredMemberOption,
+      currentUserName,
+      showCommentModal,
+      commentText,
+      currentSection,
+      currentFeedbackField,
+      currentApproveField,
+      submitComment,
+      cancelComment,
     }
   },
+  
   computed: {
     displayImg_problem() {
       if (this.imagePreviews.whyImage) {
