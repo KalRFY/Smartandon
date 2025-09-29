@@ -85,9 +85,11 @@ const getProblemView = async (req, res, next) => {
     const { problem } = search;
     const { problemCategory } = search;
     const { limitView } = search;
+    const { groupBy } = search;
 
     console.log('Limit View:', limitView);
     console.log('Limit:', limit);
+    console.log('groupBy:', groupBy);
 
     let limitClause = `LIMIT ${limit} OFFSET ${offset}`;
     let groupClause = '';
@@ -96,7 +98,11 @@ const getProblemView = async (req, res, next) => {
       console.log('Iyaaaaa');
     }
     if (limitView == 'group') {
-      groupClause = 'GROUP BY DATE(fstart_time)';
+      if (groupBy == 'monthly') {
+        groupClause = 'GROUP BY CONCAT(YEAR(fstart_time), "-", LPAD(MONTH(fstart_time), 2, "0"))';
+      } else {
+        groupClause = 'GROUP BY DATE(fstart_time)';
+      }
       limitClause = '';
       console.log('Group Clause:', groupClause);
     }
@@ -237,12 +243,17 @@ const getProblemView = async (req, res, next) => {
         why22_img,
         oCategory,
         qCategory,
+        pmCategory,
         problemCategory,
         file_report
     `;
     let orderBy = 'ORDER BY fid ASC';
     if (limitView == 'group') {
-      selectFields = 'DATE(fstart_time) as date, COUNT(*) as count';
+      if (groupBy == 'monthly') {
+        selectFields = "CONCAT(YEAR(fstart_time), '-', LPAD(MONTH(fstart_time), 2, '0')) as date, COUNT(*) as count";
+      } else {
+        selectFields = 'DATE(fstart_time) as date, COUNT(*) as count';
+      }
       orderBy = 'ORDER BY date ASC';
     }
     const dataQuery = `
@@ -333,6 +344,7 @@ const getProblemById = async (req, res, next) => {
         why22_img,
         oCategory,
         qCategory,
+        pmCategory,
         problemCategory,
         file_report,
         fpermanet_cm as countermeasureKenapaTerjadi,
@@ -489,6 +501,7 @@ const updateProblem = async (req, res, next) => {
       lastReportFile,
       oCategory,
       qCategory,
+      pmCategory,
       fiveWhyTlApprove,
       fiveWhyLhApprove,
       fiveWhyShApprove,
@@ -558,6 +571,7 @@ const updateProblem = async (req, res, next) => {
       pilihQ6,
       oCategory,
       qCategory,
+      pmCategory,
       comments5Why,
       lastReportFile,
       fiveWhyTlApprove,
@@ -829,6 +843,9 @@ const updateProblem = async (req, res, next) => {
     }
     if (qCategory) {
       updateField += `, t1.qCategory = :qCategory`;
+    }
+    if (pmCategory) {
+      updateField += `, t1.pmCategory = :pmCategory`;
     }
     if (whyLamaImage) {
       updateField += `, t1.why2_img = :whyLamaImage`;
