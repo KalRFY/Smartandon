@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
 
+
 const getMember = async (req, res, next) => {
   try {
     const [members, metadata] = await sequelize.query(`

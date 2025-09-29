@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
 
+
 const getMachineStopInput = async (req, res, next) => {
   try {
     const [problemMachine, metadata] = await sequelize.query(`

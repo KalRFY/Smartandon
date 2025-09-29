@@ -1,5 +1,4 @@
 <template>
-  
   <CRow class="mb-3">
     <CCol lg="3" class="mb-3">
       <CCard style="width: 100%; height: 100%;">
@@ -32,7 +31,7 @@
 
     <CCol lg="9" style="height: 100%;">
       
-      <div class="dashboard-cards-container">
+      <div class="dashboard-cards-container" style="height: 100%;">
         <div
           v-for="(card, index) in dashboardCards"
           :key="index"
@@ -75,7 +74,7 @@
     Machine Stop Input
   </CButton>
 
-  <COffcanvas placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
+  <COffcanvas v-if="visibleEnd" placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
     <COffcanvasHeader>
       <COffcanvasTitle>Offcanvas</COffcanvasTitle>
       <CCloseButton class="text-reset" @click="() => { visibleEnd = false }" />
@@ -86,7 +85,7 @@
     </COffcanvasBody>
   </COffcanvas>
 
-  <CAccordion class="mb-3" active-item-key="1" style="width: 100%;">
+  <CAccordion class="mb-3" :active-item-key="problemActive.length > 0 ? 1 : undefined" style="width: 100%;">
     <CAccordionItem :item-key="1">
       <CAccordionHeader>
         <CRow>
@@ -100,47 +99,49 @@
       <CAccordionBody>
         <CRow>
           <CCol>
-            <CTable>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
-                    <!-- <CTableHeaderCell scope="col">Action</CTableHeaderCell> -->
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  <CTableRow v-if="loadingProblemActive">
-                    <CTableDataCell colspan="6" class="text-center">Loading...</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow v-else-if="problemActive.length === 0">
-                    <CTableDataCell colspan="6" class="text-center">No active problems</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow v-for="(problem, idx) in problemActive" :key="problem.fid">
-                    <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.fmc_name }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.fline }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.ferror_name }}</CTableDataCell>
-                    <CTableDataCell>
-                      <CButton :color="Number(problem.fdur) > 30 ? 'primary' : 'warning'">
-                        <label style="font-size: x-small; font-weight: bold; width: 100px; color: white;">{{ problem.fdur }} Minutes</label>
-                      </CButton>
-                    </CTableDataCell>
-                    <!-- <CTableDataCell>
-                      <CButton color="success" shape="rounded-pill" style="color: white; font-size: x-small; font-weight: bold; width: 100%; height: 100%;">Open Problem</CButton>
-                    </CTableDataCell> -->
-                  </CTableRow>
-                </CTableBody>
-              </CTable>
+          <div class="table-container" style="max-height: 465px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
+            <CTable class="table-sm table-hover mb-0">
+              <CTableHead class="sticky-top" style="background-color: white; border-bottom: 1px solid #dee2e6;">
+                <CTableRow>
+                  <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark">No</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold text-dark">Machine</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark">Line</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-4 fw-semibold text-dark">Problem</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold text-dark">Duration</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold text-dark">Action</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                <CTableRow v-if="loadingProblemActive">
+                  <CTableDataCell colspan="6" class="text-center py-4">Loading...</CTableDataCell>
+                </CTableRow>
+                <CTableRow v-else-if="problemActive.length === 0">
+                  <CTableDataCell colspan="6" class="text-center py-4 text-muted">No active problems</CTableDataCell>
+                </CTableRow>
+                <CTableRow v-for="(problem, idx) in problemActive" :key="problem.fid" class="align-middle">
+                  <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
+                  <CTableDataCell class="fw-medium text-dark">{{ problem.fmc_name }}</CTableDataCell>
+                  <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
+                  <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
+                  <CTableDataCell>
+                    <CBadge :color="Number(problem.fdur) > 30 ? 'danger' : 'warning'" class="w-100 text-center py-1" shape="rounded-pill">
+                      <small class="fw-bold">{{ problem.fdur }} min</small>
+                    </CBadge>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    <CButton color="primary" size="sm" class="rounded-pill shadow-sm w-100" @click="openEditModal(problem)">Edit</CButton>
+                  </CTableDataCell>
+                </CTableRow>
+              </CTableBody>
+            </CTable>
+          </div>
           </CCol>
         </CRow>
       </CAccordionBody>
     </CAccordionItem>
   </CAccordion>
 
-  <CRow>
+  <CRow v-if="(oee || []).length > 0">
     <CCol>
       <CCard class="mb-3">
         <CCardBody>
@@ -161,13 +162,13 @@
                         <CCol>
                           Target:
                           {{
-                            oeeTarget.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.ftarget
+                            (oeeTarget || []).find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
                           }}
                         </CCol>
                         <CCol>
                           Actual:
                           {{
-                            oeeActual.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.factual
+                            (oeeActual || []).find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
                           }}
                         </CCol>
                       </CRow>
@@ -192,7 +193,7 @@
   </CRow>
 
   <CRow class="mb-3">
-    <CCol lg="6" class="mb-3">
+    <CCol lg="12" class="mb-3">
       <CCard>
         <!-- <CCardHeader>Problem Frequency</CCardHeader> -->
         <CCardBody>
@@ -274,8 +275,10 @@
         </CCardBody>
       </CCard>
     </CCol>
-
-    <CCol lg="6" class="mb-3">
+  </CRow>
+  
+  <CRow>
+    <CCol lg="7" class="mb-3">
       <CCard>
         <!-- <CCardHeader>LTR</CCardHeader> -->
         <CCardBody>
@@ -357,10 +360,49 @@
         </CCardBody>
       </CCard>
     </CCol>
+    <CCol class="mb-3" lg="5">
+      <div class="table-container" style="max-height: 500px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
+        <CTable class="table-sm table-hover table-striped mb-0">
+          <CTableHead class="table-dark sticky-top">
+            <CTableRow>
+              <CTableHeaderCell scope="col" class="col-2 fw-semibold">Machine</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-1 fw-semibold">Line</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-5 fw-semibold">Problem</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-2 fw-semibold">Duration</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-2 fw-semibold">Action</CTableHeaderCell>
+            </CTableRow>
+          </CTableHead>
+          <CTableBody>
+            <CTableRow v-if="loadingFollowupLtr">
+              <CTableDataCell colspan="5" class="text-center py-4">Loading...</CTableDataCell>
+            </CTableRow>
+            <CTableRow v-else-if="followupLtrProblems.length === 0">
+              <CTableDataCell colspan="5" class="text-center py-4 text-muted">No LTR problems without reports</CTableDataCell>
+            </CTableRow>
+            <CTableRow v-for="(problem, idx) in followupLtrProblems" :key="problem.fid" class="align-middle">
+              <CTableDataCell class="fw-bold text-dark">{{ problem.fmc_name }}</CTableDataCell>
+              <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
+              <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
+              <CTableDataCell>
+                <CBadge color="danger" class="w-100 text-center py-1" shape="rounded-pill">
+                  <small class="fw-bold">{{ problem.fdur }} min</small>
+                </CBadge>
+              </CTableDataCell>
+              <CTableDataCell>
+                <CButton color="primary" size="sm" class="rounded-pill shadow-sm w-100" @click="openEditModal(problem)">Edit</CButton>
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        </CTable>
+      </div>
+    </CCol>
+  </CRow>
+
+  <CRow class="mb-3">
   </CRow>
 
   <div>
-    <CModal :visible="visibleLiveDemo" @close="
+  <CModal :visible="visibleLiveDemo" @close="
       () => {
         visibleLiveDemo = false;
         resetForm();
@@ -464,6 +506,17 @@
         <CButton color="primary" @click="saveSubmit">Submit</CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- Edit Problem Modal -->
+    <EditProblemModal
+      :visible="visibleEditModal"
+      :submitData="editSubmit"
+      :machineOptions="machineOptions"
+      :lineOptions="lineOptions"
+      :modalLoading="editModalLoading"
+      @close="visibleEditModal = false"
+      @submit="saveEditSubmit"
+    />
   </div>
 </template>
 
@@ -471,7 +524,6 @@
 import { ref } from 'vue'
 import moment from 'moment'
 import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordionItem, CTooltip } from '@coreui/vue';
-import axios from 'axios';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
@@ -496,6 +548,7 @@ import 'vue3-treeselect/dist/vue3-treeselect.css'
 import { CFormSelect } from '@coreui/vue'
 import { ModelSelect } from 'vue-search-select'
 import "vue-search-select/dist/VueSearchSelect.css"
+import EditProblemModal from './ProblemHistory/EditProblemModal.vue'
 const visibleStaticBackdropDemo = ref(false);
 const visibleEnd = ref(false)
 
@@ -558,10 +611,10 @@ export default {
           height: 350,
           type: 'line',
         },
-        colors: ['#FF0000'],
+        colors: ['#E67A0E'],
         plotOptions: {
           bar: {
-            borderRadius: 4,
+            borderRadius: 0,
           },
         },
         stroke: {
@@ -598,6 +651,7 @@ export default {
       lineOptions: [],
       machines: [],
       machineOptions: [],
+      memberOption: [],
       problemSelectOptions: [
         { value: '', label: 'Select a machine first' }
       ],
@@ -609,6 +663,10 @@ export default {
       oeeTarget: [],
       oeeActual: [],
       oeePlan: [],
+      oeeDataSmartandon: {
+        ftarget: 0,
+        factual: 0
+      },
       chartDataPerLine: [],
       chartDataTargetPerLine: [],
       chartDataActualPerLine: [],
@@ -617,7 +675,12 @@ export default {
       visibleEnd: false,
       problemActive: [],
       loadingProblemActive: false,
+      followupLtrProblems: [],
+      loadingFollowupLtr: false,
 
+      visibleEditModal: false,
+      editModalLoading: false,
+      editSubmit: {},
 
       visibleLiveDemo: false,
       loadingUser: false,
@@ -813,6 +876,7 @@ export default {
     ModelSelect,
     CTooltip,
     ApexCharts,
+    EditProblemModal,
   },
   setup() {
     const router = useRouter()
@@ -955,6 +1019,9 @@ export default {
       } finally {
         this.loadingProblemActive = false;
       }
+
+      // Call fetchFollowupLtrProblems
+      await this.fetchFollowupLtrProblems();
 
       // Call fetchChartData
       await this.fetchChartData();
@@ -1121,6 +1188,19 @@ export default {
         };
       } catch (error) {
         console.error('Failed to fetch or process OEE data:', error);
+      }
+
+      try {
+        const memberResponse = await api.get('/smartandon/member')
+        if (memberResponse.status !== 200) {
+          throw new Error('Failed to fetch members, status: ' + memberResponse.status)
+        }
+        this.memberOption = memberResponse.data.map((member) => ({
+          id: member.fid,
+          label: member.fname,
+        }))
+      } catch (error) {
+        console.error('Failed to fetch members:', error)
       }
     },
     async fetchChartData() {
@@ -1557,6 +1637,298 @@ export default {
       }
       return '';
     },
+
+    async fetchFollowupLtrProblems() {
+      this.loadingFollowupLtr = true;
+      try {
+        // Fetch LTR (problemCategory 3) and SLTR (problemCategory 4) separately using backend filter
+        const ltrParams = { limitView: 0, problemCategory: 3 };
+        const sltrParams = { limitView: 0, problemCategory: 4 };
+        console.log('[Dashboard Debug] Fetching LTR with params:', ltrParams);
+        const ltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(ltrParams) });
+        console.log('[Dashboard Debug] LTR response data length:', ltrResponse.data.data ? ltrResponse.data.data.length : 0);
+        
+        console.log('[Dashboard Debug] Fetching SLTR with params:', sltrParams);
+        const sltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(sltrParams) });
+        console.log('[Dashboard Debug] SLTR response data length:', sltrResponse.data.data ? sltrResponse.data.data.length : 0);
+        
+        const allLtrSltrProblems = [...(ltrResponse.data.data || []), ...(sltrResponse.data.data || [])];
+        console.log('[Dashboard Debug] Combined LTR/SLTR problems:', allLtrSltrProblems.length);
+        if (allLtrSltrProblems.length > 0) {
+          console.log('[Dashboard Debug] Sample LTR/SLTR problems:', allLtrSltrProblems.slice(0, 3));
+          console.log('[Dashboard Debug] Sample file_report values:', allLtrSltrProblems.slice(0, 5).map(p => ({ fid: p.fid, file_report: p.file_report, problemCategory: p.problemCategory })));
+        }
+        
+        // Filter for no file_report
+        const noReportProblems = allLtrSltrProblems.filter(problem => {
+          const hasNoReport = !problem.file_report || problem.file_report.trim() === '' || problem.file_report === null;
+          return hasNoReport;
+        });
+        console.log('[Dashboard Debug] LTR/SLTR problems with no report:', noReportProblems.length);
+        this.followupLtrProblems = noReportProblems;
+        console.log('Fetched LTR/SLTR problems without reports:', this.followupLtrProblems);
+      } catch (error) {
+        console.error('Failed to fetch LTR/SLTR problems:', error);
+        this.followupLtrProblems = [];
+      } finally {
+        this.loadingFollowupLtr = false;
+      }
+    },
+
+    // isLTRorSLTR removed as backend now filters by problemCategory
+
+
+
+    async openEditModal(problem) {
+      try {
+        this.editModalLoading = true
+        const response = await api.get(`/smartandon/problemId/${problem.fid}`)
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch problem, status: ' + response.status)
+        }
+        const problemData = response.data
+        console.log('Problem data:', problemData)
+        this.editSubmit = this.mapProblemDataToSubmit(problemData)
+        console.log('Edit submit data sent to EditProblemModal:', JSON.stringify(this.editSubmit, null, 2))
+
+        // Fetch tambahAnalysis if needed, but for simplicity, assume not needed for now
+        this.visibleEditModal = true
+      } catch (error) {
+        alert('Failed to load problem data: ' + error.message)
+        console.error(error)
+      } finally {
+        this.editModalLoading = false
+      }
+    },
+
+    mapProblemDataToSubmit(problemData) {
+      const formatDateToISO = (dateStr) => {
+        if (!dateStr) return ''
+        const date = new Date(dateStr)
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        const hours = String(date.getHours()).padStart(2, '0')
+        const minutes = String(date.getMinutes()).padStart(2, '0')
+        return `${year}-${month}-${day}T${hours}:${minutes}`
+      }
+
+      const terjadiRaw = problemData?.analysis?.TERJADI
+      const lamaRaw = problemData?.analysis?.LAMA
+
+      return {
+        machineName: problemData.fmc_name || '',
+        line: problemData.fline || '',
+        fidProblem: problemData.fid || '',
+        maker: problemData.fmaker || '',
+        operationNo: problemData.foperation_no || '',
+        problems: problemData.ferror_name || '',
+        uraianKejadian: problemData.descResult.general || '',
+        uploadImage: problemData.uraianResult.general || '',
+        ilustrasiStandart: problemData.descResult.standard || '',
+        standartImage: problemData.uraianResult.standard || '',
+        ilustrasiActual: problemData.descResult.actual || '',
+        actualImage: problemData.uraianResult.actual || '',
+        gapBetweenStandarAndActual: problemData.gapIlustrasi || '',
+        pilihFocusThemaMember: problemData.pilihFocusThemaMember || '',
+        pilihTaskforce: problemData.pilihTaskforce || '',
+        operator: problemData.foperator ? problemData.foperator.split(/,|&/) : [],
+        avCategory: problemData.fav_categoty || '',
+        shift: problemData.fshift || '',
+        startDate: formatDateToISO(problemData.fstart_time) || '',
+        finishDate: formatDateToISO(problemData.fend_time) || '',
+        durationMin: problemData.fdur || '',
+        problemCategory: problemData.problemCategory || '',
+        itemTemporaryAction: problemData.temporaryAction || '',
+        rootcauses5Why: problemData.freal_prob || '',
+        tambahAnalysisTerjadi: (() => {
+          if (Array.isArray(terjadiRaw)) return terjadiRaw
+          if (typeof terjadiRaw === 'string') {
+            try { const v = JSON.parse(terjadiRaw); return Array.isArray(v) ? v : [] } catch { return [] }
+          }
+          return []
+        })(),
+        tambahAnalisisLama: (() => {
+          if (Array.isArray(lamaRaw)) return lamaRaw
+          if (typeof lamaRaw === 'string') {
+            try { const v = JSON.parse(lamaRaw); return Array.isArray(v) ? v : [] } catch { return [] }
+          }
+          return []
+        })(),
+        whyImage: problemData.why1_img || '',
+        pilihO6: problemData.oCategory || '',
+        stepRepair: problemData.fstep_repair || '',
+        stepRepairNew: problemData.fstep_new || '',
+        partChange: problemData.fpart_change || '',
+        countermeasureKenapaTerjadi: problemData.fpermanet_cm || '',
+        yokoten: problemData.fyokoten || '',
+        rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
+        pilihQ6: problemData.qCategory || '',
+        whyLamaImage: problemData.why2_img || '',
+        countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
+        attachmentMeeting: problemData.attachmentMeeting || '',
+        comments5WhySH: problemData.comments5WhySH || '',
+        comments5WhyLH: problemData.comments5WhyLH || '',
+        commentsCountermeasure: problemData.commentsCountermeasure || '',
+        file_report: problemData.file_report || '',
+        uploadFile: problemData.uploadFile || '',
+        agreeTerms: false,
+        fiveWhyLhApprove: problemData.fiveWhyLhApprove || 0,
+        fiveWhyShApprove: problemData.fiveWhyShApprove || 0,
+        fiveWhyLhFeedback: problemData.fiveWhyLhFeedback,
+        fiveWhyShFeedback: problemData.fiveWhyShFeedback,
+        cmLhApprove: problemData.cmLhApprove || 0,
+        cmShApprove: problemData.cmShApprove || 0,
+        cmTlApprove: problemData.cmTlApprove || 0,
+        cmDhApprove: problemData.cmDhApprove || 0,
+        cmLhFeedback: problemData.cmLhFeedback,
+        cmShFeedback: problemData.cmShFeedback,
+        cmTlFeedback: problemData.cmTlFeedback,
+        cmDhFeedback: problemData.cmDhFeedback,
+      }
+    },
+
+    async saveEditSubmit(submitData) {
+      console.log('Saving edit submit data: ', submitData)
+      if (!submitData.machineName) {
+        alert('Please input machine name')
+        return
+      }
+      if (!submitData.line) {
+        alert('Please input line')
+        return
+      }
+      if (!submitData.problems) {
+        alert('Please input problems')
+        return
+      }
+      if (!submitData.agreeTerms) {
+        alert('You must agree to terms and conditions before submitting')
+        return
+      }
+
+      let machineId = submitData.machineName;
+      let lineId = submitData.line;
+
+      if (typeof machineId === 'string') {
+        const machineObj = this.machineOptions.find(m => m.label === machineId);
+        if (machineObj) machineId = machineObj.id;
+      }
+      if (typeof lineId === 'string') {
+        const lineObj = this.lineOptions.find(l => l.label === lineId);
+        if (lineObj) lineId = lineObj.id;
+      }
+
+      let operatorNames = Array.isArray(submitData.operator)
+        ? submitData.operator.map(op => {
+            if (typeof op === 'string') {
+              return op;
+            }
+            const memberObj = this.memberOption.find(m => m.id === op);
+            return memberObj ? memberObj.label : op;
+          })
+        : [];
+
+      try {
+        const payload = {
+          machineName: submitData.machineName,
+          lineName: submitData.line,
+          problemDescription: submitData.problems,
+          operator: operatorNames.join(','),
+          fid: submitData.fidProblem,
+          maker: submitData.maker,
+          operationNo: submitData.operationNo,
+          avCategory: submitData.avCategory,
+          shift: submitData.shift,
+          startDate: submitData.startDate,
+          finishDate: submitData.finishDate,
+          durationMin: submitData.durationMin,
+          problemCategory: submitData.problemCategory,
+          itemTemporaryAction: submitData.itemTemporaryAction,
+          rootcauses5Why: submitData.rootcauses5Why,
+          stepRepair: JSON.stringify(submitData.stepRepair),
+          stepRepairNew: JSON.stringify(submitData.stepRepairNew),
+          partChange: submitData.partChange,
+          countermeasureKenapaTerjadi: JSON.stringify(submitData.cmKenapaTerjadi),
+          countermeasureKenapaLama: JSON.stringify(submitData.cmKenapaLama),
+          yokoten: JSON.stringify(submitData.yokoten),
+          rootcause5WhyKenapaLama: submitData.rootcause5WhyKenapaLama,
+          tambahAnalisisLama: JSON.stringify(submitData.tambahAnalisisLama || []),
+          tambahAnalysisTerjadi: JSON.stringify(submitData.tambahAnalysisTerjadi || []),
+          whyImage: submitData.whyImage,
+          whyLamaImage: submitData.whyLamaImage,
+          comments5WhySH: submitData.comments5WhySH,
+          comments5WhyLH: submitData.comments5WhyLH,
+          commentsCountermeasure: submitData.commentsCountermeasure,
+          attachmentMeeting: submitData.attachmentMeeting,
+          file_report: submitData.file_report,
+          uploadFile: submitData.uploadFile,
+          actualImage: submitData.actualImage,
+          uploadImage: submitData.uploadImage,
+          ilustrasiActual: submitData.ilustrasiActual,
+          ilustrasiStandart: submitData.ilustrasiStandart,
+          standartImage: submitData.standartImage,
+          gapBetweenStandarAndActual: submitData.gapBetweenStandarAndActual,
+          uraianKejadian: submitData.uraianKejadian,
+          agreeTerms: submitData.agreeTerms,
+          oCategory: submitData.oCategory,
+          qCategory: submitData.qCategory,
+          fiveWhyTlApprove: submitData.fiveWhyTlApprove,
+          fiveWhyLhApprove: submitData.fiveWhyLhApprove,
+          fiveWhyShApprove: submitData.fiveWhyShApprove,
+          cmTlApprove: submitData.cmTlApprove,
+          cmLhApprove: submitData.cmLhApprove,
+          cmShApprove: submitData.cmShApprove,
+          cmDhApprove: submitData.cmDhApprove,
+          fiveWhyLhFeedback: submitData.fiveWhyLhFeedback,
+          fiveWhyShFeedback: submitData.fiveWhyShFeedback,
+          cmLhFeedback: submitData.cmLhFeedback,
+          cmShFeedback: submitData.cmShFeedback,
+          cmTlFeedback: submitData.cmTlFeedback,
+          cmDhFeedback: submitData.cmDhFeedback,
+        }
+        const formData = new FormData()
+        Object.keys(payload).forEach((key) => {
+          const value = payload[key]
+          const isFileField = [
+            'actualImage',
+            'uploadImage',
+            'whyLamaImage',
+            'whyImage',
+            'attachmentMeeting',
+            'standartImage',
+          ].includes(key)
+
+          if (isFileField && value instanceof File) {
+            formData.append(key, value)
+          } else if (isFileField && typeof value === 'string' && value) {
+            formData.append(key, value)
+          } else if (isFileField && !value) {
+          } else {
+            formData.append(key, value ?? '')
+          }
+        })
+
+        const response = await api.put('/smartandon/update', null, formData)
+        console.log('Update response:', response)
+        if (response.status === 200) {
+          alert('Problem updated successfully')
+          this.visibleEditModal = false
+          this.editSubmit = {}
+          // Refresh the followup data
+          this.fetchFollowupLtrProblems()
+        } else {
+          throw new Error('Failed to update problem, status: ' + response.status)
+        }
+      } catch (error) {
+        console.error(error)
+        alert('Error updating problem: ' + error.message)
+      }
+    },
+
+    openLtrReport(problemId) {
+      this.$router.push(`/app/ProblemHistory?fid=${problemId}`);
+    },
   },
 }
 </script>
@@ -1614,7 +1986,7 @@ p {
 
 .dashboard-card-wrapper {
   flex: 0 0 auto;
-  width: calc((100% - 40px) / 5); /* 5 cards visible with some margin */
+  width: calc((100% - 40px) / 5); /* 5 cards visible with margins */
   margin-right: 10px;
 }
 
@@ -1630,6 +2002,57 @@ p {
 .line-warning {
   background-color: white!important;
   border: 4px solid orange !important;
+}
+
+/* Mobile responsive layout for dashboard cards */
+@media (max-width: 768px) {
+  .dashboard-cards-container {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 80vh; /* Adjust as needed */
+  }
+
+  .dashboard-card-wrapper {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .dashboard-card {
+    min-height: 150px; /* Ensure minimum height for better touch targets */
+  }
+
+  .icon-container {
+    width: 80px;
+    height: 80px;
+    padding: 20px;
+  }
+
+  .dashboard-card h4 {
+    font-size: 1.1rem;
+  }
+
+  .dashboard-card CButton {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-card {
+    min-height: 120px;
+  }
+
+  .icon-container {
+    width: 60px;
+    height: 60px;
+    padding: 15px;
+  }
+
+  .dashboard-card h4 {
+    font-size: 1rem;
+  }
 }
 
 </style>
