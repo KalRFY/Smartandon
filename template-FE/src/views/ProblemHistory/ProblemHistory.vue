@@ -143,6 +143,7 @@ export default {
       problemToDelete: null,
       submit: this.getInitialSubmitData(),
       qCategoryName: '',
+      pmCategoryName: '',
       filteredTambahAnalisis: [],
       filteredTambahAnalisisLama: [],
       terjadiAnalysis: [],
@@ -223,6 +224,33 @@ export default {
         {
           id: 6,
           label: "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)",
+        },
+      ],
+
+      pm6Options: [
+        {
+          id: 1,
+          label: 'PM1: No Have / Unclear Item',
+        },
+        {
+          id: 2,
+          label: 'PM2: Un-clear Method',
+        },
+        {
+          id: 3,
+          label: 'PM3: Confine / Invinsible Area',
+        },
+        {
+          id: 4,
+          label: 'PM4: Out of Period Check',
+        },
+        {
+          id: 5,
+          label: 'PM5: No Have Time',
+        },
+        {
+          id: 6,
+          label: 'PM6: Lack of Skill',
         },
       ],
     }
@@ -577,7 +605,7 @@ export default {
         this.submit.tambahAnalisisLama = lamaAnalysis
 
         const o6Option = this.o6Options.find(
-          (opt) => opt.id === this.submit.pilihO6,
+          (opt) => opt.id === this.submit.oCategory,
         )
         this.oCategoryName = o6Option ? o6Option.label : ''
 
@@ -597,6 +625,11 @@ export default {
           (opt) => opt.id === this.submit.qCategory,
         )
         this.qCategoryName = q6Option ? q6Option.label : ''
+
+        const pm6Option = this.pm6Options.find(
+          (opt) => opt.id === this.submit.pmCategory,
+        )
+        this.pmCategoryName = pm6Option ? pm6Option.label : ''
 
         this.visibleLiveDemo = true
       } catch (error) {
@@ -678,6 +711,7 @@ export default {
         yokoten: problemData.fyokoten || '',
         rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
         pilihQ6: problemData.qCategory || '',
+        pilihPM6: problemData.pmCategory || '',
         whyLamaImage: problemData.why2_img || '',
         countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
         attachmentMeeting: problemData.attachmentMeeting || '',
@@ -797,6 +831,7 @@ export default {
           agreeTerms: submitData.agreeTerms,
           oCategory: submitData.oCategory,
           qCategory: submitData.qCategory,
+          pmCategory: submitData.pmCategory,
           fiveWhyTlApprove: submitData.fiveWhyTlApprove,
           fiveWhyLhApprove: submitData.fiveWhyLhApprove,
           fiveWhyShApprove: submitData.fiveWhyShApprove,

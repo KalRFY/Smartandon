@@ -1,4 +1,5 @@
 <template>
+  
   <CModal
     :visible="visible"
     @close="$emit('close')"
@@ -618,86 +619,139 @@
         <CCol>
           <CCard>
             <CCardBody>
-              <CRow>
+              <CRow md="12" class="mb-3">
                 <CCol>
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">O6 Category:</label>
-                  <CFormSelect
-                    aria-describedby="O6 Category"
-                    feedbackInvalid="Please select the O6 Category."
-                    id="o6CategorySelect"
-                    required
-                    v-model="localSubmit.oCategory"
-                  >
-                    <option :value="localSubmit.oCategory" selected>
-                      {{ oCategoryName }}
-                    </option>
-                    <option disabled value="">Choose problem 06 Category...</option>
-                    <option :value="1">
-                      O1: Design & Installation (Design / Installation Not Good
-                      (Refers to Function Check / Eng. Memo))
-                    </option>
-                    <option :value="2">
-                      O2: Henkaten Issue (No Enough Trial, No Confirm (others team))
-                    </option>
-                    <option :value="3">
-                      O3: PM Issue (No Have/Unclear, Unclear Methode,
-                      Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)
-                    </option>
-                    <option :value="4">
-                      O4: Symptom (No Have Symptom, Have Symptom but Unfollow
-                      Activity)
-                    </option>
-                    <option :value="5">
-                      O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible
-                      Area, Unpredictable (water leak / crush))
-                    </option>
-                    <option :value="6">
-                      O6: Lifetime Issue (Out of Standard Running, Over Capacity)
-                    </option>
-                  </CFormSelect>
+                  <CCard>
+                    <CCardBody>
+                      <CRow>
+                        <CCol>
+                          <label style="font-size: medium; font-weight: bold;" class="form-label">O6 Category:</label>
+                          <CFormSelect
+                            aria-describedby="O6 Category"
+                            feedbackInvalid="Please select the O6 Category."
+                            id="o6CategorySelect"
+                            required
+                            v-model="localSubmit.oCategory"
+                          >
+                            <option :value="localSubmit.oCategory" selected>
+                              {{ oCategoryName }}
+                            </option>
+                            <option disabled value="">Choose problem 06 Category...</option>
+                            <option :value="1">
+                              O1: Design & Installation (Design / Installation Not Good
+                              (Refers to Function Check / Eng. Memo))
+                            </option>
+                            <option :value="2">
+                              O2: Henkaten Issue (No Enough Trial, No Confirm (others team))
+                            </option>
+                            <option :value="3">
+                              O3: PM Issue (No Have/Unclear, Unclear Methode,
+                              Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)
+                            </option>
+                            <option :value="4">
+                              O4: Symptom (No Have Symptom, Have Symptom but Unfollow
+                              Activity)
+                            </option>
+                            <option :value="5">
+                              O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible
+                              Area, Unpredictable (water leak / crush))
+                            </option>
+                            <option :value="6">
+                              O6: Lifetime Issue (Out of Standard Running, Over Capacity)
+                            </option>
+                          </CFormSelect>
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
                 </CCol>
               </CRow>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <CRow md="12" class="mb-3">
-        <CCol>
-          <CCard>
-            <CCardBody>
-              <CRow>
+              <CRow md="12" class="mb-3">
                 <CCol>
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Q6 Category:</label>
-                  <CFormSelect
-                    aria-describedby="Q6 Category"
-                    feedbackInvalid="Please select the Q6 Category."
-                    id="q6CategorySelect"
-                    required
-                    v-model="localSubmit.qCategory"
-                  >
-                    <option :value="localSubmit.qCategory" selected>
-                      {{ qCategoryName }}
-                    </option>
-                    <option disabled value="">Choose problem Q6 Category...</option>
-                    <option :value="1">
-                      Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))
-                    </option>
-                    <option :value="2">
-                      Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)
-                    </option>
-                    <option :value="3">
-                      Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)
-                    </option>
-                    <option :value="4">
-                      Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
-                    </option>
-                    <option :value="5">
-                      Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))
-                    </option>
-                    <option :value="6">
-                      Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
-                    </option>
-                  </CFormSelect>
+                  <CCard>
+                    <CCardBody>
+                      <CRow>
+                        <CCol>
+                          <label style="font-size: medium; font-weight: bold;" class="form-label">Q6 Category:</label>
+                          <CFormSelect
+                            aria-describedby="Q6 Category"
+                            feedbackInvalid="Please select the Q6 Category."
+                            id="q6CategorySelect"
+                            required
+                            v-model="localSubmit.qCategory"
+                          >
+                            <option :value="localSubmit.qCategory" selected>
+                              {{ qCategoryName }}
+                            </option>
+                            <option disabled value="">Choose problem Q6 Category...</option>
+                            <option :value="1">
+                              Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))
+                            </option>
+                            <option :value="2">
+                              Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)
+                            </option>
+                            <option :value="3">
+                              Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)
+                            </option>
+                            <option :value="4">
+                              Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
+                            </option>
+                            <option :value="5">
+                              Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))
+                            </option>
+                            <option :value="6">
+                              Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
+                            </option>
+                          </CFormSelect>
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
+                </CCol>
+              </CRow>
+              <CRow md="12">
+                <CCol>
+                  <CCard>
+                    <CCardBody>
+                      <CRow>
+                        <CCol>
+                          <label style="font-size: medium; font-weight: bold;" class="form-label">PM6 Category:<span v-if="localSubmit.oCategory === '3'" style="color: red;">*</span></label>
+                          <CFormSelect
+                            aria-describedby="PM Category"
+                            feedbackInvalid="Please select the PM Category."
+                            id="pmCategorySelect"
+                            :required="localSubmit.oCategory === '3'"
+                            :disabled="pmCategoryDisabled"
+                            :class="{ 'is-invalid': pmCategoryInvalid }"
+                            v-model="localSubmit.pmCategory"
+                          >
+                            <option :value="localSubmit.pmCategory" selected>
+                              {{ pmCategoryName }}
+                            </option>
+                            <option disabled value="">Choose problem PM Category...</option>
+                            <option :value="1">
+                              PM1: No Have / Unclear Item
+                            </option>
+                            <option :value="2">
+                              PM2: Un-clear Method
+                            </option>
+                            <option :value="3">
+                              PM3: Confine / Invinsible Area
+                            </option>
+                            <option :value="4">
+                              PM4: Out of Period Check
+                            </option>
+                            <option :value="5">
+                              PM5: No Have Time
+                            </option>
+                            <option :value="6">
+                              PM6: Lack of Skill
+                            </option>
+                          </CFormSelect>
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
                 </CCol>
               </CRow>
             </CCardBody>
@@ -838,41 +892,50 @@
               <CRow>
                 <CCol>
                   <label style="font-size: medium; font-weight: bold;" class="form-label">Yokoten</label>
-                  <div v-if="yokotenList.length === 0">
-                    <CButton color="primary" @click="showYokotenForm = true"
+                  <div style="height: 100;" v-if="yokotenList.length === 0">
+                    <CButton color="primary" @click="showYokotenForm = true" class="mb-3"
                       >Tambah Yokoten</CButton
                     >
                   </div>
-                  <div v-if="showYokotenForm" class="d-flex flex-wrap align-items-center mb-2 gap-2">
-                    <CFormInput
-                      v-model="yokotenForm.machine"
-                      placeholder="Yokoten Item"
-                      class="me-2 flex-grow-1 min-w-200"
-                    />
-                    <CFormSelect v-model="yokotenForm.pic" class="me-2 flex-shrink-0" style="min-width: 140px;">
-                      <option value="">PIC</option>
-                      <option
-                        v-for="pic in picOptions"
-                        :key="pic.value"
-                        :value="pic.value"
-                      >
-                        {{ pic.label }}
-                      </option>
-                    </CFormSelect>
-                    <CFormInput
-                      type="date"
-                      v-model="yokotenForm.datePlan"
-                      class="me-2 flex-shrink-0"
-                      style="min-width: 140px;"
-                    />
-                    <CFormSelect v-model="yokotenForm.judg" class="me-2 flex-shrink-0" style="min-width: 140px;">
-                      <option :value="false">Belum</option>
-                      <option :value="true">Sudah</option>
-                    </CFormSelect>
-                    <CButton color="success" class="me-2 flex-shrink-0" @click="submitYokoten"
-                      >Submit</CButton
-                    >
-                    <CButton color="secondary" class="flex-shrink-0" @click="cancelYokoten">Cancel</CButton>
+                  <div v-if="showYokotenForm">
+                    <CRow class="mb-2 g-2">
+                      <CCol xs="12" md="4">
+                        <CFormInput
+                          v-model="yokotenForm.machine"
+                          placeholder="Yokoten Item"
+                        />
+                      </CCol>
+                      <CCol xs="6" md="2">
+                        <CFormSelect v-model="yokotenForm.pic">
+                          <option value="">PIC</option>
+                          <option
+                            v-for="pic in picOptions"
+                            :key="pic.value"
+                            :value="pic.value"
+                          >
+                            {{ pic.label }}
+                          </option>
+                        </CFormSelect>
+                      </CCol>
+                      <CCol xs="6" md="2">
+                        <CFormInput
+                          type="date"
+                          v-model="yokotenForm.datePlan"
+                        />
+                      </CCol>
+                      <CCol xs="6" md="2">
+                        <CFormSelect v-model="yokotenForm.judg">
+                          <option :value="false">Belum</option>
+                          <option :value="true">Sudah</option>
+                        </CFormSelect>
+                      </CCol>
+                      <CCol xs="auto">
+                        <CButton color="success" @click="submitYokoten">Submit</CButton>
+                      </CCol>
+                      <CCol xs="auto">
+                        <CButton color="secondary" @click="cancelYokoten">Cancel</CButton>
+                      </CCol>
+                    </CRow>
                   </div>
                   <div v-if="yokotenList.length > 0" class="table-responsive">
                     <CTable bordered hover responsive>
@@ -937,90 +1000,81 @@
                   <label style="font-size: medium; font-weight: bold;" class="form-label">Countermeasure (kenapa terjadi)</label>
                   <div v-if="countermeasureKenapaTerjadiList.length === 0">
                     <CButton
+                      class="mb-3"
                       color="primary"
                       @click="showCountermeasureKenapaTerjadiForm = true"
                       >Tambah Countermeasure</CButton
                     >
                   </div>
-                    <div
-                      v-if="showCountermeasureKenapaTerjadiForm"
-                      class="d-flex flex-wrap align-items-center mb-2 gap-2"
-                    >
-                      <CFormCheck
-                        v-model="countermeasureKenapaTerjadiForm.isAction"
-                        label="Ini Action?"
-                        class="me-2 flex-shrink-0"
-                      />
-                      <CFormInput
-                        v-model="countermeasureKenapaTerjadiForm.cmDesc"
-                        placeholder="Countermeasure/Action"
-                        class="me-2 flex-grow-1 min-w-200"
-                      />
-                      <CFormInput
-                        type="date"
-                        v-model="countermeasureKenapaTerjadiForm.datePlan"
-                        class="me-2 flex-shrink-0"
-                        style="min-width: 140px;"
-                      />
-                      <CFormSelect
-                        v-model="countermeasureKenapaTerjadiForm.category"
-                        class="me-2 flex-shrink-0"
-                        style="min-width: 140px;"
-                      >
-                        <option value="">C/M Category</option>
-                        <option value="Improvement">Improvement</option>
-                        <option value="Training">Training</option>
-                        <option value="Revisi TPM">Revisi TPM</option>
-                        <option value="Sparepart">Sparepart</option>
-                      </CFormSelect>
-                      <CFormSelect
-                        v-model="countermeasureKenapaTerjadiForm.pic"
-                        class="me-2 flex-shrink-0"
-                        style="min-width: 140px;"
-                      >
-                        <option value="">PIC</option>
-                        <option
-                          v-for="pic in picOptions"
-                          :key="pic.value"
-                          :value="pic.value"
-                        >
-                          {{ pic.label }}
-                        </option>
-                      </CFormSelect>
-                      <CFormSelect
-                        v-if="
-                          typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
-                        "
-                        v-model="countermeasureKenapaTerjadiForm.judg"
-                        class="me-2 flex-shrink-0"
-                        style="min-width: 140px;"
-                      >
-                        <option value="belum">Belum</option>
-                        <option value="sudah">Sudah</option>
-                      </CFormSelect>
-                      <CFormTextarea
-                        v-if="
-                          typeof countermeasureKenapaTerjadiForm._editIdx === 'number'
-                        "
-                        v-model="countermeasureKenapaTerjadiForm.result"
-                        placeholder="Result Notes"
-                        class="me-2 flex-grow-1 min-w-200"
-                        rows="2"
-                      />
-                      <CButton
-                        color="success"
-                        class="me-2 flex-shrink-0"
-                        @click="submitCountermeasureKenapaTerjadi"
-                      >
-                        Submit
-                      </CButton>
-                      <CButton
-                        color="secondary"
-                        class="flex-shrink-0"
-                        @click="cancelCountermeasureKenapaTerjadi"
-                      >
-                        Cancel
-                      </CButton>
+                    <div v-if="showCountermeasureKenapaTerjadiForm">
+                      <CRow class="mb-2 g-2">
+                        <CCol xs="12" md="auto">
+                          <CFormCheck
+                            v-model="countermeasureKenapaTerjadiForm.isAction"
+                            label="Ini Action?"
+                          />
+                        </CCol>
+                        <CCol xs="12" md="4">
+                          <CFormInput
+                            v-model="countermeasureKenapaTerjadiForm.cmDesc"
+                            placeholder="Countermeasure/Action"
+                          />
+                        </CCol>
+                        <CCol xs="6" md="2">
+                          <CFormInput
+                            type="date"
+                            v-model="countermeasureKenapaTerjadiForm.datePlan"
+                          />
+                        </CCol>
+                        <CCol xs="6" md="2">
+                          <CFormSelect
+                            v-model="countermeasureKenapaTerjadiForm.category"
+                          >
+                            <option value="">C/M Category</option>
+                            <option value="Improvement">Improvement</option>
+                            <option value="Training">Training</option>
+                            <option value="Revisi TPM">Revisi TPM</option>
+                            <option value="Sparepart">Sparepart</option>
+                          </CFormSelect>
+                        </CCol>
+                        <CCol xs="12" md="2">
+                          <CFormSelect
+                            v-model="countermeasureKenapaTerjadiForm.pic"
+                          >
+                            <option value="">PIC</option>
+                            <option
+                              v-for="pic in picOptions"
+                              :key="pic.value"
+                              :value="pic.value"
+                            >
+                              {{ pic.label }}
+                            </option>
+                          </CFormSelect>
+                        </CCol>
+                        <CCol xs="auto">
+                          <CButton color="success" @click="submitCountermeasureKenapaTerjadi">Submit</CButton>
+                        </CCol>
+                        <CCol xs="auto">
+                          <CButton color="secondary" @click="cancelCountermeasureKenapaTerjadi">Cancel</CButton>
+                        </CCol>
+                      </CRow>
+                      <CRow v-if="typeof countermeasureKenapaTerjadiForm._editIdx === 'number'" class="mb-2 g-2">
+                        <CCol xs="6" md="2">
+                          <CFormSelect
+                            v-model="countermeasureKenapaTerjadiForm.judg"
+                          >
+                            <option value="belum">Belum</option>
+                            <option value="sudah">Sudah</option>
+                          </CFormSelect>
+                        </CCol>
+                        <CCol xs="12" md="10">
+                          <CFormTextarea
+                            v-model="countermeasureKenapaTerjadiForm.result"
+                            placeholder="Result Notes"
+                            rows="2"
+                          />
+                        </CCol>
+                      </CRow>
                     </div>
                   <div v-if="countermeasureKenapaTerjadiList.length > 0">
                     <div class="table-responsive">
@@ -1083,7 +1137,7 @@
                     </div>
                     <CButton
                       color="primary"
-                      class="mt-2"
+                      class="mb-3"
                       @click="showCountermeasureKenapaTerjadiForm = true"
                       >Tambah Countermeasure</CButton
                     >
@@ -1103,81 +1157,81 @@
                   <label style="font-size: medium; font-weight: bold;" class="form-label">Countermeasure (kenapa Lama)</label>
                   <div v-if="countermeasureKenapaLamaList.length === 0">
                     <CButton
+                      class="mb-3"
                       color="primary"
                       @click="showCountermeasureKenapaLamaForm = true"
                       >Tambah Countermeasure</CButton
                     >
                   </div>
-                  <div
-                    v-if="showCountermeasureKenapaLamaForm"
-                    class="d-flex flex-wrap align-items-center mb-2 gap-2"
-                  >
-                    <CFormCheck
-                      v-model="countermeasureKenapaLamaForm.isAction"
-                      label="Ini Action?"
-                      class="me-2 flex-shrink-0"
-                    />
-                    <CFormInput
-                      v-model="countermeasureKenapaLamaForm.cmDesc"
-                      placeholder="Countermeasure/Action"
-                      class="me-2 flex-grow-1 min-w-200"
-                    />
-                    <CFormInput
-                      type="date"
-                      v-model="countermeasureKenapaLamaForm.datePlan"
-                      class="me-2 flex-shrink-0"
-                      style="min-width: 140px;"
-                    />
-                    <CFormSelect
-                      v-model="countermeasureKenapaLamaForm.category"
-                      class="me-2 flex-shrink-0"
-                      style="min-width: 140px;"
-                    >
-                      <option value="">C/M Category</option>
-                      <option value="Improvement">Improvement</option>
-                      <option value="Training">Training</option>
-                      <option value="Revisi TPM">Revisi TPM</option>
-                      <option value="Sparepart">Sparepart</option>
-                    </CFormSelect>
-                    <CFormSelect
-                      v-model="countermeasureKenapaLamaForm.pic"
-                      class="me-2 flex-shrink-0"
-                      style="min-width: 140px;"
-                    >
-                      <option value="">PIC</option>
-                      <option
-                        v-for="pic in picOptions"
-                        :key="pic.value"
-                        :value="pic.value"
-                      >
-                        {{ pic.label }}
-                      </option>
-                    </CFormSelect>
-                    <CFormSelect
-                      v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
-                      v-model="countermeasureKenapaLamaForm.judg"
-                      class="me-2 flex-shrink-0"
-                      style="min-width: 140px;"
-                    >
-                      <option value="belum">Belum</option>
-                      <option value="sudah">Sudah</option>
-                    </CFormSelect>
-                    <CFormTextarea
-                      v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'"
-                      v-model="countermeasureKenapaLamaForm.result"
-                      placeholder="Result Notes"
-                      class="me-2 flex-grow-1 min-w-200"
-                      rows="2"
-                    />
-                    <CButton
-                      color="success"
-                      class="me-2 flex-shrink-0"
-                      @click="submitCountermeasureKenapaLama"
-                      >Submit</CButton
-                    >
-                    <CButton color="secondary" class="flex-shrink-0" @click="cancelCountermeasureKenapaLama"
-                      >Cancel</CButton
-                    >
+                  <div v-if="showCountermeasureKenapaLamaForm">
+                    <CRow class="mb-2 g-2">
+                      <CCol xs="12" md="auto">
+                        <CFormCheck
+                          v-model="countermeasureKenapaLamaForm.isAction"
+                          label="Ini Action?"
+                        />
+                      </CCol>
+                      <CCol xs="12" md="4">
+                        <CFormInput
+                          v-model="countermeasureKenapaLamaForm.cmDesc"
+                          placeholder="Countermeasure/Action"
+                        />
+                      </CCol>
+                      <CCol xs="6" md="2">
+                        <CFormInput
+                          type="date"
+                          v-model="countermeasureKenapaLamaForm.datePlan"
+                        />
+                      </CCol>
+                      <CCol xs="6" md="2">
+                        <CFormSelect
+                          v-model="countermeasureKenapaLamaForm.category"
+                        >
+                          <option value="">C/M Category</option>
+                          <option value="Improvement">Improvement</option>
+                          <option value="Training">Training</option>
+                          <option value="Revisi TPM">Revisi TPM</option>
+                          <option value="Sparepart">Sparepart</option>
+                        </CFormSelect>
+                      </CCol>
+                      <CCol xs="12" md="2">
+                        <CFormSelect
+                          v-model="countermeasureKenapaLamaForm.pic"
+                        >
+                          <option value="">PIC</option>
+                          <option
+                            v-for="pic in picOptions"
+                            :key="pic.value"
+                            :value="pic.value"
+                          >
+                            {{ pic.label }}
+                          </option>
+                        </CFormSelect>
+                      </CCol>
+                      <CCol xs="auto">
+                        <CButton color="success" @click="submitCountermeasureKenapaLama">Submit</CButton>
+                      </CCol>
+                      <CCol xs="auto">
+                        <CButton color="secondary" @click="cancelCountermeasureKenapaLama">Cancel</CButton>
+                      </CCol>
+                    </CRow>
+                    <CRow v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'" class="mb-2 g-2">
+                      <CCol xs="6" md="2">
+                        <CFormSelect
+                          v-model="countermeasureKenapaLamaForm.judg"
+                        >
+                          <option value="belum">Belum</option>
+                          <option value="sudah">Sudah</option>
+                        </CFormSelect>
+                      </CCol>
+                      <CCol xs="12" md="10">
+                        <CFormTextarea
+                          v-model="countermeasureKenapaLamaForm.result"
+                          placeholder="Result Notes"
+                          rows="2"
+                        />
+                      </CCol>
+                    </CRow>
                   </div>
                   <div v-if="countermeasureKenapaLamaList.length > 0" class="table-responsive">
                     <CTable bordered hover responsive>
@@ -1627,6 +1681,7 @@ import api from '@/apis/CommonAPI'
 
 export default {
   name: 'EditProblemModal',
+  emits: ['close', 'submit'],
   components: {
     CModal,
     CModalHeader,
@@ -2072,7 +2127,30 @@ export default {
       console.log('stepRepairNewArray result:', stepRepairNewArray)
       localSubmit.value.stepRepairNew = stepRepairNewArray
 
+      console.log('submitData newVal before assign:', newVal);
+      console.log('newVal keys before assign:', Object.keys(newVal || {}));
+      console.log('newVal oCategory:', newVal?.oCategory, 'type:', typeof newVal?.oCategory);
+      console.log('newVal qCategory:', newVal?.qCategory, 'type:', typeof newVal?.qCategory);
+      console.log('newVal pmCategory:', newVal?.pmCategory, 'type:', typeof newVal?.pmCategory);
+
       Object.assign(localSubmit.value, newVal || {});
+      console.log('localSubmit after assign - oCategory:', localSubmit.value.oCategory, 'type:', typeof localSubmit.value.oCategory);
+      console.log('localSubmit after assign - qCategory:', localSubmit.value.qCategory, 'type:', typeof localSubmit.value.qCategory);
+      console.log('localSubmit after assign - pmCategory:', localSubmit.value.pmCategory, 'type:', typeof localSubmit.value.pmCategory);
+
+      // Map pilih* fields to *Category as numbers for select matching
+      localSubmit.value.oCategory = String(Number(newVal?.pilihO6 ?? newVal?.oCategory ?? 0)) || '';
+      localSubmit.value.qCategory = String(Number(newVal?.pilihQ6 ?? newVal?.qCategory ?? 0)) || '';
+      localSubmit.value.pmCategory = String(Number(newVal?.pilihPM6 ?? newVal?.pmCategory ?? 0)) || '';
+      if (localSubmit.value.oCategory !== '3') {
+        localSubmit.value.pmCategory = '';
+        pmCategoryName.value = '';
+      }
+
+      console.log('After mapping - oCategory:', localSubmit.value.oCategory, 'type:', typeof localSubmit.value.oCategory);
+      console.log('After mapping - qCategory:', localSubmit.value.qCategory, 'type:', typeof localSubmit.value.qCategory);
+      console.log('After mapping - pmCategory:', localSubmit.value.pmCategory, 'type:', typeof localSubmit.value.pmCategory);
+
       localSubmit.value.tambahAnalysisTerjadi = parseTambahAnalysis(newVal?.tambahAnalysisTerjadi || '[]');
       localSubmit.value.tambahAnalisisLama = parseTambahAnalysis(newVal?.tambahAnalisisLama || '[]');
       localSubmit.value.stepRepair = stepRepairArray;
@@ -2202,6 +2280,10 @@ export default {
           alert('You must agree to terms and conditions before submitting')
           return
         }
+        if (localSubmit.value.oCategory === '3' && !localSubmit.value.pmCategory) {
+          alert('Please select the PM Category.')
+          return
+        }
         isSaving.value = true
 
         // Helper: resolve PIC label dari ID
@@ -2236,6 +2318,12 @@ export default {
         // Prepare tambahAnalysis data - ensure we have valid arrays
         const tambahAnalysisTerjadiData = convertTreeNodeToBackend(localSubmit.value.tambahAnalysisTerjadi || [])
         const tambahAnalisisLamaData = convertTreeNodeToBackend(localSubmit.value.tambahAnalisisLama || [])
+
+        // Ensure pmCategory is set to null if oCategory is not '3' before submitting
+        let pmCategoryForSubmit = localSubmit.value.pmCategory;
+        if (localSubmit.value.oCategory !== '3') {
+          pmCategoryForSubmit = '0';
+        }
 
         const submitDataFormatted = {
           machineName: localSubmit.value.machineName ?? '',
@@ -2285,6 +2373,7 @@ export default {
           agreeTerms: localSubmit.value.agreeTerms ?? false,
           oCategory: localSubmit.value.oCategory ?? '',
           qCategory: localSubmit.value.qCategory ?? '',
+          pmCategory: pmCategoryForSubmit,
           cmKenapaLama: localSubmit.value.countermeasureKenapaLamaList ?? [],
           cmKenapaTerjadi: localSubmit.value.countermeasureKenapaTerjadiList ?? [],
           sparepartList: localSubmit.value.sparepartList ?? [],
@@ -2330,6 +2419,7 @@ export default {
     const shiftName = ref('')
     const oCategoryName = ref('')
     const qCategoryName = ref('')
+    const pmCategoryName = ref('')
     const problemCategoryName = ref('')
     watch(
       () => localSubmit.value.shift,
@@ -2341,9 +2431,9 @@ export default {
       { immediate: true },
     )
     watch(
-      () => localSubmit.value.pilihO6,
+      () => localSubmit.value.oCategory,
       (newO6) => {
-        console.log('O6 ini:', localSubmit.value.pilihO6)
+        console.log('O6 ini:', localSubmit.value.oCategory)
         const o6Map = {
           1: 'O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))',
           2: 'O2: Henkaten Issue (No Enough Trial, No Confirm (others team))',
@@ -2353,7 +2443,7 @@ export default {
           6: 'O6: Lifetime Issue (Out of Standard Running, Over Capacity)',
         }
         oCategoryName.value = o6Map[newO6] || ''
-        console.log('O6 ini 1:', localSubmit.value.pilihO6)
+        console.log('O6 ini 1:', localSubmit.value.oCategory)
       },
       { immediate: true },
     )
@@ -2379,9 +2469,9 @@ export default {
       { immediate: true },
     )
     watch(
-      () => localSubmit.value.pilihQ6,
+      () => localSubmit.value.qCategory,
       (newQ6) => {
-        console.log('Q6 ini:', localSubmit.value.pilihQ6)
+        console.log('Q6 ini:', localSubmit.value.qCategory)
         const q6Map = {
           1: 'Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))',
           2: 'Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)',
@@ -2391,9 +2481,35 @@ export default {
           6: "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)",
         }
         qCategoryName.value = q6Map[newQ6] || ' '
-        console.log('Q6 ini 1:', localSubmit.value.pilihQ6)
+        console.log('Q6 ini 1:', localSubmit.value.qCategory)
       },
       { immediate: true },
+    )
+    watch(
+      () => localSubmit.value.pmCategory,
+      (newPM6) => {
+        console.log('PM6 ini:', localSubmit.value.pmCategory)
+        const pm6Map = {
+          1: 'PM1: No Have / Unclear Item',
+          2: 'PM2: Un-clear Method',
+          3: 'PM3: Confine / Invinsible Area',
+          4: 'PM4: Out of Period Check',
+          5: 'PM5: No Have Time',
+          6: 'PM6: Lack of Skill',
+        }
+        pmCategoryName.value = pm6Map[newPM6] || ' '
+        console.log('PM ini 1:', localSubmit.value.pmCategory)
+      },
+      { immediate: true },
+    )
+    watch(
+      () => localSubmit.value.oCategory,
+      (newO6) => {
+        if (newO6 !== '3') {
+          localSubmit.value.pmCategory = '';
+          pmCategoryName.value = '';
+        }
+      }
     )
     console.log('Local submit data: ' + localSubmit.value)
     console.log(
@@ -2434,6 +2550,27 @@ export default {
           isSaving.value = false
         }
       },
+    )
+
+    // Watch for startDate and finishDate changes to auto-calculate durationMin
+    watch(
+      [() => localSubmit.value.startDate, () => localSubmit.value.finishDate],
+      ([startDate, finishDate]) => {
+        if (startDate && finishDate) {
+          const start = new Date(startDate);
+          const finish = new Date(finishDate);
+          if (!isNaN(start.getTime()) && !isNaN(finish.getTime())) {
+            const diffInMs = Math.abs(finish.getTime() - start.getTime());
+            const durationInMin = Math.floor(diffInMs / (1000 * 60));
+            localSubmit.value.durationMin = durationInMin.toString();
+          } else {
+            localSubmit.value.durationMin = '';
+          }
+        } else {
+          localSubmit.value.durationMin = '';
+        }
+      },
+      { immediate: true }
     )
 
     // Remove the deep watch on localSubmit to prevent recursive updates
@@ -2740,7 +2877,7 @@ export default {
           const data = res.data.data || res.data
           console.log('PIC options data:', data)
 
-          // Filter members by current user's noreg
+          // Filter members by current user's noreg for PIC options (keep filtered for PIC)
           let filteredData = data
           if (currentUserNoreg) {
             filteredData = data.filter(member => member.fnoreg === currentUserNoreg)
@@ -2778,17 +2915,17 @@ export default {
             })
           }
 
-          picOptions.value = Array.isArray(filteredData)
-            ? filteredData.map((m) => ({
+          picOptions.value = Array.isArray(data)
+            ? data.map((m) => ({
               value: String(m.fid) || m.name,
               label: m.fname,
             }))
             : []
           console.log('picOptions set to:', picOptions.value)
 
-          // Also set filteredMemberOption for operator selection to the same filtered data
-          filteredMemberOption.value = Array.isArray(filteredData)
-            ? filteredData.map((m) => ({
+          // Set filteredMemberOption for operator selection to all members (not filtered)
+          filteredMemberOption.value = Array.isArray(data)
+            ? data.map((m) => ({
               id: m.fid,
               label: m.fname,
             }))
@@ -2896,14 +3033,26 @@ export default {
       sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '' }
     }
 
+    const getFeedbackField = (approveField) => {
+      return approveField.replace('Approve', 'Feedback');
+    }
+
     const statusClass = (localSubmit, field) => {
-      const status = localSubmit?.[field]
-      if (status == 2 || status === 'comment') return 'status-comment'
-      if (status == 1 || status === 'approved') return 'status-approved'
-      if (status == 0 || status === 'rejected') return 'status-rejected'
-      if (status === 'delay') return 'status-delay'
-      if (status === 'none' || status === null || status === undefined) return 'status-none'
-      return 'status-pending'
+      const status = localSubmit?.[field] || 0;
+      const feedbackField = getFeedbackField(field);
+      const hasFeedback = localSubmit?.[feedbackField] && localSubmit[feedbackField].trim() !== '';
+
+      if (status === 1) {
+        return hasFeedback ? 'status-comment' : 'status-approved';
+      } else if (status === 2 || status === 'comment') {
+        return 'status-comment';
+      } else if (status === 0 || status === 'rejected') {
+        return 'status-rejected';
+      } else if (status === 'delay') {
+        return 'status-delay';
+      } else {
+        return 'status-none';
+      }
     }
 
     const onApprove = (section) => {
@@ -2980,14 +3129,20 @@ export default {
       console.log('Comment clicked for section:', section)
       console.log('Current user role:', currentUserRole.value)
 
+      const userRole = currentUserRole.value.toLowerCase()
+      const effectiveRole = userRole === 'admin' ? 'sh' : userRole
+
+      // Check if only GL or SH can comment on 5why and counter sections
+      if ((section === '5why' || section === 'counter') && (effectiveRole !== 'gl' && effectiveRole !== 'sh')) {
+        alert('Only GL or SH users can comment on this section.')
+        return
+      }
+
       // Check if only DPH role can comment on DPH section
       if (section === 'dph' && currentUserRole.value.toLowerCase() !== 'dph') {
         alert('Only DPH users can comment on this section.')
         return
       }
-
-      const userRole = currentUserRole.value.toLowerCase()
-      const effectiveRole = userRole === 'admin' ? 'sh' : userRole
 
       let feedbackField = ''
       let approveField = ''
@@ -3067,6 +3222,7 @@ export default {
       shiftName,
       oCategoryName,
       qCategoryName,
+      pmCategoryName,
       problemCategoryName,
       isSaving,
       stopSaving,
@@ -3126,6 +3282,12 @@ export default {
   },
   
   computed: {
+    pmCategoryDisabled() {
+      return this.localSubmit.oCategory !== '3';
+    },
+    pmCategoryInvalid() {
+      return this.localSubmit.oCategory === '3' && !this.localSubmit.pmCategory;
+    },
     displayImg_problem() {
       if (this.imagePreviews.whyImage) {
         return this.imagePreviews.whyImage
