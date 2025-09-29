@@ -9,7 +9,7 @@ const appRoutes = [
     path: '/app/dashboard',
     name: 'Dashboard',
     component: () =>
-      import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
+      import(/* webpackChunkName: "dashboard" */ '@/views/dashboard/Dashboard.vue'),
     meta: {
       requiresAuth: true,
       title: 'Dashboard',
@@ -75,7 +75,7 @@ const appRoutes = [
     path: '/dc/dashboard',
     name: 'dcDashboard',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/Dashboard.vue'),
+      import(/* webpackChunkName: "reports" */ '@/views/dashboard/Dashboard.vue'),
     meta: {
       requiresAuth: true,
       title: 'dcDashboard',
