@@ -19,7 +19,7 @@ const appRoutes = [
     path: '/app/Dashboard2',
     name: 'Dashboard2',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/Dashboard2.vue'),
+      import(/* webpackChunkName: "reports" */ '@/views/dashboard2/Dashboard2.vue'),
     meta: {
       requiresAuth: true,
       title: 'Dashboard2',
@@ -47,7 +47,6 @@ const appRoutes = [
       title: 'RealtimeParetto',
     },
   },
-
   {
     path: '/app/DashboardDataDisplay',
     name: 'DashboardDataDisplay',
@@ -118,7 +117,7 @@ const appRoutes = [
     path: '/app/tpm-redirect',
     name: 'RedirectTPM',
     component: () =>
-      import(/* webpackChunkName: "redirect-tpm" */ '@/views/RedirectTPM.vue'),
+      import(/* webpackChunkName: "redirect-tpm" */ '@/views/redirect/RedirectTPM.vue'),
     meta: {
       requiresAuth: false,
       title: 'Redirect TPM',
@@ -128,7 +127,7 @@ const appRoutes = [
     path: '/app/order-spareparts-redirect',
     name: 'RedirectOrderSpareparts',
     component: () =>
-      import(/* webpackChunkName: "redirect-order-spareparts" */ '@/views/RedirectOrderSpareparts.vue'),
+      import(/* webpackChunkName: "redirect-order-spareparts" */ '@/views/redirect/RedirectOrderSpareparts.vue'),
     meta: {
       requiresAuth: false,
       title: 'Redirect Order Spareparts',
