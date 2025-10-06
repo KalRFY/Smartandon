@@ -150,7 +150,6 @@ import TableActions from './TableActions.vue'
 import LoadingState from './LoadingState.vue'
 import PaginationControls from './PaginationControls.vue'
 
-// Props
 defineProps({
   problems: {
     type: Array,
@@ -178,7 +177,6 @@ defineProps({
   },
 })
 
-// Emits
 const emit = defineEmits([
   'editProblem',
   'viewLtbReport',
@@ -192,7 +190,6 @@ const emit = defineEmits([
   'filteredCategory',
 ])
 
-// Methods
 const formatDate = (dateString) => {
   if (!dateString) return ''
   const date = new Date(dateString)
@@ -233,7 +230,6 @@ const isLtrProblem = (problem) => {
   const duration = parseInt(problem.fdur) || 0
   const lineId = parseInt(problem.line_id) || 0
   
-  // LTR criteria based on the SQL query
   return (
     (problem.problemCategory == 3) || ((duration >= 120 && duration < 659) && (lineId === 1 || lineId === 2)) ||
     ((duration >= 120 && duration < 359) && [3, 4, 5, 6].includes(lineId)) ||
@@ -245,7 +241,6 @@ const isSltrProblem = (problem) => {
   const duration = parseInt(problem.fdur) || 0
   const lineId = parseInt(problem.line_id) || 0
   
-  // SLTR criteria (opposite of LTR)
   return (
     (problem.problemCategory == 4) || (duration >= 659 && (lineId === 1 || lineId === 2)) ||
     (duration >= 359 && [3, 4, 5, 6].includes(lineId)) ||

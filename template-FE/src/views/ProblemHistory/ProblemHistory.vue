@@ -81,13 +81,11 @@ import ProblemsTable from './components/ProblemsTable.vue'
 import PaginationControls from './components/PaginationControls.vue'
 import TableActions from './components/TableActions.vue'
 
-// Router setup
 const router = useRouter()
 const navigateTo = (route) => {
   router.push(route)
 }
 
-// Reactive data
 const lineOptions = ref([])
 const machineOptions = ref([])
 const memberOption = ref([])
@@ -118,7 +116,6 @@ const selectedFiltered = ref('')
 const sparepartsOption = ref([])
 const tambahAnalysisData = ref({})
 
-// Submit data
 const submit = ref({
   machineName: '',
   line: '',
@@ -176,7 +173,6 @@ const submit = ref({
   cmDhFeedback: 0,
 })
 
-// Options data
 const o6Options = ref([
   {
     id: 1,
@@ -906,7 +902,6 @@ const saveSubmit = async (submitData) => {
       } else if (isFileField && typeof value === 'string' && value) {
         formData.append(key, value)
       } else if (isFileField && !value) {
-        // Don't append empty file fields
       } else {
         formData.append(key, value ?? '')
       }
@@ -928,7 +923,6 @@ const saveSubmit = async (submitData) => {
   }
 }
 
-// Other utility functions
 const freq = () => {
   navigateTo('/problem-frequency')
 }
@@ -942,7 +936,6 @@ const downloadExcel = async () => {
     const XLSX = await import('xlsx')
     console.log('XLSX object:', XLSX)
 
-    // Get all problems for export
     tableLoading.value = true
     const params = {
       limit: 0,
@@ -1016,7 +1009,6 @@ const getProblemCategoryLabel = (categoryId) => {
   return categories[categoryId] || 'Unknown'
 }
 
-// Lifecycle hooks
 onMounted(async () => {
   await loadInitialData()
   loadFiltersFromStorage()

@@ -1,4 +1,3 @@
-<!-- PaginationControls.vue -->
 <template>
   <CPagination aria-label="Page navigation example" class="mt-3">
     <CPaginationItem

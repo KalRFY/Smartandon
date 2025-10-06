@@ -1,4 +1,3 @@
-<!-- SearchFilters.vue -->
 <template>
   <CRow class="mb-3">
     <CCol>
@@ -154,7 +153,6 @@ import { Clock } from 'lucide-vue-next'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
-// Props
 defineProps({
   filterStartDate: {
     type: String,
@@ -190,7 +188,6 @@ defineProps({
   },
 })
 
-// Emits
 const emit = defineEmits([
   'update:filterStartDate',
   'update:filterFinishDate',
@@ -202,7 +199,6 @@ const emit = defineEmits([
   'machineInput',
 ])
 
-// Methods
 const handleLineUpdate = (value) => {
   console.log('[Treeselect Debug] Line updated:', value)
   emit('update:selectedLine', value)

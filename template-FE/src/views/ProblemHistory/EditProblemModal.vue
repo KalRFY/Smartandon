@@ -1,7 +1,7 @@
 <template>
   <CModal
     :visible="visible"
-    @close="$emit('close')"
+    @close="emit('close')"
     fullscreen
     aria-labelledby="LiveDemoExampleLabel"
   >
@@ -116,8 +116,7 @@
                     @click="showFullSizeImageUpload = true"
                   />
                   <CModal
-                    :visible="showFullSizeImageUpload"
-                    @update:visible="val => showFullSizeImageUpload = val"
+                    v-model="showFullSizeImageUpload"
                     @close="showFullSizeImageUpload = false"
                     size="lg"
                     aria-labelledby="fullSizeImageLabel"
@@ -174,8 +173,7 @@
                     @click="showFullSizeImageStandart = true"
                   />
                   <CModal
-                    :visible="showFullSizeImageStandart"
-                    @update:visible="val => showFullSizeImageStandart = val"
+                    v-model="showFullSizeImageStandart"
                     @close="showFullSizeImageStandart = false"
                     size="lg"
                     aria-labelledby="fullSizeImageStandartLabel"
@@ -231,8 +229,7 @@
                     @click="showFullSizeImageActual = true"
                   />
                   <CModal
-                    :visible="showFullSizeImageActual"
-                    @update:visible="val => showFullSizeImageActual = val"
+                    v-model="showFullSizeImageActual"
                     @close="showFullSizeImageActual = false"
                     size="lg"
                     aria-labelledby="fullSizeImageActualLabel"
@@ -530,8 +527,7 @@
                     @click="showFullSizeImage = true"
                   />
                   <CModal
-                    :visible="showFullSizeImage"
-                    @update:visible="val => showFullSizeImage = val"
+                    v-model="showFullSizeImage"
                     @close="showFullSizeImage = false"
                     size="lg"
                     aria-labelledby="fullSizeImageLabel"
@@ -578,8 +574,7 @@
                     @click="showFullSizeImageLama = true"
                   />
                   <CModal
-                    :visible="showFullSizeImageLama"
-                    @update:visible="val => showFullSizeImageLama = val"
+                    v-model="showFullSizeImageLama"
                     @close="showFullSizeImageLama = false"
                     size="lg"
                     aria-labelledby="fullSizeImageLabel"
@@ -1392,7 +1387,7 @@
       </CRow>
     </CModalBody>
     <CModalFooter>
-      <CButton color="secondary" @click="$emit('close')"> Close </CButton>
+      <CButton color="secondary" @click="emit('close')"> Close </CButton>
 
       <CButton color="primary" @click="saveSubmit" :disabled="isSaving">
         <span v-if="isSaving">
@@ -1404,8 +1399,8 @@
   </CModal>
 </template>
 
-<script>
-import { ref, watch, toRefs, onMounted } from 'vue'
+<script setup>
+import { ref, watch, toRefs, onMounted, computed } from 'vue'
 import {
   CModal,
   CModalHeader,
@@ -1420,9 +1415,20 @@ import {
   CButton,
   CSpinner,
   CCardBody,
+  CCard,
   CTable,
+  CTableHead,
+  CTableRow,
+  CTableHeaderCell,
+  CTableBody,
+  CTableDataCell,
+  CFormSelect,
+  CInputGroup,
+  CInputGroupText,
+  CFormTextarea
 } from '@coreui/vue'
 import Treeselect from 'vue3-treeselect'
+import 'vue3-treeselect/dist/vue3-treeselect.css'
 import Multiselect from 'vue-multiselect'
 import { cilClock } from '@coreui/icons'
 import { CIcon } from '@coreui/icons-vue'
@@ -1430,63 +1436,41 @@ import LegendStatus from '@/views/ProblemHistory/components/LegendStatus.vue'
 import AnalysisTreeList from '@/components/AnalysisTreeList.vue'
 import api from '@/apis/CommonAPI'
 
-export default {
-  name: 'EditProblemModal',
-  components: {
-    CModal,
-    CModalHeader,
-    CModalTitle,
-    CModalBody,
-    CModalFooter,
-    CForm,
-    CCol,
-    CRow,
-    CFormInput,
-    CFormCheck,
-    CButton,
-    CSpinner,
-    CTable,
-    Treeselect,
-    Multiselect,
-    cilClock,
-    LegendStatus,
-    AnalysisTreeList,
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    required: true,
   },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-    },
-    submitData: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    machineOptions: {
-      type: Array,
-      default: () => [],
-    },
-    lineOptions: {
-      type: Array,
-      default: () => [],
-    },
-    memberOption: {
-      type: Array,
-      default: () => [],
-    },
-    modalLoading: {
-      type: Boolean,
-      default: false,
-    },
-    saving: {
-      type: Boolean,
-      default: false,
-    },
+  submitData: {
+    type: Object,
+    required: false,
+    default: () => ({}),
   },
+  machineOptions: {
+    type: Array,
+    default: () => [],
+  },
+  lineOptions: {
+    type: Array,
+    default: () => [],
+  },
+  memberOption: {
+    type: Array,
+    default: () => [],
+  },
+  modalLoading: {
+    type: Boolean,
+    default: false,
+  },
+  saving: {
+    type: Boolean,
+    default: false,
+  },
+})
 
-  setup(props, { emit }) {
-    const { submitData } = toRefs(props)
-    console.log('EditProblemModal props:', JSON.stringify(props, null, 2))
+const emit = defineEmits(['close', 'submit'])
+const { submitData } = toRefs(props)
+console.log('EditProblemModal props:', JSON.stringify(props, null, 2))
 
     const parseFrealProb = (frealProb) => {
       if (!frealProb) return [{ id: 1, description: '' }]
@@ -1533,7 +1517,6 @@ export default {
         let parsed = data
         if (typeof data === 'string') parsed = JSON.parse(data)
         if (!Array.isArray(parsed)) return []
-        // <- penting: konversi ke struktur TreeNode (description/subItems)
         return convertBackendToTreeNode(parsed)
       } catch (error) {
         console.error('Error parsing tambahAnalysisTerjadi:', error)
@@ -1541,7 +1524,6 @@ export default {
       }
     };
 
-    // Ubah struktur backend -> struktur TreeNode (description/subItems)
     const convertBackendToTreeNode = (list) => {
       if (!list) return [];
       let arr = [];
@@ -1570,7 +1552,6 @@ export default {
       }).filter(Boolean);
     }
 
-    // Ubah struktur TreeNode -> struktur backend (name/children/isLeaf/pid)
     const convertTreeNodeToBackend = (nodes, pid = 0) => {
       if (!Array.isArray(nodes)) {
         return [];
@@ -1839,14 +1820,12 @@ export default {
     const formatDateTime = (dateTimeStr) => {
       if (!dateTimeStr) return null
       const date = new Date(dateTimeStr)
-      // Konversi ke format ISO untuk konsistensi
       return date.toISOString().slice(0, 19).replace('T', ' ')
     }
 
     const normalizeDateTime = (dateTimeStr) => {
       if (!dateTimeStr) return null
       const date = new Date(dateTimeStr)
-      // Normalisasi untuk menghindari masalah timezone
       const offset = date.getTimezoneOffset()
       const normalizedDate = new Date(date.getTime() + (offset * 60000))
       return normalizedDate.toISOString().slice(0, 19).replace('T', ' ')
@@ -1894,7 +1873,6 @@ export default {
         }
         isSaving.value = true
 
-        // Helper: resolve PIC label dari ID
         const resolvePicLabel = (value) => {
           const found = Array.isArray(picOptions.value)
             ? picOptions.value.find((opt) => String(opt.value) === String(value))
@@ -1902,7 +1880,6 @@ export default {
           return found?.label || (value ?? '')
         }
 
-        // Map list agar field pic berisi label (nama), bukan ID
         const mapPicToLabel = (list) =>
           Array.isArray(list)
             ? list.map((item) => ({
@@ -1911,7 +1888,6 @@ export default {
               }))
             : []
 
-        // Simpan versi yang sudah termap untuk dikirim ke backend
         localSubmit.value.countermeasureKenapaTerjadiList = mapPicToLabel(
           countermeasureKenapaTerjadiList.value,
         )
@@ -1921,7 +1897,6 @@ export default {
         localSubmit.value.yokotenList = mapPicToLabel(yokotenList.value)
         localSubmit.value.sparepartList = sparepartList.value
 
-        // Prepare tambahAnalysis data - ensure we have valid arrays
         const tambahAnalysisTerjadiData = convertTreeNodeToBackend(localSubmit.value.tambahAnalysisTerjadi || [])
         const tambahAnalisisLamaData = convertTreeNodeToBackend(localSubmit.value.tambahAnalisisLama || [])
 
@@ -1979,7 +1954,6 @@ export default {
 
         console.log('Submit data formatted:', submitDataFormatted)
 
-        // Send data to backend using existing problem endpoint
         // const response = await fetch(`/api/smartandon/problem/${localSubmit.value.fidProblem}`, {
         //   method: 'PUT',
         //   headers: {
@@ -2356,7 +2330,6 @@ export default {
         if (sparepartRes.status === 200) {
           console.log('Sparepart options data for search:', searchQuery, sparepartRes.data);
 
-          // Handle both direct array and wrapped response
           const spareparts = sparepartRes.data.data || sparepartRes.data;
           sparepartOptions.value = Array.isArray(spareparts)
             ? spareparts.map((sp) => ({
@@ -2398,7 +2371,6 @@ export default {
         picOptions.value = []
       }
 
-      // Load initial sparepart options
       await onSparepartSearch('')
     })
 
@@ -2499,160 +2471,104 @@ export default {
       console.log('Comment', section, role)
     }
 
-    return {
-      localSubmit,
-      validatedCustom01,
-      onMachineInput,
-      handleSubmit,
-      saveSubmit,
-      shiftName,
-      oCategoryName,
-      qCategoryName,
-      problemCategoryName,
-      isSaving,
-      stopSaving,
-      editRootcause,
-      countermeasureKenapaTerjadiList,
-      countermeasureKenapaLamaList,
-      showCountermeasureKenapaTerjadiForm,
-      countermeasureKenapaTerjadiForm,
-      submitCountermeasureKenapaTerjadi,
-      cancelCountermeasureKenapaTerjadi,
-      editCountermeasureKenapaTerjadi,
-      removeCountermeasureKenapaTerjadi,
-      showCountermeasureKenapaLamaForm,
-      countermeasureKenapaLamaForm,
-      submitCountermeasureKenapaLama,
-      cancelCountermeasureKenapaLama,
-      editCountermeasureKenapaLama,
-      removeCountermeasureKenapaLama,
-      picOptions,
-      sparepartOptions,
-      sparepartList,
-      showSparepartForm,
-      sparepartForm,
-      submitSparepart,
-      editSparepart,
-      removeSparepart,
-      cancelSparepart,
-      nameWithLang,
-      onSparepartSearch,
-      editStepRepair,
-      editingStepRepair,
-      yokotenForm,
-      yokotenList,
-      showYokotenForm,
-      submitYokoten,
-      cancelYokoten,
-      editYokoten,
-      removeYokoten,
-      addRootcause,
-      deleteRootcause,
-      addStepRepair,
-      deleteStepRepair,
-      statusClass,
-      onApprove,
-      onComment,
-    }
-  },
-  computed: {
-    displayImg_problem() {
-      console.log('displayImg_problem called, localSubmit:', this.localSubmit)
-      if (this.localSubmit?.whyImage) {
-        console.log('displayImg_problem whyImage:', this.localSubmit.whyImage)
-        return `/api/download/image?path=${this.localSubmit.whyImage}`
-      }
-      return ''
-    },
-    display_attachmentImg() {
-      if (this.localSubmit?.attachmentMeeting) {
-        return `/api/download/image?path=${this.localSubmit.attachmentMeeting}`
-      }
-      return ''
-    },
-    displayWhyLamaImage() {
-      if (this.localSubmit?.whyLamaImage) {
-        return `/api/download/image?path=${this.localSubmit.whyLamaImage}`
-      }
-      return ''
-    },
-    displayUploadImgImage() {
-      if (this.localSubmit?.uploadImage) {
-        return `/api/download/image?path=${this.localSubmit.uploadImage}`
-      }
-      return ''
-    },
-    displayActualImage() {
-      if (this.localSubmit?.actualImage) {
-        return `/api/download/image?path=${this.localSubmit.actualImage}`
-      }
-      return ''
-    },
-    displayStandardImage() {
-      if (this.localSubmit?.standartImage) {
-        return `/api/download/image?path=${this.localSubmit.standartImage}`
-      }
-      return ''
-    },
-  },
-  data() {
-    return {
-      showFullSizeImage: false,
-      showFullSizeImageLama: false,
-      showFullSizeImageUpload: false,
-      showFullSizeImageStandart: false,
-      showFullSizeImageActual: false,
-    }
-  },
-  methods: {
-    onFileChange(event, field) {
-      const file = event.target.files[0]
-      if (file) {
-        this.localSubmit[field] = file
-      } else {
-        this.localSubmit[field] = null
-      }
-    },
-    downloadLastReportFile() {
-      if (
-        this.localSubmit.file_report &&
-        this.localSubmit.fidProblem &&
-        this.localSubmit.problems
-      ) {
-        let url = `${window.location.origin
-          }/api/download/download-report?fid=${encodeURIComponent(
-            this.localSubmit.fidProblem,
-          )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
-        console.log('Download URL:', url)
-        const link = document.createElement('a')
-        link.href = url
+const showFullSizeImage = ref(false)
+const showFullSizeImageLama = ref(false)
+const showFullSizeImageUpload = ref(false)
+const showFullSizeImageStandart = ref(false)
+const showFullSizeImageActual = ref(false)
 
-        const filename = this.localSubmit.file_report
-          .substring(this.localSubmit.file_report.lastIndexOf('/') + 1)
-          .split('?')[0]
-        link.setAttribute('download', filename)
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-      } else {
-        alert(
-          'No last report file or required parameters available to download.',
-        )
-      }
-    },
-    downloadTemplateFile() {
-      if (this.localSubmit.fidProblem) {
-        const url = `api/download/download-template?fid=${encodeURIComponent(
-          this.localSubmit.fidProblem,
-        )}`
-        window.open(url, '_blank')
-      } else {
-        alert(
-          'No last report file or required parameters available to download.',
-        )
-      }
-    },
-  },
+const displayImg_problem = computed(() => {
+  console.log('displayImg_problem called, localSubmit:', localSubmit.value)
+  if (localSubmit.value?.whyImage) {
+    console.log('displayImg_problem whyImage:', localSubmit.value.whyImage)
+    return `/api/download/image?path=${localSubmit.value.whyImage}`
+  }
+  return ''
+})
+
+const display_attachmentImg = computed(() => {
+  if (localSubmit.value?.attachmentMeeting) {
+    return `/api/download/image?path=${localSubmit.value.attachmentMeeting}`
+  }
+  return ''
+})
+
+const displayWhyLamaImage = computed(() => {
+  if (localSubmit.value?.whyLamaImage) {
+    return `/api/download/image?path=${localSubmit.value.whyLamaImage}`
+  }
+  return ''
+})
+
+const displayUploadImgImage = computed(() => {
+  if (localSubmit.value?.uploadImage) {
+    return `/api/download/image?path=${localSubmit.value.uploadImage}`
+  }
+  return ''
+})
+
+const displayActualImage = computed(() => {
+  if (localSubmit.value?.actualImage) {
+    return `/api/download/image?path=${localSubmit.value.actualImage}`
+  }
+  return ''
+})
+
+const displayStandardImage = computed(() => {
+  if (localSubmit.value?.standartImage) {
+    return `/api/download/image?path=${localSubmit.value.standartImage}`
+  }
+  return ''
+})
+
+const onFileChange = (event, field) => {
+  const file = event.target.files[0]
+  if (file) {
+    localSubmit.value[field] = file
+  } else {
+    localSubmit.value[field] = null
+  }
+}
+
+const downloadLastReportFile = () => {
+  if (
+    localSubmit.value.file_report &&
+    localSubmit.value.fidProblem &&
+    localSubmit.value.problems
+  ) {
+    let url = `${window.location.origin
+      }/api/download/download-report?fid=${encodeURIComponent(
+        localSubmit.value.fidProblem,
+      )}&problem=${encodeURIComponent(localSubmit.value.problems)}`
+    console.log('Download URL:', url)
+    const link = document.createElement('a')
+    link.href = url
+
+    const filename = localSubmit.value.file_report
+      .substring(localSubmit.value.file_report.lastIndexOf('/') + 1)
+      .split('?')[0]
+    link.setAttribute('download', filename)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  } else {
+    alert(
+      'No last report file or required parameters available to download.',
+    )
+  }
+}
+
+const downloadTemplateFile = () => {
+  if (localSubmit.value.fidProblem) {
+    const url = `api/download/download-template?fid=${encodeURIComponent(
+      localSubmit.value.fidProblem,
+    )}`
+    window.open(url, '_blank')
+  } else {
+    alert(
+      'No last report file or required parameters available to download.',
+    )
+  }
 }
 </script>
 
