@@ -29,7 +29,7 @@ const appRoutes = [
     path: '/app/MTBFMTTR',
     name: 'MTBFMTTR',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/MTBFMTTR/MTBFMTTR.vue'),
+      import(/* webpackChunkName: "reports" */ '@/views/mtbfmttr/MTBFMTTR.vue'),
     meta: {
       requiresAuth: true,
       title: 'MTBFMTTR',
@@ -40,7 +40,7 @@ const appRoutes = [
     name: 'RealtimeParetto',
     component: () =>
       import(
-        /* webpackChunkName: "reports" */ '@/views/RealtimeParetto/RealtimeParetto.vue'
+        /* webpackChunkName: "reports" */ '@/views/realtimeparetto/RealtimeParetto.vue'
       ),
     meta: {
       requiresAuth: true,
@@ -52,7 +52,7 @@ const appRoutes = [
     name: 'DashboardDataDisplay',
     component: () =>
       import(
-        /* webpackChunkName: "reports" */ '@/views/DashboardDataDisplay/DashboardDataDisplay.vue'
+        /* webpackChunkName: "reports" */ '@/views/dashboarddatadisplay/DashboardDataDisplay.vue'
       ),
     meta: {
       requiresAuth: true,
@@ -85,7 +85,7 @@ const appRoutes = [
     name: 'ProblemHistory',
     component: () =>
       import(
-        /* webpackChunkName: "reports" */ '@/views/ProblemHistory/ProblemHistory.vue'
+        /* webpackChunkName: "reports" */ '@/views/problemhistory/ProblemHistory.vue'
       ),
     meta: {
       requiresAuth: true,
@@ -96,7 +96,7 @@ const appRoutes = [
     path: '/app/LTBSummary',
     name: 'LTBSummary',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/LTBSummary/LTBSummary.vue'),
+      import(/* webpackChunkName: "reports" */ '@/views/ltbsummary/LTBSummary.vue'),
     meta: {
       requiresAuth: true,
       title: 'LTB Summary',
@@ -106,7 +106,7 @@ const appRoutes = [
     path: '/app/CMFollowup',
     name: 'CMFollowup',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/CMFollowup/CMFollowup.vue'),
+      import(/* webpackChunkName: "reports" */ '@/views/cmfollowup/CMFollowup.vue'),
     meta: {
       requiresAuth: true,
       title: 'CM Followup',
@@ -140,7 +140,7 @@ const authRoutes = [
     path: '/auth/register',
     name: 'Register',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/Register/Register.vue'),
+      import(/* webpackChunkName: "reports" */ '@/views/register/Register.vue'),
     meta: {
       title: 'Register',
     },
@@ -149,7 +149,7 @@ const authRoutes = [
     path: '/auth/login',
     name: 'Login',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/Login/Login.vue'),
+      import(/* webpackChunkName: "reports" */ '@/views/login/Login.vue'),
     meta: {
       title: 'Login',
     },
