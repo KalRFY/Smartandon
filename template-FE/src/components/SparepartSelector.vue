@@ -84,7 +84,6 @@ export default {
           label: `${sparepart.sparepart_nm} (${sparepart.material_number})`,
           material_number: sparepart.material_number,
           stock: sparepart.stock,
-          uom: sparepart.uom,
         }))
       } catch (error) {
         console.error('Error fetching spareparts:', error)

@@ -172,7 +172,8 @@
                           }}
                         </CCol>
                       </CRow>
-                      <ApexCharts :options="chartData.options" :series="chartData.series" type="radialBar" height="250" />
+                      <ApexCharts v-if="chartData.series && chartData.series.length > 0" :options="chartData.options" :series="chartData.series" type="radialBar" height="250" />
+                      <div v-else class="text-center py-4">No data available</div>
                     </CCardBody>
                   </div>
                 </CCol>
@@ -182,7 +183,8 @@
               <div style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); height: 100%;" color="dark" variant="outline">
                 <CCardBody style="height: 100%;">
                   <CCardTitle style="font-size: medium; height: 35px; color: black;">Cumulative OEE per Line</CCardTitle>
-                  <ApexCharts :options="cumulativeOeeOptions" :series="cumulativeOeeSeries" type="polarArea" height="350" />
+                  <ApexCharts v-if="cumulativeOeeSeries.length > 0" :options="cumulativeOeeOptions" :series="cumulativeOeeSeries" type="polarArea" height="350" />
+                  <div v-else class="text-center py-4">No OEE data available</div>
                 </CCardBody>
               </div>
             </CCol>
@@ -264,12 +266,14 @@
           <CRow>
             <CCol>
               <ApexCharts
+                v-if="problemFrequencySeries[0].data.length > 0"
                 :key="formatKey"
                 :options="problemFrequencyOptions"
                 :series="problemFrequencySeries"
                 type="line"
                 height="350"
               />
+              <div v-else class="text-center py-4">No data available</div>
             </CCol>
           </CRow>
         </CCardBody>
@@ -349,12 +353,14 @@
           <CRow>
             <CCol>
               <ApexCharts
+                v-if="ltrSeries[0].data.length > 0"
                 :key="ltrFormatKey"
                 :options="ltrOptions"
                 :series="ltrSeries"
                 type="line"
                 height="350"
               />
+              <div v-else class="text-center py-4">No data available</div>
             </CCol>
           </CRow>
         </CCardBody>
@@ -845,6 +851,26 @@ export default {
         console.log('[FE Debug] Line options updated:', newVal);
       },
       immediate: true
+    },
+    // Watchers for Frequency Problem chart filters
+    filterStartDate: function() {
+      this.fetchChartData();
+    },
+    filterFinishDate: function() {
+      this.fetchChartData();
+    },
+    filterLine: function() {
+      this.fetchChartData();
+    },
+    // Watchers for LTR chart filters
+    ltrStartDate: function() {
+      this.fetchLtrData();
+    },
+    ltrFinishDate: function() {
+      this.fetchLtrData();
+    },
+    ltrLine: function() {
+      this.fetchLtrData();
     }
   },
 
@@ -975,6 +1001,10 @@ export default {
 
   async created() {
     this.startAutoRefresh();
+    // Initialize charts and LTR table data
+    await this.fetchChartData();
+    await this.fetchLtrData();
+    await this.fetchFollowupLtrProblems();
   },
   beforeUnmount() {
     this.stopAutoRefresh();
@@ -1020,14 +1050,7 @@ export default {
         this.loadingProblemActive = false;
       }
 
-      // Call fetchFollowupLtrProblems
-      await this.fetchFollowupLtrProblems();
 
-      // Call fetchChartData
-      await this.fetchChartData();
-
-      // Call fetchLtrData
-      await this.fetchLtrData();
 
       try {
         const responseOeeData = await api.get('/smartandon/oeeDataSmartandon');
@@ -1151,6 +1174,7 @@ export default {
           }
         });
         this.cumulativeOeeSeries = Object.values(cumulativeOeeData);
+        const maxValue = Object.values(cumulativeOeeData).length > 0 ? Math.max(...Object.values(cumulativeOeeData)) : 100;
         this.cumulativeOeeOptions = {
           chart: {
             type: 'polarArea',
@@ -1167,7 +1191,7 @@ export default {
           yaxis: {
             show: true,
             min: 0,
-            max: Math.max(...Object.values(cumulativeOeeData)) * 1.1,
+            max: maxValue * 1.1,
           },
           legend: {
             position: 'right',
@@ -1395,6 +1419,12 @@ export default {
             alert('Input saved successfully');
             this.visibleLiveDemo = false;
             this.submit = {};
+            // Refresh current problem list immediately after input
+            this.fetchDashboardData();
+            // Refresh charts and LTR table immediately after input
+            this.fetchChartData();
+            this.fetchLtrData();
+            this.fetchFollowupLtrProblems();
           } else {
             alert('Failed to save input');
           }
@@ -1915,8 +1945,11 @@ export default {
           alert('Problem updated successfully')
           this.visibleEditModal = false
           this.editSubmit = {}
-          // Refresh the followup data
+          // Refresh the followup data, charts, and current problems
           this.fetchFollowupLtrProblems()
+          this.fetchChartData()
+          this.fetchLtrData()
+          this.fetchDashboardData()
         } else {
           throw new Error('Failed to update problem, status: ' + response.status)
         }

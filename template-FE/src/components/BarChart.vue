@@ -20,4 +20,5 @@ defineProps({
   chartData: Object,
   options: Object
 })
+
 </script>

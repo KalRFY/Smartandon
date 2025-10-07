@@ -733,6 +733,7 @@ export default {
         cmShFeedback: problemData.cmShFeedback,
         cmTlFeedback: problemData.cmTlFeedback,
         cmDhFeedback: problemData.cmDhFeedback,
+        sparepart_list: problemData.sparepart_list || [],
       }
     },
 
@@ -845,6 +846,7 @@ export default {
           cmShFeedback: submitData.cmShFeedback,
           cmTlFeedback: submitData.cmTlFeedback,
           cmDhFeedback: submitData.cmDhFeedback,
+          sparepart_list: JSON.stringify(submitData.sparepart_list ?? []),
         }
         const formData = new FormData()
         Object.keys(payload).forEach((key) => {
@@ -1166,7 +1168,14 @@ export default {
           alert('Problem deleted successfully.');
           this.showDeleteModal = false;
           this.problemToDelete = null;
-          this.fetchProblems(this.currentPage);
+          this.fetchProblems(this.currentPage, {
+            filterStartDate: this.filterStartDate,
+            filterFinishDate: this.filterFinishDate,
+            selectedLine: this.selectedLine,
+            selectedMachineName: this.selectedMachineName,
+            selectedProblem: this.selectedProblem,
+            problemCategory: this.selectedProblemCategory,
+          });
         } else {
           alert('Failed to delete problem. Status: ' + response.status);
         }

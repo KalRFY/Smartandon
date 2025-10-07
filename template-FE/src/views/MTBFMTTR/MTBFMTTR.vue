@@ -142,6 +142,8 @@ function sortMachineData(data, metric) {
   })
 }
 
+const workingHoursPerDay = 15 + 10 / 60 // 15 hours 10 minutes
+
 const chartModes = [
   { value: 'mtbf', label: 'MTBF' },
   { value: 'mttr', label: 'MTTR' },
@@ -193,7 +195,7 @@ const endDate = ref(
   ).padStart(2, '0')}`,
 )
 const chartViewMode = ref('mtbf')
-const filterType = ref('daily')
+const filterType = ref('machines')
 const lineIds = [
   'lpdc',
   'hpdc',
@@ -281,15 +283,9 @@ const fetchAllData = async () => {
               mttr: item.mttr ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5)) : 0,
             })
           } else if (filterType.value === 'total') {
-            const totalFdur = parseFloat(item.total_fdur || item.mtbf || 0)
-            const totalRows = parseFloat(item.total_rows || 1)
-            const mtbf =
-              totalRows > 0 ? Math.round((totalFdur / totalRows) * 100) / 100 : 0
-            const mttr = item.mttr !== undefined ? parseFloat(item.mttr) : 0
-
             mapped[id] = {
-              mtbf: parseFloat((mtbf / 60).toFixed(5)),
-              mttr: parseFloat((mttr / 60).toFixed(5)),
+              mtbf: item.mtbf ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5)) : 0,
+              mttr: item.mttr ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5)) : 0,
             }
           }
         })
@@ -390,7 +386,7 @@ const getChartOptions = (lineId) => {
       title: { text: title, align: 'left' },
       xaxis: { categories: data.map((d) => d.machine ?? '') },
       yaxis: {
-        title: { text: (isComparison ? 'Value' : chartViewMode.value.toUpperCase()) + ' (Minutes)' },
+        title: { text: isComparison ? 'Value' : chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
         min: 0,
       },
       tooltip: { theme: 'dark' },
@@ -436,7 +432,7 @@ const getChartOptions = (lineId) => {
       title: { text: title, align: 'left' },
       xaxis: { categories: [chartViewMode.value.toUpperCase()] },
       yaxis: {
-        title: { text: chartViewMode.value.toUpperCase() + ' (Hours)' },
+        title: { text: chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
         min: 0,
       },
       tooltip: { theme: 'dark' },
@@ -478,7 +474,7 @@ const getChartOptions = (lineId) => {
       },
       title: { text: title, align: 'left' },
       xaxis: { categories: ['Total'] },
-      yaxis: { title: { text: 'Value (Minutes)' }, min: 0 },
+      yaxis: { title: { text: 'Value (Hours)' }, min: 0 },
       tooltip: { theme: 'dark' },
       colors: [colorMTBFBar, colorMTTRBar],
       plotOptions: {
@@ -539,7 +535,7 @@ const getChartOptions = (lineId) => {
       xaxis: { categories: data.map((d) => d.date ?? '') },
       yaxis: [
         {
-          title: { text: chartViewMode.value.toUpperCase() + ' (Minutes)' },
+          title: { text: chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
           min: 0,
         },
       ],
@@ -620,7 +616,7 @@ const getChartOptions = (lineId) => {
       },
       yaxis: [
         {
-          title: { text: 'Value (Minutes)' },
+          title: { text: 'Value (Hours)' },
           min: 0,
         },
       ],
@@ -636,7 +632,7 @@ const getChartOptions = (lineId) => {
   }
 
   let categories = []
-  let ytitle = chartViewMode.value.toUpperCase() + ' (Minutes)'
+  let ytitle = chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)'
   if (Array.isArray(data) && data.length > 0) {
     categories = data.map((d) => d.date ?? '')
   } else if (data) {
