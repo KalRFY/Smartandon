@@ -1432,7 +1432,7 @@ import 'vue3-treeselect/dist/vue3-treeselect.css'
 import Multiselect from 'vue-multiselect'
 import { cilClock } from '@coreui/icons'
 import { CIcon } from '@coreui/icons-vue'
-import LegendStatus from '@/views/ProblemHistory/components/LegendStatus.vue'
+import LegendStatus from '@/views/problemhistory/components/LegendStatus.vue'
 import AnalysisTreeList from '@/components/AnalysisTreeList.vue'
 import api from '@/apis/CommonAPI'
 

@@ -111,6 +111,13 @@
             },
             {
               component: 'CNavItem',
+              to: '/app/q6-analysis',
+              name: 'Q6 Analysis',
+              icon: 'cilMagnifyingGlass',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
               to: '/app/LTBSummary',
               name: 'LTB Report Status',
               icon: 'cilDescription',

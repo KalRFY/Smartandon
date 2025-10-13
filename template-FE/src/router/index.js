@@ -112,6 +112,16 @@ const appRoutes = [
       title: 'CM Followup',
     },
   },
+  {
+    path: '/app/Q6-Analysis',
+    name: 'Q6Analysis',
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/q6analysis/Q6Analysis.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'Q6 Analysis',
+    },
+  },
   /*define other routes in here*/
   {
     path: '/app/tpm-redirect',
