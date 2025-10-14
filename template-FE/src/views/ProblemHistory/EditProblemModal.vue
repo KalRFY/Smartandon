@@ -1,9 +1,9 @@
 <template>
-  
   <CModal
     :visible="visible"
     @close="$emit('close')"
     fullscreen
+    backdrop="static"
     aria-labelledby="LiveDemoExampleLabel"
   >
     <CModalHeader class="mb-3">
@@ -85,6 +85,7 @@
           />
         </CCol>
       </CRow>
+
       <CRow class="mb-3">
         <CCol>
           <CCard>
@@ -889,6 +890,225 @@
         <CCol>
           <CCard>
             <CCardBody>
+              <label style="font-size: medium; font-weight: bold;" class="form-label">Sparepart</label>
+              <div v-if="sparepart_list.length === 0">
+                <CButton class="mb-3" color="primary" @click="toggleSparepartForm">Tambah Sparepart</CButton>
+              </div>
+              <div v-if="showSparepartForm" class="mb-3">
+                <CRow class="g-2 align-items-center">
+                  <CCol md="4">
+                    <CFormSelect
+                      label="Is New Part*"
+                      v-model="sparepartForm.newPart"
+                    >
+                      <option value="0">NO</option>
+                      <option value="1">YES</option>
+                    </CFormSelect>
+                  </CCol>
+                  <CCol md="4">
+                    <div v-if="sparepartForm.newPart === '1'">
+                      <CFormInput
+                        label="Sparepart*"
+                        v-model="sparepartForm.sparepart"
+                        placeholder="Enter sparepart name"
+                      />
+                    </div>
+                    <div v-else>
+                      <label class="form-label">Sparepart*</label>
+                      <Multiselect
+                        id="sparepartSelect"
+                        v-model="sparepartForm.sparepart"
+                        :options="sparepartOptions"
+                        :searchable="true"
+                        :close-on-select="true"
+                        :show-labels="false"
+                        placeholder="Type to search sparepart..."
+                        track-by="value"
+                        label="text"
+                        @search-change="handleSparepartSearch"
+                        @input="onSparepartSelect"
+                        :max-height="300"
+                        :max-width="400"
+                        :append-to-body="true"
+                        :dropdown-position="'auto'"
+                        :dropdown-direction="'bottom'"
+                      />
+                    </div>
+                  </CCol>
+                  <CCol md="4">
+                    <label class="form-label">Part Similar</label>
+                    <Multiselect
+                      id="partSimilarSelect"
+                      v-model="sparepartForm.partSimilar"
+                      :options="sparepartOptions"
+                      :searchable="true"
+                      :close-on-select="true"
+                      :show-labels="false"
+                      placeholder="Type to search part similar..."
+                      track-by="value"
+                      label="text"
+                      @search-change="handleSparepartSearch"
+                      @input="onPartSimilarSelect"
+                      :disabled="String(sparepartForm.status) !== '2'"
+                      :max-height="300"
+                      :max-width="400"
+                      :append-to-body="true"
+                      :dropdown-position="'auto'"
+                      :dropdown-direction="'bottom'"
+                    />
+                  </CCol>
+                  <CCol md="4">
+                    <CFormSelect
+                      id="statusSelect"
+                      label="Status*"
+                      v-model="sparepartForm.status"
+                      placeholder="Choose Status"
+                    >
+                      <option disabled value="">Choose Status</option>
+                      <option value="1">ORIGINAL PART</option>
+                      <option value="2">SIMILAR PART</option>
+                    </CFormSelect>
+                  </CCol>
+                  <CCol>
+                    <CFormInput
+                      id="vendorInput"
+                      label="Vendor"
+                      v-model="sparepartForm.vendor"
+                      placeholder="Vendor"
+                      :disabled="sparepartForm.newPart !== '1'"
+                    />
+                  </CCol>
+                  <CCol md="1">
+                    <CFormInput
+                      v-if="sparepartForm.newPart === '1'"
+                      id="priceInput"
+                      label="Price"
+                      v-model="displayPrice"
+                      placeholder="Price"
+                      type="text"
+                    />
+                    <CFormInput
+                      v-else
+                      id="priceInput"
+                      label="Price"
+                      :value="formatCurrency(sparepartForm.price)"
+                      placeholder="Price"
+                      :disabled="true"
+                    />
+                  </CCol>
+                  <CCol md="1">
+                    <CFormInput
+                      id="quantityInput"
+                      label="Quantity*"
+                      v-model="sparepartForm.quantity"
+                      placeholder="Quantity"
+                      type="number"
+                      min="1"
+                    />
+                  </CCol>
+                  <CCol md="1">
+                    <CFormSelect
+                      id="isModifySelect"
+                      label="Modify*"
+                      v-model="sparepartForm.isModify"
+                    >
+                      <option value="NO">NO</option>
+                      <option value="YES">YES</option>
+                    </CFormSelect>
+                  </CCol>
+                  <CCol md="1">
+                    <CFormInput
+                      id="totalInput"
+                      label="Total"
+                      :value="formatCurrency(sparepartForm.total)"
+                      placeholder="Total"
+                      :disabled="true"
+                    />
+                  </CCol>
+                  <CCol md="8">
+                    <CFormInput
+                      id="sparepartDescription"
+                      label="Input Description"
+                      v-model="sparepartForm.description"
+                      placeholder="Text Description"
+                    />
+                  </CCol>
+                  <CCol md="4" v-if="sparepartForm.newPart === '1'">
+                    <CFormInput
+                      id="materialNumberInput"
+                      label="Input Material Number"
+                      v-model="sparepartForm.materialNumber"
+                      placeholder="Material Number"
+                    />
+                  </CCol>
+                </CRow>
+                <CRow class="mt-2 g-2 align-items-center">
+                  <CCol md="10" class="d-flex gap-2">
+                    <CButton style="color: white;" color="success" @click="submitSparepart">Submit</CButton>
+                    <CButton style="color: white;" color="secondary" @click="cancelSparepart">Cancel</CButton>
+                  </CCol>
+                </CRow>
+              </div>
+              <div v-if="sparepart_list.length > 0">
+                <CTable bordered hover responsive>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell>No</CTableHeaderCell>
+                      <CTableHeaderCell>Sparepart</CTableHeaderCell>
+                      <CTableHeaderCell>Part Similar</CTableHeaderCell>
+                      <CTableHeaderCell>Price</CTableHeaderCell>
+                      <CTableHeaderCell>Vendor</CTableHeaderCell>
+                      <CTableHeaderCell>Quantity</CTableHeaderCell>
+                      <CTableHeaderCell>Status</CTableHeaderCell>
+                      <CTableHeaderCell>Is Modify</CTableHeaderCell>
+                      <CTableHeaderCell>Total</CTableHeaderCell>
+                      <CTableHeaderCell>Description</CTableHeaderCell>
+                      <CTableHeaderCell>Actions</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    <CTableRow v-for="(sparepart, index) in sparepart_list" :key="index">
+                      <CTableDataCell>{{ index + 1 }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.sparepart?.label || '' }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.partSimilar || '' }}</CTableDataCell>
+                      <CTableDataCell>{{ formatCurrency(sparepart.price) }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.vendor }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.quantity || 1 }}</CTableDataCell>
+                      <CTableDataCell>{{ mapSparepartStatus(sparepart.status) }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.isModify || 'NO' }}</CTableDataCell>
+                      <CTableDataCell>{{ formatCurrency(sparepart.total || 0) }}</CTableDataCell>
+                      <CTableDataCell>{{ sparepart.description || '' }}</CTableDataCell>
+                      <CTableDataCell>
+                        <CButton color="warning" size="sm" class="me-2" @click="editSparepart(index)">Edit</CButton>
+                        <CButton color="danger" size="sm" @click="removeSparepart(index)">Remove</CButton>
+                      </CTableDataCell>
+                    </CTableRow>
+                  </CTableBody>
+                </CTable>
+                <CButton
+                  color="primary"
+                  class="mt-2"
+                  @click="showSparepartForm = true"
+                >
+                  Tambah Sparepart
+                </CButton>
+                <div class="mt-3 p-3 bg-light rounded">
+                  <CRow>
+                    <CCol md="3">
+                      <small class="text-muted">Total Sparepart Cost</small>
+                      <div class="fw-bold">{{ formatCurrency(totalSparepartCost) }}</div>
+                    </CCol>
+                  </CRow>
+                </div>
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+      <CRow md="12" class="mb-3">
+        <CCol>
+          <CCard>
+            <CCardBody>
               <CRow>
                 <CCol>
                   <label style="font-size: medium; font-weight: bold;" class="form-label">Yokoten</label>
@@ -930,10 +1150,10 @@
                         </CFormSelect>
                       </CCol>
                       <CCol xs="auto">
-                        <CButton color="success" @click="submitYokoten">Submit</CButton>
+                        <CButton style="color: white;" color="success" @click="submitYokoten">Submit</CButton>
                       </CCol>
                       <CCol xs="auto">
-                        <CButton color="secondary" @click="cancelYokoten">Cancel</CButton>
+                        <CButton style="color: white;" color="secondary" @click="cancelYokoten">Cancel</CButton>
                       </CCol>
                     </CRow>
                   </div>
@@ -1051,12 +1271,12 @@
                             </option>
                           </CFormSelect>
                         </CCol>
-                        <CCol xs="auto">
-                          <CButton color="success" @click="submitCountermeasureKenapaTerjadi">Submit</CButton>
-                        </CCol>
-                        <CCol xs="auto">
-                          <CButton color="secondary" @click="cancelCountermeasureKenapaTerjadi">Cancel</CButton>
-                        </CCol>
+                      <CCol xs="auto">
+                        <CButton style="color: white;" color="success" @click="submitCountermeasureKenapaTerjadi">Submit</CButton>
+                      </CCol>
+                      <CCol xs="auto">
+                        <CButton style="color: white;" color="secondary" @click="cancelCountermeasureKenapaTerjadi">Cancel</CButton>
+                      </CCol>
                       </CRow>
                       <CRow v-if="typeof countermeasureKenapaTerjadiForm._editIdx === 'number'" class="mb-2 g-2">
                         <CCol xs="6" md="2">
@@ -1209,10 +1429,10 @@
                         </CFormSelect>
                       </CCol>
                       <CCol xs="auto">
-                        <CButton color="success" @click="submitCountermeasureKenapaLama">Submit</CButton>
+                        <CButton style="color: white;" color="success" @click="submitCountermeasureKenapaLama">Submit</CButton>
                       </CCol>
                       <CCol xs="auto">
-                        <CButton color="secondary" @click="cancelCountermeasureKenapaLama">Cancel</CButton>
+                        <CButton style="color: white;" color="secondary" @click="cancelCountermeasureKenapaLama">Cancel</CButton>
                       </CCol>
                     </CRow>
                     <CRow v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'" class="mb-2 g-2">
@@ -1305,93 +1525,6 @@
       </CRow>
       <CRow md="12" class="mb-3">
         <CCol>
-          <CCard>
-            <CCardBody>
-              <label style="font-size: medium; font-weight: bold;" class="form-label">Sparepart</label>
-              <div v-if="sparepartList.length === 0">
-                <CButton color="primary" @click="showSparepartForm = true">Tambah Sparepart</CButton>
-              </div>
-              <div v-if="showSparepartForm" class="d-flex align-items-center mb-2">
-                <Treeselect
-                  id="sparepartSelect"
-                  v-model="sparepartForm.sparepart"
-                  :options="sparepartOptions"
-                  :searchable="true"
-                  :clearable="true"
-                  :children="false"
-                  placeholder="Select or input sparepart"
-                  :value-consists-of="['id']"
-                  :value-key="'id'"
-                  :label-key="'label'"
-                  class="me-2"
-                  style="width: 300px"
-                />
-                <CFormInput
-                  v-model="sparepartForm.price"
-                  placeholder="Price"
-                  type="number"
-                  class="me-2"
-                  style="width: 100px"
-                />
-                <CFormInput
-                  v-model="sparepartForm.vendor"
-                  placeholder="Vendor"
-                  class="me-2"
-                  style="width: 150px"
-                />
-                <CFormSelect
-                  v-model="sparepartForm.status"
-                  class="me-2"
-                  style="width: 150px"
-                >
-                  <option disabled value="">Status</option>
-                  <option value="Available">Available</option>
-                  <option value="Ordered">Ordered</option>
-                  <option value="Not Available">Not Available</option>
-                </CFormSelect>
-                <CButton color="success" class="me-2" @click="submitSparepart">Submit</CButton>
-                <CButton color="secondary" @click="cancelSparepart">Cancel</CButton>
-              </div>
-              <div v-if="sparepartList.length > 0">
-                <CTable bordered hover responsive>
-                  <CTableHead>
-                    <CTableRow>
-                      <CTableHeaderCell>No</CTableHeaderCell>
-                      <CTableHeaderCell>Sparepart</CTableHeaderCell>
-                      <CTableHeaderCell>Price</CTableHeaderCell>
-                      <CTableHeaderCell>Vendor</CTableHeaderCell>
-                      <CTableHeaderCell>Status</CTableHeaderCell>
-                      <CTableHeaderCell>Actions</CTableHeaderCell>
-                    </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                    <CTableRow v-for="(sparepart, index) in sparepartList" :key="index">
-                      <CTableDataCell>{{ index + 1 }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.sparepart?.label || '' }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.price }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.vendor }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.status }}</CTableDataCell>
-                      <CTableDataCell>
-                        <CButton color="warning" size="sm" class="me-2" @click="editSparepart(index)">Edit</CButton>
-                        <CButton color="danger" size="sm" @click="removeSparepart(index)">Remove</CButton>
-                      </CTableDataCell>
-                    </CTableRow>
-                  </CTableBody>
-                </CTable>
-                <CButton
-                  color="primary"
-                  class="mt-2"
-                  @click="showSparepartForm = true"
-                >
-                  Tambah Sparepart
-                </CButton>
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <CRow md="12" class="mb-3">
-        <CCol>
           <!-- Legend Status -->
           <CRow class="mb-4">
             <CCol>
@@ -1423,8 +1556,8 @@
                   <h5>Approval Status 5 Why</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                      <CButton size="sm" color="success" @click="onApprove('5why')">Approve</CButton>
-                      <CButton size="sm" color="info" class="ms-2" @click="onComment('5why')">Comment</CButton>
+                      <CButton style="color: white;" size="sm" color="success" @click="onApprove('5why')">Approve</CButton>
+                      <CButton style="color: white;" size="sm" color="info" class="ms-2" @click="onComment('5why')">Comment</CButton>
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1447,8 +1580,8 @@
                   <h5 class="mt-4">Approval Status Countermeasure</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                      <CButton size="sm" color="success" @click="onApprove('counter')">Approve</CButton>
-                      <CButton size="sm" color="info" class="ms-2" @click="onComment('counter')">Comment</CButton>
+                      <CButton style="color: white;" size="sm" color="success" @click="onApprove('counter')">Approve</CButton>
+                      <CButton style="color: white;" size="sm" color="info" class="ms-2" @click="onComment('counter')">Comment</CButton>
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1471,8 +1604,8 @@
                   <h5 class="mt-4">Approval Status Departement Head</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                    <CButton size="sm" color="success" @click="onApprove('dph')">Approve</CButton>
-                    <CButton size="sm" color="info" class="ms-2" @click="onComment('dph')">Comment</CButton>
+                    <CButton style="color: white;" size="sm" color="success" @click="onApprove('dph')">Approve</CButton>
+                    <CButton style="color: white;" size="sm" color="info" class="ms-2" @click="onComment('dph')">Comment</CButton>
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1672,6 +1805,7 @@ import {
 } from '@coreui/vue'
 import Treeselect from 'vue3-treeselect'
 import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 import { cilClock } from '@coreui/icons'
 import { CIcon } from '@coreui/icons-vue'
 import LegendStatus from '@/views/ProblemHistory/components/LegendStatus.vue'
@@ -1736,7 +1870,7 @@ export default {
   },
 
   setup(props, { emit }) {
-    const { submitData } = toRefs(props)
+    const { submitData } = toRefs(props || {})
     console.log('EditProblemModal props:', JSON.stringify(props, null, 2))
 
     const parseFrealProb = (frealProb) => {
@@ -1815,6 +1949,7 @@ export default {
     }
 
     const countermeasureKenapaTerjadiList = ref([])
+    const lastGeneratedSparepartId = ref(0)
     const showCountermeasureKenapaTerjadiForm = ref(false)
     const countermeasureKenapaTerjadiForm = ref({
       isAction: false,
@@ -1946,6 +2081,9 @@ export default {
       cmShFeedback: submitData.value?.cmShFeedback ?? '',
       cmTlFeedback: submitData.value?.cmTlFeedback ?? '',
       cmDhFeedback: submitData.value?.cmDhFeedback ?? '',
+    }),
+    totalSparepartCost = computed(() => {
+      return sparepart_list.value.reduce((sum, item) => sum + (Number(item.total) || 0), 0)
     })
 
     console.log('Initial localSubmit setup:', JSON.stringify(localSubmit.value, null, 2))
@@ -2031,6 +2169,7 @@ export default {
     }
 
     watch(submitData, (newVal) => {
+      if (!newVal) return;
       let rootcausesArray = []
       if (
         Array.isArray(newVal?.rootcauses5Why) &&
@@ -2207,12 +2346,62 @@ export default {
           submitData.value.yokoten
           ? JSON.parse(submitData.value.yokoten)
           : []
-      sparepartList.value = Array.isArray(submitData.value?.sparepartList)
-        ? submitData.value.sparepartList
-        : typeof submitData.value?.sparepartList === 'string' &&
-          submitData.value.sparepartList
-          ? JSON.parse(submitData.value.sparepartList)
-          : []
+      sparepart_list.value = Array.isArray(submitData.value?.sparepart_list)
+        ? submitData.value.sparepart_list.map(item => ({
+            ...item,
+            quantity: parseInt(item.quantity) || 1,
+            total: parseFloat(item.total) || 0
+          }))
+        : typeof submitData.value?.sparepart_list === 'string' &&
+          submitData.value.sparepart_list
+        ? JSON.parse(submitData.value.sparepart_list).map(item => ({
+            ...item,
+            quantity: parseInt(item.quantity) || 1,
+            total: parseFloat(item.total) || 0
+          }))
+        : []
+
+      // Populate missing fields for existing spareparts
+      let populatedCount = 0;
+      sparepart_list.value = sparepart_list.value.map(item => {
+        if (!item.material_number || !item.sparepart_id) {
+          const found = allSpareparts.value.find(sp => sp.sparepart_nm === item.sparepart?.label);
+          if (found) {
+            populatedCount++;
+            return {
+              ...item,
+              material_number: item.material_number || found.material_number,
+              sparepart_id: item.sparepart_id || found.sparepart_id,
+              sparepartTr: found.sparepartTr || item.sparepartTr || `${localSubmit.value.fidProblem}-${found.material_number}`,
+              price: item.price || found.price,
+              vendor: item.vendor || found.vendor,
+              status: item.status || found.status,
+            };
+          }
+        }
+        return item;
+      });
+      console.log(`Sparepart population: ${populatedCount} items populated, total ${sparepart_list.value.length} spareparts.`);
+      if (populatedCount > 0) {
+        console.log('Population successful for existing spareparts.');
+      }
+
+      // Ensure sparepart object is properly formatted for new parts
+      sparepart_list.value = sparepart_list.value.map(item => {
+        if (item.newPart === '1' && typeof item.sparepart === 'string') {
+          return {
+            ...item,
+            sparepart: { label: item.sparepart, id: item.sparepart_id || null }
+          };
+        }
+        return item;
+      });
+
+      // Convert partSimilar from object to string if necessary
+      sparepart_list.value = sparepart_list.value.map(item => ({
+        ...item,
+        partSimilar: item.partSimilar && typeof item.partSimilar === 'object' ? item.partSimilar.text || '' : item.partSimilar,
+      }));
     })
 
 
@@ -2284,6 +2473,21 @@ export default {
           alert('Please select the PM Category.')
           return
         }
+
+        // Validate that all spareparts have sparepart_id and sparepartTr is consistent
+        // if (localSubmit.value.sparepart_list && localSubmit.value.sparepart_list.length > 0) {
+        //   for (const sp of localSubmit.value.sparepart_list) {
+        //     // if (!sp.sparepart_id) {
+        //     //   alert('All spareparts must have sparepart_id before submitting.')
+        //     //   return
+        //     // }
+        //     // Ensure sparepartTr matches sparepart_id or material_number
+        //     if (!sp.sparepartTr || (sp.sparepartTr !== sp.sparepart_id && sp.sparepartTr !== sp.material_number)) {
+        //       sp.sparepartTr = sp.sparepart_id;
+        //     }
+        //   }
+        // }
+
         isSaving.value = true
 
         // Helper: resolve PIC label dari ID
@@ -2311,7 +2515,7 @@ export default {
           countermeasureKenapaLamaList.value,
         )
         localSubmit.value.yokotenList = mapPicToLabel(yokotenList.value)
-        localSubmit.value.sparepartList = sparepartList.value
+        localSubmit.value.sparepart_list = sparepart_list.value
 
 
 
@@ -2376,7 +2580,7 @@ export default {
           pmCategory: pmCategoryForSubmit,
           cmKenapaLama: localSubmit.value.countermeasureKenapaLamaList ?? [],
           cmKenapaTerjadi: localSubmit.value.countermeasureKenapaTerjadiList ?? [],
-          sparepartList: localSubmit.value.sparepartList ?? [],
+          sparepart_list: localSubmit.value.sparepart_list ?? [],
           fiveWhyTlApprove: localSubmit.value.fiveWhyTlApprove ?? 0,
           fiveWhyLhApprove: localSubmit.value.fiveWhyLhApprove ?? 0,
           fiveWhyShApprove: localSubmit.value.fiveWhyShApprove ?? 0,
@@ -2795,7 +2999,8 @@ export default {
 
     const picOptions = ref([])
     const sparepartOptions = ref([])
-    const sparepartList = ref([])
+    const allSpareparts = ref([])
+    const sparepart_list = ref([])
     const filteredMemberOption = ref([])
     const showSparepartForm = ref(false)
     const currentUserRole = ref('')
@@ -2809,22 +3014,61 @@ export default {
       sparepart: null,
       price: '',
       vendor: '',
-      status: ''
+      status: '1',
+      quantity: 1,
+      total: 0,
+      isModify: 'NO',
+      description: ''
     })
+
+    // Dummy options for static test
+    const dummyOptions = ref([
+      { value: 1, text: 'Dummy Sparepart 1' },
+      { value: 2, text: 'Dummy Sparepart 2' },
+      { value: 3, text: 'Dummy Sparepart 3' },
+      { value: 4, text: 'Dummy Sparepart 4' },
+      { value: 5, text: 'Dummy Sparepart 5' }
+    ])
+    const dummySelected = ref(null)
+
+    watch(showSparepartForm, (newVal) => {
+      if (newVal) {
+        console.log('Watcher triggered: showSparepartForm is true, loading initial sparepart options');
+        onSparepartSearch('');
+      }
+    });
 
     const nameWithLang = (option) => {
       return `${option.label} — [${option.id}]`
     }
 
+    const getLastSparepartId = async () => {
+      try {
+        console.log('Fetching last sparepart_id...');
+        const sparepartRes = await api.get('/smartandon/spareparts/last-id');
+        console.log('API response for last sparepart_id:', sparepartRes.status);
+
+        if (sparepartRes.status === 200) {
+          const maxId = sparepartRes.data.data || 0;
+          console.log('Found max sparepart_id:', maxId);
+          return maxId;
+        }
+        throw new Error(`Failed to get last sparepart_id, status: ${sparepartRes.status}`);
+      } catch (e) {
+        console.error('Error getting last sparepart_id:', e);
+        return 0; // Return 0 as fallback
+      }
+    };
+
     const onSparepartSearch = async (searchQuery) => {
       console.log('onSparepartSearch called with:', searchQuery);
       try {
         const params = { limit: 100 };
-        if (searchQuery) {
-          params.search = searchQuery;
+        if (searchQuery && searchQuery.trim() !== '') {
+          params.search = searchQuery.trim();
         }
         console.log('Calling API with params:', params);
-        const sparepartRes = await api.get('/smartandon/spareparts', { params });
+        const sparepartRes = await api.get('/smartandon/spareparts', params);
         console.log('API response status:', sparepartRes.status);
         if (sparepartRes.status === 200) {
           console.log('Sparepart options data for search:', searchQuery, sparepartRes.data);
@@ -2833,23 +3077,31 @@ export default {
           const spareparts = sparepartRes.data.data || sparepartRes.data;
           sparepartOptions.value = Array.isArray(spareparts)
             ? spareparts.map((sp) => ({
-                id: sp.sparepart_id,
-                label: sp.sparepart_nm,
-                price: sp.price || '',
-                vendor: sp.vendor || '',
-                status: sp.status || '',
-              })).sort((a, b) => a.label.localeCompare(b.label))
+                value: sp.sparepart_id,
+                text: sp.sparepart_nm,
+                price: sp.price,
+                vendor: sp.vendor,
+                status: sp.status,
+                material_number: sp.material_number,
+                sparepart_id: sp.sparepart_id,
+              })).sort((a, b) => a.text.localeCompare(b.text))
             : [];
-          console.log('Processed sparepart options:', sparepartOptions.value);
-          console.log('Sparepart options length:', sparepartOptions.value.length);
+          console.log('Processed sparepart options length:', sparepartOptions.value.length);
           console.log('First few sparepart options:', sparepartOptions.value.slice(0, 5));
+          console.log('ModelSelect should now have options:', sparepartOptions.value);
         } else {
           throw new Error(`Failed to load spareparts, status: ${sparepartRes.status}`);
         }
       } catch (e) {
         console.error('Error loading spareparts for search:', e);
         sparepartOptions.value = [];
+        console.log('Options set to empty due to error');
       }
+    };
+
+    const handleSparepartSearch = (searchQuery) => {
+      console.log('handleSparepartSearch called with:', searchQuery);
+      onSparepartSearch(searchQuery);
     };
 
     onMounted(async () => {
@@ -2940,8 +3192,18 @@ export default {
         filteredMemberOption.value = []
       }
 
+      // Load all spareparts for populating existing data
+      try {
+        const allSparepartRes = await api.get('/smartandon/spareparts');
+        allSpareparts.value = allSparepartRes.data.data || [];
+        console.log('All spareparts loaded:', allSpareparts.value.length);
+      } catch (e) {
+        console.error('Error loading all spareparts:', e);
+        allSpareparts.value = [];
+      }
+
       // Load initial sparepart options
-      await onSparepartSearch('')
+      await onSparepartSearch('');
     })
 
     const addRootcause = () => {
@@ -2998,40 +3260,245 @@ export default {
       }
     }
 
+    const submitSparepart = async () => {
+      try {
+        console.log('submitSparepart called');
+        console.log('sparepartForm entire state:', JSON.stringify(sparepartForm.value, null, 2));
 
-
-
-
-
-
-    const submitSparepart = () => {
-      if (typeof sparepartForm.value._editIdx === 'number') {
-        sparepartList.value[sparepartForm.value._editIdx] = { ...sparepartForm.value }
-        delete sparepartForm.value._editIdx
+      const selectedSparepart = sparepartForm.value.sparepart;
+      const selectedPartSimilar = sparepartForm.value.partSimilar;
+      if (sparepartForm.value.newPart === '1') {
+        if (!selectedSparepart || selectedSparepart.trim() === '') {
+          alert('Please enter a valid sparepart name.');
+          console.log('Sparepart name is empty for new part, aborting submit');
+          return;
+        }
       } else {
-        sparepartList.value.push({ ...sparepartForm.value })
+        if (!selectedSparepart || !selectedSparepart.text || selectedSparepart.text.trim() === '') {
+          alert('Please select a sparepart with a valid name.');
+          console.log('Sparepart name is empty, aborting submit');
+          return;
+        }
       }
-      showSparepartForm.value = false
-      sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '' }
+
+        if (!sparepartForm.value.status || sparepartForm.value.status === '') {
+          alert('Please select a status before submitting.');
+          return;
+        }
+
+        if (!sparepartForm.value.quantity || sparepartForm.value.quantity < 1) {
+          alert('Please enter a valid quantity (at least 1) before submitting.');
+          return;
+        }
+
+        console.log('selectedSparepart:', JSON.stringify(selectedSparepart, null, 2));
+        console.log('selectedPartSimilar:', JSON.stringify(selectedPartSimilar, null, 2));
+
+        let sparepartObj = {};
+        let price = '';
+        let vendor = '';
+        let material_number = '';
+        let sparepart_id = '';
+
+        if (sparepartForm.value.newPart === '1') {
+          // For new part, sparepart is a string (name)
+          sparepartObj = { label: selectedSparepart };
+          price = sparepartForm.value.price || '';
+          vendor = sparepartForm.value.vendor ? sparepartForm.value.vendor.toUpperCase() : '';
+          material_number = sparepartForm.value.materialNumber || '';
+          // Check if editing existing new part
+          if (typeof sparepartForm.value._editIdx === 'number') {
+            // Use existing sparepart_id if editing
+            sparepart_id = sparepart_list.value[sparepartForm.value._editIdx]?.sparepart_id || '';
+            console.log('Using existing sparepart_id for edit:', sparepart_id);
+          }
+          if (!sparepart_id || sparepart_id === '' || sparepart_id === '0' || sparepart_id === null) {
+            // Generate new sparepart_id using local counter to avoid collision
+            if (lastGeneratedSparepartId.value === 0) {
+              lastGeneratedSparepartId.value = await getLastSparepartId();
+            }
+            lastGeneratedSparepartId.value += 1;
+            sparepart_id = lastGeneratedSparepartId.value.toString();
+            console.log('Generated new sparepart_id:', sparepart_id);
+            // Create the new sparepart in the master table
+            try {
+              await api.post('/smartandon/spareparts', {
+                sparepart_nm: selectedSparepart,
+                material_number: material_number,
+                sparepart_id: sparepart_id,
+                price: price,
+                vendor: vendor
+              });
+              console.log('New sparepart created in master table');
+            } catch (createError) {
+              console.error('Error creating sparepart in master table:', createError);
+              // Continue anyway, as the sparepart is still added to the problem
+            }
+          }
+        } else {
+          sparepartObj = { id: selectedSparepart.value, label: selectedSparepart.text };
+          if (sparepartForm.value.status === '1' || sparepartForm.value.status === 1) {
+            // ORIGINAL PART
+            console.log('MASUK SPAREPART 1');
+            price = selectedSparepart.price || '';
+            vendor = selectedSparepart.vendor || '';
+            material_number = selectedSparepart.material_number || '';
+            sparepart_id = selectedSparepart.sparepart_id || '';
+          } else if (sparepartForm.value.status === '2' || sparepartForm.value.status === 2) {
+            console.log('MASUK SPAREPART 2');
+            // SIMILAR PART
+            if (selectedPartSimilar && typeof selectedPartSimilar === 'object') {
+              console.log('MASUK SPAREPART 3');
+              price = selectedPartSimilar.price || '';
+              vendor = selectedPartSimilar.vendor || '';
+              material_number = selectedPartSimilar.material_number || '';
+              sparepart_id = selectedPartSimilar.sparepart_id || '';
+            } else {
+              console.log('MASUK SPAREPART 4');
+              price = selectedSparepart.price || '';
+              vendor = selectedSparepart.vendor || '';
+              material_number = selectedSparepart.material_number || '';
+              sparepart_id = selectedSparepart.sparepart_id || '';
+            }
+          }
+        }
+
+        console.log('Hasil sparepart id:', sparepart_id);
+
+        const newItem = {
+          sparepart: sparepartObj,
+          partSimilar: sparepartForm.value.partSimilar?.text || null,
+          price: price,
+          material_number: sparepartForm.value.materialNumber || material_number,
+          vendor: vendor,
+          quantity: sparepartForm.value.quantity || 1,
+          status: parseInt(sparepartForm.value.status) || 0,
+          isModify: sparepartForm.value.isModify || 'NO',
+          total: sparepartForm.value.total || 0,
+          sparepart_id: sparepart_id,
+          newPart: sparepartForm.value.newPart || 0,
+          description: sparepartForm.value.description || '',
+          sparepartTr: `${localSubmit.value.fidProblem}-${material_number || Date.now()}`
+        };
+        newItem.sparepart_id = sparepart_id;
+        console.log('newItem created:', JSON.stringify(newItem, null, 2));
+
+        // Console log name to total for each submit
+        console.log(`Submitting Sparepart: Name=${newItem.sparepart.label}, Price=${newItem.price}, Vendor=${newItem.vendor}, Quantity=${newItem.quantity}, Status=${newItem.status}, Total=${newItem.total}`);
+
+        console.log('sparepart_list length before add:', sparepart_list.value.length);
+        console.log('Is editing? _editIdx:', sparepartForm.value._editIdx);
+
+        if (typeof sparepartForm.value._editIdx === 'number') {
+          sparepart_list.value[sparepartForm.value._editIdx] = newItem;
+          console.log('Updated item at index:', sparepartForm.value._editIdx);
+          delete sparepartForm.value._editIdx
+        } else {
+          sparepart_list.value.push(newItem);
+          console.log('Pushed new item to list');
+        }
+
+        console.log('sparepart_list length after add:', sparepart_list.value.length);
+        console.log('Updated sparepart_list:', JSON.stringify(sparepart_list.value, null, 2));
+
+        showSparepartForm.value = false
+        sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '1', quantity: 1, total: 0, newPart: 0, description: ''}
+        console.log('Form reset and hidden');
+      } catch (error) {
+        console.error('Error in submitSparepart:', error);
+      }
     }
 
-    const editSparepart = (idx) => {
-      const item = sparepartList.value[idx]
+    const editSparepart = async (idx) => {
+      const item = sparepart_list.value[idx]
       if (item) {
-        sparepartForm.value = { ...item }
+        if (sparepartOptions.value.length === 0) {
+          await onSparepartSearch('');
+        }
+        // Find the matching sparepart option object by value to set for Multiselect
+        const matchedSparepartOption = sparepartOptions.value.find(
+          (opt) => opt.value === item?.sparepart?.value || opt.value === item?.sparepart?.id
+        ) || null;
+
+        // Find the matching partSimilar option object by value or text to set for Multiselect
+        const matchedPartSimilarOption = sparepartOptions.value.find(
+          (opt) => {
+            if (typeof item.partSimilar === 'string') {
+              return opt.text === item.partSimilar;
+            } else if (item.partSimilar && typeof item.partSimilar === 'object') {
+              return opt.value === item.partSimilar.value || opt.value === item.partSimilar.id;
+            }
+            return false;
+          }
+        ) || null;
+
+        console.log("INI STATUS:", item.status);
+        // Map status string to number string
+        let statusValue = '1';
+        if (item.status === '1') {
+          console.log("STATUS: 1");
+          statusValue = '1';
+        } else if (item.status === '2') {
+          console.log("STATUS: 2");
+          statusValue = '2';
+        }
+
+        // Handle newPart: if '1', set sparepart as string (label), else as option object
+        let sparepartValue;
+        if (item.newPart === '1') {
+          sparepartValue = item.sparepart?.label || '';
+        } else {
+          sparepartValue = matchedSparepartOption;
+        }
+
+        console.log("NEW PART:", item.newPart);
+        console.log("SPAREPART VALUE 1:", sparepartValue);
+
+        sparepartForm.value = {
+          sparepart: sparepartValue,
+          partSimilar: matchedPartSimilarOption,
+          price: item.price || '',
+          vendor: item.vendor || '',
+          quantity: item.quantity || 1,
+          status: item.status,
+          isModify: item.isModify || 'NO',
+          total: item.total || 0,
+          newPart: item.newPart || '0',
+          description: item.description || '',
+          materialNumber: item.material_number || ''
+        };
         showSparepartForm.value = true
         sparepartForm.value._editIdx = idx
       }
     }
 
     const removeSparepart = (idx) => {
-      sparepartList.value.splice(idx, 1)
+      sparepart_list.value.splice(idx, 1)
     }
 
     const cancelSparepart = () => {
       showSparepartForm.value = false
-      sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '' }
+      sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '', quantity: 1, total: 0, newPart: 0, description: ''}
     }
+
+    const toggleSparepartForm = () => {
+      console.log('Tambah Sparepart clicked, showing form');
+      // Reset the form to null/empty values except status defaults to '1'
+      sparepartForm.value = {
+        sparepart: null,
+        price: '',
+        vendor: '',
+        status: '1',
+        quantity: 1,
+        total: 0,
+        isModify: 'NO',
+        newPart: 0,
+        description: ''
+      };
+      showSparepartForm.value = true;
+    }
+
+
 
     const getFeedbackField = (approveField) => {
       return approveField.replace('Approve', 'Feedback');
@@ -3203,6 +3670,108 @@ export default {
       commentText.value = ''
     }
 
+    const onSparepartSelect = (selected) => {
+      console.log('onSparepartSelect called with:', selected, 'Type:', typeof selected); // Enhanced: Log selected and its type
+
+      if (selected && typeof selected === 'object') {
+        console.log('Using selected object directly');
+        sparepartForm.value.price = selected.price || '';
+        sparepartForm.value.vendor = selected.vendor || '';
+        // Set status to '1' (ORIGINAL PART) by default
+        sparepartForm.value.status = '1';
+        console.log('Set price:', sparepartForm.value.price, 'vendor:', sparepartForm.value.vendor, 'status:', sparepartForm.value.status);
+      } else {
+        console.log('Clearing sparepart fields (no selection or invalid)');
+        sparepartForm.value.price = '';
+        sparepartForm.value.vendor = '';
+        sparepartForm.value.status = '1';
+        sparepartForm.value.quantity = 1;
+        sparepartForm.value.total = 0;
+        sparepartForm.value.newPart = 0;
+        sparepartForm.value.description = '';
+      }
+    }
+
+    const onPartSimilarSelect = (selected) => {
+      console.log('onPartSimilarSelect called with:', selected);
+      if (selected && typeof selected === 'object') {
+        console.log('Setting part similar fields');
+        sparepartForm.value.price = selected.price || '';
+        sparepartForm.value.vendor = selected.vendor || '';
+        // Recalculate total based on new price
+        const p = parseFloat(selected.price) || 0;
+        const q = parseFloat(sparepartForm.value.quantity) || 1;
+        sparepartForm.value.total = (p * q).toFixed(2);
+        console.log('Set price:', sparepartForm.value.price, 'vendor:', sparepartForm.value.vendor, 'total:', sparepartForm.value.total);
+      } else {
+        console.log('Clearing part similar fields');
+        sparepartForm.value.price = '';
+        sparepartForm.value.vendor = '';
+        sparepartForm.value.total = 0;
+      }
+    }
+
+    // Combined watch for sparepart, partSimilar, and status to populate price/vendor accordingly
+    watch(
+      [() => sparepartForm.value.sparepart, () => sparepartForm.value.partSimilar, () => sparepartForm.value.status],
+      ([newSparepart, newPartSimilar, newStatus]) => {
+        console.log('Combined watch triggered:', { newSparepart, newPartSimilar, newStatus });
+        // For new parts, don't overwrite price/vendor, keep the values set in editSparepart
+        if (sparepartForm.value.newPart === '1') {
+          return;
+        }
+        if (newStatus === '1' || newStatus === 1) {
+          // ORIGINAL PART - populate from sparepart
+          if (newSparepart && typeof newSparepart === 'object') {
+            sparepartForm.value.price = newSparepart.price || '';
+            sparepartForm.value.vendor = newSparepart.vendor || '';
+            console.log('Populated price/vendor from sparepart for ORIGINAL PART');
+          } else {
+            sparepartForm.value.price = '';
+            sparepartForm.value.vendor = '';
+          }
+        } else if (newStatus === '2' || newStatus === 2) {
+          // SIMILAR PART - populate from partSimilar
+          if (newPartSimilar && typeof newPartSimilar === 'object') {
+            sparepartForm.value.price = newPartSimilar.price || '';
+            sparepartForm.value.vendor = newPartSimilar.vendor || '';
+            console.log('Populated price/vendor from partSimilar for SIMILAR PART');
+          } else {
+            sparepartForm.value.price = '';
+            sparepartForm.value.vendor = '';
+          }
+        } else {
+          sparepartForm.value.price = '';
+          sparepartForm.value.vendor = '';
+        }
+      },
+      { immediate: true }
+    );
+
+    // Watch price and quantity changes to auto-calculate total
+    watch([() => sparepartForm.value.price, () => sparepartForm.value.quantity], ([price, quantity]) => {
+      const p = parseFloat(price) || 0;
+      const q = parseFloat(quantity) || 1;
+      sparepartForm.value.total = (p * q).toFixed(2);
+      console.log('Total calculated:', sparepartForm.value.total, 'from price:', price, 'quantity:', quantity);
+    }, { immediate: true });
+
+    // Watch for changes to status to populate price/vendor based on selected sparepart and status
+    
+
+    // Watch for newPart change to clear fields when YES
+    // Removed watcher to prevent input reset when newPart is '1'
+    // watch(() => sparepartForm.value.newPart, (newVal) => {
+    //   if (newVal === '1') {
+    //     // Only clear fields if not editing an existing sparepart
+    //     sparepartForm.value.sparepart = null;
+    //     sparepartForm.value.vendor = '';
+    //     sparepartForm.value.quantity = 1;
+    //     sparepartForm.value.total = 0;
+    //     sparepartForm.value.price = '';
+    //   }
+    // });
+
     const cancelComment = () => {
       showCommentModal.value = false
       commentText.value = ''
@@ -3243,15 +3812,19 @@ export default {
       removeCountermeasureKenapaLama,
       picOptions,
       sparepartOptions,
-      sparepartList,
+      sparepart_list,
       showSparepartForm,
       sparepartForm,
       submitSparepart,
       editSparepart,
       removeSparepart,
       cancelSparepart,
+      toggleSparepartForm,
       nameWithLang,
       onSparepartSearch,
+      handleSparepartSearch,
+      onSparepartSelect,
+      onPartSimilarSelect,
       editStepRepair,
       editingStepRepair,
       yokotenForm,
@@ -3278,6 +3851,7 @@ export default {
       currentApproveField,
       submitComment,
       cancelComment,
+      totalSparepartCost,
     }
   },
   
@@ -3287,6 +3861,14 @@ export default {
     },
     pmCategoryInvalid() {
       return this.localSubmit.oCategory === '3' && !this.localSubmit.pmCategory;
+    },
+    displayPrice: {
+      get() {
+        return this.formatCurrency(this.sparepartForm.price);
+      },
+      set(value) {
+        this.sparepartForm.price = value.replace(/[^\d]/g, '');
+      }
     },
     displayImg_problem() {
       if (this.imagePreviews.whyImage) {
@@ -3434,6 +4016,32 @@ export default {
     }
   },
   methods: {
+    mapSparepartStatus(status) {
+      const statusMap = {
+        1: 'ORIGINAL PART',
+        2: 'SIMILAR PART',
+      }
+      if (typeof status === 'string') {
+        // Try to parse string to number if possible
+        const num = parseInt(status, 10)
+        if (!isNaN(num)) {
+          return statusMap[num] || status.toUpperCase()
+        }
+        return status.toUpperCase()
+      }
+      return statusMap[status] || ''
+    },
+    formatCurrency(value) {
+      if (value === null || value === undefined || value === '') return 'Rp 0';
+      const num = parseFloat(value);
+      if (isNaN(num)) return 'Rp 0';
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(num);
+    },
     onFileChange(event, field) {
       const file = event.target.files[0]
       if (file) {
@@ -3569,4 +4177,14 @@ export default {
 .vue-treeselect__menu {
   z-index: 9999;
 }
+</style>
+
+<style>
+/* Override Multiselect option hover color to blue */
+.multiselect__option--highlight,
+.multiselect__option--selected {
+  background-color: #007bff !important; /* Bootstrap primary blue */
+  color: white !important;
+}
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <CRow class="mb-3">
+<CRow class="mb-3">
     <CCol class="mb-3">
       <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
         <CCardBody>

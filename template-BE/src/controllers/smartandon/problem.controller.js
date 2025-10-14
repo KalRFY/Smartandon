@@ -163,16 +163,11 @@ const getProblemView = async (req, res, next) => {
       whereClause += ` AND fend_time IS NULL`;
     }
 
-    // if (problemCategory == 4) {
-    //   whereClause += `
-    //     OR (
-    //       ((fdur >= 659) AND (line_id = 1 OR line_id = 2)) OR
-    //       ((fdur >= 359) AND (line_id IN (3,4,5,6))) OR
-    //       (fdur >= 179 AND line_id = 7)
-    //     )
-    //   `;
-    //   whereClause += `)`;
-    // }
+    if (limitView == 'sparepart'){
+      limitClause = ``;
+      console.log('Iyaaaaa');
+      whereClause += ` AND fpart_change IS NOT NULL AND TRIM(fpart_change) != ''`;
+    }
 
     console.log(whereClause);
 
@@ -256,6 +251,7 @@ const getProblemView = async (req, res, next) => {
       }
       orderBy = 'ORDER BY date ASC';
     }
+
     const dataQuery = `
       SELECT ${selectFields}
       FROM v_current_error_2
@@ -389,22 +385,24 @@ const getProblemById = async (req, res, next) => {
         problemId,
         sparepart_category,
         material_number,
-        uom,
-        mrp,
-        rop,
+        isModify,
+        partSimilar,
+        Description,
         rov,
         lead_time,
         sparepart_nm,
+        sparepartTr,
         sparepart_id,
         uuid,
         price,
         vendor,
         replacement_material_number,
-        quantity
+        quantity,
+        newPart,
+        description
       FROM tb_sparepart
       WHERE problemId = :fid
     `
-
     const [uraianResult] = await sequelize.query(query2, {
       replacements: { fid },
     });
@@ -421,26 +419,47 @@ const getProblemById = async (req, res, next) => {
       replacements: { fid },
     });
 
+    const statusMapReverse = {
+      1: 1,
+      2: 2,
+    };
+
     const finalResult = {
       ...result[0],
+
       uraianResult: uraianResult.reduce((acc, item) => {
         acc[item.typeUraian] = item.ilustration;
         return acc;
       }, {}),
+
       descResult: descResult.reduce((desc, item) => {
         desc[item.typeUraian] = item.desc_nm;
         return desc;
       }, {}),
+
       analysis: analysis.reduce((analisis, item) => {
         analisis[item.analisys_category] = item.json_string;
         return analisis;
       }, {}),
-      sparepartsResult: sparepartsResult.reduce((sparepart, item) => {
-        sparepart[item.sparepart_category] = item.sparepart_nm;
-        sparepart[item.sparepart_category] = item.sparepart_id;
-        sparepart[item.sparepart_category] = item.quantity;
-        return sparepart;
-      }, {}),
+      
+      sparepart_list: sparepartsResult.map(item => ({
+        sparepart: { id: item.sparepart_id, label: item.sparepart_nm },
+        sparepartTr: item.sparepartTr,
+        price: item.price,
+        vendor: item.vendor,
+        quantity: item.quantity,
+        status: item.sparepart_category !== null ? item.sparepart_category : 1,
+        total: (item.price || 0) * (item.quantity || 1),
+        material_number: item.material_number,
+        isModify: item.isModify,
+        partSimilar: item.partSimilar,
+        description: item.Description,
+        rov: item.rov,
+        lead_time: item.lead_time,
+        uuid: item.uuid,
+        replacement_material_number: item.replacement_material_number,
+        newPart: item.newPart
+      })),
     }
     console.log('Final Result:', finalResult);
 
@@ -515,9 +534,21 @@ const updateProblem = async (req, res, next) => {
       cmShFeedback,
       cmTlFeedback,
       cmDhFeedback,
+      sparepart_list,
     } = req.body;
     console.log('UPDATE PROBLEM BODY:', req.body);
     console.log('Problems from body:', problemDescription);
+
+    // Parse sparepart_list if it's a string
+    let parsedSparepartList = sparepart_list;
+    if (typeof sparepart_list === 'string') {
+      try {
+        parsedSparepartList = JSON.parse(sparepart_list);
+      } catch (e) {
+        console.error('Error parsing sparepart_list:', e);
+        parsedSparepartList = [];
+      }
+    }
 
     if (!fid) {
       return res.status(httpStatus.BAD_REQUEST).json({ message: 'Problem ID (fid) is required' });
@@ -595,163 +626,6 @@ const updateProblem = async (req, res, next) => {
     console.log('Is array cmKenapaTerjadi:', Array.isArray(cmKenapaTerjadi));
     console.log('Countermeasure Kenapa Lama:', cmKenapaLama);
     console.log('Countermeasure Kenapa Terjadi:', cmKenapaTerjadi);
-
-    // if (machineName !== undefined) {
-    //   updateFields.push('fmc_name = :machineName');
-    //   replacements.machineName = machineName;
-    // }
-    // if (lineName !== undefined) {
-    //   updateFields.push('fline = :lineName');
-    //   replacements.lineName = lineName;
-    // }
-    // if (problemDescription !== undefined) {
-    //   updateFields.push('ferror_name = :problemDescription');
-    //   replacements.problemDescription = problemDescription;
-    // }
-    // if (uraianKejadian !== undefined) {
-    //   updateFields.push('ferror_detail = :uraianKejadian');
-    //   replacements.uraianKejadian = uraianKejadian;
-    // }
-    // if (uploadImage !== undefined) {
-    //   updateFields.push('fupload_image = :uploadImage');
-    //   replacements.uploadImage = uploadImage;
-    // }
-    // if (standartImage !== undefined) {
-    //   updateFields.push('fstandart_image = :standartImage');
-    //   replacements.standartImage = standartImage;
-    // }
-    // if (ilustrasiStandart !== undefined) {
-    //   updateFields.push('filustrasi_standart = :ilustrasiStandart');
-    //   replacements.ilustrasiStandart = ilustrasiStandart;
-    // }
-    // if (ilustrasiActual !== undefined) {
-    //   updateFields.push('filustrasi_actual = :ilustrasiActual');
-    //   replacements.ilustrasiActual = ilustrasiActual;
-    // }
-    // if (actualImage !== undefined) {
-    //   updateFields.push('factual_image = :actualImage');
-    //   replacements.actualImage = actualImage;
-    // }
-    // if (gapBetweenStandarAndActual !== undefined) {
-    //   updateFields.push('fgap_between_standar_and_actual = :gapBetweenStandarAndActual');
-    //   replacements.gapBetweenStandarAndActual = gapBetweenStandarAndActual;
-    // }
-    // if (pilihFocusThemaMember !== undefined) {
-    //   updateFields.push('fpilih_focus_thema_member = :pilihFocusThemaMember');
-    //   replacements.pilihFocusThemaMember = pilihFocusThemaMember;
-    // }
-    // if (pilihTaskforce !== undefined) {
-    //   updateFields.push('fpilih_taskforce = :pilihTaskforce');
-    //   replacements.pilihTaskforce = pilihTaskforce;
-    // }
-    // if (operator !== undefined) {
-    //   updateFields.push('foperator = :operator');
-    //   replacements.operator = operator;
-    // }
-    // if (avCategory !== undefined) {
-    //   updateFields.push('fav_category = :avCategory');
-    //   replacements.avCategory = avCategory;
-    // }
-    // if (shift !== undefined) {
-    //   updateFields.push('fshift = :shift');
-    //   replacements.shift = shift;
-    // }
-    // if (startDate !== undefined) {
-    //   updateFields.push('fstart_time = :startDate');
-    //   replacements.startDate = startDate;
-    // }
-    // if (finishDate !== undefined) {
-    //   updateFields.push('fend_time = :finishDate');
-    //   replacements.finishDate = finishDate;
-    // }
-    // if (durationMin !== undefined) {
-    //   updateFields.push('fdur = :durationMin');
-    //   replacements.durationMin = durationMin;
-    // }
-    // if (problemCategory !== undefined) {
-    //   updateFields.push('fproblem_category = :problemCategory');
-    //   replacements.problemCategory = problemCategory;
-    // }
-    // if (itemTemporaryAction !== undefined) {
-    //   updateFields.push('ftemporary_action = :itemTemporaryAction');
-    //   replacements.itemTemporaryAction = itemTemporaryAction;
-    // }
-    // if (rootcauses5Why !== undefined) {
-    //   updateFields.push('frootcauses_5_why = :rootcauses5Why');
-    //   replacements.rootcauses5Why = rootcauses5Why;
-    // }
-    // if (tambahAnalysisTerjadi !== undefined) {
-    //   updateFields.push('ftambah_analysis_terjadi = :tambahAnalysisTerjadi');
-    //   replacements.tambahAnalysisTerjadi = tambahAnalysisTerjadi;
-    // }
-    // if (whyImage !== undefined) {
-    //   updateFields.push('fwhy_image = :whyImage');
-    //   replacements.whyImage = whyImage;
-    // }
-    // if (pilihO6 !== undefined) {
-    //   updateFields.push('fpilih_o6 = :pilihO6');
-    //   replacements.pilihO6 = pilihO6;
-    // }
-    // if (stepRepair !== undefined) {
-    //   updateFields.push('fstep_repair = :stepRepair');
-    //   replacements.stepRepair = stepRepair;
-    // }
-    // if (partChange !== undefined) {
-    //   updateFields.push('fpart_change = :partChange');
-    //   replacements.partChange = partChange;
-    // }
-    // if (countermeasureKenapaTerjadi !== undefined) {
-    //   updateFields.push('fcountermeasure_kenapa_terjadi = :countermeasureKenapaTerjadi');
-    //   replacements.countermeasureKenapaTerjadi = countermeasureKenapaTerjadi;
-    // }
-    // if (yokoten !== undefined) {
-    //   updateFields.push('fyokoten = :yokoten');
-    //   replacements.yokoten = yokoten;
-    // }
-    // if (rootcause5WhyKenapaLama !== undefined) {
-    //   updateFields.push('frootcause_5_why_kenka_lama = :rootcause5WhyKenapaLama');
-    //   replacements.rootcause5WhyKenkaLama = rootcause5WhyKenapaLama;
-    // }
-    // if (tambahAnalisisLama !== undefined) {
-    //   updateFields.push('ftambah_analisis_lama = :tambahAnalisisLama');
-    //   replacements.tambahAnalisisLama = tambahAnalisisLama;
-    // }
-    // if (pilihQ6 !== undefined) {
-    //   updateFields.push('fpilih_q6 = :pilihQ6');
-    //   replacements.pilihQ6 = pilihQ6;
-    // }
-    // if (whyLamaImage !== undefined) {
-    //   updateFields.push('fwhy_lama_image = :whyLamaImage');
-    //   replacements.whyLamaImage = whyLamaImage;
-    // }
-    // if (countermeasureKenapaLama !== undefined) {
-    //   updateFields.push('fcountermeasure_kenka_lama = :countermeasureKenapaLama');
-    //   replacements.countermeasureKenkaLama = countermeasureKenapaLama;
-    // }
-    // if (attachmentMeeting !== undefined) {
-    //   updateFields.push('fattachment_meeting = :attachmentMeeting');
-    //   replacements.attachmentMeeting = attachmentMeeting;
-    // }
-    // if (comments5Why !== undefined) {
-    //   updateFields.push('fcomments_5_why = :comments5Why');
-    //   replacements.comments5Why = comments5Why;
-    // }
-    // if (commentsCountermeasure !== undefined) {
-    //   updateFields.push('fcomments_countermeasure = :commentsCountermeasure');
-    //   replacements.commentsCountermeasure = commentsCountermeasure;
-    // }
-    // if (lastReportFile !== undefined) {
-    //   updateFields.push('flast_report_file = :lastReportFile');
-    //   replacements.lastReportFile = lastReportFile;
-    // }
-    // if (uploadFile !== undefined) {
-    //   updateFields.push('fupload_file = :uploadFile');
-    //   replacements.uploadFile = uploadFile;
-    // }
-
-    // if (updateFields.length === 0) {
-    //   return res.status(httpStatus.BAD_REQUEST).json({ message: 'No fields to update' });
-    // }
 
     replacements.countermeasureKenapaTerjadi =
       typeof countermeasureKenapaTerjadi === 'object'
@@ -835,9 +709,6 @@ const updateProblem = async (req, res, next) => {
     if (partChange) {
       updateField += `, t1.fpart_change = :partChange`;
     }
-    // if (countermeasureKenapaTerjadi) {
-    //   updateField += `, t1.fpermanet_cm = :countermeasureKenapaTerjadi`;
-    // }
     if (yokoten) {
       updateField += `, t1.fyokoten = :yokoten`;
     }
@@ -933,14 +804,6 @@ const updateProblem = async (req, res, next) => {
         updateField += `, t1.ffile_report = :file_report`;
       }
     }
-    
-    // countermeasureKenapaTerjadi =
-    // typeof countermeasureKenapaTerjadi === 'object'
-    // ? JSON.stringify(countermeasureKenapaTerjadi)
-    // : countermeasureKenapaTerjadi;
-    
-    // countermeasureKenapaLama =
-    // typeof countermeasureKenapaLama === 'object' ? JSON.stringify(countermeasureKenapaLama) : countermeasureKenapaLama;
 
     if (countermeasureKenapaTerjadi) {
       updateField += `, t1.fpermanet_cm = :countermeasureKenapaTerjadi`;
@@ -1034,6 +897,8 @@ const updateProblem = async (req, res, next) => {
     `;
     await sequelize.query(updateQuery, { replacements });
 
+    // Removed incomplete and invalid updateQuerySparepart as delete + insert approach is used for sparepart updates
+
     console.log('Update Query:', updateQuery);
 
     const uraianKeys = ['general', 'standard', 'actual'];
@@ -1069,26 +934,9 @@ const updateProblem = async (req, res, next) => {
       },
     };
 
-    // const sparepartsData = {
-    //   1: {
-    //     sparepart_category: 1,
-    //     json_string: replacements.sparepartMengganti
-    //   },
-    //   2: {
-    //     sparepart_category: 2,
-    //     json_string: replacements.sparepartMenambahkan
-    //   },
-    //   3: {
-    //     sparepart_category: 3,
-    //     json_string: replacements.sparepartModifikasi
-    //   },
-    // };
-
-    // Process each uraian type
     for (const key of uraianKeys) {
       const item = uraianData[key];
       
-      // Always process even if data is null to ensure consistency
       const checkQuery = `
         SELECT COUNT(*) as count FROM tb_r_uraian 
         WHERE error_id = :fid AND type_uraian = :type_uraian
@@ -1102,7 +950,6 @@ const updateProblem = async (req, res, next) => {
       });
 
       if (checkResult[0].count === 0) {
-        // Insert new record
         const insertQuery = `
           INSERT INTO tb_r_uraian (error_id, type_uraian, ilustration, desc_nm)
           VALUES (:fid, :type_uraian, :ilustration, :desc_nm)
@@ -1136,7 +983,6 @@ const updateProblem = async (req, res, next) => {
     for (const key of analysisKeys) {
       const item = analysisData[key];
       
-      // Always process even if data is null to ensure consistency
       const checkQuery = `
         SELECT COUNT(*) as count FROM o_analisys 
         WHERE id_problem = :fid AND analisys_category = :analisys_category
@@ -1179,55 +1025,112 @@ const updateProblem = async (req, res, next) => {
       }
     };
 
-    // for (const key of sparepartsKeys) {
-    //   const item = sparepartsData[key];
-      
-    //   // Always process even if data is null to ensure consistency
-    //   const checkQuery = `
-    //     SELECT COUNT(*) as count FROM tb_sparepart 
-    //     WHERE problemId = :fid AND sparepart_category = :sparepart_category
-    //   `;
-      
-    //   const [checkResult] = await sequelize.query(checkQuery, { 
-    //     replacements: { 
-    //       fid: replacements.fid, 
-    //       sparepart_category: item.sparepart_category 
-    //     } 
-    //   });
+    // Handle sparepart_list updates
+    if (parsedSparepartList && Array.isArray(parsedSparepartList)) {
+      console.log('Processing sparepart_list for bulk upsert:', parsedSparepartList);
 
-    //   if (checkResult[0].count === 0) {
-    //     // Insert new record
-    //     const insertQuery = `
-    //       INSERT INTO tb_sparepart (problemId, sparepart_category, sparepart_id, sparepart_nm, quantity)
-    //       VALUES (:fid, :sparepart_category, :sparepart_id, :sparepart_nm, :quantity)
-    //     `;
-    //     await sequelize.query(insertQuery, { 
-    //       replacements: {
-    //         fid: replacements.fid,
-    //         sparepart_category: item.sparepart_category,
-    //         sparepart_id: item.sparepart_id,
-    //         sparepart_nm: item.sparepart_nm,
-    //         quantity: item.quantity,
-    //       }
-    //     });
-    //   } else {
-    //     // Update existing record
-    //     const updateQuery = `
-    //       UPDATE o_analisys 
-    //       SET sparepart_id = :sparepart_id, sparepart_nm = :sparepart_nm, quantity = :quantity
-    //       WHERE problemId = :fid AND sparepart_category = :sparepart_category
-    //     `;
-    //     await sequelize.query(updateQuery, { 
-    //       replacements: {
-    //         fid: replacements.fid,
-    //         sparepart_category: item.sparepart_category,
-    //         sparepart_id: item.sparepart_id,
-    //         sparepart_nm: item.sparepart_nm,
-    //         quantity: item.quantity,
-    //       }
-    //     });
-    //   }
-    // };
+      // Collect sparepart_id list for deletion of removed items
+      const currentSparepartIds = parsedSparepartList.map(sp => sp.sparepart_id || sp.sparepart?.id).filter(id => id !== null && id !== undefined);
+
+      if (currentSparepartIds.length > 0) {
+        // Delete spareparts not in the current list
+        const deleteNotInQuery = `
+          DELETE FROM tb_sparepart
+          WHERE problemId = :fid AND sparepart_id NOT IN (:currentIds)
+        `;
+        await sequelize.query(deleteNotInQuery, {
+          replacements: { fid: replacements.fid, currentIds: currentSparepartIds }
+        });
+      } else {
+        // If no spareparts, delete all for this problem
+        const deleteAllQuery = `
+          DELETE FROM tb_sparepart
+          WHERE problemId = :fid
+        `;
+        await sequelize.query(deleteAllQuery, { replacements: { fid: replacements.fid } });
+      }
+
+      if (parsedSparepartList.length > 0) {
+        const values = [];
+        const replacementsBulk = {};
+
+        parsedSparepartList.forEach((sparepart, index) => {
+          const sparepartCategory = sparepart.status || 1;
+          const sparepartName = sparepart.sparepart?.label || '';
+          const sparepartId = sparepart.sparepart_id || null;
+          const sparepartTr = sparepart.sparepartTr || '';
+          const materialNumber = sparepart.material_number || null;
+          const price = sparepart.price || 0;
+          const vendor = sparepart.vendor || '';
+          const quantity = sparepart.quantity || 1;
+          const isModify = sparepart.isModify || null;
+          const partSimilar = sparepart.partSimilar || null;
+          const newPart = sparepart.newPart || null;
+          const description = sparepart.description || null;
+          // const rov = sparepart.rov || null;
+          // const leadTime = sparepart.lead_time || null;
+          // const uuid = sparepart.uuid || null;
+          // const replacementMaterialNumber = sparepart.replacement_material_number || null;
+
+          values.push(`(:problemId, :sparepartCategory${index}, :sparepartName${index}, :sparepartTr${index}, :sparepartId${index}, :materialNumber${index}, :price${index}, :vendor${index}, :quantity${index}, :isModify${index}, :partSimilar${index}, :newPart${index}, :description${index})`);
+
+          replacementsBulk[`sparepartCategory${index}`] = sparepartCategory;
+          replacementsBulk[`sparepartName${index}`] = sparepartName;
+          replacementsBulk[`sparepartTr${index}`] = sparepartTr;
+          replacementsBulk[`sparepartId${index}`] = sparepartId;
+          replacementsBulk[`materialNumber${index}`] = materialNumber;
+          replacementsBulk[`price${index}`] = price;
+          replacementsBulk[`vendor${index}`] = vendor;
+          replacementsBulk[`quantity${index}`] = quantity;
+          replacementsBulk[`isModify${index}`] = isModify;
+          replacementsBulk[`partSimilar${index}`] = partSimilar;
+          replacementsBulk[`newPart${index}`] = newPart;
+          replacementsBulk[`description${index}`] = description;
+          // replacementsBulk[`rov${index}`] = rov;
+          // replacementsBulk[`leadTime${index}`] = leadTime;
+          // replacementsBulk[`uuid${index}`] = uuid;
+          // replacementsBulk[`replacementMaterialNumber${index}`] = replacementMaterialNumber;
+        });
+
+        replacementsBulk.problemId = replacements.fid;
+
+        const insertSparepartQuery = `
+          INSERT INTO tb_sparepart (
+            problemId,
+            sparepart_category,
+            sparepart_nm,
+            sparepartTr,
+            sparepart_id,
+            material_number,
+            price,
+            vendor,
+            quantity,
+            isModify,
+            partSimilar,
+            newPart,
+            description
+          ) VALUES ${values.join(', ')}
+          ON DUPLICATE KEY UPDATE
+            sparepart_category = VALUES(sparepart_category),
+            sparepartTr = VALUES(sparepartTr),
+            sparepart_id = VALUES(sparepart_id),
+            sparepart_nm = VALUES(sparepart_nm),
+            material_number = VALUES(material_number),
+            price = VALUES(price),
+            vendor = VALUES(vendor),
+            quantity = VALUES(quantity),
+            isModify = VALUES(isModify),
+            partSimilar = VALUES(partSimilar),
+            newPart = VALUES(newPart),
+            description = VALUES(description)
+        `;
+
+        console.log('Bulk Insert Sparepart Query:', insertSparepartQuery);
+        console.log('Bulk Insert Replacements:', replacementsBulk);
+
+        await sequelize.query(insertSparepartQuery, { replacements: replacementsBulk });
+      }
+    }
 
     res.status(httpStatus.OK).json({ status: 'success', message: 'Problem updated successfully' });
 
@@ -1241,7 +1144,6 @@ const deleteProblem = async (req, res, next) => {
     const { id } = req.params;
     console.log('Deleting problem with ID:', id);
 
-    // Delete from tb_error_log_2 table
     const deleteQuery = `
       DELETE FROM tb_error_log_2
       WHERE fid = :id
