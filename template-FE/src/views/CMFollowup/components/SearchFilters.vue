@@ -34,7 +34,7 @@
 
         <CCol class="md-3">
           <CFormLabel for="lineSelect">Line</CFormLabel>
-            <Treeselect 
+            <Treeselect
               id="lineSelect"
               :model-value="selectedLine"
               @update:model-value="$emit('update:selectedLine', $event)"
@@ -42,13 +42,14 @@
               :multiple="false"
               :searchable="true"
               :clearable="true"
+              :disabled="!lineOptions.length"
               placeholder="Select line"
             />
         </CCol>
 
         <CCol class="md-3">
           <CFormLabel for="selectedMachineName">Machine Name</CFormLabel>
-            <Treeselect 
+            <Treeselect
               id="selectedMachineName"
               :model-value="selectedMachineName"
               @update:model-value="$emit('update:selectedMachineName', $event)"
@@ -56,6 +57,7 @@
               :multiple="false"
               :searchable="true"
               :clearable="true"
+              :disabled="!machineOptions.length"
               placeholder="Select machine"
             />
         </CCol>

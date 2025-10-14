@@ -2529,7 +2529,7 @@ export default {
           params.search = searchQuery;
         }
         console.log('Calling API with params:', params);
-        const sparepartRes = await api.get('/smartandon/spareparts', { params });
+        const sparepartRes = await api.get('/smartandon/spareparts', params);
         console.log('API response status:', sparepartRes.status);
         if (sparepartRes.status === 200) {
           console.log('Sparepart options data for search:', searchQuery, sparepartRes.data);

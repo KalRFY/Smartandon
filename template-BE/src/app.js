@@ -67,15 +67,12 @@ app.use('/api', routes);
 app.use('/dashboard', dashboardRoutes);
 // app.use('/problem', dashboardRoutes);
 
-// Add a welcome route for the root path
-app.get('/', (req, res) => {
-  console.log('ENV: ', config.env);
-  res.status(200).json({
-    message: 'Welcome to Smart Andon API',
-    version: '1.0.0',
-    documentation: '/api/docs',
-    status: 'online',
-  });
+// Serve static files from the built frontend directory
+app.use(express.static(path.join(__dirname, '../../template-FE/dist')));
+
+// Catch all handler: send back the index.html for SPA routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../template-FE/dist/index.html'));
 });
 
 // Handle Chrome DevTools specific route to prevent errors

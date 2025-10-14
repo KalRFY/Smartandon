@@ -53,13 +53,13 @@ import CMIndicator from '@/views/CMFollowup/components/CMIndicator.vue'
 import LoadingState from '@/views/CMFollowup/components/LoadingState.vue'
 
 const filters = ref({
-  line: '',                 
-  machine: '',              
+  line: null,
+  machine: null,
   start_date: dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
   end_date: dayjs().format('YYYY-MM-DD'),
-  keyword: '',              
-  category: '',             
-  shift: ''                 
+  keyword: '',
+  category: '',
+  shift: ''
 })
 
 const loading = ref(false)
@@ -170,8 +170,8 @@ async function fetchCMFollowup() {
 
 function resetFilters() {
   filters.value = {
-    line: '', 
-    machine: '', 
+    line: null,
+    machine: null,
     start_date: dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
     end_date: dayjs().format('YYYY-MM-DD'),
     keyword: '',

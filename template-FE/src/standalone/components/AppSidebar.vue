@@ -144,6 +144,13 @@
               icon: 'cilClipboard',
               parentId: 'ROOT',
             },
+            {
+              component: 'CNavItem',
+              to: '/app/SparepartAnalysis',
+              name: 'Sparepart Analysis',
+              icon: 'cilBarChart',
+              parentId: 'ROOT',
+            },
           ]
         },
         {

@@ -73,6 +73,19 @@ const appRoutes = [
       title: 'Edit Data Smartandon',
     },
   },
+
+  {
+    path: '/app/SparepartAnalysis',
+    name: 'Sparepart Analysis',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/SparepartAnalysis.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Sparepart Analysis',
+    },
+  },
   // Add the uncommented Quality Operational route
   // {
   //   path: '/qdc/quality-operational',
