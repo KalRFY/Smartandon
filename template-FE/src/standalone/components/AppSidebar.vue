@@ -148,7 +148,7 @@
               component: 'CNavItem',
               to: '/app/SparepartAnalysis',
               name: 'Sparepart Analysis',
-              icon: 'cilGraph',
+              icon: 'cilBarChart',
               parentId: 'ROOT',
             },
           ]

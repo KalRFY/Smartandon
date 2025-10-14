@@ -576,12 +576,15 @@ export default {
         }
 
         const allAnalysis = analysisResponse.data
+
         const filteredAnalysis = allAnalysis.filter(
           (item) => item.id_problem === problem.fid,
         )
+
         const terjadiAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'TERJADI',
         )
+        
         const lamaAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'LAMA',
         )
@@ -733,7 +736,13 @@ export default {
         cmShFeedback: problemData.cmShFeedback,
         cmTlFeedback: problemData.cmTlFeedback,
         cmDhFeedback: problemData.cmDhFeedback,
-        sparepart_list: problemData.sparepart_list || [],
+        sparepart_list: (() => {
+          if (Array.isArray(problemData.sparepart_list)) return problemData.sparepart_list
+          if (typeof problemData.sparepart_list === 'string') {
+            try { return JSON.parse(problemData.sparepart_list) } catch { return [] }
+          }
+          return []
+        })(),
       }
     },
 
@@ -1025,7 +1034,7 @@ export default {
       this.tableLoading = true; // Show loading indicator for export
       try {
         const params = {
-          limit: 0,
+          limitView: 0,
           startDate: this.filterStartDate || undefined,
           finishDate: this.filterFinishDate || undefined,
           line: this.selectedLine || undefined,
@@ -1035,7 +1044,7 @@ export default {
         };
 
         console.log('[Export] Fetching all problems with params:', params);
-        const response = await api.get('/smartandon/problemView', {...params} );
+        const response = await api.get('/smartandon/problemView', { search: JSON.stringify(params) });
         if (response.status !== 200) {
           throw new Error('Failed to fetch problems for export, status: ' + response.status);
         }

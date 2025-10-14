@@ -1,4 +1,0 @@
-- [x] Improve parsing of fpart_change in SparepartAnalysis.vue to handle JSON arrays or comma-separated strings
-- [x] Add data properties: sparepartUsageSeries, sparepartUsageOptions, sparepartByMachineSeries, sparepartByMachineOptions
-- [x] Add template for bar chart: Top Sparepart Usage
-- [x] Add template for bar chart: Sparepart Changes by Machine

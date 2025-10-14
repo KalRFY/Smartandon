@@ -194,7 +194,7 @@
     </CCol>
   </CRow>
 
-  <CRow class="mb-3">
+  <CRow>
     <CCol lg="12" class="mb-3">
       <CCard>
         <!-- <CCardHeader>Problem Frequency</CCardHeader> -->
@@ -282,125 +282,129 @@
   </CRow>
   
   <CRow>
-    <CCol lg="7" class="mb-3">
+    <CCol>
       <CCard>
         <!-- <CCardHeader>LTR</CCardHeader> -->
         <CCardBody>
-          <CRow class="mb-3">
-            <CCol>
-              <div style="border-radius: 9px; height: 100%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
-                <CCardBody>
-                  <CRow>
-                    <CCol class="mb-3">
-                      <CInputGroup>
-                        <CInputGroupText id="ltr-start-addon">
-                          <label>Start</label>
-                        </CInputGroupText>
-                        <CFormInput
-                          id="ltrStartDate"
-                          type="date"
-                          v-model="ltrStartDate"
-                          aria-label="LTR Start Date"
-                          aria-describedby="ltr-start-addon"
-                        />
-                      </CInputGroup>
-                    </CCol>
-                    <CCol class="mb-3">
-                      <CInputGroup>
-                        <CInputGroupText id="ltr-finish-addon">
-                          <label>Finish</label>
-                        </CInputGroupText>
-                        <CFormInput
-                          id="ltrFinishDate"
-                          type="date"
-                          v-model="ltrFinishDate"
-                          aria-label="LTR Finish Date"
-                          aria-describedby="ltr-finish-addon"
-                        />
-                      </CInputGroup>
-                    </CCol>
-                    <CCol sm="3" class="mb-3">
-                      <Treeselect
-                        id="ltrLineFilterSelect"
-                        v-model="ltrLine"
-                        :multiple="false"
-                        :flat="true"
-                        :options="lineOptions"
-                        :searchable="true"
-                        :clearable="true"
-                        placeholder="Line"
-                        :value-consists-of="['id']"
-                        :value-key="'id'"
-                        :label-key="'label'"
-                      />
-                      <small v-if="lineOptions.length === 0" class="text-muted">Loading lines...</small>
-                    </CCol>
-                    <CCol class="mb-3">
-                      <CButton
-                        :disabled="loading"
-                        style="width: 100%; font-weight: bold; font-size: x-small; color: white;"
-                        color="info"
-                        @click="onSearch"
-                      >
-                        <Search size="16" />
-                      </CButton>
-                    </CCol>
-                  </CRow>
-                </CCardBody>
-              </div>
-            </CCol>
-          </CRow>
           <CRow>
-            <CCol>
-              <ApexCharts
-                v-if="ltrSeries[0].data.length > 0"
-                :key="ltrFormatKey"
-                :options="ltrOptions"
-                :series="ltrSeries"
-                type="line"
-                height="350"
-              />
-              <div v-else class="text-center py-4">No data available</div>
+            <CCol lg="7" class="mb-3">
+              <CRow class="mb-3">
+                <CCol>
+                  <div style="border-radius: 9px; height: 100%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
+                    <CCardBody>
+                      <CRow>
+                        <CCol class="mb-3">
+                          <CInputGroup>
+                            <CInputGroupText id="ltr-start-addon">
+                              <label>Start</label>
+                            </CInputGroupText>
+                            <CFormInput
+                              id="ltrStartDate"
+                              type="date"
+                              v-model="ltrStartDate"
+                              aria-label="LTR Start Date"
+                              aria-describedby="ltr-start-addon"
+                            />
+                          </CInputGroup>
+                        </CCol>
+                        <CCol class="mb-3">
+                          <CInputGroup>
+                            <CInputGroupText id="ltr-finish-addon">
+                              <label>Finish</label>
+                            </CInputGroupText>
+                            <CFormInput
+                              id="ltrFinishDate"
+                              type="date"
+                              v-model="ltrFinishDate"
+                              aria-label="LTR Finish Date"
+                              aria-describedby="ltr-finish-addon"
+                            />
+                          </CInputGroup>
+                        </CCol>
+                        <CCol sm="3" class="mb-3">
+                          <Treeselect
+                            id="ltrLineFilterSelect"
+                            v-model="ltrLine"
+                            :multiple="false"
+                            :flat="true"
+                            :options="lineOptions"
+                            :searchable="true"
+                            :clearable="true"
+                            placeholder="Line"
+                            :value-consists-of="['id']"
+                            :value-key="'id'"
+                            :label-key="'label'"
+                          />
+                          <small v-if="lineOptions.length === 0" class="text-muted">Loading lines...</small>
+                        </CCol>
+                        <CCol class="mb-3">
+                          <CButton
+                            :disabled="loading"
+                            style="width: 100%; font-weight: bold; font-size: x-small; color: white;"
+                            color="info"
+                            @click="onSearch"
+                          >
+                            <Search size="16" />
+                          </CButton>
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </div>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol>
+                  <ApexCharts
+                    v-if="ltrSeries[0].data.length > 0"
+                    :key="ltrFormatKey"
+                    :options="ltrOptions"
+                    :series="ltrSeries"
+                    type="line"
+                    height="400"
+                  />
+                  <div v-else class="text-center py-4">No data available</div>
+                </CCol>
+              </CRow>
+            </CCol>
+            <CCol lg="5">
+              <div class="table-container" style="max-height: 500px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
+                <CTable class="table-sm table-hover table-striped mb-0">
+                  <CTableHead class="table-dark sticky-top">
+                    <CTableRow>
+                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Machine</CTableHeaderCell>
+                      <CTableHeaderCell scope="col" class="col-1 fw-semibold">Line</CTableHeaderCell>
+                      <CTableHeaderCell scope="col" class="col-5 fw-semibold">Problem</CTableHeaderCell>
+                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Duration</CTableHeaderCell>
+                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Action</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    <CTableRow v-if="loadingFollowupLtr">
+                      <CTableDataCell colspan="5" class="text-center py-4">Loading...</CTableDataCell>
+                    </CTableRow>
+                    <CTableRow v-else-if="followupLtrProblems.length === 0">
+                      <CTableDataCell colspan="5" class="text-center py-4 text-muted">No LTR problems without reports</CTableDataCell>
+                    </CTableRow>
+                    <CTableRow v-for="(problem, idx) in followupLtrProblems" :key="problem.fid" class="align-middle">
+                      <CTableDataCell class="fw-bold text-dark">{{ problem.fmc_name }}</CTableDataCell>
+                      <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
+                      <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
+                      <CTableDataCell>
+                        <CBadge color="danger" class="w-100 text-center py-1" shape="rounded-pill">
+                          <small class="fw-bold">{{ problem.fdur }} min</small>
+                        </CBadge>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <CButton color="primary" size="sm" class="rounded-pill shadow-sm w-100" @click="openEditModal(problem)">Edit</CButton>
+                      </CTableDataCell>
+                    </CTableRow>
+                  </CTableBody>
+                </CTable>
+              </div>
             </CCol>
           </CRow>
         </CCardBody>
       </CCard>
-    </CCol>
-    <CCol class="mb-3" lg="5">
-      <div class="table-container" style="max-height: 500px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
-        <CTable class="table-sm table-hover table-striped mb-0">
-          <CTableHead class="table-dark sticky-top">
-            <CTableRow>
-              <CTableHeaderCell scope="col" class="col-2 fw-semibold">Machine</CTableHeaderCell>
-              <CTableHeaderCell scope="col" class="col-1 fw-semibold">Line</CTableHeaderCell>
-              <CTableHeaderCell scope="col" class="col-5 fw-semibold">Problem</CTableHeaderCell>
-              <CTableHeaderCell scope="col" class="col-2 fw-semibold">Duration</CTableHeaderCell>
-              <CTableHeaderCell scope="col" class="col-2 fw-semibold">Action</CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
-          <CTableBody>
-            <CTableRow v-if="loadingFollowupLtr">
-              <CTableDataCell colspan="5" class="text-center py-4">Loading...</CTableDataCell>
-            </CTableRow>
-            <CTableRow v-else-if="followupLtrProblems.length === 0">
-              <CTableDataCell colspan="5" class="text-center py-4 text-muted">No LTR problems without reports</CTableDataCell>
-            </CTableRow>
-            <CTableRow v-for="(problem, idx) in followupLtrProblems" :key="problem.fid" class="align-middle">
-              <CTableDataCell class="fw-bold text-dark">{{ problem.fmc_name }}</CTableDataCell>
-              <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
-              <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
-              <CTableDataCell>
-                <CBadge color="danger" class="w-100 text-center py-1" shape="rounded-pill">
-                  <small class="fw-bold">{{ problem.fdur }} min</small>
-                </CBadge>
-              </CTableDataCell>
-              <CTableDataCell>
-                <CButton color="primary" size="sm" class="rounded-pill shadow-sm w-100" @click="openEditModal(problem)">Edit</CButton>
-              </CTableDataCell>
-            </CTableRow>
-          </CTableBody>
-        </CTable>
-      </div>
     </CCol>
   </CRow>
 
@@ -529,7 +533,7 @@
 <script>
 import { ref } from 'vue'
 import moment from 'moment'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordionItem, CTooltip } from '@coreui/vue';
+import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordion, CAccordionItem, CAccordionHeader, CAccordionBody, CTooltip } from '@coreui/vue';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
@@ -1707,8 +1711,6 @@ export default {
 
     // isLTRorSLTR removed as backend now filters by problemCategory
 
-
-
     async openEditModal(problem) {
       try {
         this.editModalLoading = true
@@ -1747,30 +1749,30 @@ export default {
       const lamaRaw = problemData?.analysis?.LAMA
 
       return {
-        machineName: problemData.fmc_name || '',
-        line: problemData.fline || '',
-        fidProblem: problemData.fid || '',
-        maker: problemData.fmaker || '',
-        operationNo: problemData.foperation_no || '',
-        problems: problemData.ferror_name || '',
-        uraianKejadian: problemData.descResult.general || '',
-        uploadImage: problemData.uraianResult.general || '',
-        ilustrasiStandart: problemData.descResult.standard || '',
-        standartImage: problemData.uraianResult.standard || '',
-        ilustrasiActual: problemData.descResult.actual || '',
-        actualImage: problemData.uraianResult.actual || '',
-        gapBetweenStandarAndActual: problemData.gapIlustrasi || '',
-        pilihFocusThemaMember: problemData.pilihFocusThemaMember || '',
-        pilihTaskforce: problemData.pilihTaskforce || '',
-        operator: problemData.foperator ? problemData.foperator.split(/,|&/) : [],
-        avCategory: problemData.fav_categoty || '',
-        shift: problemData.fshift || '',
-        startDate: formatDateToISO(problemData.fstart_time) || '',
-        finishDate: formatDateToISO(problemData.fend_time) || '',
-        durationMin: problemData.fdur || '',
-        problemCategory: problemData.problemCategory || '',
-        itemTemporaryAction: problemData.temporaryAction || '',
-        rootcauses5Why: problemData.freal_prob || '',
+        machineName: problemData?.fmc_name || '',
+        line: problemData?.fline || '',
+        fidProblem: problemData?.fid || '',
+        maker: problemData?.fmaker || '',
+        operationNo: problemData?.foperation_no || '',
+        problems: problemData?.ferror_name || '',
+        uraianKejadian: problemData?.descResult?.general || '',
+        uploadImage: problemData?.uraianResult?.general || '',
+        ilustrasiStandart: problemData?.descResult?.standard || '',
+        standartImage: problemData?.uraianResult?.standard || '',
+        ilustrasiActual: problemData?.descResult?.actual || '',
+        actualImage: problemData?.uraianResult?.actual || '',
+        gapBetweenStandarAndActual: problemData?.gapIlustrasi || '',
+        pilihFocusThemaMember: problemData?.pilihFocusThemaMember || '',
+        pilihTaskforce: problemData?.pilihTaskforce || '',
+        operator: problemData?.foperator ? problemData.foperator.split(/,|&/) : [],
+        avCategory: problemData?.fav_categoty || '',
+        shift: problemData?.fshift || '',
+        startDate: formatDateToISO(problemData?.fstart_time) || '',
+        finishDate: formatDateToISO(problemData?.fend_time) || '',
+        durationMin: problemData?.fdur || '',
+        problemCategory: problemData?.problemCategory || '',
+        itemTemporaryAction: problemData?.temporaryAction || '',
+        rootcauses5Why: problemData?.freal_prob || '',
         tambahAnalysisTerjadi: (() => {
           if (Array.isArray(terjadiRaw)) return terjadiRaw
           if (typeof terjadiRaw === 'string') {
@@ -1785,36 +1787,39 @@ export default {
           }
           return []
         })(),
-        whyImage: problemData.why1_img || '',
-        pilihO6: problemData.oCategory || '',
-        stepRepair: problemData.fstep_repair || '',
-        stepRepairNew: problemData.fstep_new || '',
-        partChange: problemData.fpart_change || '',
-        countermeasureKenapaTerjadi: problemData.fpermanet_cm || '',
-        yokoten: problemData.fyokoten || '',
-        rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
-        pilihQ6: problemData.qCategory || '',
-        whyLamaImage: problemData.why2_img || '',
-        countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
-        attachmentMeeting: problemData.attachmentMeeting || '',
-        comments5WhySH: problemData.comments5WhySH || '',
-        comments5WhyLH: problemData.comments5WhyLH || '',
-        commentsCountermeasure: problemData.commentsCountermeasure || '',
-        file_report: problemData.file_report || '',
-        uploadFile: problemData.uploadFile || '',
+        whyImage: problemData?.why1_img || '',
+        pilihO6: problemData?.oCategory || '',
+        stepRepair: problemData?.fstep_repair || '',
+        stepRepairNew: problemData?.fstep_new || '',
+        partChange: problemData?.fpart_change || '',
+        countermeasureKenapaTerjadi: problemData?.fpermanet_cm || '',
+        yokoten: problemData?.fyokoten || '',
+        rootcause5WhyKenapaLama: problemData?.rootcause5WhyKenapaLama || '',
+        pilihQ6: problemData?.qCategory || '',
+        pilihPM6: problemData.pmCategory || '',
+        whyLamaImage: problemData?.why2_img || '',
+        countermeasureKenapaLama: problemData?.fpermanet_cm_lama || '',
+        attachmentMeeting: problemData?.attachmentMeeting || '',
+        comments5WhySH: problemData?.comments5WhySH || '',
+        comments5WhyLH: problemData?.comments5WhyLH || '',
+        commentsCountermeasure: problemData?.commentsCountermeasure || '',
+        file_report: problemData?.file_report || '',
+        uploadFile: problemData?.uploadFile || '',
         agreeTerms: false,
-        fiveWhyLhApprove: problemData.fiveWhyLhApprove || 0,
-        fiveWhyShApprove: problemData.fiveWhyShApprove || 0,
-        fiveWhyLhFeedback: problemData.fiveWhyLhFeedback,
-        fiveWhyShFeedback: problemData.fiveWhyShFeedback,
-        cmLhApprove: problemData.cmLhApprove || 0,
-        cmShApprove: problemData.cmShApprove || 0,
-        cmTlApprove: problemData.cmTlApprove || 0,
-        cmDhApprove: problemData.cmDhApprove || 0,
-        cmLhFeedback: problemData.cmLhFeedback,
-        cmShFeedback: problemData.cmShFeedback,
-        cmTlFeedback: problemData.cmTlFeedback,
-        cmDhFeedback: problemData.cmDhFeedback,
+        fiveWhyLhApprove: problemData?.fiveWhyLhApprove || 0,
+        fiveWhyShApprove: problemData?.fiveWhyShApprove || 0,
+        fiveWhyLhFeedback: problemData?.fiveWhyLhFeedback,
+        fiveWhyShFeedback: problemData?.fiveWhyShFeedback,
+        cmLhApprove: problemData?.cmLhApprove || 0,
+        cmShApprove: problemData?.cmShApprove || 0,
+        cmTlApprove: problemData?.cmTlApprove || 0,
+        cmDhApprove: problemData?.cmDhApprove || 0,
+        cmLhFeedback: problemData?.cmLhFeedback,
+        cmShFeedback: problemData?.cmShFeedback,
+        cmTlFeedback: problemData?.cmTlFeedback,
+        cmDhFeedback: problemData?.cmDhFeedback,
+        fiveWhyTlApprove: problemData?.fiveWhyTlApprove || 0,
+        sparepart_list: JSON.stringify(problemData?.sparepart_list ?? []),
       }
     },
 
@@ -1903,6 +1908,7 @@ export default {
           agreeTerms: submitData.agreeTerms,
           oCategory: submitData.oCategory,
           qCategory: submitData.qCategory,
+          pmCategory: submitData.pmCategory,
           fiveWhyTlApprove: submitData.fiveWhyTlApprove,
           fiveWhyLhApprove: submitData.fiveWhyLhApprove,
           fiveWhyShApprove: submitData.fiveWhyShApprove,
@@ -1916,6 +1922,7 @@ export default {
           cmShFeedback: submitData.cmShFeedback,
           cmTlFeedback: submitData.cmTlFeedback,
           cmDhFeedback: submitData.cmDhFeedback,
+          sparepart_list: JSON.stringify(submitData.sparepart_list ?? []),
         }
         const formData = new FormData()
         Object.keys(payload).forEach((key) => {
@@ -2001,6 +2008,7 @@ p {
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 .dashboard-cards-container {
   display: flex;
+  flex-wrap: nowrap;
   overflow-x: auto;
   padding-bottom: 10px;
   -webkit-overflow-scrolling: touch;

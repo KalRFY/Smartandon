@@ -1870,7 +1870,7 @@ export default {
   },
 
   setup(props, { emit }) {
-    const { submitData } = toRefs(props)
+    const { submitData } = toRefs(props || {})
     console.log('EditProblemModal props:', JSON.stringify(props, null, 2))
 
     const parseFrealProb = (frealProb) => {
@@ -2169,6 +2169,7 @@ export default {
     }
 
     watch(submitData, (newVal) => {
+      if (!newVal) return;
       let rootcausesArray = []
       if (
         Array.isArray(newVal?.rootcauses5Why) &&
@@ -3067,7 +3068,7 @@ export default {
           params.search = searchQuery.trim();
         }
         console.log('Calling API with params:', params);
-        const sparepartRes = await api.get('/smartandon/spareparts', { params });
+        const sparepartRes = await api.get('/smartandon/spareparts', params);
         console.log('API response status:', sparepartRes.status);
         if (sparepartRes.status === 200) {
           console.log('Sparepart options data for search:', searchQuery, sparepartRes.data);
