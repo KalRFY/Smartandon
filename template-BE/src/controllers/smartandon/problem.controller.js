@@ -100,6 +100,9 @@ const getProblemView = async (req, res, next) => {
     if (limitView == 'group') {
       if (groupBy == 'monthly') {
         groupClause = 'GROUP BY CONCAT(YEAR(fstart_time), "-", LPAD(MONTH(fstart_time), 2, "0"))';
+      } else if (groupBy == 'line') {
+        limitClause = ``;
+        groupClause = 'GROUP BY fline';
       } else {
         groupClause = 'GROUP BY DATE(fstart_time)';
       }
@@ -114,16 +117,14 @@ const getProblemView = async (req, res, next) => {
     const replacements = {};
 
     if (startDate || finishDate) {
-      if (startDate == finishDate) {
-        whereClause += ` AND DATE(fstart_time) LIKE '%${startDate}%'`;
+      if (startDate && finishDate && startDate === finishDate) {
+        whereClause += ` AND DATE(fstart_time) = '${startDate}'`;
       } else {
         if (startDate) {
           whereClause += ` AND DATE(fstart_time) >= '${startDate}'`;
-          replacements.startDate = startDate;
         }
         if (finishDate) {
           whereClause += ` AND DATE(fend_time) <= '${finishDate}'`;
-          replacements.finishDate = finishDate;
         }
       }
     }
@@ -246,10 +247,12 @@ const getProblemView = async (req, res, next) => {
     if (limitView == 'group') {
       if (groupBy == 'monthly') {
         selectFields = "CONCAT(YEAR(fstart_time), '-', LPAD(MONTH(fstart_time), 2, '0')) as date, COUNT(*) as count";
+      } else if (groupBy == 'line') {
+        selectFields = 'fline as line, SUM(fdur) as totalDuration';
       } else {
         selectFields = 'DATE(fstart_time) as date, COUNT(*) as count';
       }
-      orderBy = 'ORDER BY date ASC';
+      orderBy = groupBy == 'line' ? 'ORDER BY line ASC' : 'ORDER BY date ASC';
     }
 
     const dataQuery = `

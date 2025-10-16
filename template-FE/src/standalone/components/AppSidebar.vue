@@ -1,5 +1,5 @@
 <template>
-  <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="
+  <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" :class="sidebarClass" @visible-change="
     (event) =>
       $store.commit({
         type: 'updateSidebarVisible',
@@ -62,6 +62,13 @@
     name: 'AppSidebar',
     components: {
       AppSidebarNav,
+    },
+    computed: {
+      sidebarClass() {
+        // Check if device is mobile
+        const isMobile = window.innerWidth <= 768;
+        return isMobile ? 'custom-mobile-bg' : '';
+      }
     },
     data() {
       return {
