@@ -8,5 +8,11 @@ router.get('/oeeView', oeeController.getOEEView);
 router.get('/oeeTarget', oeeController.getOEETarget);
 router.get('/oeeActual', oeeController.getOEEActual);
 router.get('/oeePlan', oeeController.getOEEPlan);
+router.post('/syncOEEToTbProd', oeeController.syncOEEToTbProd);
+
+
+
+
+
 
 module.exports = router;
