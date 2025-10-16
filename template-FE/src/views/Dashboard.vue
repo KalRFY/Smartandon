@@ -1466,35 +1466,83 @@ export default {
 
 
       try {
+        // Fetch synced OEE data from tb_prod table
         const responseOeeData = await api.get('/smartandon/oeeDataSmartandon');
         this.oeeDataSmartandon = responseOeeData.data;
-        console.log('OEE Target: ' + this.oeeDataSmartandon);
+        console.log('Synced OEE Data from tb_prod:', this.oeeDataSmartandon);
+
+        // Process the synced data to populate oeeTarget, oeeActual, oeePlan arrays
+        this.oeeTarget = [];
+        this.oeeActual = [];
+        this.oeePlan = [];
+        this.oee = [];
+
+        // Group data by line and map to the expected format
+        const lineData = {};
+        this.oeeDataSmartandon.forEach(item => {
+          const line = item.fline;
+          if (!lineData[line]) {
+            lineData[line] = {};
+          }
+
+          const itemName = item.fitem.toUpperCase();
+          if (itemName.includes('TARGET')) {
+            this.oeeTarget.push({
+              DEV_NAME: line,
+              REG_VALUE: item.fvalue,
+              TR_TIME: item.ftm_update
+            });
+            lineData[line].target = item.fvalue;
+          } else if (itemName.includes('ACTUAL')) {
+            this.oeeActual.push({
+              DEV_NAME: line,
+              REG_VALUE: item.fvalue,
+              TR_TIME: item.ftm_update
+            });
+            lineData[line].actual = item.fvalue;
+          } else if (itemName.includes('PLAN')) {
+            this.oeePlan.push({
+              DEV_NAME: line,
+              REG_VALUE: item.fvalue,
+              TR_TIME: item.ftm_update
+            });
+            lineData[line].plan = item.fvalue;
+          } else if (itemName.includes('OEE')) {
+            this.oee.push({
+              DEV_NAME: line,
+              REG_VALUE: item.fvalue,
+              TR_TIME: item.ftm_update
+            });
+            lineData[line].oee = item.fvalue;
+          }
+        });
+
+        console.log('Processed OEE Target:', this.oeeTarget);
+        console.log('Processed OEE Actual:', this.oeeActual);
+        console.log('Processed OEE Plan:', this.oeePlan);
+        console.log('Processed OEE:', this.oee);
       } catch (error) {
-        console.log('Failed to fetch oee target:', error);
-      }
-      try {
-        const responseOeeTarget = await api.get('/smartandon/oeeTarget');
-        this.oeeTarget = responseOeeTarget.data;
-        this.oeeOption = responseOeeTarget.data.map((oeeTargets) => ({
-          id: oeeTargets.GROUP_NAME,
-          label: oeeTargets.TAG_NAME,
-          labelOeeTarget: oeeTargets.REG_VALUE,
-        }));
-        console.log('OEE Target: ' + this.oeeTarget);
-      } catch (error) {
-        console.log('Failed to fetch oee target:', error);
-      }
-      try {
-        const responseOeeActual = await api.get('/smartandon/oeeActual');
-        this.oeeActual = responseOeeActual.data;
-      } catch (error) {
-        console.log('Failed to fetch oee actual:', error);
-      }
-      try {
-        const responseOeePlan = await api.get('/smartandon/oeePlan');
-        this.oeePlan = responseOeePlan.data;
-      } catch (error) {
-        console.log('Failed to fetch oee plan:', error);
+        console.log('Failed to fetch synced OEE data:', error);
+        // Fallback to old endpoints if synced data fails
+        try {
+          const responseOeeTarget = await api.get('/smartandon/oeeTarget');
+          this.oeeTarget = responseOeeTarget.data;
+          console.log('Fallback OEE Target:', this.oeeTarget);
+        } catch (fallbackError) {
+          console.log('Fallback OEE target also failed:', fallbackError);
+        }
+        try {
+          const responseOeeActual = await api.get('/smartandon/oeeActual');
+          this.oeeActual = responseOeeActual.data;
+        } catch (fallbackError) {
+          console.log('Fallback OEE actual also failed:', fallbackError);
+        }
+        try {
+          const responseOeePlan = await api.get('/smartandon/oeePlan');
+          this.oeePlan = responseOeePlan.data;
+        } catch (fallbackError) {
+          console.log('Fallback OEE plan also failed:', fallbackError);
+        }
       }
       try {
         const responseOee = await api.get('/smartandon/oee');
