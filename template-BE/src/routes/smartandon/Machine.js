@@ -6,6 +6,5 @@ router.get('/machine', machineController.getMachine);
 router.post('/newMachine', machineController.createMachine);
 router.put('/machine/:fid', machineController.updateMachine);
 router.delete('/machine/:fid', machineController.deleteMachine);
-router.put('/maker/:oldMaker', machineController.updateMaker);
 
 module.exports = router;
