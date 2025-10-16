@@ -128,6 +128,22 @@ import {
 } from '@coreui/vue'
 import api from '../../apis/CommonAPI'
 
+function sortMachineData(data, metric) {
+  if (!Array.isArray(data)) return data
+  return [...data].sort((a, b) => {
+    if (metric === 'mtbf') {
+      return b.mtbf - a.mtbf
+    } else if (metric === 'mttr') {
+      return b.mttr - a.mttr
+    } else if (metric === 'comparison') {
+      return b.mtbf + b.mttr - (a.mtbf + a.mttr)
+    }
+    return 0
+  })
+}
+
+const workingHoursPerDay = 15 + 10 / 60 // 15 hours 10 minutes
+
 const chartModes = [
   { value: 'mtbf', label: 'MTBF' },
   { value: 'mttr', label: 'MTTR' },
@@ -179,7 +195,7 @@ const endDate = ref(
   ).padStart(2, '0')}`,
 )
 const chartViewMode = ref('mtbf')
-const filterType = ref('daily')
+const filterType = ref('machines')
 const lineIds = [
   'lpdc',
   'hpdc',
@@ -216,7 +232,7 @@ function setFilterType(val) {
 const getApiEndpoint = () => {
   if (chartViewMode.value === 'mtbf') return '/mtbfmttr/mtbf'
   if (chartViewMode.value === 'mttr') return '/mtbfmttr/mttr'
-  return '/api/mtbfmttr/mtbfmttr'
+  return '/mtbfmttr/mtbfmttr'
 }
 
 function safeArray(val) {
@@ -243,9 +259,13 @@ const fetchAllData = async () => {
           if (!Array.isArray(mapped[id])) mapped[id] = []
           mapped[id].push({
             machine: item.fmc_name,
-            mtbf: item.mtbf ? parseFloat(item.mtbf) : 0,
-            mttr: item.mttr ? parseFloat(item.mttr) : 0,
+            mtbf: item.mtbf ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5)) : 0,
+            mttr: item.mttr ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5)) : 0,
           })
+        })
+        // Sort each machine array by selected metric descending using the new function
+        Object.keys(mapped).forEach((key) => {
+          mapped[key] = sortMachineData(mapped[key], chartViewMode.value)
         })
       } else {
         result.data.forEach((item) => {
@@ -259,19 +279,13 @@ const fetchAllData = async () => {
             if (!Array.isArray(mapped[id])) mapped[id] = []
             mapped[id].push({
               date: item.date,
-              mtbf: item.mtbf ? parseFloat(item.mtbf) : 0,
-              mttr: item.mttr ? parseFloat(item.mttr) : 0,
+              mtbf: item.mtbf ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5)) : 0,
+              mttr: item.mttr ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5)) : 0,
             })
           } else if (filterType.value === 'total') {
-            const totalFdur = parseFloat(item.total_fdur || item.mtbf || 0)
-            const totalRows = parseFloat(item.total_rows || 1)
-            const mtbf =
-              totalRows > 0 ? Math.round((totalFdur / totalRows) * 100) / 100 : 0
-            const mttr = item.mttr !== undefined ? parseFloat(item.mttr) : 0
-
             mapped[id] = {
-              mtbf,
-              mttr,
+              mtbf: item.mtbf ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5)) : 0,
+              mttr: item.mttr ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5)) : 0,
             }
           }
         })
@@ -325,14 +339,67 @@ const hasData = (lineId) => {
 
 const colorMTTRBar = '#FF4560'
 const colorMTBFBar = '#008FFB'
-const colorMTTRLine = '#FF2D55'
-const colorMTBFLine = '#00F0FF'
+const colorMTTRLine = colorMTTRBar
+const colorMTBFLine = colorMTBFBar
 
 const chartBg = '#fff'
 
 const getChartOptions = (lineId) => {
   const data = safeArray(apiData.value[lineId])
   const title = getLineTitle(lineId)
+
+  if (filterType.value === 'machines') {
+    const isComparison = chartViewMode.value === 'comparison';
+    return {
+      chart: {
+        background: chartBg,
+        height: 350,
+        type: 'bar',
+        toolbar: {
+          show: true,
+          tools: {
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            download: true,
+          },
+          autoSelected: 'zoom',
+        },
+        zoom: { enabled: true },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (val) => val.toLocaleString(),
+        background: {
+          enabled: true,
+          foreColor: '#fff',
+          borderRadius: 1,
+          padding: 1,
+          opacity: 1,
+          borderWidth: 0,
+          borderColor: '#fff',
+        },
+        style: { fontSize: '14px', colors: ['#333']},
+      },
+      title: { text: title, align: 'left' },
+      xaxis: { categories: data.map((d) => d.machine ?? '') },
+      yaxis: {
+        title: { text: isComparison ? 'Value' : chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
+        min: 0,
+      },
+      tooltip: { theme: 'dark' },
+      colors: isComparison ? [colorMTBFBar, colorMTTRBar] : [chartViewMode.value === 'mtbf' ? colorMTBFBar : colorMTTRBar],
+      plotOptions: {
+        bar: {
+          columnWidth: isComparison ? '50%' : '50%',
+          dataLabels: { position: 'top' },
+        },
+      },
+      legend: { show: isComparison },
+    }
+  }
 
   if (
     (chartViewMode.value === 'mtbf' || chartViewMode.value === 'mttr') &&
@@ -365,7 +432,7 @@ const getChartOptions = (lineId) => {
       title: { text: title, align: 'left' },
       xaxis: { categories: [chartViewMode.value.toUpperCase()] },
       yaxis: {
-        title: { text: chartViewMode.value.toUpperCase() + ' (Minutes)' },
+        title: { text: chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
         min: 0,
       },
       tooltip: { theme: 'dark' },
@@ -407,7 +474,7 @@ const getChartOptions = (lineId) => {
       },
       title: { text: title, align: 'left' },
       xaxis: { categories: ['Total'] },
-      yaxis: { title: { text: 'Value (Minutes)' }, min: 0 },
+      yaxis: { title: { text: 'Value (Hours)' }, min: 0 },
       tooltip: { theme: 'dark' },
       colors: [colorMTBFBar, colorMTTRBar],
       plotOptions: {
@@ -425,7 +492,7 @@ const getChartOptions = (lineId) => {
     (filterType.value === 'daily' || filterType.value === 'monthly')
   ) {
     const highlightLineColor =
-      chartViewMode.value === 'mtbf' ? colorMTBFLine : colorMTTRLine
+      chartViewMode.value === 'mtbf' ? colorMTBFBar : colorMTTRBar
     return {
       chart: {
         background: chartBg,
@@ -468,7 +535,7 @@ const getChartOptions = (lineId) => {
       xaxis: { categories: data.map((d) => d.date ?? '') },
       yaxis: [
         {
-          title: { text: chartViewMode.value.toUpperCase() + ' (Minutes)' },
+          title: { text: chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
           min: 0,
         },
       ],
@@ -549,7 +616,7 @@ const getChartOptions = (lineId) => {
       },
       yaxis: [
         {
-          title: { text: 'Value (Minutes)' },
+          title: { text: 'Value (Hours)' },
           min: 0,
         },
       ],
@@ -565,7 +632,7 @@ const getChartOptions = (lineId) => {
   }
 
   let categories = []
-  let ytitle = chartViewMode.value.toUpperCase() + ' (Minutes)'
+  let ytitle = chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)'
   if (Array.isArray(data) && data.length > 0) {
     categories = data.map((d) => d.date ?? '')
   } else if (data) {
@@ -623,6 +690,19 @@ const getChartOptions = (lineId) => {
 
 const getChartSeries = (lineId) => {
   const data = safeArray(apiData.value[lineId])
+
+  if (filterType.value === 'machines') {
+    if (chartViewMode.value === 'mtbf') {
+      return [{ name: 'MTBF', data: data.map((d) => parseFloat(d.mtbf) || 0) }]
+    } else if (chartViewMode.value === 'mttr') {
+      return [{ name: 'MTTR', data: data.map((d) => parseFloat(d.mttr) || 0) }]
+    } else if (chartViewMode.value === 'comparison') {
+      return [
+        { name: 'MTBF', data: data.map((d) => parseFloat(d.mtbf) || 0) },
+        { name: 'MTTR', data: data.map((d) => parseFloat(d.mttr) || 0) },
+      ]
+    }
+  }
 
   if (filterType.value === 'total') {
     const d = apiData.value[lineId] || {}

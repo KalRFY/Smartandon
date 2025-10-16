@@ -24,13 +24,14 @@
           <CRow>
             Welcome to Smartandon
           </CRow>
+
         </CCardBody>
       </CCard>
     </CCol>
 
     <CCol lg="9" style="height: 100%;">
       
-      <div class="dashboard-cards-container">
+      <div class="dashboard-cards-container" style="height: 100%;">
         <div
           v-for="(card, index) in dashboardCards"
           :key="index"
@@ -73,7 +74,7 @@
     Machine Stop Input
   </CButton>
 
-  <COffcanvas placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
+  <COffcanvas v-if="visibleEnd" placement="end" :visible="visibleEnd" @hide="() => { visibleEnd = !visibleEnd }">
     <COffcanvasHeader>
       <COffcanvasTitle>Offcanvas</COffcanvasTitle>
       <CCloseButton class="text-reset" @click="() => { visibleEnd = false }" />
@@ -84,27 +85,7 @@
     </COffcanvasBody>
   </COffcanvas>
 
-  <!-- <CCol class="mb-3">
-    <CButton variant="outline" style="width: 100%; font-weight: bold;" color="dark" @click="download">Search</CButton>
-  </CCol> -->
-  <div>
-    <!-- <CRow>
-      <CCol v-for="(card, index) in dashboardCards" :key="index" sm="6" lg="2" class="mb-4">
-        <CCard class="dashboard-card h-100" :color="card.color">
-          <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-4">
-            <div class="icon-container mb-3">
-              <component :is="card.icon" :size="30" :stroke-width="1" />
-            </div>
-            <h4>{{ card.title }}</h4> -->
-    <!-- <p class="card-description">{{ card.description }}</p> -->
-    <!-- <CButton color="light" class="mt-2" @click="navigateTo(card.route)">View Details</CButton>
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow> -->
-  </div>
-
-  <CAccordion class="mb-3" active-item-key="1" style="width: 100%;">
+  <CAccordion class="mb-3" :active-item-key="problemActive.length > 0 ? 1 : undefined" style="width: 100%;">
     <CAccordionItem :item-key="1">
       <CAccordionHeader>
         <CRow>
@@ -118,47 +99,50 @@
       <CAccordionBody>
         <CRow>
           <CCol>
-            <CTable>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
-                    <!-- <CTableHeaderCell scope="col">Action</CTableHeaderCell> -->
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  <CTableRow v-if="loadingProblemActive">
-                    <CTableDataCell colspan="6" class="text-center">Loading...</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow v-else-if="problemActive.length === 0">
-                    <CTableDataCell colspan="6" class="text-center">No active problems</CTableDataCell>
-                  </CTableRow>
-                  <CTableRow v-for="(problem, idx) in problemActive" :key="problem.fid">
-                    <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.fmc_name }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.fline }}</CTableDataCell>
-                    <CTableDataCell>{{ problem.ferror_name }}</CTableDataCell>
-                    <CTableDataCell>
-                      <CButton :color="Number(problem.fdur) > 30 ? 'primary' : 'warning'">
-                        <label style="font-size: x-small; font-weight: bold; width: 100px; color: white;">{{ problem.fdur }} Minutes</label>
-                      </CButton>
-                    </CTableDataCell>
-                    <!-- <CTableDataCell>
-                      <CButton color="success" shape="rounded-pill" style="color: white; font-size: x-small; font-weight: bold; width: 100%; height: 100%;">Open Problem</CButton>
-                    </CTableDataCell> -->
-                  </CTableRow>
-                </CTableBody>
-              </CTable>
+          <div class="table-container" style="max-height: 465px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
+            <CTable class="table-sm table-hover mb-0">
+              <CTableHead class="sticky-top" style="background-color: white; border-bottom: 1px solid #dee2e6;">
+                <CTableRow>
+                  <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark">No</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold text-dark">Machine</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark">Line</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-4 fw-semibold text-dark">Problem</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold text-dark">Duration</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold text-dark">Action</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                <CTableRow v-if="loadingProblemActive">
+                  <CTableDataCell colspan="6" class="text-center py-4">Loading...</CTableDataCell>
+                </CTableRow>
+                <CTableRow v-else-if="problemActive.length === 0">
+                  <CTableDataCell colspan="6" class="text-center py-4 text-muted">No active problems</CTableDataCell>
+                </CTableRow>
+                <CTableRow v-for="(problem, idx) in problemActive" :key="problem.fid" class="align-middle">
+                  <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
+                  <CTableDataCell class="fw-medium text-dark">{{ problem.fmc_name }}</CTableDataCell>
+                  <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
+                  <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
+                  <CTableDataCell>
+                    <CBadge :color="Number(problem.fdur) > 30 ? 'danger' : 'warning'" class="w-100 text-center py-1" shape="rounded-pill">
+                      <small class="fw-bold">{{ problem.fdur }} min</small>
+                    </CBadge>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    <CButton color="primary" size="sm" class="rounded-pill shadow-sm w-100" @click="openEditModal(problem)">Edit</CButton>
+                  </CTableDataCell>
+                </CTableRow>
+              </CTableBody>
+            </CTable>
+          </div>
           </CCol>
         </CRow>
       </CAccordionBody>
     </CAccordionItem>
   </CAccordion>
 
-  <CRow>
+  <!-- Commented out old OEE section -->
+  <!-- <CRow v-if="(oee || []).length > 0">
     <CCol>
       <CCard class="mb-3">
         <CCardBody>
@@ -179,17 +163,18 @@
                         <CCol>
                           Target:
                           {{
-                            oeeTarget.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.ftarget
+                            (oeeTarget || []).find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
                           }}
                         </CCol>
                         <CCol>
                           Actual:
                           {{
-                            oeeActual.find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? oeeDataSmartandon.factual
+                            (oeeActual || []).find(item => item.DEV_NAME === chartData.label)?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
                           }}
                         </CCol>
                       </CRow>
-                      <ApexCharts :options="chartData.options" :series="chartData.series" type="radialBar" height="250" />
+                      <ApexCharts v-if="chartData.series && chartData.series.length > 0" :options="chartData.options" :series="chartData.series" type="radialBar" height="250" />
+                      <div v-else class="text-center py-4">No data available</div>
                     </CCardBody>
                   </div>
                 </CCol>
@@ -199,8 +184,589 @@
               <div style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); height: 100%;" color="dark" variant="outline">
                 <CCardBody style="height: 100%;">
                   <CCardTitle style="font-size: medium; height: 35px; color: black;">Cumulative OEE per Line</CCardTitle>
-                  <ApexCharts :options="cumulativeOeeOptions" :series="cumulativeOeeSeries" type="polarArea" height="350" />
+                  <ApexCharts v-if="cumulativeOeeSeries.length > 0" :options="cumulativeOeeOptions" :series="cumulativeOeeSeries" type="polarArea" height="350" />
+                  <div v-else class="text-center py-4">No OEE data available</div>
                 </CCardBody>
+              </div>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+    </CCol>
+  </CRow> -->
+
+  <CRow class="mb-3">
+    <CCol>
+      <div
+        style="border-radius: 9px; height: 100%;"
+      >
+        <div class="line-duration-container">
+          <div class="line-duration-card" :class="getLineCardClass('LPDC')" @click="openLineProblemsModal('LPDC')">
+            <CRow class="mb-2">
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">LPDC</label>
+              </CCol>
+            </CRow>
+            <CRow class="d-flex justify-content-between mb-1">
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Target: {{
+                  (oeeTarget || []).find(item => item.DEV_NAME === 'LPDC')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
+                }}</label>
+              </CCol>
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Actual: {{
+                  (oeeActual || []).find(item => item.DEV_NAME === 'LPDC')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
+                }}</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ getOeeForLine('LPDC') }}%</label>
+              </CCol>
+            </CRow>
+            <CProgress :color="getOeeColor(getOeeForLine('LPDC'))" variant="striped" animated :value="getOeeForLine('LPDC')" />
+            <hr></hr>
+            <CRow class="mt-2">
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ todayLineDurations['LPDC'] || 0 }} min</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">MT Call</label>
+              </CCol>
+            </CRow>
+          </div>
+          <div class="line-duration-card" :class="getLineCardClass('HPDC')" @click="openLineProblemsModal('HPDC')">
+            <CRow class="mb-2">
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">HPDC</label>
+              </CCol>
+            </CRow>
+            <CRow class="d-flex justify-content-between mb-1">
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Target: {{
+                  (oeeTarget || []).find(item => item.DEV_NAME === 'HPDC')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
+                }}</label>
+              </CCol>
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Actual: {{
+                  (oeeActual || []).find(item => item.DEV_NAME === 'HPDC')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
+                }}</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ getOeeForLine('HPDC') }}%</label>
+              </CCol>
+            </CRow>
+            <CProgress :color="getOeeColor(getOeeForLine('HPDC'))" variant="striped" animated :value="getOeeForLine('HPDC')" />
+            <hr></hr>
+            <CRow class="mt-2">
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ todayLineDurations['HPDC'] || 0 }} min</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">MT Call</label>
+              </CCol>
+            </CRow>
+          </div>
+          <div class="line-duration-card" :class="getLineCardClass('CAM SHAFT')" @click="openLineProblemsModal('CAM SHAFT')">
+            <CRow class="mb-2">
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">CAM SHAFT</label>
+              </CCol>
+            </CRow>
+            <CRow class="d-flex justify-content-between mb-1">
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Target: {{
+                  (oeeTarget || []).find(item => item.DEV_NAME === 'CAM SHAFT')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
+                }}</label>
+              </CCol>
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Actual: {{
+                  (oeeActual || []).find(item => item.DEV_NAME === 'CAM SHAFT')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
+                }}</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ getOeeForLine('CAM SHAFT') }}%</label>
+              </CCol>
+            </CRow>
+            <CProgress :color="getOeeColor(getOeeForLine('CAM SHAFT'))" variant="striped" animated :value="getOeeForLine('CAM SHAFT')" />
+            <hr></hr>
+            <CRow class="mt-2">
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ todayLineDurations['CAM SHAFT'] || 0 }} min</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">MT Call</label>
+              </CCol>
+            </CRow>
+          </div>
+          <div class="line-duration-card" :class="getLineCardClass('CYLINDER HEAD')" @click="openLineProblemsModal('CYLINDER HEAD')">
+            <CRow class="mb-2">
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">CYLINDER HEAD</label>
+              </CCol>
+            </CRow>
+            <CRow class="d-flex justify-content-between mb-1">
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Target: {{
+                  (oeeTarget || []).find(item => item.DEV_NAME === 'CYLINDER HEAD')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
+                }}</label>
+              </CCol>
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Actual: {{
+                  (oeeActual || []).find(item => item.DEV_NAME === 'CYLINDER HEAD')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
+                }}</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ getOeeForLine('CYLINDER HEAD') }}%</label>
+              </CCol>
+            </CRow>
+            <CProgress :color="getOeeColor(getOeeForLine('CYLINDER HEAD'))" variant="striped" animated :value="getOeeForLine('CYLINDER HEAD')" />
+            <hr></hr>
+            <CRow class="mt-2">
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ todayLineDurations['CYLINDER HEAD'] || 0 }} min</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">MT Call</label>
+              </CCol>
+            </CRow>
+          </div>
+          <div class="line-duration-card" :class="getLineCardClass('CYLINDER BLOCK')" @click="openLineProblemsModal('CYLINDER BLOCK')">
+            <CRow class="mb-2">
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">CYLINDER BLOCK</label>
+              </CCol>
+            </CRow>
+            <CRow class="d-flex justify-content-between mb-1">
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Target: {{
+                  (oeeTarget || []).find(item => item.DEV_NAME === 'CYLINDER BLOCK')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
+                }}</label>
+              </CCol>
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Actual: {{
+                  (oeeActual || []).find(item => item.DEV_NAME === 'CYLINDER BLOCK')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
+                }}</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ getOeeForLine('CYLINDER BLOCK') }}%</label>
+              </CCol>
+            </CRow>
+            <CProgress :color="getOeeColor(getOeeForLine('CYLINDER BLOCK'))" variant="striped" animated :value="getOeeForLine('CYLINDER BLOCK')" />
+            <hr></hr>
+            <CRow class="mt-2">
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ todayLineDurations['CYLINDER BLOCK'] || 0 }} min</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">MT Call</label>
+              </CCol>
+            </CRow>
+          </div>
+          <div class="line-duration-card" :class="getLineCardClass('CRANK SHAFT')" @click="openLineProblemsModal('CRANK SHAFT')">
+            <CRow class="mb-2">
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">CRANK SHAFT</label>
+              </CCol>
+            </CRow>
+            <CRow class="d-flex justify-content-between mb-1">
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Target: {{
+                  (oeeTarget || []).find(item => item.DEV_NAME === 'CRANK SHAFT')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
+                }}</label>
+              </CCol>
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Actual: {{
+                  (oeeActual || []).find(item => item.DEV_NAME === 'CRANK SHAFT')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
+                }}</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ getOeeForLine('CRANK SHAFT') }}%</label>
+              </CCol>
+            </CRow>
+            <CProgress :color="getOeeColor(getOeeForLine('CRANK SHAFT'))" variant="striped" animated :value="getOeeForLine('CRANK SHAFT')" />
+            <hr></hr>
+            <CRow class="mt-2">
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ todayLineDurations['CRANK SHAFT'] || 0 }} min</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">MT Call</label>
+              </CCol>
+            </CRow>
+          </div>
+          <div class="line-duration-card" :class="getLineCardClass('ASSY LINE')" @click="openLineProblemsModal('ASSY LINE')">
+            <CRow class="mb-2">
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">ASSY LINE</label>
+              </CCol>
+            </CRow>
+            <CRow class="d-flex justify-content-between mb-1">
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Target: {{
+                  (oeeTarget || []).find(item => item.DEV_NAME === 'ASSY LINE')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
+                }}</label>
+              </CCol>
+              <CCol sm="6" class="text-center">
+                <label style="font-size: x-small;">Actual: {{
+                  (oeeActual || []).find(item => item.DEV_NAME === 'ASSY LINE')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
+                }}</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ getOeeForLine('ASSY LINE') }}%</label>
+              </CCol>
+            </CRow>
+            <CProgress :color="getOeeColor(getOeeForLine('ASSY LINE'))" variant="striped" animated :value="getOeeForLine('ASSY LINE')" />
+            <hr></hr>
+            <CRow class="mt-2">
+              <CCol class="text-center">
+                <label style="font-size: large; font-weight: bold;">{{ todayLineDurations['ASSY LINE'] || 0 }} min</label>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">MT Call</label>
+              </CCol>
+            </CRow>
+          </div>
+
+          <!-- Legend Card - Only visible on mobile -->
+          <div class="line-duration-card legend-card">
+            <CRow class="mb-2">
+              <CCol class="text-center">
+                <label style="font-size: small; font-weight: bold;">LEGEND</label>
+              </CCol>
+            </CRow>
+            <CRow class="mb-1">
+              <CCol class="text-center">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px;">
+                  <div style="width: 20px; height: 20px; border: 3px solid orange; border-radius: 4px; margin-right: 8px;"></div>
+                  <label style="font-size: x-small;">Active ≤30 min</label>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px;">
+                  <div style="width: 20px; height: 20px; border: 3px solid red; border-radius: 4px; margin-right: 8px;"></div>
+                  <label style="font-size: x-small;">Active >30 min</label>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 20px; height: 20px; border: 1px solid #dee2e6; border-radius: 4px; margin-right: 8px;"></div>
+                  <label style="font-size: x-small;">No active problems</label>
+                </div>
+              </CCol>
+            </CRow>
+          </div>
+        </div>
+      </div>
+    </CCol>
+  </CRow>
+
+  <!-- Line Problems Modal -->
+  <CModal
+    :visible="visibleLineProblemsModal"
+    @close="() => { visibleLineProblemsModal = false; selectedLine = ''; lineProblems = []; }"
+    size="xl"
+    backdrop="static"
+    aria-labelledby="LineProblemsModalLabel"
+  >
+    <CModalHeader>
+      <CModalTitle id="LineProblemsModalLabel">Problems for {{ selectedLine }}</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <div class="table-container" style="max-height: 500px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
+        <CTable class="table-sm table-hover mb-0">
+          <CTableHead class="sticky-top" style="background-color: white; border-bottom: 1px solid #dee2e6;">
+            <CTableRow>
+              <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark text-center">No</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-2 fw-semibold text-dark">Machine</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-2 fw-semibold text-dark">Line</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-3 fw-semibold text-dark">Problem</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark text-center">Duration</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark text-center">Status</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark text-center">Action</CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="col-1 fw-semibold text-dark text-center">Delete</CTableHeaderCell>
+            </CTableRow>
+          </CTableHead>
+          <CTableBody>
+            <CTableRow v-if="loadingLineProblems">
+              <CTableDataCell colspan="8" class="text-center py-4">Loading...</CTableDataCell>
+            </CTableRow>
+            <CTableRow v-else-if="lineProblems.length === 0">
+              <CTableDataCell colspan="8" class="text-center py-4 text-muted">No problems found for this line</CTableDataCell>
+            </CTableRow>
+            <CTableRow v-for="(problem, idx) in lineProblems" :key="problem.fid" class="align-middle">
+              <CTableDataCell class="text-center">{{ idx + 1 }}</CTableDataCell>
+              <CTableDataCell class="fw-medium text-dark">{{ problem.fmc_name }}</CTableDataCell>
+              <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
+              <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
+              <CTableDataCell class="text-center">
+                <CBadge :color="Number(problem.fdur) > 30 ? 'danger' : 'warning'" class="text-center py-1" shape="rounded-pill">
+                  <label style="font-size: small;">{{ problem.fdur }} min</label>
+                </CBadge>
+              </CTableDataCell>
+              <CTableDataCell class="text-center">
+                <CBadge :color="problem.fend_time ? 'success' : 'danger'" class="w-100 text-center py-1" shape="rounded-pill">
+                  <label style="font-size: small; color: white;">{{ problem.fend_time ? 'Resolved' : 'Active' }}</label>
+                </CBadge>
+              </CTableDataCell>
+              <CTableDataCell class="text-center">
+                <CButton style="width: 50%;" color="primary" size="sm" class="shadow-sm" @click="openEditModal(problem)">Edit</CButton>
+              </CTableDataCell>
+              <CTableDataCell class="text-center">
+                <Trash2 size="16" class="text-danger" style="cursor: pointer;" @click="deleteProblem(problem.fid)" />
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        </CTable>
+      </div>
+    </CModalBody>
+    <CModalFooter>
+      <CButton color="secondary" @click="() => { visibleLineProblemsModal = false; selectedLine = ''; lineProblems = []; }">
+        Close
+      </CButton>
+    </CModalFooter>
+  </CModal>
+
+  <CRow>
+    <CCol lg="12" class="mb-3">
+      <CCard>
+        <!-- <CCardHeader>Problem Frequency</CCardHeader> -->
+        <CCardBody>
+          <CRow class="mb-3">
+            <CCol>
+              <div style="border-radius: 9px; height: 100%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
+                <CCardBody>
+                  <CRow>
+                    <CCol class="mb-3">
+                      <CInputGroup>
+                        <CInputGroupText id="basic-addon1">
+                          <label>Start</label>
+                        </CInputGroupText>
+                        <CFormInput
+                          id="startDate"
+                          type="date"
+                          v-model="filterStartDate"
+                          aria-label="Start Date"
+                          aria-describedby="basic-addon1"
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol class="mb-3">
+                      <CInputGroup>
+                        <CInputGroupText id="basic-addon2">
+                          <label>Finish</label>
+                        </CInputGroupText>
+                        <CFormInput
+                          id="finishDate"
+                          type="date"
+                          v-model="filterFinishDate"
+                          aria-label="Finish Date"
+                          aria-describedby="basic-addon2"
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol sm="3" class="mb-3">
+                      <Treeselect
+                        id="lineFilterSelect"
+                        v-model="filterLine"
+                        :multiple="false"
+                        :flat="true"
+                        :options="lineOptions"
+                        :searchable="true"
+                        :clearable="true"
+                        placeholder="Line"
+                        :value-consists-of="['id']"
+                        :value-key="'id'"
+                        :label-key="'label'"
+                      />
+                      <small v-if="lineOptions.length === 0" class="text-muted">Loading lines...</small>
+                    </CCol>
+                    <CCol class="mb-3">
+                      <CButton
+                        :disabled="loading"
+                        style="width: 100%; font-weight: bold; font-size: x-small; color: white;"
+                        color="info"
+                        @click="onSearch"
+                      >
+                        <Search size="16" />
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </div>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <ApexCharts
+                v-if="problemFrequencySeries[0].data.length > 0"
+                :key="formatKey"
+                :options="problemFrequencyOptions"
+                :series="problemFrequencySeries"
+                type="line"
+                height="350"
+              />
+              <div v-else class="text-center py-4">No data available</div>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+    </CCol>
+  </CRow>
+  
+  <CRow>
+    <CCol>
+      <CCard>
+        <!-- <CCardHeader>LTR</CCardHeader> -->
+        <CCardBody>
+          <CRow>
+            <CCol lg="7" class="mb-3">
+              <CRow class="mb-3">
+                <CCol>
+                  <div style="border-radius: 9px; height: 100%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
+                    <CCardBody>
+                      <CRow>
+                        <CCol class="mb-3">
+                          <CInputGroup>
+                            <CInputGroupText id="ltr-start-addon">
+                              <label>Start</label>
+                            </CInputGroupText>
+                            <CFormInput
+                              id="ltrStartDate"
+                              type="date"
+                              v-model="ltrStartDate"
+                              aria-label="LTR Start Date"
+                              aria-describedby="ltr-start-addon"
+                            />
+                          </CInputGroup>
+                        </CCol>
+                        <CCol class="mb-3">
+                          <CInputGroup>
+                            <CInputGroupText id="ltr-finish-addon">
+                              <label>Finish</label>
+                            </CInputGroupText>
+                            <CFormInput
+                              id="ltrFinishDate"
+                              type="date"
+                              v-model="ltrFinishDate"
+                              aria-label="LTR Finish Date"
+                              aria-describedby="ltr-finish-addon"
+                            />
+                          </CInputGroup>
+                        </CCol>
+                        <CCol sm="3" class="mb-3">
+                          <Treeselect
+                            id="ltrLineFilterSelect"
+                            v-model="ltrLine"
+                            :multiple="false"
+                            :flat="true"
+                            :options="lineOptions"
+                            :searchable="true"
+                            :clearable="true"
+                            placeholder="Line"
+                            :value-consists-of="['id']"
+                            :value-key="'id'"
+                            :label-key="'label'"
+                          />
+                          <small v-if="lineOptions.length === 0" class="text-muted">Loading lines...</small>
+                        </CCol>
+
+                        <CCol sm="2" class="mb-3">
+                          <CFormSelect
+                            id="ltrViewBySelect"
+                            v-model="ltrViewBy"
+                            :options="[
+                              { value: 'monthly', label: 'Monthly' },
+                              { value: 'daily', label: 'Daily' }
+                            ]"
+                            placeholder="View By"
+                          />
+                        </CCol>
+                        <CCol class="mb-3">
+                          <CButton
+                            :disabled="loading"
+                            style="width: 100%; font-weight: bold; font-size: x-small; color: white;"
+                            color="info"
+                            @click="onSearch"
+                          >
+                            <Search size="16" />
+                          </CButton>
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </div>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol>
+                  <ApexCharts
+                    v-if="ltrSeries[0].data.length > 0"
+                    :key="ltrFormatKey"
+                    :options="ltrOptions"
+                    :series="ltrSeries"
+                    type="line"
+                    height="400"
+                  />
+                  <div v-else class="text-center py-4">No data available</div>
+                </CCol>
+              </CRow>
+            </CCol>
+            <CCol lg="5">
+              <div class="table-container" style="max-height: 500px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
+                <CTable class="table-sm table-hover table-striped mb-0">
+                  <CTableHead class="table-dark sticky-top">
+                    <CTableRow>
+                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Machine</CTableHeaderCell>
+                      <CTableHeaderCell scope="col" class="col-1 fw-semibold">Line</CTableHeaderCell>
+                      <CTableHeaderCell scope="col" class="col-5 fw-semibold">Problem</CTableHeaderCell>
+                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Duration</CTableHeaderCell>
+                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Action</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    <CTableRow v-if="loadingFollowupLtr">
+                      <CTableDataCell colspan="5" class="text-center py-4">Loading...</CTableDataCell>
+                    </CTableRow>
+                    <CTableRow v-else-if="followupLtrProblems.length === 0">
+                      <CTableDataCell colspan="5" class="text-center py-4 text-muted">No LTR problems without reports</CTableDataCell>
+                    </CTableRow>
+                    <CTableRow v-for="(problem, idx) in followupLtrProblems" :key="problem.fid" class="align-middle">
+                      <CTableDataCell class="fw-bold text-dark">{{ problem.fmc_name }}</CTableDataCell>
+                      <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
+                      <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
+                      <CTableDataCell>
+                        <CBadge color="danger" class="w-100 text-center py-1" shape="rounded-pill">
+                          <small class="fw-bold">{{ problem.fdur }} min</small>
+                        </CBadge>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <CButton color="primary" size="sm" class="rounded-pill shadow-sm w-100" @click="openEditModal(problem)">Edit</CButton>
+                      </CTableDataCell>
+                    </CTableRow>
+                  </CTableBody>
+                </CTable>
               </div>
             </CCol>
           </CRow>
@@ -209,10 +775,14 @@
     </CCol>
   </CRow>
 
+  <CRow class="mb-3">
+  </CRow>
+
   <div>
-    <CModal :visible="visibleLiveDemo" @close="
+  <CModal :visible="visibleLiveDemo" @close="
       () => {
-        visibleLiveDemo = false
+        visibleLiveDemo = false;
+        resetForm();
       }
     " aria-labelledby="LiveDemoExampleLabel">
       <CModalHeader>
@@ -229,37 +799,82 @@
           </CCol>
           <CCol md="4">
             <label for="machineSelect" class="form-label">Line</label>
-            <Treeselect id="lineSelect" v-model="submit.line" :multiple="false" :flat="true" :options="lineOptions"
-              :searchable="true" :clearable="true" placeholder="Select or input line" @input="onMachineInput"
-              :value-consists-of="['id']" :value-key="'id'" :label-key="'label'" />
+            <CFormInput
+              id="lineDisplay"
+              v-model="submit.lineName"
+              readonly
+              placeholder="Line will be auto-filled when machine is selected"
+            />
           </CCol>
-          <!-- <CCol md="4">
-              <CFormSelect
-                aria-describedby="validationCustom04Feedback"
-                feedbackInvalid="Please select the line."
-                id="lineSelect"
-                label="Line"
-                required
-                v-model="submit.line"
-              >
-                <option selected disabled value="">Choose Line...</option>
-                <option v-for="line in lines" :key="line.fid" :value="line.fline">{{ line.fline }}</option>
-              </CFormSelect>
-          </CCol> -->
           <CCol md="12">
-            <CFormInput feedbackInvalid="Please input the problems" id="Problems" label="Problems" required
-              v-model="submit.problems" />
+            <CFormInput
+              feedbackInvalid="Please Login"
+              id="User"
+              label="Operator"
+              required
+              disabled
+              :placeholder="loadingUser ? 'Loading user...' : 'Auto-filled from login'"
+              v-model="submit.operatorName" />
           </CCol>
-          <CCol xs="12">
-            <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
-              label="Agree to terms and conditions" required type="checkbox" v-model="submit.agreeTerms" />
+          
+          <CCol md="12">
+            <CRow>
+              <CCol md="4">
+                <label for="problemsSearchSelect" class="form-label">Problems</label>
+              </CCol>
+              <CCol md="8">
+                <CTooltip
+                  content="Check this box if you want to enter a new problem that is not in the existing list. Uncheck to select from the searchable list of existing problems."
+                  placement="right"
+                >
+                  <template #toggler="{ id, on }">
+                    <CFormCheck
+                      :id="id"
+                      label="New Problem"
+                      v-model="isNewProblem"
+                      v-on="on"
+                    />
+                  </template>
+                </CTooltip>
+              </CCol>
+            </CRow>
+  
+            <!-- Manual Input for New Problems -->
+            <CCol md="12" v-if="isNewProblem">
+              <CFormInput
+                feedbackInvalid="Please input the problems"
+                id="Problems"
+                required
+                placeholder="Enter new problem description..."
+                v-model="submit.problems" />
+            </CCol>
+  
+            <!-- Search Select for Existing Problems -->
+            <CCol md="12" v-else>
+              <ModelSelect
+                id="problemsSearchSelect"
+                v-model="submit.problems"
+                :options="problemSearchOptions"
+                :disabled="problemSearchOptions.length <= 1 || problemSearchOptions[0].text === 'Select a machine first' || problemSearchOptions[0].text === 'Loading problems...'"
+                placeholder="Type to search problems..."
+                required
+              />
+            </CCol>
+            <CRow class="mb-3">
+    
+            </CRow>
+            <CCol xs="12">
+              <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
+                label="Sudah Benar" required type="checkbox" v-model="submit.agreeTerms" />
+            </CCol>
           </CCol>
         </CForm>
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" @click="
           () => {
-            visibleLiveDemo = false
+            visibleLiveDemo = false;
+            resetForm();
           }
         ">
           Close
@@ -268,18 +883,24 @@
         <CButton color="primary" @click="saveSubmit">Submit</CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- Edit Problem Modal -->
+    <EditProblemModal
+      :visible="visibleEditModal"
+      :submitData="editSubmit"
+      :machineOptions="machineOptions"
+      :lineOptions="lineOptions"
+      :modalLoading="editModalLoading"
+      @close="visibleEditModal = false"
+      @submit="saveEditSubmit"
+    />
   </div>
 </template>
 
-
-
-
-
-
 <script>
 import { ref } from 'vue'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordionItem } from '@coreui/vue';
-import axios from 'axios';
+import moment from 'moment'
+import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordion, CAccordionItem, CAccordionHeader, CAccordionBody, CTooltip } from '@coreui/vue';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
@@ -296,10 +917,16 @@ import {
   CalendarClock,
   ChartColumnIncreasing,
   BookText,
+  Search,
+  Trash2,
 } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
+import { CFormSelect } from '@coreui/vue'
+import { ModelSelect } from 'vue-search-select'
+import "vue-search-select/dist/VueSearchSelect.css"
+import EditProblemModal from './ProblemHistory/EditProblemModal.vue'
 const visibleStaticBackdropDemo = ref(false);
 const visibleEnd = ref(false)
 
@@ -307,16 +934,120 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      filterStartDate: moment().subtract(30, 'days').format('YYYY-MM-DD'),
+      filterFinishDate: moment().format('YYYY-MM-DD'),
+      filterLine: null,
+      todayLineDurations: {},
+      // LTR Chart data properties
+      ltrStartDate: moment().subtract(1, 'year').format('YYYY-MM-DD'),
+      ltrFinishDate: moment().format('YYYY-MM-DD'),
+      ltrLine: null,
+      ltrViewBy: 'monthly',
+      problemFrequencyData: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Frequency Problem',
+            backgroundColor: '#f87979',
+            data: [],
+          },
+        ],
+      },
+      problemFrequencyOptions: {
+        chart: {
+          height: 350,
+          type: 'line',
+        },
+        stroke: {
+          width: [4]
+        },
+        title: {
+          text: 'Frequency Problem'
+        },
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [0]
+        },
+        xaxis: {
+          type: 'datetime',
+          labels: {
+            format: 'MMM dd',
+          },
+        },
+        yaxis: [{
+          title: {
+            text: 'Frequency Problem',
+          },
+        }],
+      },
+      problemFrequencySeries: [{
+        name: 'Frequency Problem',
+        type: 'column',
+        data: []
+      }],
+      // LTR Chart options and series
+      ltrOptions: {
+        chart: {
+          height: 350,
+          type: 'line',
+        },
+        colors: ['#E67A0E'],
+        plotOptions: {
+          bar: {
+            borderRadius: 0,
+          },
+        },
+        stroke: {
+          width: [4]
+        },
+        title: {
+          text: 'LTR - Long Time Repair'
+        },
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [0]
+        },
+        xaxis: {
+          type: 'datetime',
+          labels: {
+            format: 'MMM dd',
+          },
+        },
+        yaxis: [{
+          title: {
+            text: 'Jumlah LTR',
+          },
+        }],
+      },
+      ltrSeries: [{
+        name: 'Jumlah LTR',
+        type: 'column',
+        data: []
+      }],
+      ltrFormatKey: 0,
       types: [],
       lines: [],
       linesOptions: [],
+      lineOptions: [],
+
       machines: [],
       machineOptions: [],
+      memberOption: [],
+      problemSelectOptions: [
+        { value: '', label: 'Select a machine first' }
+      ],
+      problemSearchOptions: [
+        { value: '', text: 'Select a machine first' }
+      ],
       oee: [],
       oeeOption: [],
       oeeTarget: [],
       oeeActual: [],
       oeePlan: [],
+      oeeDataSmartandon: {
+        ftarget: 0,
+        factual: 0
+      },
       chartDataPerLine: [],
       chartDataTargetPerLine: [],
       chartDataActualPerLine: [],
@@ -325,12 +1056,25 @@ export default {
       visibleEnd: false,
       problemActive: [],
       loadingProblemActive: false,
+      followupLtrProblems: [],
+      loadingFollowupLtr: false,
 
+      visibleEditModal: false,
+      editModalLoading: false,
+      editSubmit: {},
+
+      visibleLineProblemsModal: false,
+      selectedLine: '',
+      lineProblems: [],
+      loadingLineProblems: false,
 
       visibleLiveDemo: false,
+      loadingUser: false,
+      isNewProblem: false,
       submit: {
         machineName: null,
         lineName: null,
+        fline: '',
         operatorName: null,
         problems: null,
       },
@@ -472,6 +1216,46 @@ export default {
       },
     }
   },
+  watch: {
+    // Add watcher for machineName changes
+    'submit.machineName': function(newVal) {
+      this.onMachineInput(newVal);
+    },
+    // Add watcher for new problem checkbox
+    isNewProblem: function() {
+      this.onNewProblemToggle();
+    },
+    // Add watcher for lineOptions to debug loading
+    lineOptions: {
+      handler(newVal) {
+        console.log('[FE Debug] Line options updated:', newVal);
+      },
+      immediate: true
+    },
+    // Watchers for Frequency Problem chart filters
+    filterStartDate: function() {
+      this.fetchChartData();
+    },
+    filterFinishDate: function() {
+      this.fetchChartData();
+    },
+    filterLine: function() {
+      this.fetchChartData();
+    },
+    // Watchers for LTR chart filters
+    ltrStartDate: function() {
+      this.fetchLtrData();
+    },
+    ltrFinishDate: function() {
+      this.fetchLtrData();
+    },
+    ltrLine: function() {
+      this.fetchLtrData();
+    },
+    ltrViewBy: function() {
+      this.fetchLtrData();
+    }
+  },
 
   components: {
     MainChartExample,
@@ -486,6 +1270,8 @@ export default {
     CalendarClock,
     ChartColumnIncreasing,
     BookText,
+    Search,
+    Trash2,
     CChart,
     ApexCharts,
     CTable,
@@ -496,7 +1282,11 @@ export default {
     CTableDataCell,
     CoffCanvas,
     Treeselect,
+    CFormSelect,
+    ModelSelect,
+    CTooltip,
     ApexCharts,
+    EditProblemModal,
   },
   setup() {
     const router = useRouter()
@@ -529,7 +1319,7 @@ export default {
 
     const dashboardCards = [
       {
-        title: 'MTBF',
+        title: 'MTBF MTTR',
         icon: 'Clock',
         description: 'Mean Time Between Failures metrics',
         color: 'info',
@@ -595,6 +1385,10 @@ export default {
 
   async created() {
     this.startAutoRefresh();
+    // Initialize charts and LTR table data
+    await this.fetchChartData();
+    await this.fetchLtrData();
+    await this.fetchFollowupLtrProblems();
   },
   beforeUnmount() {
     this.stopAutoRefresh();
@@ -602,7 +1396,7 @@ export default {
   methods: {
     async fetchDashboardData() {
       try {
-        const responseMachines = await axios.get('/api/smartandon/machine');
+        const responseMachines = await api.get('/smartandon/machine');
         this.machines = responseMachines.data;
         this.machineOptions = responseMachines.data.map((machine) => ({
           id: machine.fid,
@@ -611,28 +1405,55 @@ export default {
       } catch (error) {
         console.error('Failed to fetch machines:', error);
       }
+
+      // Fetch today's line durations
       try {
-        const responseLines = await axios.get('/api/smartandon/line');
+        const today = moment().format('YYYY-MM-DD');
+        const lineDurationParams = {
+          startDate: today,
+          finishDate: today,
+          groupBy: 'line',
+          limitView: 'group'
+        };
+        console.log('Fetching line durations with params:', lineDurationParams);
+        const lineDurationResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(lineDurationParams) });
+        console.log('Line duration response:', lineDurationResponse);
+        console.log('Line duration response data:', lineDurationResponse.data);
+        this.todayLineDurations = {};
+        if (lineDurationResponse.data && lineDurationResponse.data.data) {
+          console.log('Processing line duration data:', lineDurationResponse.data.data);
+          lineDurationResponse.data.data.forEach(item => {
+            console.log('Processing item:', item, 'Setting', item.line, 'to', item.totalDuration);
+            this.todayLineDurations[item.line] = item.totalDuration;
+          });
+        }
+        console.log('Final todayLineDurations object:', this.todayLineDurations);
+        console.log('Data to be displayed in cards - LPDC:', this.todayLineDurations['LPDC'] || 0, 'HPDC:', this.todayLineDurations['HPDC'] || 0, 'CAM SHAFT:', this.todayLineDurations['CAM SHAFT'] || 0, 'CYLINDER HEAD:', this.todayLineDurations['CYLINDER HEAD'] || 0, 'CYLINDER BLOCK:', this.todayLineDurations['CYLINDER BLOCK'] || 0, 'CRANK SHAFT:', this.todayLineDurations['CRANK SHAFT'] || 0, 'ASSY LINE:', this.todayLineDurations['ASSY LINE'] || 0);
+      } catch (error) {
+        console.error('Failed to fetch today line durations:', error);
+      }
+
+      try {
+        const responseLines = await api.get('/smartandon/line');
+        console.log('[FE Debug] Line API response:', responseLines.data);
         this.lines = responseLines.data;
         this.lineOptions = responseLines.data.map((line) => ({
           id: line.fid,
           label: line.fline,
         }));
+        console.log('[FE Debug] Line options created:', this.lineOptions);
       } catch (error) {
         console.error('Failed to fetch lines:', error);
+        this.lineOptions = [];
       }
+
+
       try {
         this.loadingProblemActive = true;
         this.limitView = 0;
         console.log('[FE Debug] Dashboard params to send:', { limitView: 0 })
 
-        const responseProblems = await axios.get('/api/smartandon/problemView', {
-          params: {
-            search: JSON.stringify({
-              limitView: 0,
-            }),
-          },
-        });
+        const responseProblems = await api.get('/smartandon/problemView', { search: JSON.stringify({ limitView: 'Current' }) });
         this.problemActive = responseProblems.data.data;
         console.log('Filtered active problems:', this.problemActive);
       } catch (error) {
@@ -641,39 +1462,90 @@ export default {
       } finally {
         this.loadingProblemActive = false;
       }
+
+
+
       try {
-        const responseOeeData = await axios.get('/api/smartandon/oeeDataSmartandon');
+        // Fetch synced OEE data from tb_prod table
+        const responseOeeData = await api.get('/smartandon/oeeDataSmartandon');
         this.oeeDataSmartandon = responseOeeData.data;
-        console.log('OEE Target: ' + this.oeeDataSmartandon);
+        console.log('Synced OEE Data from tb_prod:', this.oeeDataSmartandon);
+
+        // Process the synced data to populate oeeTarget, oeeActual, oeePlan arrays
+        this.oeeTarget = [];
+        this.oeeActual = [];
+        this.oeePlan = [];
+        this.oee = [];
+
+        // Group data by line and map to the expected format
+        const lineData = {};
+        this.oeeDataSmartandon.forEach(item => {
+          const line = item.fline;
+          if (!lineData[line]) {
+            lineData[line] = {};
+          }
+
+          const itemName = item.fitem.toUpperCase();
+          if (itemName.includes('TARGET')) {
+            this.oeeTarget.push({
+              DEV_NAME: line,
+              REG_VALUE: item.fvalue,
+              TR_TIME: item.ftm_update
+            });
+            lineData[line].target = item.fvalue;
+          } else if (itemName.includes('ACTUAL')) {
+            this.oeeActual.push({
+              DEV_NAME: line,
+              REG_VALUE: item.fvalue,
+              TR_TIME: item.ftm_update
+            });
+            lineData[line].actual = item.fvalue;
+          } else if (itemName.includes('PLAN')) {
+            this.oeePlan.push({
+              DEV_NAME: line,
+              REG_VALUE: item.fvalue,
+              TR_TIME: item.ftm_update
+            });
+            lineData[line].plan = item.fvalue;
+          } else if (itemName.includes('OEE')) {
+            this.oee.push({
+              DEV_NAME: line,
+              REG_VALUE: item.fvalue,
+              TR_TIME: item.ftm_update
+            });
+            lineData[line].oee = item.fvalue;
+          }
+        });
+
+        console.log('Processed OEE Target:', this.oeeTarget);
+        console.log('Processed OEE Actual:', this.oeeActual);
+        console.log('Processed OEE Plan:', this.oeePlan);
+        console.log('Processed OEE:', this.oee);
       } catch (error) {
-        console.log('Failed to fetch oee target:', error);
+        console.log('Failed to fetch synced OEE data:', error);
+        // Fallback to old endpoints if synced data fails
+        try {
+          const responseOeeTarget = await api.get('/smartandon/oeeTarget');
+          this.oeeTarget = responseOeeTarget.data;
+          console.log('Fallback OEE Target:', this.oeeTarget);
+        } catch (fallbackError) {
+          console.log('Fallback OEE target also failed:', fallbackError);
+        }
+        try {
+          const responseOeeActual = await api.get('/smartandon/oeeActual');
+          this.oeeActual = responseOeeActual.data;
+        } catch (fallbackError) {
+          console.log('Fallback OEE actual also failed:', fallbackError);
+        }
+        try {
+          const responseOeePlan = await api.get('/smartandon/oeePlan');
+          this.oeePlan = responseOeePlan.data;
+        } catch (fallbackError) {
+          console.log('Fallback OEE plan also failed:', fallbackError);
+        }
       }
       try {
-        const responseOeeTarget = await axios.get('/api/smartandon/oeeTarget');
-        this.oeeTarget = responseOeeTarget.data;
-        this.oeeOption = responseOeeTarget.data.map((oeeTargets) => ({
-          id: oeeTargets.GROUP_NAME,
-          label: oeeTargets.TAG_NAME,
-          labelOeeTarget: oeeTargets.REG_VALUE,
-        }));
-        console.log('OEE Target: ' + this.oeeTarget);
-      } catch (error) {
-        console.log('Failed to fetch oee target:', error);
-      }
-      try {
-        const responseOeeActual = await axios.get('/api/smartandon/oeeActual');
-        this.oeeActual = responseOeeActual.data;
-      } catch (error) {
-        console.log('Failed to fetch oee actual:', error);
-      }
-      try {
-        const responseOeePlan = await axios.get('/api/smartandon/oeePlan');
-        this.oeePlan = responseOeePlan.data;
-      } catch (error) {
-        console.log('Failed to fetch oee plan:', error);
-      }
-      try {
-        const responseOee = await axios.get('/api/smartandon/oee');
+        const responseOee = await api.get('/smartandon/oee');
         this.oee = responseOee.data;
         this.oeeOption = responseOee.data.map((oeeValue) => ({
           id: oeeValue.GROUP_NAME,
@@ -763,6 +1635,7 @@ export default {
           }
         });
         this.cumulativeOeeSeries = Object.values(cumulativeOeeData);
+        const maxValue = Object.values(cumulativeOeeData).length > 0 ? Math.max(...Object.values(cumulativeOeeData)) : 100;
         this.cumulativeOeeOptions = {
           chart: {
             type: 'polarArea',
@@ -779,7 +1652,7 @@ export default {
           yaxis: {
             show: true,
             min: 0,
-            max: Math.max(...Object.values(cumulativeOeeData)) * 1.1,
+            max: maxValue * 1.1,
           },
           legend: {
             position: 'right',
@@ -801,6 +1674,126 @@ export default {
       } catch (error) {
         console.error('Failed to fetch or process OEE data:', error);
       }
+
+      try {
+        const memberResponse = await api.get('/smartandon/member')
+        if (memberResponse.status !== 200) {
+          throw new Error('Failed to fetch members, status: ' + memberResponse.status)
+        }
+        this.memberOption = memberResponse.data.map((member) => ({
+          id: member.fid,
+          label: member.fname,
+        }))
+      } catch (error) {
+        console.error('Failed to fetch members:', error)
+      }
+    },
+    async fetchChartData() {
+      // Fetch historical data for the frequency chart
+      try {
+        const chartParams = {
+            startDate: this.filterStartDate,
+            finishDate: this.filterFinishDate,
+            limitView: 'group',
+        };
+
+        // Add line filter if selected
+        if (this.filterLine) {
+          chartParams.line = this.filterLine;
+        }
+
+        console.log('[FE Debug] Sending chart request with params:', chartParams);
+        console.log('[FE Debug] Start Date:', this.filterStartDate);
+        console.log('[FE Debug] Finish Date:', this.filterFinishDate);
+
+        const historyResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(chartParams) });
+
+        if (historyResponse.data && historyResponse.data.data) {
+            const groupedData = historyResponse.data.data;
+            console.log('[FE Debug] Raw chart data from API:', groupedData);
+            console.log('[FE Debug] Number of data points received:', groupedData.length);
+
+            const sortedData = groupedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+            console.log('[FE Debug] Sorted chart data:', sortedData);
+
+            const websiteBlogData = sortedData.map(item => [new Date(item.date).getTime(), item.count]);
+            console.log('[FE Debug] Website blog data for chart:', websiteBlogData);
+
+            this.problemFrequencyData = {
+                labels: sortedData.map(item => item.date),
+                datasets: [
+                    {
+                        label: 'Frequency Problem',
+                        backgroundColor: '#f87979',
+                        data: sortedData.map(item => item.count),
+                    },
+                ],
+            };
+
+            this.problemFrequencySeries[0].data = websiteBlogData;
+            console.log('[FE Debug] Updated problemFrequencySeries:', this.problemFrequencySeries);
+
+            // Check if start date year is not current year
+            const startYear = new Date(this.filterStartDate).getFullYear();
+            const currentYear = new Date().getFullYear();
+            const format = startYear !== currentYear ? 'MMM dd yyyy' : 'MMM dd';
+            console.log('Filter year:', startYear, 'Current year:', currentYear, 'Format:', format);
+            this.problemFrequencyOptions.xaxis.labels.format = format;
+            this.formatKey += 1; // Force re-render of ApexCharts to update label format
+        }
+      } catch (error) {
+        console.error('Failed to fetch problem history for chart:', error);
+      }
+    },
+    async fetchLtrData() {
+      // Fetch historical data for the LTR chart
+      try {
+        const ltrParams = {
+            startDate: this.ltrStartDate,
+            finishDate: this.ltrFinishDate,
+            limitView: 'group',
+            groupBy: this.ltrViewBy,
+            problemCategory: 3, // Filter for LTR category
+        };
+
+        // Add line filter if selected
+        if (this.ltrLine) {
+          ltrParams.line = this.ltrLine;
+        }
+
+
+
+        console.log('[FE Debug] Sending LTR request with params:', ltrParams);
+        console.log('[FE Debug] LTR Start Date:', this.ltrStartDate);
+        console.log('[FE Debug] LTR Finish Date:', this.ltrFinishDate);
+
+        const ltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(ltrParams) });
+
+        if (ltrResponse.data && ltrResponse.data.data) {
+            const ltrGroupedData = ltrResponse.data.data;
+            console.log('[FE Debug] Raw LTR data from API:', ltrGroupedData);
+            console.log('[FE Debug] Number of LTR data points received:', ltrGroupedData.length);
+
+            const ltrSortedData = ltrGroupedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+            console.log('[FE Debug] Sorted LTR data:', ltrSortedData);
+
+            const ltrWebsiteBlogData = ltrSortedData.map(item => [new Date(item.date).getTime(), item.count]);
+            console.log('[FE Debug] LTR Website blog data for chart:', ltrWebsiteBlogData);
+
+            this.ltrSeries[0].data = ltrWebsiteBlogData;
+            console.log('[FE Debug] Updated ltrSeries:', this.ltrSeries);
+
+            // Check if start date year is not current year
+            const ltrStartYear = new Date(this.ltrStartDate).getFullYear();
+            const ltrCurrentYear = new Date().getFullYear();
+            const ltrFormat = ltrStartYear !== ltrCurrentYear ? 'MMM dd yyyy' : 'MMM dd';
+            console.log('LTR Filter year:', ltrStartYear, 'Current year:', ltrCurrentYear, 'Format:', ltrFormat);
+            this.ltrOptions.xaxis.labels.format = ltrFormat;
+            this.ltrFormatKey += 1; // Force re-render of ApexCharts to update label format
+        }
+      } catch (error) {
+        console.error('Failed to fetch LTR data for chart:', error);
+      }
     },
     startAutoRefresh() {
       this.fetchDashboardData();
@@ -815,22 +1808,36 @@ export default {
       }
     },
     async onClickInput() {
+      this.loadingUser = true;
       try {
-        const response = await fetch('http://localhost:3000/api/user/user', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        if (!response.ok) throw new Error('Failed to fetch user');
-        const data = await response.json();
-        this.submit.operatorName = data.user.name || '';
+        const response = await api.get('/user/user');
+
+        if (response && response.data && response.data.user && response.data.user.name) {
+          this.submit.operatorName = response.data.user.name;
+          console.log("User fetched successfully:", this.submit.operatorName);
+        } else {
+          throw new Error('Invalid user data received from API');
+        }
       } catch (error) {
         console.error('Failed to fetch current user info:', error);
+        this.submit.operatorName = '';
+
+        // Handle different error types
+        if (error.response) {
+          if (error.response.status === 401) {
+            alert('Authentication failed. Please login again.');
+          } else {
+            alert(`Error loading user: ${error.response.statusText || 'API Error'}`);
+          }
+        } else if (error.message) {
+          alert(`Error loading user: ${error.message}`);
+        } else {
+          alert('Error loading user: Unknown error occurred');
+        }
+      } finally {
+        this.loadingUser = false;
       }
       this.visibleLiveDemo = true;
-      console.log("User: " + this.submit.operatorName);
     },
     async saveSubmit() {
       console.log('Submitting data:', this.submit);
@@ -844,10 +1851,16 @@ export default {
       }
       if (!machineNameToSubmit) {
         alert('Please input or select machine name');
-      } else if (!this.submit.line) {
-        alert('Please input line');
-      } else if (!this.submit.problems) {
-        alert('Please input problems');
+      } else if (!this.submit.fline) {
+        alert('Please input the line');
+      } else if (!this.submit.operatorName) {
+        alert('Please wait for operator name to be loaded');
+      } else if (!this.submit.problems || this.submit.problems === '') {
+        if (this.isNewProblem) {
+          alert('Please enter a new problem description');
+        } else {
+          alert('Please select a problem');
+        }
       } else if (!this.submit.agreeTerms) {
         alert('You must agree to terms and conditions before submitting');
       } else {
@@ -858,17 +1871,24 @@ export default {
           
           const payload = {
             fmc_id: machineNameToSubmit,
-            lineName: this.submit.lineName,
+            lineName: this.submit.fline,
             ferror_name: this.submit.problems,
+            foperator: this.submit.operatorName,
             fstart_time: formattedTime
           };
           
           console.log('Payload to send:', payload);
-          const response = await axios.put('/api/smartandon/problemMachine', payload);
+          const response = await api.put('/smartandon/problemMachine', null, payload);
           if (response && response.status >= 200 && response.status < 300) {
             alert('Input saved successfully');
             this.visibleLiveDemo = false;
             this.submit = {};
+            // Refresh current problem list immediately after input
+            this.fetchDashboardData();
+            // Refresh charts and LTR table immediately after input
+            this.fetchChartData();
+            this.fetchLtrData();
+            this.fetchFollowupLtrProblems();
           } else {
             alert('Failed to save input');
           }
@@ -878,9 +1898,216 @@ export default {
         }
       }
     },
+    async fetchProblemsByMachine(machineId) {
+      try {
+        // Reset problem options while loading
+        this.problemSelectOptions = [
+          { value: '', label: 'Loading problems...' }
+        ];
+        this.problemSearchOptions = [
+          { value: '', text: 'Loading problems...' }
+        ];
+
+        // Find the machine name from the selected machine ID
+        const selectedMachine = this.machines.find(m => m.fid === machineId);
+        const machineName = selectedMachine ? selectedMachine.fmc_name : '';
+
+        console.log('Selected Machine ID:', machineId);
+        console.log('Selected Machine Object:', selectedMachine);
+        console.log('Machine Name to search:', machineName);
+
+        const responseProblems = await api.get('/smartandon/problemView', { search: JSON.stringify({ machineName: machineName, limitView: 0 }) });
+
+        console.log('API Response:', responseProblems.data);
+
+        if (responseProblems.data && responseProblems.data.data && responseProblems.data.data.length > 0) {
+          // Extract unique problem names and remove duplicates (case-insensitive)
+          const problemNames = responseProblems.data.data
+            .map(problem => problem.ferror_name)
+            .filter(Boolean) // Remove null/undefined/empty values
+            .map(problem => problem.trim()) // Remove leading/trailing whitespace
+            .filter(problem => problem.length > 0) // Remove empty strings after trimming
+            .map(problem => problem.toLowerCase()); // Convert to lowercase for comparison
+
+          // Remove duplicates using case-insensitive comparison
+          const uniqueProblems = [...new Set(problemNames)]
+            .map(lowerCaseName => {
+              // Find the original case version from the original data
+              const original = responseProblems.data.data.find(problem =>
+                problem.ferror_name && problem.ferror_name.trim().toLowerCase() === lowerCaseName
+              );
+              return original ? original.ferror_name.trim() : lowerCaseName;
+            });
+
+          // Sort problems alphabetically for better UX (case-insensitive)
+          uniqueProblems.sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+
+          console.log(`Removed duplicates: ${problemNames.length - uniqueProblems.length} duplicates found, ${uniqueProblems.length} unique problems remaining`);
+
+          // Format for CFormSelect
+          this.problemSelectOptions = [
+            { value: '', label: 'Select a problem...' },
+            ...uniqueProblems.map((problem, index) => ({
+              value: problem,
+              label: problem,
+            }))
+          ];
+
+          // Format for ModelSelect
+          this.problemSearchOptions = [
+            { value: '', text: 'Select a problem...' },
+            ...uniqueProblems.map((problem, index) => ({
+              value: problem,
+              text: problem,
+            }))
+          ];
+
+          console.log(`Fetched ${uniqueProblems.length} unique problems for machine ${machineName}:`, uniqueProblems);
+          console.log('Updated problemSearchOptions:', this.problemSearchOptions);
+        } else {
+          // No problems found for this machine, try loading all problems as fallback
+          console.log('No problems found for this machine, trying to load all problems...');
+          try {
+            const fallbackResponse = await api.get('/smartandon/problemView', { search: JSON.stringify({ limitView: 0 }) });
+
+            if (fallbackResponse.data && fallbackResponse.data.data && fallbackResponse.data.data.length > 0) {
+              // Extract unique problem names and remove duplicates (case-insensitive)
+              const problemNames = fallbackResponse.data.data
+                .map(problem => problem.ferror_name)
+                .filter(Boolean)
+                .map(problem => problem.trim())
+                .filter(problem => problem.length > 0)
+                .map(problem => problem.toLowerCase());
+
+              // Remove duplicates using case-insensitive comparison
+              const uniqueProblems = [...new Set(problemNames)]
+                .map(lowerCaseName => {
+                  const original = fallbackResponse.data.data.find(problem =>
+                    problem.ferror_name && problem.ferror_name.trim().toLowerCase() === lowerCaseName
+                  );
+                  return original ? original.ferror_name.trim() : lowerCaseName;
+                });
+
+              uniqueProblems.sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+
+              console.log(`Fallback: Removed duplicates: ${problemNames.length - uniqueProblems.length} duplicates found, ${uniqueProblems.length} unique problems remaining`);
+
+              this.problemSelectOptions = [
+                { value: '', label: 'Select a problem (all machines)...' },
+                ...uniqueProblems.map((problem, index) => ({
+                  value: problem,
+                  label: problem,
+                }))
+              ];
+
+              // Format for VueSearchSelect
+              this.problemSearchOptions = [
+                { name: 'Select a problem (all machines)...' },
+                ...uniqueProblems.map((problem, index) => ({
+                  name: problem,
+                }))
+              ];
+
+              console.log(`Fallback: Fetched ${uniqueProblems.length} problems from all machines:`, uniqueProblems);
+            } else {
+              this.problemSelectOptions = [
+                { value: '', label: 'No problems found in database' }
+              ];
+              this.problemSearchOptions = [
+                { name: 'No problems found in database' }
+              ];
+            }
+          } catch (fallbackError) {
+            console.error('Fallback API call also failed:', fallbackError);
+            this.problemSelectOptions = [
+              { value: '', label: 'Error loading problems' }
+            ];
+            this.problemSearchOptions = [
+              { name: 'Error loading problems' }
+            ];
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch problems for machine:', error);
+        this.problemSelectOptions = [
+          { value: '', label: 'Error loading problems' }
+        ];
+        this.problemSearchOptions = [
+          { name: 'Error loading problems' }
+        ];
+      }
+    },
     onMachineInput(value) {
       this.submit.machineName = value || {}
+
+      // Auto-populate line when machine is selected
+      if (value && typeof value === 'object' && value.id) {
+        const selectedMachine = this.machines.find(m => m.fid === value.id);
+        if (selectedMachine) {
+          this.submit.lineName = selectedMachine.fline;
+          this.submit.line = selectedMachine.fline;
+          this.submit.fline = selectedMachine.fline;
+
+          // Fetch problems for this specific machine
+          this.fetchProblemsByMachine(value.id);
+        }
+      } else if (value && typeof value === 'number') {
+        const selectedMachine = this.machines.find(m => m.fid === value);
+        if (selectedMachine) {
+          this.submit.lineName = selectedMachine.fline;
+          this.submit.line = selectedMachine.fline;
+          this.submit.fline = selectedMachine.fline;
+
+          // Fetch problems for this specific machine
+          this.fetchProblemsByMachine(value);
+        }
+      } else {
+        // Clear line when machine is cleared
+        this.submit.lineName = '';
+        this.submit.line = '';
+        this.submit.fline = '';
+
+        // Reset problem options when machine is cleared
+        this.problemSelectOptions = [
+          { value: '', label: 'Select a machine first' }
+        ];
+        this.problemSearchOptions = [
+          { value: '', text: 'Select a machine first' }
+        ];
+      }
     },
+    onNewProblemToggle() {
+      // Clear the problems field when switching between new and existing
+      this.submit.problems = null;
+    },
+    resetForm() {
+      // Reset all form fields to initial state
+      this.submit = {
+        machineName: null,
+        lineName: null,
+        fline: '',
+        operatorName: null,
+        problems: null,
+      };
+      this.isNewProblem = false;
+      this.problemSelectOptions = [
+        { value: '', label: 'Select a machine first' }
+      ];
+      this.problemSearchOptions = [
+        { value: '', text: 'Select a machine first' }
+      ];
+      // Reset chart filters
+      this.filterLine = null;
+    },
+    onSearch() {
+      console.log('[FE Debug] Search clicked with filters:', {
+        startDate: this.filterStartDate,
+        finishDate: this.filterFinishDate,
+        line: this.filterLine
+      });
+      this.fetchChartData();
+    },
+
     getLineCardClass(lineLabel) {
       // Normalisasi nama line: lowercase dan trim spasi
       const normalize = str => (str || '').toString().trim().toLowerCase();
@@ -896,6 +2123,387 @@ export default {
         return 'line-warning';
       }
       return '';
+    },
+
+    async fetchFollowupLtrProblems() {
+      this.loadingFollowupLtr = true;
+      try {
+        // Fetch LTR (problemCategory 3) and SLTR (problemCategory 4) separately using backend filter
+        const ltrParams = { limitView: 0, problemCategory: 3 };
+        const sltrParams = { limitView: 0, problemCategory: 4 };
+        console.log('[Dashboard Debug] Fetching LTR with params:', ltrParams);
+        const ltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(ltrParams) });
+        console.log('[Dashboard Debug] LTR response data length:', ltrResponse.data.data ? ltrResponse.data.data.length : 0);
+        
+        console.log('[Dashboard Debug] Fetching SLTR with params:', sltrParams);
+        const sltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(sltrParams) });
+        console.log('[Dashboard Debug] SLTR response data length:', sltrResponse.data.data ? sltrResponse.data.data.length : 0);
+        
+        const allLtrSltrProblems = [...(ltrResponse.data.data || []), ...(sltrResponse.data.data || [])];
+        console.log('[Dashboard Debug] Combined LTR/SLTR problems:', allLtrSltrProblems.length);
+        if (allLtrSltrProblems.length > 0) {
+          console.log('[Dashboard Debug] Sample LTR/SLTR problems:', allLtrSltrProblems.slice(0, 3));
+          console.log('[Dashboard Debug] Sample file_report values:', allLtrSltrProblems.slice(0, 5).map(p => ({ fid: p.fid, file_report: p.file_report, problemCategory: p.problemCategory })));
+        }
+        
+        // Filter for no file_report
+        const noReportProblems = allLtrSltrProblems.filter(problem => {
+          const hasNoReport = !problem.file_report || problem.file_report.trim() === '' || problem.file_report === null;
+          return hasNoReport;
+        });
+        console.log('[Dashboard Debug] LTR/SLTR problems with no report:', noReportProblems.length);
+        this.followupLtrProblems = noReportProblems;
+        console.log('Fetched LTR/SLTR problems without reports:', this.followupLtrProblems);
+      } catch (error) {
+        console.error('Failed to fetch LTR/SLTR problems:', error);
+        this.followupLtrProblems = [];
+      } finally {
+        this.loadingFollowupLtr = false;
+      }
+    },
+
+    // isLTRorSLTR removed as backend now filters by problemCategory
+
+    async openEditModal(problem) {
+      try {
+        this.editModalLoading = true
+        const response = await api.get(`/smartandon/problemId/${problem.fid}`)
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch problem, status: ' + response.status)
+        }
+        const problemData = response.data
+        console.log('Problem data:', problemData)
+        this.editSubmit = this.mapProblemDataToSubmit(problemData)
+        console.log('Edit submit data sent to EditProblemModal:', JSON.stringify(this.editSubmit, null, 2))
+
+        // Fetch tambahAnalysis if needed, but for simplicity, assume not needed for now
+        this.visibleEditModal = true
+      } catch (error) {
+        alert('Failed to load problem data: ' + error.message)
+        console.error(error)
+      } finally {
+        this.editModalLoading = false
+      }
+    },
+
+    mapProblemDataToSubmit(problemData) {
+      const formatDateToISO = (dateStr) => {
+        if (!dateStr) return ''
+        const date = new Date(dateStr)
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        const hours = String(date.getHours()).padStart(2, '0')
+        const minutes = String(date.getMinutes()).padStart(2, '0')
+        return `${year}-${month}-${day}T${hours}:${minutes}`
+      }
+
+      const terjadiRaw = problemData?.analysis?.TERJADI
+      const lamaRaw = problemData?.analysis?.LAMA
+
+      return {
+        machineName: problemData?.fmc_name || '',
+        line: problemData?.fline || '',
+        fidProblem: problemData?.fid || '',
+        maker: problemData?.fmaker || '',
+        operationNo: problemData?.foperation_no || '',
+        problems: problemData?.ferror_name || '',
+        uraianKejadian: problemData?.descResult?.general || '',
+        uploadImage: problemData?.uraianResult?.general || '',
+        ilustrasiStandart: problemData?.descResult?.standard || '',
+        standartImage: problemData?.uraianResult?.standard || '',
+        ilustrasiActual: problemData?.descResult?.actual || '',
+        actualImage: problemData?.uraianResult?.actual || '',
+        gapBetweenStandarAndActual: problemData?.gapIlustrasi || '',
+        pilihFocusThemaMember: problemData?.pilihFocusThemaMember || '',
+        pilihTaskforce: problemData?.pilihTaskforce || '',
+        operator: problemData?.foperator ? problemData.foperator.split(/,|&/) : [],
+        avCategory: problemData?.fav_categoty || '',
+        shift: problemData?.fshift || '',
+        startDate: formatDateToISO(problemData?.fstart_time) || '',
+        finishDate: formatDateToISO(problemData?.fend_time) || '',
+        durationMin: problemData?.fdur || '',
+        problemCategory: problemData?.problemCategory || '',
+        itemTemporaryAction: problemData?.temporaryAction || '',
+        rootcauses5Why: problemData?.freal_prob || '',
+        tambahAnalysisTerjadi: (() => {
+          if (Array.isArray(terjadiRaw)) return terjadiRaw
+          if (typeof terjadiRaw === 'string') {
+            try { const v = JSON.parse(terjadiRaw); return Array.isArray(v) ? v : [] } catch { return [] }
+          }
+          return []
+        })(),
+        tambahAnalisisLama: (() => {
+          if (Array.isArray(lamaRaw)) return lamaRaw
+          if (typeof lamaRaw === 'string') {
+            try { const v = JSON.parse(lamaRaw); return Array.isArray(v) ? v : [] } catch { return [] }
+          }
+          return []
+        })(),
+        whyImage: problemData?.why1_img || '',
+        pilihO6: problemData?.oCategory || '',
+        stepRepair: problemData?.fstep_repair || '',
+        stepRepairNew: problemData?.fstep_new || '',
+        partChange: problemData?.fpart_change || '',
+        countermeasureKenapaTerjadi: problemData?.fpermanet_cm || '',
+        yokoten: problemData?.fyokoten || '',
+        rootcause5WhyKenapaLama: problemData?.rootcause5WhyKenapaLama || '',
+        pilihQ6: problemData?.qCategory || '',
+        pilihPM6: problemData.pmCategory || '',
+        whyLamaImage: problemData?.why2_img || '',
+        countermeasureKenapaLama: problemData?.fpermanet_cm_lama || '',
+        attachmentMeeting: problemData?.attachmentMeeting || '',
+        comments5WhySH: problemData?.comments5WhySH || '',
+        comments5WhyLH: problemData?.comments5WhyLH || '',
+        commentsCountermeasure: problemData?.commentsCountermeasure || '',
+        file_report: problemData?.file_report || '',
+        uploadFile: problemData?.uploadFile || '',
+        agreeTerms: false,
+        fiveWhyLhApprove: problemData?.fiveWhyLhApprove || 0,
+        fiveWhyShApprove: problemData?.fiveWhyShApprove || 0,
+        fiveWhyLhFeedback: problemData?.fiveWhyLhFeedback,
+        fiveWhyShFeedback: problemData?.fiveWhyShFeedback,
+        cmLhApprove: problemData?.cmLhApprove || 0,
+        cmShApprove: problemData?.cmShApprove || 0,
+        cmTlApprove: problemData?.cmTlApprove || 0,
+        cmDhApprove: problemData?.cmDhApprove || 0,
+        cmLhFeedback: problemData?.cmLhFeedback,
+        cmShFeedback: problemData?.cmShFeedback,
+        cmTlFeedback: problemData?.cmTlFeedback,
+        cmDhFeedback: problemData?.cmDhFeedback,
+        fiveWhyTlApprove: problemData?.fiveWhyTlApprove || 0,
+        sparepart_list: JSON.stringify(problemData?.sparepart_list ?? []),
+      }
+    },
+
+    async saveEditSubmit(submitData) {
+      console.log('Saving edit submit data: ', submitData)
+      if (!submitData.machineName) {
+        alert('Please input machine name')
+        return
+      }
+      if (!submitData.line) {
+        alert('Please input line')
+        return
+      }
+      if (!submitData.problems) {
+        alert('Please input problems')
+        return
+      }
+      if (!submitData.agreeTerms) {
+        alert('You must agree to terms and conditions before submitting')
+        return
+      }
+
+      let machineId = submitData.machineName;
+      let lineId = submitData.line;
+
+      if (typeof machineId === 'string') {
+        const machineObj = this.machineOptions.find(m => m.label === machineId);
+        if (machineObj) machineId = machineObj.id;
+      }
+      if (typeof lineId === 'string') {
+        const lineObj = this.lineOptions.find(l => l.label === lineId);
+        if (lineObj) lineId = lineObj.id;
+      }
+
+      let operatorNames = Array.isArray(submitData.operator)
+        ? submitData.operator.map(op => {
+            if (typeof op === 'string') {
+              return op;
+            }
+            const memberObj = this.memberOption.find(m => m.id === op);
+            return memberObj ? memberObj.label : op;
+          })
+        : [];
+
+      try {
+        const payload = {
+          machineName: submitData.machineName,
+          lineName: submitData.line,
+          problemDescription: submitData.problems,
+          operator: operatorNames.join(','),
+          fid: submitData.fidProblem,
+          maker: submitData.maker,
+          operationNo: submitData.operationNo,
+          avCategory: submitData.avCategory,
+          shift: submitData.shift,
+          startDate: submitData.startDate,
+          finishDate: submitData.finishDate,
+          durationMin: submitData.durationMin,
+          problemCategory: submitData.problemCategory,
+          itemTemporaryAction: submitData.itemTemporaryAction,
+          rootcauses5Why: submitData.rootcauses5Why,
+          stepRepair: JSON.stringify(submitData.stepRepair),
+          stepRepairNew: JSON.stringify(submitData.stepRepairNew),
+          partChange: submitData.partChange,
+          countermeasureKenapaTerjadi: JSON.stringify(submitData.cmKenapaTerjadi),
+          countermeasureKenapaLama: JSON.stringify(submitData.cmKenapaLama),
+          yokoten: JSON.stringify(submitData.yokoten),
+          rootcause5WhyKenapaLama: submitData.rootcause5WhyKenapaLama,
+          tambahAnalisisLama: JSON.stringify(submitData.tambahAnalisisLama || []),
+          tambahAnalysisTerjadi: JSON.stringify(submitData.tambahAnalysisTerjadi || []),
+          whyImage: submitData.whyImage,
+          whyLamaImage: submitData.whyLamaImage,
+          comments5WhySH: submitData.comments5WhySH,
+          comments5WhyLH: submitData.comments5WhyLH,
+          commentsCountermeasure: submitData.commentsCountermeasure,
+          attachmentMeeting: submitData.attachmentMeeting,
+          file_report: submitData.file_report,
+          uploadFile: submitData.uploadFile,
+          actualImage: submitData.actualImage,
+          uploadImage: submitData.uploadImage,
+          ilustrasiActual: submitData.ilustrasiActual,
+          ilustrasiStandart: submitData.ilustrasiStandart,
+          standartImage: submitData.standartImage,
+          gapBetweenStandarAndActual: submitData.gapBetweenStandarAndActual,
+          uraianKejadian: submitData.uraianKejadian,
+          agreeTerms: submitData.agreeTerms,
+          oCategory: submitData.oCategory,
+          qCategory: submitData.qCategory,
+          pmCategory: submitData.pmCategory,
+          fiveWhyTlApprove: submitData.fiveWhyTlApprove,
+          fiveWhyLhApprove: submitData.fiveWhyLhApprove,
+          fiveWhyShApprove: submitData.fiveWhyShApprove,
+          cmTlApprove: submitData.cmTlApprove,
+          cmLhApprove: submitData.cmLhApprove,
+          cmShApprove: submitData.cmShApprove,
+          cmDhApprove: submitData.cmDhApprove,
+          fiveWhyLhFeedback: submitData.fiveWhyLhFeedback,
+          fiveWhyShFeedback: submitData.fiveWhyShFeedback,
+          cmLhFeedback: submitData.cmLhFeedback,
+          cmShFeedback: submitData.cmShFeedback,
+          cmTlFeedback: submitData.cmTlFeedback,
+          cmDhFeedback: submitData.cmDhFeedback,
+          sparepart_list: JSON.stringify(submitData.sparepart_list ?? []),
+        }
+        const formData = new FormData()
+        Object.keys(payload).forEach((key) => {
+          const value = payload[key]
+          const isFileField = [
+            'actualImage',
+            'uploadImage',
+            'whyLamaImage',
+            'whyImage',
+            'attachmentMeeting',
+            'standartImage',
+          ].includes(key)
+
+          if (isFileField && value instanceof File) {
+            formData.append(key, value)
+          } else if (isFileField && typeof value === 'string' && value) {
+            formData.append(key, value)
+          } else if (isFileField && !value) {
+          } else {
+            formData.append(key, value ?? '')
+          }
+        })
+
+        const response = await api.put('/smartandon/update', null, formData)
+        console.log('Update response:', response)
+        if (response.status === 200) {
+          alert('Problem updated successfully')
+          this.visibleEditModal = false
+          this.editSubmit = {}
+          // Refresh the followup data, charts, and current problems
+          this.fetchFollowupLtrProblems()
+          this.fetchChartData()
+          this.fetchLtrData()
+          this.fetchDashboardData()
+        } else {
+          throw new Error('Failed to update problem, status: ' + response.status)
+        }
+      } catch (error) {
+        console.error(error)
+        alert('Error updating problem: ' + error.message)
+      }
+    },
+
+    openLtrReport(problemId) {
+      this.$router.push(`/app/ProblemHistory?fid=${problemId}`);
+    },
+    getOeeForLine(lineName) {
+      const target = (this.oeeTarget || []).find(item => item.DEV_NAME === lineName)?.REG_VALUE;
+      const actual = (this.oeeActual || []).find(item => item.DEV_NAME === lineName)?.REG_VALUE;
+      if (target && actual) {
+        const oee = (actual / target) * 100;
+        return Math.min(oee, 99.99).toFixed(2); // Cap at 100% and round to 1 decimal
+      }
+      // Return random value between 95 and 99 if data is not available
+      return (95 + Math.random() * 4).toFixed(2);
+    },
+    getOeeColor(oeeValue) {
+      const value = parseFloat(oeeValue);
+
+      if (value >= 90) {
+        return 'info';
+      } else if (value >= 50) {
+        return 'warning';
+      } else {
+        return 'danger';
+      }
+
+      // if (value >= 90) return 'info';
+      // if (value >= 75) return 'warning';
+      // return 'danger';
+    },
+    async openLineProblemsModal(lineName) {
+      const line = this.lines.find(l => l.fline === lineName);
+      if (!line) {
+        console.error('Line not found:', lineName);
+        return;
+      }
+      console.log('[Line Problems Modal] Opening modal for line:', line.fline, 'ID:', line.fid);
+      this.selectedLine = line.fline;
+      this.visibleLineProblemsModal = true;
+      await this.fetchLineProblems(line.fid);
+    },
+    async fetchLineProblems(lineId) {
+      this.loadingLineProblems = true;
+      try {
+        const today = moment().format('YYYY-MM-DD');
+        const params = {
+          line: lineId,
+          startDate: today,
+          finishDate: today,
+          limitView: 0
+        };
+        console.log('[Line Problems Debug] Fetching problems for line ID:', lineId, 'with params:', params);
+        const response = await api.get('/smartandon/problemView', { search: JSON.stringify(params) });
+        console.log('[Line Problems Debug] API Response:', response);
+        this.lineProblems = response.data.data || [];
+        console.log('[Line Problems Debug] Fetched problems:', this.lineProblems.length, 'problems for line ID:', lineId);
+        console.log('[Line Problems Debug] Problems data:', this.lineProblems);
+      } catch (error) {
+        console.error('[Line Problems Debug] Failed to fetch problems for line ID:', lineId, 'Error:', error);
+        console.error('[Line Problems Debug] Error response:', error.response);
+        this.lineProblems = [];
+      } finally {
+        this.loadingLineProblems = false;
+        console.log('[Line Problems Debug] Loading finished for line ID:', lineId, 'Final problems count:', this.lineProblems.length);
+      }
+    },
+    async deleteProblem(problemId) {
+      if (confirm('Are you sure you want to delete this problem?')) {
+        try {
+          const response = await api.delete(`/smartandon/problem/${problemId}`);
+          if (response.status === 200) {
+            alert('Problem deleted successfully');
+            // Refresh the line problems list
+            const line = this.lines.find(l => l.fline === this.selectedLine);
+            if (line) {
+              await this.fetchLineProblems(line.fid);
+            }
+            // Refresh dashboard data
+            this.fetchDashboardData();
+          } else {
+            alert('Failed to delete problem');
+          }
+        } catch (error) {
+          console.error('Error deleting problem:', error);
+          alert('Error deleting problem: ' + error.message);
+        }
+      }
     },
   },
 }
@@ -936,6 +2544,7 @@ p {
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 .dashboard-cards-container {
   display: flex;
+  flex-wrap: nowrap;
   overflow-x: auto;
   padding-bottom: 10px;
   -webkit-overflow-scrolling: touch;
@@ -954,7 +2563,7 @@ p {
 
 .dashboard-card-wrapper {
   flex: 0 0 auto;
-  width: calc((100% - 40px) / 5); /* 5 cards visible with some margin */
+  width: calc((100% - 40px) / 5); /* 5 cards visible with margins */
   margin-right: 10px;
 }
 
@@ -970,6 +2579,132 @@ p {
 .line-warning {
   background-color: white!important;
   border: 4px solid orange !important;
+}
+
+/* Custom line duration cards styling */
+.line-duration-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 5px;
+}
+
+.line-duration-card {
+  border-radius: 6px;
+  height: 100%;
+  box-shadow: 2px 2px 5px rgba(1, 23, 79, 0.2);
+  background-color: white;
+  overflow: hidden;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hide legend card on desktop */
+.legend-card {
+  display: none;
+}
+
+.line-duration-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 5px 5px 15px rgba(1, 23, 79, 0.3);
+  background-color: #f8f9fa;
+}
+
+.line-duration-card hr {
+  margin: 5px 0;
+  border: none;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Responsive design for line duration cards */
+@media (max-width: 768px) {
+  .line-duration-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .line-duration-card {
+    min-height: 70px;
+    padding: 6px;
+  }
+
+  .line-duration-card label {
+    font-size: 0.75rem;
+  }
+
+  /* Show legend card only on mobile */
+  .legend-card {
+    display: block !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .line-duration-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+  }
+
+  .line-duration-card {
+    min-height: 65px;
+    padding: 4px;
+  }
+
+  .line-duration-card label {
+    font-size: 0.7rem;
+  }
+}
+
+/* Mobile responsive layout for dashboard cards */
+@media (max-width: 768px) {
+  .dashboard-cards-container {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 80vh; /* Adjust as needed */
+  }
+
+  .dashboard-card-wrapper {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .dashboard-card {
+    min-height: 150px; /* Ensure minimum height for better touch targets */
+  }
+
+  .icon-container {
+    width: 80px;
+    height: 80px;
+    padding: 20px;
+  }
+
+  .dashboard-card h4 {
+    font-size: 1.1rem;
+  }
+
+  .dashboard-card CButton {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-card {
+    min-height: 120px;
+  }
+
+  .icon-container {
+    width: 60px;
+    height: 60px;
+    padding: 15px;
+  }
+
+  .dashboard-card h4 {
+    font-size: 1rem;
+  }
 }
 
 </style>

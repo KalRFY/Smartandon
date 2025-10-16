@@ -26,7 +26,7 @@ export default {
   // },
   data() {
       return {
-        breadcrumbsJsonValue: [{"active":false,"name":"Home","path":"#/dc/dashboard"}]
+        breadcrumbsJsonValue: [{"active":false,"name":"Home","path":"#/app/dashboard"}]
       }
     },
     mounted() {

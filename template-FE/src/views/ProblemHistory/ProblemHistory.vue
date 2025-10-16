@@ -58,7 +58,9 @@
           :filteredTambahAnalisis="filteredTambahAnalisis"
           :filteredTambahAnalisisLama="filteredTambahAnalisisLama"
           @editProblem="onClickInput"
+          @deleteProblem="onDeleteProblem"
           @viewLtbReport="onClickLtbReport"
+          @downloadLtbReport="downloadLtbReport"
           @goToPage="goToPage"
           @freq="freq"
           @ltb="ltb"
@@ -67,12 +69,29 @@
         />
       </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <CModal :visible="showDeleteModal" @close="closeDeleteModal" aria-labelledby="DeleteModalLabel">
+      <CModalHeader>
+        <CModalTitle id="DeleteModalLabel">Confirm Delete</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <p>Are you sure you want to delete the problem <strong>{{ problemToDelete?.ferror_name }}</strong>?</p>
+        <p class="text-danger">This action cannot be undone.</p>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" @click="closeDeleteModal">Cancel</CButton>
+        <CButton color="danger" @click="confirmDeleteProblem">Delete</CButton>
+      </CModalFooter>
+    </CModal>
   </div>
 </template>
 
 <script>
 import api from '../../apis/CommonAPI'
+import moment from 'moment'
 import { useRouter } from 'vue-router'
+import { CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter } from '@coreui/vue'
 import EditProblemModal from './EditProblemModal.vue'
 import SearchFilters from './components/SearchFilters.vue'
 import ProblemsTable from './components/ProblemsTable.vue'
@@ -120,8 +139,11 @@ export default {
       visibleLiveDemo: false,
       modalLoading: false,
       tableLoading: false,
+      showDeleteModal: false,
+      problemToDelete: null,
       submit: this.getInitialSubmitData(),
       qCategoryName: '',
+      pmCategoryName: '',
       filteredTambahAnalisis: [],
       filteredTambahAnalisisLama: [],
       terjadiAnalysis: [],
@@ -204,6 +226,33 @@ export default {
           label: "Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)",
         },
       ],
+
+      pm6Options: [
+        {
+          id: 1,
+          label: 'PM1: No Have / Unclear Item',
+        },
+        {
+          id: 2,
+          label: 'PM2: Un-clear Method',
+        },
+        {
+          id: 3,
+          label: 'PM3: Confine / Invinsible Area',
+        },
+        {
+          id: 4,
+          label: 'PM4: Out of Period Check',
+        },
+        {
+          id: 5,
+          label: 'PM5: No Have Time',
+        },
+        {
+          id: 6,
+          label: 'PM6: Lack of Skill',
+        },
+      ],
     }
   },
 
@@ -259,6 +308,7 @@ export default {
         whyImage: '',
         oCategory: '',
         stepRepair: '',
+        stepRepairNew: '',
         partChange: '',
         countermeasureKenapaTerjadi: '',
         yokoten: '',
@@ -378,6 +428,7 @@ export default {
         )
 
         console.log('[FE Debug] ProblemHistory params to send:', params)
+        console.log('[DATE FILTER DEBUG] Sending params:', JSON.stringify(params, null, 2));
 
         const response = await api.get('/smartandon/problemView', {
           search: JSON.stringify(params),
@@ -477,7 +528,7 @@ export default {
         this.selectedLine = filters.selectedLine || null
         this.selectedMachineName = filters.selectedMachineName || null
         this.selectedProblem = filters.selectedProblem || ''
-        this.selectedProblemCategory = filters.selectedProblemCategory || null
+        this.selectedProblemCategory = filters.problemCategory || null
       } else {
         console.log('[Filter Persistence] No filters found in storage')
       }
@@ -525,12 +576,15 @@ export default {
         }
 
         const allAnalysis = analysisResponse.data
+
         const filteredAnalysis = allAnalysis.filter(
           (item) => item.id_problem === problem.fid,
         )
+
         const terjadiAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'TERJADI',
         )
+        
         const lamaAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'LAMA',
         )
@@ -554,7 +608,7 @@ export default {
         this.submit.tambahAnalisisLama = lamaAnalysis
 
         const o6Option = this.o6Options.find(
-          (opt) => opt.id === this.submit.pilihO6,
+          (opt) => opt.id === this.submit.oCategory,
         )
         this.oCategoryName = o6Option ? o6Option.label : ''
 
@@ -574,6 +628,11 @@ export default {
           (opt) => opt.id === this.submit.qCategory,
         )
         this.qCategoryName = q6Option ? q6Option.label : ''
+
+        const pm6Option = this.pm6Options.find(
+          (opt) => opt.id === this.submit.pmCategory,
+        )
+        this.pmCategoryName = pm6Option ? pm6Option.label : ''
 
         this.visibleLiveDemo = true
       } catch (error) {
@@ -626,7 +685,7 @@ export default {
         finishDate: formatDateToISO(problemData.fend_time) || '',
         durationMin: problemData.fdur || '',
         problemCategory: problemData.problemCategory || '',
-        itemTemporaryAction: problemData.itemTemporaryAction || '',
+        itemTemporaryAction: problemData.temporaryAction || '',
         rootcauses5Why: problemData.freal_prob || '',
 
         tambahAnalysisTerjadi: (() => {
@@ -648,12 +707,14 @@ export default {
         whyImage: problemData.why1_img || '',
         pilihO6: problemData.oCategory || '',
         stepRepair: problemData.fstep_repair || '',
+        stepRepairNew: problemData.fstep_new || '',
         partChange: problemData.fpart_change || '',
         countermeasureKenapaTerjadi:
           problemData.fpermanet_cm || '',
         yokoten: problemData.fyokoten || '',
         rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
         pilihQ6: problemData.qCategory || '',
+        pilihPM6: problemData.pmCategory || '',
         whyLamaImage: problemData.why2_img || '',
         countermeasureKenapaLama: problemData.fpermanet_cm_lama || '',
         attachmentMeeting: problemData.attachmentMeeting || '',
@@ -665,16 +726,23 @@ export default {
         agreeTerms: false,
         fiveWhyLhApprove: problemData.fiveWhyLhApprove || 0,
         fiveWhyShApprove: problemData.fiveWhyShApprove || 0,
-        fiveWhyLhFeedback: problemData.fiveWhyLhFeedback || 0,
-        fiveWhyShFeedback: problemData.fiveWhyShFeedback || 0,
+        fiveWhyLhFeedback: problemData.fiveWhyLhFeedback,
+        fiveWhyShFeedback: problemData.fiveWhyShFeedback,
         cmLhApprove: problemData.cmLhApprove || 0,
         cmShApprove: problemData.cmShApprove || 0,
         cmTlApprove: problemData.cmTlApprove || 0,
         cmDhApprove: problemData.cmDhApprove || 0,
-        cmLhFeedback: problemData.cmLhFeedback || 0,
-        cmShFeedback: problemData.cmShFeedback || 0,
-        cmTlFeedback: problemData.cmTlFeedback || 0,
-        cmDhFeedback: problemData.cmDhFeedback || 0,
+        cmLhFeedback: problemData.cmLhFeedback,
+        cmShFeedback: problemData.cmShFeedback,
+        cmTlFeedback: problemData.cmTlFeedback,
+        cmDhFeedback: problemData.cmDhFeedback,
+        sparepart_list: (() => {
+          if (Array.isArray(problemData.sparepart_list)) return problemData.sparepart_list
+          if (typeof problemData.sparepart_list === 'string') {
+            try { return JSON.parse(problemData.sparepart_list) } catch { return [] }
+          }
+          return []
+        })(),
       }
     },
 
@@ -744,6 +812,7 @@ export default {
           itemTemporaryAction: submitData.itemTemporaryAction,
           rootcauses5Why: submitData.rootcauses5Why,
           stepRepair: JSON.stringify(submitData.stepRepair),
+          stepRepairNew: JSON.stringify(submitData.stepRepairNew),
           partChange: submitData.partChange,
           countermeasureKenapaTerjadi: JSON.stringify(
             submitData.cmKenapaTerjadi,
@@ -772,6 +841,21 @@ export default {
           agreeTerms: submitData.agreeTerms,
           oCategory: submitData.oCategory,
           qCategory: submitData.qCategory,
+          pmCategory: submitData.pmCategory,
+          fiveWhyTlApprove: submitData.fiveWhyTlApprove,
+          fiveWhyLhApprove: submitData.fiveWhyLhApprove,
+          fiveWhyShApprove: submitData.fiveWhyShApprove,
+          cmTlApprove: submitData.cmTlApprove,
+          cmLhApprove: submitData.cmLhApprove,
+          cmShApprove: submitData.cmShApprove,
+          cmDhApprove: submitData.cmDhApprove,
+          fiveWhyLhFeedback: submitData.fiveWhyLhFeedback,
+          fiveWhyShFeedback: submitData.fiveWhyShFeedback,
+          cmLhFeedback: submitData.cmLhFeedback,
+          cmShFeedback: submitData.cmShFeedback,
+          cmTlFeedback: submitData.cmTlFeedback,
+          cmDhFeedback: submitData.cmDhFeedback,
+          sparepart_list: JSON.stringify(submitData.sparepart_list ?? []),
         }
         const formData = new FormData()
         Object.keys(payload).forEach((key) => {
@@ -803,13 +887,44 @@ export default {
           alert('Input updated successfully')
           this.visibleLiveDemo = false
           this.submit = this.getInitialSubmitData()
-          this.fetchProblems(this.currentPage)
+          // Preserve filters and current page on refresh
+          this.fetchProblems(this.currentPage, {
+            filterStartDate: this.filterStartDate,
+            filterFinishDate: this.filterFinishDate,
+            selectedLine: this.selectedLine,
+            selectedMachineName: this.selectedMachineName,
+            selectedProblem: this.selectedProblem,
+            problemCategory: this.selectedProblemCategory,
+          })
         } else {
           throw new Error('Failed to update input, status: ' + response.status)
         }
       } catch (error) {
         console.error(error)
         alert('Error updating input: ' + error.message)
+      }
+    },
+
+    async downloadLtbReport(problem) {
+      if (!problem.file_report || !problem.fid) {
+        alert('No report file available for download.')
+        return
+      }
+      try {
+        const url = `${process.env.VUE_APP_API_URL}/smartandon/download-report?fid=${encodeURIComponent(problem.fid)}&problem=${encodeURIComponent(problem.ferror_name)}`
+        console.log('Download URL:', url)
+        const link = document.createElement('a')
+        link.href = url
+
+        const filename = problem.file_report
+          .substring(problem.file_report.lastIndexOf('/') + 1)
+          .split('?')[0]
+        link.setAttribute('download', filename)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      } catch (error) {
+        alert('Failed to download report: ' + error.message)
       }
     },
 
@@ -919,7 +1034,7 @@ export default {
       this.tableLoading = true; // Show loading indicator for export
       try {
         const params = {
-          limit: 0,
+          limitView: 0,
           startDate: this.filterStartDate || undefined,
           finishDate: this.filterFinishDate || undefined,
           line: this.selectedLine || undefined,
@@ -929,7 +1044,7 @@ export default {
         };
 
         console.log('[Export] Fetching all problems with params:', params);
-        const response = await api.get('/smartandon/problemView', {...params} );
+        const response = await api.get('/smartandon/problemView', { search: JSON.stringify(params) });
         if (response.status !== 200) {
           throw new Error('Failed to fetch problems for export, status: ' + response.status);
         }
@@ -1034,6 +1149,50 @@ export default {
         4: 'SLTR',
       };
       return categories[categoryId] || 'Unknown';
+    },
+
+    async onDeleteProblem(problemFid) {
+      this.problemToDelete = this.problemsView.find(p => p.fid === problemFid);
+      if (!this.problemToDelete) {
+        alert('Problem not found.');
+        return;
+      }
+      this.showDeleteModal = true;
+    },
+
+    closeDeleteModal() {
+      this.showDeleteModal = false;
+      this.problemToDelete = null;
+    },
+
+    async confirmDeleteProblem() {
+      if (!this.problemToDelete) {
+        alert('No problem selected for deletion.');
+        return;
+      }
+      try {
+        this.loading = true;
+        const response = await api.delete('/smartandon/problem', this.problemToDelete.fid);
+        if (response.status === 200) {
+          alert('Problem deleted successfully.');
+          this.showDeleteModal = false;
+          this.problemToDelete = null;
+          this.fetchProblems(this.currentPage, {
+            filterStartDate: this.filterStartDate,
+            filterFinishDate: this.filterFinishDate,
+            selectedLine: this.selectedLine,
+            selectedMachineName: this.selectedMachineName,
+            selectedProblem: this.selectedProblem,
+            problemCategory: this.selectedProblemCategory,
+          });
+        } else {
+          alert('Failed to delete problem. Status: ' + response.status);
+        }
+      } catch (error) {
+        alert('Error deleting problem: ' + error.message);
+      } finally {
+        this.loading = false;
+      }
     },
 
     async loadInitialData() {

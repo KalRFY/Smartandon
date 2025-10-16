@@ -129,9 +129,7 @@ const getMTBFController = async (req, res, next) => {
           });
 
           return results.map((row) => {
-            const [year, month] = row.month.split('-');
-            const daysInMonth = new Date(year, month, 0).getDate();
-            const uptime = daysInMonth * 24;
+            const uptime = diffDays * 24;
             const downtime = Number(row.total_fdur) || 0;
             const totalProblem = Number(row.total_rows) || 0;
             const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
@@ -139,7 +137,6 @@ const getMTBFController = async (req, res, next) => {
             return {
               fmc_name: row.fmc_name,
               fline: line,
-              date: row.month,
               totalFdur: downtime,
               totalRows: totalProblem,
               uptime: uptime.toFixed(2),
@@ -276,6 +273,43 @@ const getMTTRController = async (req, res, next) => {
         })
       );
       resultsArray = resultsArray.flat();
+    } else if (type === 'machines') {
+      resultsArray = await Promise.all(
+        LINES.filter(Boolean).map(async (line) => {
+          const query = `
+            SELECT
+                fmc_name,
+                SUM(fdur) AS total_fdur,
+                COUNT(*) AS total_rows
+            FROM v_current_error_2
+            WHERE fline = '${line}'
+            AND fstart_time BETWEEN '${fstartTime}' AND '${fendTime}'
+            GROUP BY fmc_name
+            ORDER BY fmc_name
+          `;
+
+          const results = await sequelize.query(query, {
+            type: sequelize.QueryTypes.SELECT,
+          });
+
+          return results.map((row) => {
+            const downtime = Number(row.total_fdur) || 0;
+            const totalProblem = Number(row.total_rows) || 0;
+            const mttr = totalProblem > 0 ? Math.abs(downtime / totalProblem) : 0;
+
+            return {
+              fmc_name: row.fmc_name,
+              fline: line,
+              totalFdur: downtime,
+              totalRows: totalProblem,
+              downtime: downtime.toFixed(2),
+              mttr: mttr.toFixed(2),
+            };
+          });
+        })
+      );
+
+      resultsArray = resultsArray.flat();
     } else {
       resultsArray = await Promise.all(
         LINES.filter(Boolean).map(async (line) => {
@@ -373,7 +407,7 @@ const getMtBFMTTRController = async (req, res, next) => {
       resultsArray = await Promise.all(
         LINES.filter(Boolean).map(async (line) => {
           const query = `
-            SELECT 
+            SELECT
                 DATE_FORMAT(fstart_time, '%Y-%m') as month,
                 SUM(fdur) AS total_fdur,
                 COUNT(*) AS total_rows
@@ -397,6 +431,46 @@ const getMtBFMTTRController = async (req, res, next) => {
             return {
               fline: line,
               date: row.month,
+              totalFdur: downtime,
+              totalRows: totalProblem,
+              uptime: uptime.toFixed(2),
+              downtime: downtime.toFixed(2),
+              mtbf: mtbf.toFixed(2),
+              mttr: mttr.toFixed(2),
+            };
+          });
+        })
+      );
+      resultsArray = resultsArray.flat();
+    } else if (type === 'machines') {
+      resultsArray = await Promise.all(
+        LINES.filter(Boolean).map(async (line) => {
+          const query = `
+            SELECT
+                fmc_name,
+                SUM(fdur) AS total_fdur,
+                COUNT(*) AS total_rows
+            FROM v_current_error_2
+            WHERE fline = '${line}'
+            AND fstart_time BETWEEN '${fstartTime}' AND '${fendTime}'
+            GROUP BY fmc_name
+            ORDER BY fmc_name
+          `;
+
+          const results = await sequelize.query(query, {
+            type: sequelize.QueryTypes.SELECT,
+          });
+
+          return results.map((row) => {
+            const uptime = diffDays * 24;
+            const downtime = Number(row.total_fdur) || 0;
+            const totalProblem = Number(row.total_rows) || 0;
+            const mtbf = totalProblem > 0 ? Math.abs((uptime - downtime) / totalProblem) : 0;
+            const mttr = totalProblem > 0 ? Math.abs(downtime / totalProblem) : 0;
+
+            return {
+              fmc_name: row.fmc_name,
+              fline: line,
               totalFdur: downtime,
               totalRows: totalProblem,
               uptime: uptime.toFixed(2),

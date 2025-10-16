@@ -20,7 +20,7 @@
             </CInputGroup>
           </CCol>
 
-          <CCol :md="6">
+          <CCol md="6">
             <CFormLabel for="end-date">End Date</CFormLabel>
             <CInputGroup>
               <CInputGroupText>
@@ -224,8 +224,16 @@ export default {
       const day = String(today.getDate()).padStart(2, '0')
       return `${year}-${month}-${day}`
     })()
-    const startDate = ref('2019-01-01')
-    const startDateFetch = ref('2019-01-01')
+
+    const startOfMonthStr = (() => {
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = String(today.getMonth() + 1).padStart(2, '0')
+      return `${year}-${month}-01`
+    })()
+
+    const startDate = ref(startOfMonthStr)
+    const startDateFetch = ref(startOfMonthStr)
     const endDate = ref(todayStr)
     const endDateFetch = ref(todayStr)
     const selectedCategory = ref('')

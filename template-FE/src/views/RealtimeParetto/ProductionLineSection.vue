@@ -29,7 +29,7 @@
           <div class="chart-container" ref="chartContainer">
             <canvas ref="chartCanvas"></canvas>
           </div>
-          <CAccordion :active-item-key="1">
+          <CAccordion :active-item-key="null">
             <CAccordionItem :item-key="1">
               <CAccordionHeader>
                 <div class="d-flex align-items-center">
@@ -102,6 +102,7 @@ import {
   Download,
 } from 'lucide-vue-next'
 import Chart from 'chart.js/auto'
+import * as XLSX from 'xlsx'
 
 export default {
   name: 'ProductionLineSection',
@@ -183,16 +184,40 @@ export default {
       }, 1000)
     }
     const exportData = () => {
-      const dataStr = JSON.stringify(props.chartData)
-      const dataUri =
-        'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
-      const exportFileDefaultName = `${props.title}_${props.viewMode}_${
-        props.metricMode
-      }_${new Date().toISOString()}.json`
-      const linkElement = document.createElement('a')
-      linkElement.setAttribute('href', dataUri)
-      linkElement.setAttribute('download', exportFileDefaultName)
-      linkElement.click()
+      try {
+        // Prepare worksheet from chartData
+        const worksheetData = props.chartData.map((item) => ({
+          Name: item.name,
+          Quantity: item.quantity,
+        }))
+        const worksheet = XLSX.utils.json_to_sheet(worksheetData)
+
+        // Create a new workbook and append the worksheet
+        const workbook = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Data')
+
+        // Generate Excel file buffer
+        const wbout = XLSX.write(workbook, {
+          bookType: 'xlsx',
+          type: 'array',
+        })
+
+        // Create Blob and download link
+        const blob = new Blob([wbout], {
+          type: 'application/octet-stream',
+        })
+        const url = URL.createObjectURL(blob)
+        const exportFileDefaultName = `${props.title}_${props.viewMode}_${props.metricMode}_${new Date().toISOString()}.xlsx`
+        const linkElement = document.createElement('a')
+        linkElement.href = url
+        linkElement.download = exportFileDefaultName
+        document.body.appendChild(linkElement)
+        linkElement.click()
+        document.body.removeChild(linkElement)
+        URL.revokeObjectURL(url)
+      } catch (error) {
+        console.error('Error exporting data to Excel:', error)
+      }
     }
 
     const panelIcon = computed(() =>
@@ -235,7 +260,7 @@ export default {
           plugins: {
             title: {
               display: true,
-              text: `${props.title} - Problem Duration Chart Target Line: 1000min`,
+              text: `${props.title} - Problem Duration Chart`,
               font: { size: 16, weight: 'bold' },
             },
             legend: { position: 'top' },

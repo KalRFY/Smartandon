@@ -7,6 +7,7 @@ const defaultController = async (req, res) => {
   });
 };
 
+
 const getCurrentUserController = async (req, res, next) => {
   return res.status(httpStatus.OK).json({
     message: 'Current user retrieved successfully',

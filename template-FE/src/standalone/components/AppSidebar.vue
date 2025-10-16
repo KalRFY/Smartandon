@@ -1,5 +1,5 @@
 <template>
-  <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="
+  <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" :class="sidebarClass" @visible-change="
     (event) =>
       $store.commit({
         type: 'updateSidebarVisible',
@@ -63,6 +63,13 @@
     components: {
       AppSidebarNav,
     },
+    computed: {
+      sidebarClass() {
+        // Check if device is mobile
+        const isMobile = window.innerWidth <= 768;
+        return isMobile ? 'custom-mobile-bg' : '';
+      }
+    },
     data() {
       return {
         nav: [
@@ -97,9 +104,9 @@
             // },
             {
               component: 'CNavItem',
-              to: '/app/MTBFMTTR',
-              name: 'MTBF-MTTR',
-              icon: 'cilSpeedometer',
+              to: '/app/ProblemHistory',
+              name: 'Problem History',
+              icon: 'cilHistory',
               parentId: 'ROOT',
             },
             {
@@ -111,13 +118,6 @@
             },
             {
               component: 'CNavItem',
-              to: '/app/LTBSummary',
-              name: 'LTB Report Status',
-              icon: 'cilDescription',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
               to: '/app/CMFollowup',
               name: 'CM Followup',
               icon: 'cilCalendar',
@@ -125,16 +125,37 @@
             },
             {
               component: 'CNavItem',
-              to: '/app/ProblemHistory',
-              name: 'Problem History',
-              icon: 'cilHistory',
+              to: '/app/order-spareparts-redirect',
+              name: 'Order Spareparts',
+              icon: 'cilCart',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/MTBFMTTR',
+              name: 'MTBF MTTR',
+              icon: 'cilSpeedometer',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/LTBSummary',
+              name: 'LTB Report Status',
+              icon: 'cilDescription',
               parentId: 'ROOT',
             },
             {
               component: 'CNavItem',
               to: '/app/EditDataSmartandon',
               name: 'Edit Data Smartandon',
-              icon: 'cilHistory',
+              icon: 'cilClipboard',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/SparepartAnalysis',
+              name: 'Sparepart Analysis',
+              icon: 'cilBarChart',
               parentId: 'ROOT',
             },
           ]
@@ -152,13 +173,6 @@
                 to: '/app/tpm-redirect',
                 name: 'TPM System',
                 icon: 'cilMemory',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/order-spareparts-redirect',
-                name: 'Order Spareparts',
-                icon: 'cilCart',
                 parentId: 'ROOT',
               },
             ]

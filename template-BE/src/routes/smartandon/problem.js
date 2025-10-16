@@ -7,9 +7,14 @@ const problemController = require('../../controllers/smartandon/problem.controll
 const upload = multer({ dest: 'upload/' });
 
 router.get('/problem', problemController.getProblem);
+
+
 router.get('/problemView', problemController.getProblemView);
+
 router.get('/problemId/:fid', problemController.getProblemById);
+
 router.get('/problemUpdate', problemController.getProblem);
+
 router.put(
   '/update',
   upload.fields([
@@ -24,5 +29,7 @@ router.put(
   ]),
   problemController.updateProblem
 );
+
+router.delete('/problem/delete/:id', problemController.deleteProblem);
 
 module.exports = router;

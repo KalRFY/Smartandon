@@ -16,6 +16,7 @@ const { authLimiter } = require('./middlewares/rateLimiter');
 const routes = require('./routes');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
+const oeeSyncService = require('./services/oeeSync.service');
 
 const app = express();
 const dashboardRoutes = require('./routes/smartandon/dashboard');
@@ -67,15 +68,17 @@ app.use('/api', routes);
 app.use('/dashboard', dashboardRoutes);
 // app.use('/problem', dashboardRoutes);
 
-// Add a welcome route for the root path
-app.get('/', (req, res) => {
-  console.log('ENV: ', config.env);
-  res.status(200).json({
-    message: 'Welcome to Smart Andon API',
-    version: '1.0.0',
-    documentation: '/api/docs',
-    status: 'online',
-  });
+// Serve static files from the built frontend directory
+app.use(express.static(path.join(__dirname, '../../template-FE/dist')));
+
+// Catch all handler: send back the index.html for SPA routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../template-FE/dist/index.html'));
+});
+
+// Handle Chrome DevTools specific route to prevent errors
+app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+  res.status(404).json({ message: 'Not found' });
 });
 
 // send back a 404 error for any unknown api request
@@ -96,4 +99,6 @@ module.exports = app;
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  // Start the OEE sync service
+  oeeSyncService.startScheduledSync();
 });

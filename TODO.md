@@ -1,25 +1,14 @@
-# Sparepart Implementation TODO
+# Task Completed: Make Line Duration Cards Clickable to Open Problems Modal
 
-## Completed ✅
-- [x] Fixed sparepart table to loop over `sparepartList` instead of `sparepartOptions`
-- [x] Added form to add/edit spareparts with Treeselect, price, vendor, and status fields
-- [x] Added "Tambah Sparepart" button when no spareparts exist
-- [x] Added "Tambah Sparepart" button when spareparts already exist
-- [x] Updated table to display: No, Sparepart Name, Price, Vendor, Status, Actions
-- [x] Added edit and remove functionality for spareparts
-- [x] Updated save function to include sparepart data
-- [x] Added sparepart data loading from existing records
-- [x] Exposed sparepart functions and variables to template
+## Summary of Changes:
+- Added modal functionality for displaying today's problems per line
+- Fixed API calls to use line_id instead of line name
+- Added detailed console logging for debugging
+- Commented out old OEE section as requested
+- All line duration cards are now clickable and open a modal showing today's problems for that line
 
-## Next Steps 🔄
-- [ ] Test the sparepart functionality in the browser
-- [ ] Verify data is properly saved to backend
-- [ ] Check if backend needs updates to handle sparepart data
-- [ ] Test loading existing sparepart data when editing problems
-- [ ] Add validation for required sparepart fields
-
-## Notes 📝
-- Sparepart form includes: Treeselect for sparepart selection, price input, vendor input, status dropdown
-- Status options: Available, Ordered, Not Available
-- Form follows the same pattern as countermeasure forms
-- Data is saved as `sparepartList` in the submit data
+## Implementation Details:
+- Modal displays problems with columns: No, Machine, Line, Problem, Duration, Status, Action
+- API filters problems by today's date and specific line ID
+- Added cursor pointer styling for better UX
+- Modal closes properly and resets data on close

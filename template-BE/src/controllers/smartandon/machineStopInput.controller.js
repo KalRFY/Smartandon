@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { sequelize } = require('../../models');
 
+
 const getMachineStopInput = async (req, res, next) => {
   try {
     const [problemMachine, metadata] = await sequelize.query(`
@@ -90,29 +91,39 @@ const putMachineStopInput = async (req, res, next) => {
   try {
     console.log('Received request body:', req.body);
 
-    const { fmc_id, ferror_name, fstart_time } = req.body;
+    const { fmc_id, ferror_name, fstart_time, foperator, lineName } = req.body;
 
     let values = '';
+    let columns = '';
 
     if (fmc_id) {
+      columns += 'fmc_id';
       values += `${fmc_id}`;
     }
     if (ferror_name){
+      columns += columns ? ', ferror_name' : 'ferror_name';
       values += `, '${ferror_name}'`;
     }
     if (fstart_time){
+      columns += columns ? ', fstart_time' : 'fstart_time';
       values += `, '${fstart_time}'`;
     }
+    if (foperator){
+      columns += columns ? ', foperator' : 'foperator';
+      values += `, '${foperator}'`;
+    }
 
+
+    console.log("Columns: " + columns);
     console.log("Values: " + values);
 
     if (!fmc_id || !ferror_name) {
-      console.log('Missing required fields:', { fmc_id, ferror_name, fstart_time });
+      console.log('Missing required fields:', { fmc_id, ferror_name, fstart_time, foperator, lineName });
       return res.status(httpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
     }
 
     const insertQuery = `
-      INSERT INTO tb_error_log_2 (fmc_id, ferror_name, fstart_time)
+      INSERT INTO tb_error_log_2 (${columns})
       VALUES (${values})
     `;
 

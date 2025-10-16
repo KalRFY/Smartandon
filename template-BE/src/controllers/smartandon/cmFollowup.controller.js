@@ -3,6 +3,7 @@ const { sequelize } = require('../../models');
 const ExcelJS = require('exceljs');
 
 const getFollowups = async (req, res, next) => {
+  
   try {
     const { start, finish, line, machine, shift, keyword } = req.query;
 

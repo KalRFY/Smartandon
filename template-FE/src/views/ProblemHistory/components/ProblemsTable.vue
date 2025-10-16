@@ -28,6 +28,7 @@
                     <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     <CTableHeaderCell scope="col">LTB Reports</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Delete</CTableHeaderCell>
 
                     <!-- <CTableHeaderCell scope="col">Terjadi</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Lama</CTableHeaderCell>
@@ -89,20 +90,37 @@
                       >
                         Belum Upload Report
                       </CButton>
+                      <div v-if="problem.file_report && (isLtrProblem(problem) || isSltrProblem(problem))">
+                        <CButton
+                          class="mb-2"
+                          shape="rounded-pill"
+                          color="info"
+                          style="
+                            width: 100%;
+                            font-size: x-small;
+                            font-weight: bold;
+                            color: white;
+                          "
+                          @click="$emit('downloadLtbReport', problem)"
+                        >
+                          Download LTB Report
+                        </CButton>
+                      </div>
+                    </CTableDataCell>
+
+                    <CTableDataCell style="width: 5%;">
                       <CButton
-                        v-if="problem.file_report && (isLtrProblem(problem) || isSltrProblem(problem))"
                         class="mb-3"
                         shape="rounded-pill"
-                        color="info"
+                        color="danger"
                         style="
-                          width: 100%;
                           font-size: x-small;
                           font-weight: bold;
                           color: white;
                         "
-                        @click="$emit('viewLtbReport', problem)"
+                        @click="$emit('deleteProblem', problem.fid)"
                       >
-                        View LTB Report
+                        Delete
                       </CButton>
                     </CTableDataCell>
 
@@ -115,7 +133,15 @@
                 </CTableBody>
               </CTable>
 
-              <LoadingState v-else :loading="loading" />
+              <template v-else>
+                <tr>
+                  <td colspan="10" class="text-center py-3 text-muted">
+                    No data available for the selected search criteria.
+                  </td>
+                </tr>
+              </template>
+
+              <LoadingState v-if="loading" />
 
               <PaginationControls
                 :currentPage="currentPage"
@@ -199,7 +225,9 @@ export default {
 
   emits: [
     'editProblem',
+    'deleteProblem',
     'viewLtbReport',
+    'downloadLtbReport',
     'goToPage',
     'freq',
     'ltb',
@@ -227,6 +255,12 @@ export default {
       this.$emit('filteredCategory', filtered)
     },
     getRowColor(problem) {
+      // Check if problem duration is less than 30 minutes - no color for short problems
+      const duration = parseInt(problem.fdur) || 0
+      if (duration <= 29) {
+        return ''
+      }
+
       const analysisArray = Array.isArray(problem.terjadiAnalysis) ? problem.terjadiAnalysis : []
       const hasTerjadi = analysisArray.some(item => item.id_problem === problem.fid)
       const analysisArrayLama = Array.isArray(problem.lamaAnalysis) ? problem.lamaAnalysis : []
