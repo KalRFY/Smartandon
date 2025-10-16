@@ -81,7 +81,7 @@
                   </CRow>
                   
                   <CRow class="mb-3">
-                    <CCol>
+                    <CCol class="mb-3" lg="6">
                       <CFormLabel for="basic-url">Problem</CFormLabel>
                       <CInputGroup>
                         <CInputGroupText id="basic-addon3">Problem</CInputGroupText>
@@ -95,7 +95,7 @@
                         />
                       </CInputGroup>
                     </CCol>
-                    <CCol>
+                    <CCol class="mb-3" lg="6">
                       <CFormLabel for="basic-url">View</CFormLabel>
                       <CFormSelect
                         v-model="selectedTimeFreq"
@@ -206,6 +206,8 @@
     </CCol>
   </CRow>
 
+
+  
   <CRow class="mb-3">
     <CCol>
       <div
