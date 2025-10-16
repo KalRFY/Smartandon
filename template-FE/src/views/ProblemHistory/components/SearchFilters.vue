@@ -7,7 +7,7 @@
         <CCardBody>
           <CRow>
             <CCol md="3" class="mb-3">
-              <CFormLabel for="startDate">Start</CFormLabel>
+              <CFormLabel for="startDate" style="font-weight: bold;">Start</CFormLabel>
               <CInputGroup>
                 <CInputGroupText id="basic-addon1">
                   <Clock size="16" />
@@ -24,7 +24,7 @@
             </CCol>
 
             <CCol md="3" class="mb-3">
-              <CFormLabel for="finishDate">Finish</CFormLabel>
+              <CFormLabel for="finishDate" style="font-weight: bold;">Finish</CFormLabel>
               <CInputGroup>
                 <CInputGroupText id="basic-addon2">
                   <Clock size="16" />
@@ -42,7 +42,7 @@
 
             <CCol md="3" class="mb-3">
               <CCol class="md-6">
-              <label for="lineSelect" class="form-label">Line</label>
+              <label for="lineSelect" class="form-label" style="font-weight: bold;">Line</label>
               <Treeselect
                 id="lineSelect"
                 :model-value="selectedLine"
@@ -62,9 +62,7 @@
             </CCol>
 
             <CCol md="3" class="mb-3">
-              <label for="selectedMachineName" class="form-label"
-                >Machine Name</label
-              >
+              <label for="selectedMachineName" class="form-label" style="font-weight: bold;">Machine Name</label>
               <Treeselect
                 id="selectedMachineName"
                 :model-value="selectedMachineName"
@@ -83,7 +81,7 @@
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="basic-url">Problem</CFormLabel>
+            <CFormLabel for="basic-url" style="font-weight: bold;">Problem</CFormLabel>
             <CInputGroup>
               <CInputGroupText id="basic-addon3">Problem</CInputGroupText>
               <CFormInput
