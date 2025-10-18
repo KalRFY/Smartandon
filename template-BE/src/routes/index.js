@@ -21,6 +21,7 @@ const authRoutes = require('./smartandon/auth.route');
 const userRoutes = require('./smartandon/user.route');
 const sparepartRoutes = require('./smartandon/spareparts.route');
 const tambahAnalysis = require('./smartandon/tambahAnalysis.route');
+const q6Routes = require('./smartandon/q6.route');
 
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
@@ -103,6 +104,10 @@ const smartAndonRoutes = [
   {
     path: '/common',
     route: CommonRoute,
+  },
+  {
+    path: '/q6',
+    route: q6Routes,
   },
 ];
 

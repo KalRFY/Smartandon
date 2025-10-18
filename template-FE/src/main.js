@@ -17,6 +17,7 @@ import Highcharts from 'highcharts'
 import HighchartsVue from 'highcharts-vue'
 import VCalendar from 'v-calendar';
 import 'v-calendar/style.css';
+import VueApexCharts from 'vue3-apexcharts';
 if(process.env.VUE_APP_STANDALONE_SINGLE_SPA==='true'){
   require('@/components/StandAloneStyle.vue');
 }else{
@@ -50,6 +51,7 @@ const vueLifecycles = singleSpaVue({
       highcharts: Highcharts
     })
     app.use(VCalendar, {})
+    app.use(VueApexCharts)
   },
 })
 export const bootstrap = vueLifecycles.bootstrap
