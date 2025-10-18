@@ -2,18 +2,26 @@
   <CRow class="mb-3 justify-content-center">
     <CCol md="10" lg="8" class="w-100">
       <CCard class="w-100 mb-3">
-        <CCardBody class="d-flex justify-content-center align-items-center p-2">
-          <CButtonGroup role="group" aria-label="View options">
-            <CButton
-              v-for="view in viewOptions"
-              :key="view.value"
-              :color="selectedView === view.value ? 'primary' : 'outline-primary'"
-              @click="selectView(view.value)"
+        <CCardBody class="d-flex justify-content-center align-items-center p-2 gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <CFormSwitch
+              v-model="abnormalModel"
               :disabled="isLoading"
-            >
-              {{ view.label }}
-            </CButton>
-          </CButtonGroup>
+              id="switch-abnormal"
+              inline
+            />
+            <label for="switch-abnormal" class="mb-0">Abnormal</label>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <CFormSwitch
+              v-model="isFreqModel"
+              :disabled="isLoading"
+              id="switch-frequency"
+              inline
+            />
+            <label for="switch-frequency" class="mb-0">Frequency</label>
+          </div>
         </CCardBody>
       </CCard>
     </CCol>
@@ -21,10 +29,9 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue'
 import {
-  CButtonGroup,
-  CButton,
+  CFormSwitch,
   CCard,
   CCardBody,
   CRow,
@@ -32,20 +39,22 @@ import {
 } from '@coreui/vue'
 
 const props = defineProps({
-  selectedView: String,
-  isLoading: Boolean
+  abnormal: { type: Boolean, default: false },
+  isFreq: { type: Boolean, default: false },
+  isLoading: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['update:selectedView'])
+const emit = defineEmits(['update:abnormal', 'update:isFreq'])
 
-const viewOptions = [
-  { value: 'abnormal', label: 'Abnormal' },
-  { value: 'frequency', label: 'Frequency' }
-]
+const abnormalModel = computed({
+  get: () => props.abnormal,
+  set: (v) => emit('update:abnormal', v),
+})
 
-const selectView = (view) => {
-  emit('update:selectedView', view)
-}
+const isFreqModel = computed({
+  get: () => props.isFreq,
+  set: (v) => emit('update:isFreq', v),
+})
 </script>
 
 <style scoped>

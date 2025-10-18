@@ -106,10 +106,10 @@ const productionLines = [
   {value: 'ALL', label: 'All' },
   { value: 'LPDC', label: 'LPDC Line' },
   { value: 'HPDC', label: 'HPDC Line' },
-  { value: 'camshaft', label: 'CAM SHAFT Line' },
-  { value: 'crankshaft', label: 'CRANK SHAFT Line' },
-  { value: 'cylinderhead', label: 'CYLINDER HEAD Line' },
-  { value: 'cylinderblock', label: 'CYLINDER BLOCK Line' },
+  { value: 'Cam Shaft', label: 'CAM SHAFT Line' },
+  { value: 'Crank shaft', label: 'CRANK SHAFT Line' },
+  { value: 'Cylinder Head', label: 'CYLINDER HEAD Line' },
+  { value: 'Cylinder Block', label: 'CYLINDER BLOCK Line' },
   { value: 'ASSY LINE', label: 'ASSY LINE' }
 ]
 

@@ -15,10 +15,11 @@
             @selectTimeRange="selectTimeRange"
         />
 
-        <ViewControls
-            v-model:selectedView="selectedView"
-            :isLoading="isLoading"
-        />
+    <ViewControls
+      v-model:abnormal="abnormal"
+      v-model:isFreq="isFreq"
+      :isLoading="isLoading"
+    />
 
         <CRow class="production-lines-container flex flex-column">
             <CCol cols="12" class="line-chart-container w-100">
@@ -77,18 +78,19 @@ const selectedLine = ref('ALL')
 const startDate = ref(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`)
 const endDate = ref(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`)
 
-const selectedView = ref('')
+const abnormal = ref(false)
+const isFreq = ref(false)
 
 const fetchQ6Data = async() => {
     try {
         isLoading.value = true
-        const params = {
-            line: selectedLine.value,
-            startDate: startDate.value,
-            endDate: endDate.value,
-            isAbnormal: selectedView.value === 'abnormal' ? true : false,
-            isFreq: selectedView.value === 'frequency' ? true : false,
-        }
+    const params = {
+      line: selectedLine.value,
+      startDate: startDate.value,
+      endDate: endDate.value,
+      isAbnormal: abnormal.value,
+      isFreq: isFreq.value,
+    }
         const response = await api.get('/q6/q6-analysis', params)
         if (response.status !== 200) {
             throw new Error(`API request failed with status ${response.status}`)
