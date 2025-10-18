@@ -16,8 +16,8 @@ const getQ6AnalysisController = async (req, res, next) => {
     const startDate = req.query.startDate || req.query.fstart_date;
     const endDate = req.query.endDate || req.query.fend_date;
     const line = req.query.line || req.query.fline;
-    const isAbnormalRaw = req.query.isAbnormal ? req.query.is_abnormal : 'false';
-    const isFreqRaw = req.query.isFreq ? req.query.is_freq : 'false';
+    const isAbnormalRaw = req.query.isAbnormal ? req.query.isAbnormal : false;
+    const isFreqRaw = req.query.isFreq ? req.query.isFreq : false;
 
     const isAbnormalFlag = String(isAbnormalRaw) === 'true';
     const isFreqFlag = String(isFreqRaw) === 'true';
@@ -108,7 +108,6 @@ const getQ6AnalysisController = async (req, res, next) => {
             containerActual[idx] += 0;
             containerStandard[idx] += 0;
           }
-
           responseMap.data.push(row);
         } else if (!isAbnormalFlag && !isFreqFlag) {
           containerActual[idx] += actual;
