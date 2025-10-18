@@ -4,7 +4,6 @@
       <CCard class="mb-3">
         <CCardBody class="p-3">
           <CRow class="align-items-end">
-            <!-- Date Range -->
             <CCol md="3">
               <label class="form-label fw-semibold">Start Date</label>
               <CFormInput
@@ -32,7 +31,6 @@
                 @change="updateSelectedLine"
                 :disabled="isLoading"
               >
-                <option value="">All Lines</option>
                 <option v-for="line in productionLines" :key="line.value" :value="line.value">
                   {{ line.label }}
                 </option>
@@ -105,13 +103,14 @@ const props = defineProps({
 const emit = defineEmits(['update:startDate', 'update:endDate', 'update:selectedLine', 'search', 'selectTimeRange'])
 
 const productionLines = [
-  { value: 'lpdc', label: 'LPDC Line' },
-  { value: 'hpdc', label: 'HPDC Line' },
+  {value: 'ALL', label: 'All' },
+  { value: 'LPDC', label: 'LPDC Line' },
+  { value: 'HPDC', label: 'HPDC Line' },
   { value: 'camshaft', label: 'CAM SHAFT Line' },
   { value: 'crankshaft', label: 'CRANK SHAFT Line' },
   { value: 'cylinderhead', label: 'CYLINDER HEAD Line' },
   { value: 'cylinderblock', label: 'CYLINDER BLOCK Line' },
-  { value: 'assyline', label: 'ASSY LINE' }
+  { value: 'ASSY LINE', label: 'ASSY LINE' }
 ]
 
 const timeRanges = [
