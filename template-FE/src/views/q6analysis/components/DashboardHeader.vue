@@ -1,27 +1,26 @@
 <template>
   <CCard class="mb-4 header-card">
     <CCardHeader class="text-white">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
+      <CRow class="align-items-center d-flex">
+        <CCol class="">
           <h3 class="m-0">Q6 ANALYSIS DASHBOARD</h3>
-        </div>
-        <div class="d-flex align-items-center">
-          <span class="me-3">{{ currentDate }}</span>
-          <div class="live-indicator d-flex align-items-center">
-            <span class="live-dot"></span>
-            <span class="ms-1">{{ currentTime }}</span>
-          </div>
-          <div class="ms-3 user-info">
-            <span><User size="16" class="me-1" /> {{ username }}</span>
-          </div>
-        </div>
-      </div>
+        </CCol>
+        <CCol class="text-end">
+          <CContainer fluid class="d-flex justify-content-center align-items-center gap-5 p-0">
+            <span class="w-50">{{ currentDate }}</span>
+            <CContainer fluid class="live-indicator align-items-center p-0">
+              <span class="live-dot"></span>
+              <span class="ms-1">{{ currentTime }}</span>
+            </CContainer>
+          </CContainer>
+        </CCol>
+      </CRow>
     </CCardHeader>
   </CCard>
 </template>
 
 <script setup>
-import { CCard, CCardHeader } from '@coreui/vue'
+import { CCard, CCardHeader, CRow, CCol, CContainer } from '@coreui/vue'
 import { User } from 'lucide-vue-next'
 
 defineProps({

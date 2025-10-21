@@ -1,5 +1,5 @@
 <template>
-    <div class="q6-analysis-dashboard">
+    <CContainer fluid class="q6-analysis-dashboard">
         <DashboardHeader
             :username="username"
             :currentDate="currentDate"
@@ -15,36 +15,36 @@
             @selectTimeRange="selectTimeRange"
         />
 
-    <ViewControls
-      v-model:abnormal="abnormal"
-      v-model:isFreq="isFreq"
-      :isLoading="isLoading"
-    />
+        <ViewControls
+            v-model:abnormal="abnormal"
+            v-model:isFreq="isFreq"
+            :isLoading="isLoading"
+        />
 
         <CRow class="production-lines-container flex flex-column">
             <CCol cols="12" class="line-chart-container w-100">
                 <CCard class="w-100">
                     <CCardBody>
                         <template v-if="isLoading">
-                            <div class="loading-message">Loading data...</div>
+                            <CContainer fluid class="loading-message text-center">Loading data...</CContainer>
                         </template>
                         <template v-else>
-                            <div v-if="seriesData.length === 0" class="empty-message">
+                            <CContainer fluid v-if="seriesData.length === 0" class="empty-message text-center">
                                 No data available
-                            </div>
-                            <div v-else class="chart-wrapper" v-show="chartReady">
+                            </CContainer>
+                            <CContainer fluid v-else class="chart-wrapper" v-show="chartReady">
                                 <Q6Charts
                                     :key="chartKey"
                                     :graphData="graphData"
                                     :seriesData="seriesData"
                                 />
-                            </div>
+                            </CContainer>
                         </template>
                     </CCardBody>
                 </CCard>
             </CCol>
         </CRow>
-    </div>
+    </CContainer>
 </template>
 
 <script setup>
@@ -54,7 +54,7 @@ import DashboardHeader from './components/DashboardHeader.vue'
 import api from '../../apis/CommonAPI'
 import SearchPanel from './components/SearchPanel.vue'
 import ViewControls from './components/ViewControls.vue'
-import { CCard, CCardBody, CRow, CCol } from '@coreui/vue'
+import { CCard, CCardBody, CRow, CCol, CContainer } from '@coreui/vue'
 
 const username = ref('Admin User')
 const currentTime = ref('')

@@ -23,7 +23,6 @@
               />
             </CCol>
             
-            <!-- Line Dropdown -->
             <CCol md="3">
               <label class="form-label fw-semibold">Production Line</label>
               <CFormSelect
@@ -37,7 +36,6 @@
               </CFormSelect>
             </CCol>
             
-            <!-- Search Button -->
             <CCol md="3">
               <CButton
                 color="primary"
@@ -56,10 +54,9 @@
             </CCol>
           </CRow>
           
-          <!-- Quick Time Range Buttons -->
           <CRow class="mt-3">
             <CCol cols="12">
-              <div class="d-flex flex-wrap gap-2">
+              <CContainer fluid class="d-flex flex-wrap gap-2 p-0">
                 <small class="text-muted me-2 align-self-center">Quick select:</small>
                 <CButton
                   v-for="range in timeRanges"
@@ -71,7 +68,7 @@
                 >
                   {{ range.label }}
                 </CButton>
-              </div>
+              </CContainer>
             </CCol>
           </CRow>
         </CCardBody>
@@ -91,6 +88,7 @@ import {
   CFormInput,
   CFormSelect,
   CSpinner,
+  CContainer,
 } from '@coreui/vue'
 
 const props = defineProps({

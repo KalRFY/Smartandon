@@ -3,7 +3,7 @@
     <CCol md="10" lg="8" class="w-100">
       <CCard class="w-100 mb-3">
         <CCardBody class="d-flex justify-content-center align-items-center p-2 gap-3">
-          <div class="d-flex align-items-center gap-2">
+          <CContainer fluid class="d-flex justify-content-center align-items-center gap-2 p-0">
             <CFormSwitch
               v-model="abnormalModel"
               :disabled="isLoading"
@@ -11,9 +11,9 @@
               inline
             />
             <label for="switch-abnormal" class="mb-0">Abnormal</label>
-          </div>
+          </CContainer>
 
-          <div class="d-flex align-items-center gap-2">
+          <CContainer fluid class="d-flex justify-content-center align-items-center gap-2 p-0">
             <CFormSwitch
               v-model="isFreqModel"
               :disabled="isLoading"
@@ -21,7 +21,7 @@
               inline
             />
             <label for="switch-frequency" class="mb-0">Frequency</label>
-          </div>
+          </CContainer>
         </CCardBody>
       </CCard>
     </CCol>
@@ -36,6 +36,7 @@ import {
   CCardBody,
   CRow,
   CCol,
+  CContainer,
 } from '@coreui/vue'
 
 const props = defineProps({

@@ -1,18 +1,19 @@
 <template>
-  <div id="chart" v-if="seriesData && seriesData.length > 0">
+  <CContainer fluid v-if="seriesData && seriesData.length > 0" id="chart">
     <ApexChart
       :options="options"
       :series="seriesData"
       type="line"
       height="350"
     />
-  </div>
+  </CContainer>
 </template>
 
 <script setup>
 import { computed, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import ApexChart from 'vue3-apexcharts'
+import { CContainer } from '@coreui/vue'
 
 const q6Categories = [
   'Q1 (Diagnose)',
