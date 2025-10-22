@@ -250,7 +250,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // Update document title
   if (to.meta.title) {
-    document.title = `Template MFG - ${to.meta.title}`
+    document.title = `Smartandon - ${to.meta.title}`
   }
 
   const token = localStorage.token
