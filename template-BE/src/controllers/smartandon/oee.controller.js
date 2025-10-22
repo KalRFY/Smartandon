@@ -124,7 +124,7 @@ const getOEESmartandon = async (req, res, next) => {
         fitem,
         fvalue,
         ftm_update
-      FROM tb_prod
+      FROM tb_prod2
       WHERE fid IS NOT NULL
       ORDER BY fline ASC, fitem ASC
     `);
@@ -153,10 +153,8 @@ const syncOEEToTbProd = async (req, res, next) => {
       ORDER BY DEV_NAME ASC, TAG_NAME ASC
     `);
 
-    // Clear existing data in tb_prod
-    await sequelize.query(`DELETE FROM tb_prod`);
+    await sequelize.query(`DELETE FROM tb_prod2`);
 
-    // Insert new data based on the actual tb_prod structure
     const insertValues = [];
     const replacements = {};
     let index = 0;
@@ -177,14 +175,14 @@ const syncOEEToTbProd = async (req, res, next) => {
 
     if (insertValues.length > 0) {
       const insertQuery = `
-        INSERT INTO tb_prod (fid, fline, fitem, fvalue, ftm_update)
+        INSERT INTO tb_prod2 (fid, fline, fitem, fvalue, ftm_update)
         VALUES ${insertValues.join(', ')}
       `;
       await sequelize.query(insertQuery, { replacements });
     }
 
     res.status(httpStatus.OK).json({
-      message: 'OEE data synced successfully to tb_prod',
+      message: 'OEE data synced successfully to tb_prod2',
       syncedRecords: prodData.length
     });
   } catch (error) {

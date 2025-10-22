@@ -15,7 +15,7 @@ class OEESyncService {
 
     this.isRunning = true;
     try {
-      console.log('Starting OEE data sync from MariaDB to tb_prod...');
+      console.log('Starting OEE data sync from MariaDB to tb_prod2...');
 
       // Fetch all PROD data from MariaDB (using same pattern as working controller functions)
       const prodData = await mariadbSequelize.query(`
@@ -33,10 +33,10 @@ class OEESyncService {
         ORDER BY DEV_NAME ASC, TAG_NAME ASC
       `, { type: mariadbSequelize.QueryTypes.SELECT });
 
-      // Clear existing data in tb_prod
-      await sequelize.query(`DELETE FROM tb_prod`);
+      // Clear existing data in tb_prod2
+      await sequelize.query(`DELETE FROM tb_prod2`);
 
-      // Insert new data based on the actual tb_prod structure
+      // Insert new data based on the actual tb_prod2 structure
       const insertValues = [];
       const replacements = {};
 
@@ -56,7 +56,7 @@ class OEESyncService {
 
       if (insertValues.length > 0) {
         const insertQuery = `
-          INSERT INTO tb_prod (fid, fline, fitem, fvalue, ftm_update)
+          INSERT INTO tb_prod2 (fid, fline, fitem, fvalue, ftm_update)
           VALUES ${insertValues.join(', ')}
         `;
         await sequelize.query(insertQuery, { replacements });
