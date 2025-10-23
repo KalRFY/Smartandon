@@ -86,8 +86,8 @@
                   <Timer size="20" />
                 </div>
                 <div class="stat-content">
-                  <div class="stat-number">{{ getWeeklyTotalDuration() }}</div>
-                  <div class="stat-label">Total Duration (min)</div>
+                  <div class="stat-number">{{ getWeeklyTotalDuration() }} Min</div>
+                  <div class="stat-label">Total Duration (this week)</div>
                 </div>
               </div>
             </CCol>
@@ -110,6 +110,17 @@
                 <div class="stat-content">
                   <div class="stat-number">{{ getWeeklyLtrCount }}</div>
                   <div class="stat-label">LTR This Week</div>
+                </div>
+              </div>
+            </CCol>
+            <CCol md="2" sm="4">
+              <div class="stat-card weekly-sltr">
+                <div class="stat-icon">
+                  <FileText size="20" />
+                </div>
+                <div class="stat-content">
+                  <div class="stat-number">{{ getWeeklySltrCount }}</div>
+                  <div class="stat-label">SLTR This Week</div>
                 </div>
               </div>
             </CCol>
@@ -1004,21 +1015,47 @@
                 <CTable class="table-sm table-hover table-striped mb-0">
                   <CTableHead class="table-dark sticky-top">
                     <CTableRow>
-                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Machine</CTableHeaderCell>
-                      <CTableHeaderCell scope="col" class="col-1 fw-semibold">Line</CTableHeaderCell>
-                      <CTableHeaderCell scope="col" class="col-5 fw-semibold">Problem</CTableHeaderCell>
-                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Duration</CTableHeaderCell>
-                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Action</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-1 fw-semibold">Category</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold">Machine</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-1 fw-semibold">Line</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-4 fw-semibold">Problem</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold">Duration</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold">Action</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
                     <CTableRow v-if="loadingFollowupLtr">
-                      <CTableDataCell colspan="5" class="text-center py-4">Loading...</CTableDataCell>
+                      <CTableDataCell colspan="6" class="text-center py-4">Loading...</CTableDataCell>
                     </CTableRow>
-                    <CTableRow v-else-if="followupLtrProblems.length === 0">
-                      <CTableDataCell colspan="5" class="text-center py-4 text-muted">No LTR problems without reports</CTableDataCell>
+                    <CTableRow v-else-if="followupLtrProblems.length === 0 && followupSltrProblems.length === 0">
+                      <CTableDataCell colspan="6" class="text-center py-4 text-muted">No LTR/SLTR problems without reports</CTableDataCell>
                     </CTableRow>
-                    <CTableRow v-for="(problem, idx) in followupLtrProblems" :key="problem.fid" class="align-middle">
+                    <!-- LTR Problems -->
+                    <CTableRow v-for="(problem, idx) in followupLtrProblems" :key="`ltr-${problem.fid}`" class="align-middle">
+                      <CTableDataCell>
+                        <CBadge color="warning" class="w-100 text-center py-1" shape="rounded-pill">
+                          <small class="fw-bold">LTR</small>
+                        </CBadge>
+                      </CTableDataCell>
+                      <CTableDataCell class="fw-bold text-dark">{{ problem.fmc_name }}</CTableDataCell>
+                      <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
+                      <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
+                      <CTableDataCell>
+                        <CBadge color="danger" class="w-100 text-center py-1" shape="rounded-pill">
+                          <small class="fw-bold">{{ problem.fdur }} min</small>
+                        </CBadge>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <CButton color="primary" size="sm" class="rounded-pill shadow-sm w-100" @click="openEditModal(problem)">Edit</CButton>
+                      </CTableDataCell>
+                    </CTableRow>
+                    <!-- SLTR Problems -->
+                    <CTableRow v-for="(problem, idx) in followupSltrProblems" :key="`sltr-${problem.fid}`" class="align-middle">
+                      <CTableDataCell>
+                        <CBadge color="info" class="w-100 text-center py-1" shape="rounded-pill">
+                          <small class="fw-bold">SLTR</small>
+                        </CBadge>
+                      </CTableDataCell>
                       <CTableDataCell class="fw-bold text-dark">{{ problem.fmc_name }}</CTableDataCell>
                       <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
                       <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
@@ -1360,6 +1397,7 @@ export default {
       problemActive: [],
       loadingProblemActive: false,
       followupLtrProblems: [],
+      followupSltrProblems: [],
       loadingFollowupLtr: false,
 
       visibleEditModal: false,
@@ -1748,6 +1786,16 @@ export default {
           return problemDate >= monday && problemDate <= today;
         });
         return ltrProblems.length;
+      },
+      getWeeklySltrCount() {
+        // Count SLTR problems from this week (SLTR = problemCategory 4)
+        const today = moment().format('YYYY-MM-DD');
+        const monday = moment().startOf('week').add(1, 'day').format('YYYY-MM-DD');
+        const sltrProblems = this.followupSltrProblems.filter(problem => {
+          const problemDate = moment(problem.fstart_time).format('YYYY-MM-DD');
+          return problemDate >= monday && problemDate <= today;
+        });
+        return sltrProblems.length;
       },
       visibleChunkedDashboardCards() {
         const allChunks = this.chunkedDashboardCards;
@@ -2522,29 +2570,41 @@ export default {
         console.log('[Dashboard Debug] Fetching LTR with params:', ltrParams);
         const ltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(ltrParams) });
         console.log('[Dashboard Debug] LTR response data length:', ltrResponse.data.data ? ltrResponse.data.data.length : 0);
-        
+
         console.log('[Dashboard Debug] Fetching SLTR with params:', sltrParams);
         const sltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(sltrParams) });
         console.log('[Dashboard Debug] SLTR response data length:', sltrResponse.data.data ? sltrResponse.data.data.length : 0);
-        
-        const allLtrSltrProblems = [...(ltrResponse.data.data || []), ...(sltrResponse.data.data || [])];
-        console.log('[Dashboard Debug] Combined LTR/SLTR problems:', allLtrSltrProblems.length);
-        if (allLtrSltrProblems.length > 0) {
-          console.log('[Dashboard Debug] Sample LTR/SLTR problems:', allLtrSltrProblems.slice(0, 3));
-          console.log('[Dashboard Debug] Sample file_report values:', allLtrSltrProblems.slice(0, 5).map(p => ({ fid: p.fid, file_report: p.file_report, problemCategory: p.problemCategory })));
-        }
-        
-        // Filter for no file_report
-        const noReportProblems = allLtrSltrProblems.filter(problem => {
+
+        const ltrProblems = ltrResponse.data.data || [];
+        const sltrProblems = sltrResponse.data.data || [];
+
+        console.log('[Dashboard Debug] LTR problems:', ltrProblems.length);
+        console.log('[Dashboard Debug] SLTR problems:', sltrProblems.length);
+
+        // Filter for no file_report for LTR
+        const noReportLtrProblems = ltrProblems.filter(problem => {
           const hasNoReport = !problem.file_report || problem.file_report.trim() === '' || problem.file_report === null;
           return hasNoReport;
         });
-        console.log('[Dashboard Debug] LTR/SLTR problems with no report:', noReportProblems.length);
-        this.followupLtrProblems = noReportProblems;
-        console.log('Fetched LTR/SLTR problems without reports:', this.followupLtrProblems);
+
+        // Filter for no file_report for SLTR
+        const noReportSltrProblems = sltrProblems.filter(problem => {
+          const hasNoReport = !problem.file_report || problem.file_report.trim() === '' || problem.file_report === null;
+          return hasNoReport;
+        });
+
+        console.log('[Dashboard Debug] LTR problems with no report:', noReportLtrProblems.length);
+        console.log('[Dashboard Debug] SLTR problems with no report:', noReportSltrProblems.length);
+
+        this.followupLtrProblems = noReportLtrProblems;
+        this.followupSltrProblems = noReportSltrProblems;
+
+        console.log('Fetched LTR problems without reports:', this.followupLtrProblems);
+        console.log('Fetched SLTR problems without reports:', this.followupSltrProblems);
       } catch (error) {
         console.error('Failed to fetch LTR/SLTR problems:', error);
         this.followupLtrProblems = [];
+        this.followupSltrProblems = [];
       } finally {
         this.loadingFollowupLtr = false;
       }
@@ -3263,6 +3323,10 @@ p {
 
 .weekly-ltr .stat-icon {
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.weekly-sltr .stat-icon {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
 }
 
 .placeholder .stat-icon {
