@@ -60,15 +60,14 @@ module.exports = {
     password: envVars.PASSWORD_DB_NEW,
     database: envVars.NAME_DB_NEW,
     host: envVars.HOST_DB_NEW,
-    dialect: 'mysql',
-    dialectOptions: {
-      connectTimeout: 60000,
-      acquireTimeout: 60000,
-      timeout: 60000,
-    },
     port: envVars.DB_PORT,
+    dialect: 'mysql',
+    dialectModule: require('mysql2'),
+    dialectOptions: {
+      connectTimeout: 10000
+    },
     pool: {
-      max: 5,
+      max: 10,
       min: 0,
       acquire: 30000,
       idle: 10000

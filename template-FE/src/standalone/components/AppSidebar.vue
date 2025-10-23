@@ -104,6 +104,13 @@
             // },
             {
               component: 'CNavItem',
+              to: '/app/MTBFMTTR',
+              name: 'MTBF MTTR',
+              icon: 'cilSpeedometer',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
               to: '/app/ProblemHistory',
               name: 'Problem History',
               icon: 'cilHistory',
@@ -118,9 +125,23 @@
             },
             {
               component: 'CNavItem',
+              to: '/app/LTBSummary',
+              name: 'LTB Report Status',
+              icon: 'cilDescription',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
               to: '/app/CMFollowup',
               name: 'CM Followup',
               icon: 'cilCalendar',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/KYMachine',
+              name: 'KY Machines',
+              icon: 'cilWarning',
               parentId: 'ROOT',
             },
             {
@@ -132,16 +153,9 @@
             },
             {
               component: 'CNavItem',
-              to: '/app/MTBFMTTR',
-              name: 'MTBF MTTR',
-              icon: 'cilSpeedometer',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/LTBSummary',
-              name: 'LTB Report Status',
-              icon: 'cilDescription',
+              to: '/app/SparepartAnalysis',
+              name: 'Sparepart Analysis',
+              icon: 'cilBarChart',
               parentId: 'ROOT',
             },
             {
@@ -149,13 +163,6 @@
               to: '/app/EditDataSmartandon',
               name: 'Edit Data Smartandon',
               icon: 'cilClipboard',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/SparepartAnalysis',
-              name: 'Sparepart Analysis',
-              icon: 'cilBarChart',
               parentId: 'ROOT',
             },
           ]

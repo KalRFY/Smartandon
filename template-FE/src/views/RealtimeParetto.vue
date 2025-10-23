@@ -451,8 +451,10 @@ import {
   History,
   BarChart2,
   FileText,
+  CalendarClock,
   ChartColumnIncreasing,
   BookText,
+  TriangleAlert,
 } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { CCardBody } from '@coreui/vue'
@@ -469,8 +471,10 @@ export default {
     History,
     BarChart2,
     FileText,
+    CalendarClock,
     ChartColumnIncreasing,
     BookText,
+    TriangleAlert,
   },
   setup() {
     const router = useRouter()
@@ -546,10 +550,17 @@ export default {
       },
       {
         title: 'CM Followup',
-        icon: 'FileText',
+        icon: 'CalendarClock',
         description: 'Countermeasure tracking and follow-up monitoring',
         color: 'secondary',
         route: '/app/CMFollowup',
+      },
+      {
+        title: 'KY Machines',
+        icon: 'TriangleAlert',
+        description: 'Machine hazard prediction and safety observation records',
+        color: 'secondary',
+        route: '/app/KYMachine',
       },
     ]
 
