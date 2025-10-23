@@ -38,6 +38,7 @@
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
+                  
                 <CTableRow
                   v-for="(problem, index) in problems"
                   :key="problem.fid"

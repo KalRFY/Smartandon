@@ -190,6 +190,7 @@ const onRegister = async () => {
 
 .card-content {
   display: flex;
+  padding-right: 35px;
   height: 100%;
 }
 
@@ -457,9 +458,14 @@ const onRegister = async () => {
 }
 
 @media (max-width: 768px) {
+  .register-page {
+    padding: 16px;
+  }
+
   .register-card {
-    margin: 16px;
-    min-width: auto !important;
+    margin: 0;
+    width: 100%;
+    max-width: none;
   }
 
   .register-header {
@@ -475,12 +481,27 @@ const onRegister = async () => {
     display: none;
   }
 
+  .form-side {
+    padding: 32px 24px;
+  }
+
   .form-control {
     padding: 12px 14px;
+    margin-left: 0;
+  }
+
+  .form-label {
+    margin-left: 0;
   }
 
   .btn-accent {
     padding: 14px 20px;
+    margin-left: 0;
+  }
+
+  .text-center {
+    margin-left: 0;
+    text-align: center;
   }
 }
 
