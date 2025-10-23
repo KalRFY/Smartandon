@@ -118,6 +118,13 @@
             },
             {
               component: 'CNavItem',
+              to: '/app/q6-analysis',
+              name: 'Q6 Analysis',
+              icon: 'cilMagnifyingGlass',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
               to: '/app/CMFollowup',
               name: 'CM Followup',
               icon: 'cilCalendar',
