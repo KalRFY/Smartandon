@@ -86,6 +86,19 @@ const appRoutes = [
       title: 'Sparepart Analysis',
     },
   },
+
+  {
+    path: '/app/JobAnalysis',
+    name: 'Job Analysis',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/JobAnalysis.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Job Analysis',
+    },
+  },
   // Add the uncommented Quality Operational route
   // {
   //   path: '/qdc/quality-operational',
@@ -127,6 +140,18 @@ const appRoutes = [
     meta: {
       requiresAuth: true,
       title: 'Problem History',
+    },
+  },
+  {
+    path: '/app/TemporaryActionList',
+    name: 'Temporary Action List',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/TemporaryActionList.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Temporary Action List',
     },
   },
   {

@@ -866,7 +866,7 @@
                   />
         </CCol>
       </CRow> -->
-      <CRow md="12" class="mb-3">
+      <CRow md="12" class="mb-3" v-if="localSubmit.partChange && localSubmit.partChange.trim() !== ''">
         <CCol>
           <CCard>
             <CCardBody>

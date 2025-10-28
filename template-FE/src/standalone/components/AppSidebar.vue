@@ -165,6 +165,20 @@
               icon: 'cilBarChart',
               parentId: 'ROOT',
             },
+            {
+              component: 'CNavItem',
+              to: '/app/JobAnalysis',
+              name: 'Job Analysis',
+              icon: 'cilFolderOpen',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/TemporaryActionList',
+              name: 'Temporary Action List',
+              icon: 'cilJustifyLeft',
+              parentId: 'ROOT',
+            },
           ]
         },
         {

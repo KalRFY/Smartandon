@@ -20,12 +20,42 @@
                 <CTableHead color="dark">
                   <CTableRow>
                     <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
+                    <CTableHeaderCell scope="col" @click="sortBy('fend_time')" style="cursor: pointer;">
+                      Date
+                      <span v-if="sortColumn === 'fend_time'">
+                        {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                      </span>
+                    </CTableHeaderCell>
+                    <CTableHeaderCell scope="col" @click="sortBy('fmc_name')" style="cursor: pointer;">
+                      Machine
+                      <span v-if="sortColumn === 'fmc_name'">
+                        {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                      </span>
+                    </CTableHeaderCell>
+                    <CTableHeaderCell scope="col" @click="sortBy('ferror_name')" style="cursor: pointer;">
+                      Problem
+                      <span v-if="sortColumn === 'ferror_name'">
+                        {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                      </span>
+                    </CTableHeaderCell>
+                    <CTableHeaderCell scope="col" @click="sortBy('foperator')" style="cursor: pointer;">
+                      PIC
+                      <span v-if="sortColumn === 'foperator'">
+                        {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                      </span>
+                    </CTableHeaderCell>
+                    <CTableHeaderCell scope="col" @click="sortBy('fline')" style="cursor: pointer;">
+                      Line
+                      <span v-if="sortColumn === 'fline'">
+                        {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                      </span>
+                    </CTableHeaderCell>
+                    <CTableHeaderCell scope="col" @click="sortBy('fdur')" style="cursor: pointer;">
+                      Duration
+                      <span v-if="sortColumn === 'fdur'">
+                        {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                      </span>
+                    </CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     <CTableHeaderCell scope="col">LTB Reports</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Delete</CTableHeaderCell>
@@ -40,7 +70,7 @@
                 <CTableBody>
                   
                 <CTableRow
-                  v-for="(problem, index) in problems"
+                  v-for="(problem, index) in sortedProblems"
                   :key="problem.fid"
                   :color="getRowColor(problem)"
                 >
@@ -197,6 +227,13 @@ export default {
     PaginationControls,
   },
 
+  data() {
+    return {
+      sortColumn: null,
+      sortDirection: 'asc',
+    }
+  },
+
   props: {
     problems: {
       type: Array,
@@ -237,9 +274,27 @@ export default {
     'ltr',
     'filterCategory',
     'filteredCategory',
+    'sort',
   ],
 
+  computed: {
+    sortedProblems() {
+      // Since sorting is now handled by the backend, just return the problems as-is
+      return this.problems
+    },
+  },
+
   methods: {
+    sortBy(column) {
+      if (this.sortColumn === column) {
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc'
+      } else {
+        this.sortColumn = column
+        this.sortDirection = 'asc'
+      }
+      this.$emit('sort', { column: this.sortColumn, direction: this.sortDirection })
+    },
+
     formatDate(dateString) {
       if (!dateString) return ''
       const date = new Date(dateString)

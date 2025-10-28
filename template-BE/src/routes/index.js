@@ -23,6 +23,7 @@ const authRoutes = require('./smartandon/auth');
 const userRoutes = require('./smartandon/user');
 const sparepartRoutes = require('./smartandon/spareparts');
 const q6Routes = require('./smartandon/q6.route');
+const temporaryActionListRoutes = require('./smartandon/temporaryactionlist');
 
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
@@ -110,6 +111,10 @@ const defaultRoutes = [
   {
     path: '/q6',
     route: q6Routes,
+  },
+  {
+    path: '/smartandon',
+    route: temporaryActionListRoutes,
   },
 ];
 

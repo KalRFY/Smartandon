@@ -58,7 +58,7 @@
           </CRow>
 
           <CRow class="stats-row">
-            <CCol md="2" sm="4">
+            <CCol style="width: 15%;" sm="4">
               <div class="stat-card active-problems">
                 <div class="stat-icon">
                   <AlertTriangle size="20" />
@@ -69,7 +69,7 @@
                 </div>
               </div>
             </CCol>
-            <CCol md="2" sm="4">
+            <CCol style="width: 15%;" sm="4">
               <div class="stat-card today-problems">
                 <div class="stat-icon">
                   <Clock size="20" />
@@ -80,18 +80,18 @@
                 </div>
               </div>
             </CCol>
-            <CCol md="2" sm="4">
+            <CCol style="width: 15%;" sm="4">
               <div class="stat-card total-duration">
                 <div class="stat-icon">
                   <Timer size="20" />
                 </div>
                 <div class="stat-content">
-                  <div class="stat-number">{{ getWeeklyTotalDuration() }}</div>
-                  <div class="stat-label">Total Duration (min)</div>
+                  <div class="stat-number">{{ getWeeklyTotalDuration() }} Min</div>
+                  <div class="stat-label">Total (this week)</div>
                 </div>
               </div>
             </CCol>
-            <CCol md="2" sm="4">
+            <CCol style="width: 15%;" sm="4">
               <div class="stat-card avg-oee">
                 <div class="stat-icon">
                   <BarChart2 size="20" />
@@ -102,7 +102,7 @@
                 </div>
               </div>
             </CCol>
-            <CCol md="2" sm="4">
+            <CCol style="width: 15%;" sm="4">
               <div class="stat-card weekly-ltr">
                 <div class="stat-icon">
                   <FileText size="20" />
@@ -110,6 +110,17 @@
                 <div class="stat-content">
                   <div class="stat-number">{{ getWeeklyLtrCount }}</div>
                   <div class="stat-label">LTR This Week</div>
+                </div>
+              </div>
+            </CCol>
+            <CCol style="width: 15%;" sm="4">
+              <div class="stat-card weekly-sltr">
+                <div class="stat-icon">
+                  <FileText size="20" />
+                </div>
+                <div class="stat-content">
+                  <div class="stat-number">{{ getWeeklySltrCount }}</div>
+                  <div class="stat-label">SLTR This Week</div>
                 </div>
               </div>
             </CCol>
@@ -148,7 +159,7 @@
                   <CCard class="dashboard-card h-100" :color="card.color">
                     <CCardBody class="d-flex flex-column align-items-center justify-content-center text-center p-3">
                       <div class="icon-container mb-2">
-                        <component :is="card.icon" :size="24" :stroke-width="1" />
+                        <CIcon :icon="card.icon" size="xl" />
                       </div>
                       <h6 class="card-title mb-1">{{ card.title }}</h6>
                       <p class="card-description small mb-2">{{ card.description }}</p>
@@ -172,7 +183,7 @@
                     @click="navigateTo(card.route)"
                   >
                     <div class="compact-nav-icon">
-                      <component :is="card.icon" :size="16" :stroke-width="2" />
+                      <CIcon :icon="card.icon" size="lg" />
                     </div>
                     <span class="compact-nav-text">{{ card.title }}</span>
                   </div>
@@ -374,17 +385,17 @@
           <div class="line-duration-card" :class="getLineCardClass('LPDC')" @click="openLineProblemsModal('LPDC')">
             <CRow class="mb-2">
               <CCol class="text-center">
-                <label style="font-size: small; font-weight: bold;">LPDC</label>
+                <label style="font-size: medium; font-weight: bold;">LPDC</label>
               </CCol>
             </CRow>
             <CRow class="d-flex justify-content-between mb-1">
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Target: {{
+                <label style="font-size: small;">Target: {{
                   (oeeTarget || []).find(item => item.DEV_NAME === 'LPDC')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
                 }}</label>
               </CCol>
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Actual: {{
+                <label style="font-size: small;">Actual: {{
                   (oeeActual || []).find(item => item.DEV_NAME === 'LPDC')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
                 }}</label>
               </CCol>
@@ -410,17 +421,17 @@
           <div class="line-duration-card" :class="getLineCardClass('HPDC')" @click="openLineProblemsModal('HPDC')">
             <CRow class="mb-2">
               <CCol class="text-center">
-                <label style="font-size: small; font-weight: bold;">HPDC</label>
+                <label style="font-size: medium; font-weight: bold;">HPDC</label>
               </CCol>
             </CRow>
             <CRow class="d-flex justify-content-between mb-1">
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Target: {{
+                <label style="font-size: small;">Target: {{
                   (oeeTarget || []).find(item => item.DEV_NAME === 'HPDC')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
                 }}</label>
               </CCol>
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Actual: {{
+                <label style="font-size: small;">Actual: {{
                   (oeeActual || []).find(item => item.DEV_NAME === 'HPDC')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
                 }}</label>
               </CCol>
@@ -446,17 +457,17 @@
           <div class="line-duration-card" :class="getLineCardClass('CAM SHAFT')" @click="openLineProblemsModal('CAM SHAFT')">
             <CRow class="mb-2">
               <CCol class="text-center">
-                <label style="font-size: small; font-weight: bold;">CAM SHAFT</label>
+                <label style="font-size: medium; font-weight: bold;">CAM SHAFT</label>
               </CCol>
             </CRow>
             <CRow class="d-flex justify-content-between mb-1">
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Target: {{
+                <label style="font-size: small;">Target: {{
                   (oeeTarget || []).find(item => item.DEV_NAME === 'CAM SHAFT')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
                 }}</label>
               </CCol>
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Actual: {{
+                <label style="font-size: small;">Actual: {{
                   (oeeActual || []).find(item => item.DEV_NAME === 'CAM SHAFT')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
                 }}</label>
               </CCol>
@@ -482,17 +493,17 @@
           <div class="line-duration-card" :class="getLineCardClass('CYLINDER HEAD')" @click="openLineProblemsModal('CYLINDER HEAD')">
             <CRow class="mb-2">
               <CCol class="text-center">
-                <label style="font-size: small; font-weight: bold;">CYLINDER HEAD</label>
+                <label style="font-size: medium; font-weight: bold;">CYLINDER HEAD</label>
               </CCol>
             </CRow>
             <CRow class="d-flex justify-content-between mb-1">
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Target: {{
+                <label style="font-size: small;">Target: {{
                   (oeeTarget || []).find(item => item.DEV_NAME === 'CYLINDER HEAD')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
                 }}</label>
               </CCol>
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Actual: {{
+                <label style="font-size: small;">Actual: {{
                   (oeeActual || []).find(item => item.DEV_NAME === 'CYLINDER HEAD')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
                 }}</label>
               </CCol>
@@ -518,17 +529,17 @@
           <div class="line-duration-card" :class="getLineCardClass('CYLINDER BLOCK')" @click="openLineProblemsModal('CYLINDER BLOCK')">
             <CRow class="mb-2">
               <CCol class="text-center">
-                <label style="font-size: small; font-weight: bold;">CYLINDER BLOCK</label>
+                <label style="font-size: medium; font-weight: bold;">CYLINDER BLOCK</label>
               </CCol>
             </CRow>
             <CRow class="d-flex justify-content-between mb-1">
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Target: {{
+                <label style="font-size: small;">Target: {{
                   (oeeTarget || []).find(item => item.DEV_NAME === 'CYLINDER BLOCK')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
                 }}</label>
               </CCol>
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Actual: {{
+                <label style="font-size: small;">Actual: {{
                   (oeeActual || []).find(item => item.DEV_NAME === 'CYLINDER BLOCK')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
                 }}</label>
               </CCol>
@@ -554,17 +565,17 @@
           <div class="line-duration-card" :class="getLineCardClass('CRANK SHAFT')" @click="openLineProblemsModal('CRANK SHAFT')">
             <CRow class="mb-2">
               <CCol class="text-center">
-                <label style="font-size: small; font-weight: bold;">CRANK SHAFT</label>
+                <label style="font-size: medium; font-weight: bold;">CRANK SHAFT</label>
               </CCol>
             </CRow>
             <CRow class="d-flex justify-content-between mb-1">
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Target: {{
+                <label style="font-size: small;">Target: {{
                   (oeeTarget || []).find(item => item.DEV_NAME === 'CRANK SHAFT')?.REG_VALUE ?? (oeeDataSmartandon || {}).ftarget
                 }}</label>
               </CCol>
               <CCol sm="6" class="text-center">
-                <label style="font-size: x-small;">Actual: {{
+                <label style="font-size: small;">Actual: {{
                   (oeeActual || []).find(item => item.DEV_NAME === 'CRANK SHAFT')?.REG_VALUE ?? (oeeDataSmartandon || {}).factual
                 }}</label>
               </CCol>
@@ -1004,21 +1015,47 @@
                 <CTable class="table-sm table-hover table-striped mb-0">
                   <CTableHead class="table-dark sticky-top">
                     <CTableRow>
-                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Machine</CTableHeaderCell>
-                      <CTableHeaderCell scope="col" class="col-1 fw-semibold">Line</CTableHeaderCell>
-                      <CTableHeaderCell scope="col" class="col-5 fw-semibold">Problem</CTableHeaderCell>
-                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Duration</CTableHeaderCell>
-                      <CTableHeaderCell scope="col" class="col-2 fw-semibold">Action</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-1 fw-semibold">Category</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold">Machine</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-1 fw-semibold">Line</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-4 fw-semibold">Problem</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold">Duration</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" class="col-2 fw-semibold">Action</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
                     <CTableRow v-if="loadingFollowupLtr">
-                      <CTableDataCell colspan="5" class="text-center py-4">Loading...</CTableDataCell>
+                      <CTableDataCell colspan="6" class="text-center py-4">Loading...</CTableDataCell>
                     </CTableRow>
-                    <CTableRow v-else-if="followupLtrProblems.length === 0">
-                      <CTableDataCell colspan="5" class="text-center py-4 text-muted">No LTR problems without reports</CTableDataCell>
+                    <CTableRow v-else-if="followupLtrProblems.length === 0 && followupSltrProblems.length === 0">
+                      <CTableDataCell colspan="6" class="text-center py-4 text-muted">No LTR/SLTR problems without reports</CTableDataCell>
                     </CTableRow>
-                    <CTableRow v-for="(problem, idx) in followupLtrProblems" :key="problem.fid" class="align-middle">
+                    <!-- LTR Problems -->
+                    <CTableRow v-for="(problem, idx) in followupLtrProblems" :key="`ltr-${problem.fid}`" class="align-middle">
+                      <CTableDataCell>
+                        <CBadge color="warning" class="w-100 text-center py-1" shape="rounded-pill">
+                          <small class="fw-bold">LTR</small>
+                        </CBadge>
+                      </CTableDataCell>
+                      <CTableDataCell class="fw-bold text-dark">{{ problem.fmc_name }}</CTableDataCell>
+                      <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
+                      <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
+                      <CTableDataCell>
+                        <CBadge color="danger" class="w-100 text-center py-1" shape="rounded-pill">
+                          <small class="fw-bold">{{ problem.fdur }} min</small>
+                        </CBadge>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <CButton color="primary" size="sm" class="rounded-pill shadow-sm w-100" @click="openEditModal(problem)">Edit</CButton>
+                      </CTableDataCell>
+                    </CTableRow>
+                    <!-- SLTR Problems -->
+                    <CTableRow v-for="(problem, idx) in followupSltrProblems" :key="`sltr-${problem.fid}`" class="align-middle">
+                      <CTableDataCell>
+                        <CBadge color="info" class="w-100 text-center py-1" shape="rounded-pill">
+                          <small class="fw-bold">SLTR</small>
+                        </CBadge>
+                      </CTableDataCell>
                       <CTableDataCell class="fw-bold text-dark">{{ problem.fmc_name }}</CTableDataCell>
                       <CTableDataCell class="text-muted">{{ problem.fline }}</CTableDataCell>
                       <CTableDataCell class="text-truncate" style="max-width: 0;" :title="problem.ferror_name">{{ problem.ferror_name }}</CTableDataCell>
@@ -1194,7 +1231,7 @@
 <script>
 import { ref } from 'vue'
 import moment from 'moment'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordion, CAccordionItem, CAccordionHeader, CAccordionBody, CTooltip } from '@coreui/vue';
+import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText, CoffCanvas, CAccordion, CAccordionItem, CAccordionHeader, CAccordionBody, CTooltip, CIcon } from '@coreui/vue';
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
@@ -1360,6 +1397,7 @@ export default {
       problemActive: [],
       loadingProblemActive: false,
       followupLtrProblems: [],
+      followupSltrProblems: [],
       loadingFollowupLtr: false,
 
       visibleEditModal: false,
@@ -1635,63 +1673,77 @@ export default {
     const dashboardCards = [
       {
         title: 'Problem History',
-        icon: 'History',
+        icon: 'cilHistory',
         description: 'Historical issues and resolutions',
         color: 'primary',
         route: '/app/ProblemHistory',
       },
       {
         title: 'Realtime Paretto',
-        icon: 'BarChart2',
+        icon: 'cilChart',
         description: 'Live Pareto analysis of issues',
         color: 'success',
         route: '/app/RealtimeParetto',
       },
       {
         title: 'CM Followup',
-        icon: 'CalendarClock',
+        icon: 'cilCalendar',
         description: 'Countermeasure tracking and follow-up monitoring',
         color: 'info',
         route: '/app/CMFollowup',
       },
       {
         title: 'Order Spareparts',
-        icon: 'ShoppingCart',
+        icon: 'cilCart',
         description: 'Order Spareparts',
         color: 'warning',
         route: '/app/order-spareparts-redirect',
       },
       {
         title: 'MTBF MTTR',
-        icon: 'Clock',
+        icon: 'cilSpeedometer',
         description: 'Mean Time Between Failures metrics',
         color: 'danger',
         route: '/app/MTBFMTTR',
       },
       {
         title: 'LTB Report Status',
-        icon: 'FileText',
+        icon: 'cilDescription',
         description: 'Last Time Buy reporting and analysis',
         color: 'secondary',
         route: '/app/LTBSummary',
       },
       {
         title: 'Edit Data Smartandon',
-        icon: 'Edit',
+        icon: 'cilClipboard',
         description: 'Edit Smartandon data',
         color: 'dark',
         route: '/app/EditDataSmartandon',
       },
       {
         title: 'Sparepart Analysis',
-        icon: 'BarChart3',
+        icon: 'cilBarChart',
         description: 'Sparepart analysis and insights',
         color: 'light',
         route: '/app/SparepartAnalysis',
       },
       {
+        title: 'Job Analysis',
+        icon: 'cilFolderOpen',
+        description: 'Job analysis and insights',
+        color: 'info',
+        route: '/app/JobAnalysis',
+      },
+      {
+        title: 'Temporary Action List',
+        icon: 'cilJustifyLeft',
+        description: 'Temporary action list management',
+        color: 'warning',
+        route: '/app/TemporaryActionList',
+      },
+      {
         title: 'TPM System',
-        icon: 'Settings',
+        icon: 'cilMemory',
         description: 'TPM System management',
         color: 'info',
         route: '/app/tpm-redirect',
@@ -1743,11 +1795,25 @@ export default {
         // Count LTR problems from this week (LTR = problemCategory 3)
         const today = moment().format('YYYY-MM-DD');
         const monday = moment().startOf('week').add(1, 'day').format('YYYY-MM-DD');
+        console.log('[getWeeklyLtrCount] Monday:', monday);
+        console.log('[getWeeklyLtrCount] Today:', today);
         const ltrProblems = this.followupLtrProblems.filter(problem => {
           const problemDate = moment(problem.fstart_time).format('YYYY-MM-DD');
           return problemDate >= monday && problemDate <= today;
         });
+        console.log('[getWeeklyLtrCount] Filtered LTR problems:', ltrProblems);
+        console.log('[getWeeklyLtrCount] LTR count:', ltrProblems.length);
         return ltrProblems.length;
+      },
+      getWeeklySltrCount() {
+        // Count SLTR problems from this week (SLTR = problemCategory 4)
+        const today = moment().format('YYYY-MM-DD');
+        const monday = moment().startOf('week').add(1, 'day').format('YYYY-MM-DD');
+        const sltrProblems = this.followupSltrProblems.filter(problem => {
+          const problemDate = moment(problem.fstart_time).format('YYYY-MM-DD');
+          return problemDate >= monday && problemDate <= today;
+        });
+        return sltrProblems.length;
       },
       visibleChunkedDashboardCards() {
         const allChunks = this.chunkedDashboardCards;
@@ -2522,29 +2588,41 @@ export default {
         console.log('[Dashboard Debug] Fetching LTR with params:', ltrParams);
         const ltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(ltrParams) });
         console.log('[Dashboard Debug] LTR response data length:', ltrResponse.data.data ? ltrResponse.data.data.length : 0);
-        
+
         console.log('[Dashboard Debug] Fetching SLTR with params:', sltrParams);
         const sltrResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(sltrParams) });
         console.log('[Dashboard Debug] SLTR response data length:', sltrResponse.data.data ? sltrResponse.data.data.length : 0);
-        
-        const allLtrSltrProblems = [...(ltrResponse.data.data || []), ...(sltrResponse.data.data || [])];
-        console.log('[Dashboard Debug] Combined LTR/SLTR problems:', allLtrSltrProblems.length);
-        if (allLtrSltrProblems.length > 0) {
-          console.log('[Dashboard Debug] Sample LTR/SLTR problems:', allLtrSltrProblems.slice(0, 3));
-          console.log('[Dashboard Debug] Sample file_report values:', allLtrSltrProblems.slice(0, 5).map(p => ({ fid: p.fid, file_report: p.file_report, problemCategory: p.problemCategory })));
-        }
-        
-        // Filter for no file_report
-        const noReportProblems = allLtrSltrProblems.filter(problem => {
+
+        const ltrProblems = ltrResponse.data.data || [];
+        const sltrProblems = sltrResponse.data.data || [];
+
+        console.log('[Dashboard Debug] LTR problems:', ltrProblems.length);
+        console.log('[Dashboard Debug] SLTR problems:', sltrProblems.length);
+
+        // Filter for no file_report for LTR
+        const noReportLtrProblems = ltrProblems.filter(problem => {
           const hasNoReport = !problem.file_report || problem.file_report.trim() === '' || problem.file_report === null;
           return hasNoReport;
         });
-        console.log('[Dashboard Debug] LTR/SLTR problems with no report:', noReportProblems.length);
-        this.followupLtrProblems = noReportProblems;
-        console.log('Fetched LTR/SLTR problems without reports:', this.followupLtrProblems);
+
+        // Filter for no file_report for SLTR
+        const noReportSltrProblems = sltrProblems.filter(problem => {
+          const hasNoReport = !problem.file_report || problem.file_report.trim() === '' || problem.file_report === null;
+          return hasNoReport;
+        });
+
+        console.log('[Dashboard Debug] LTR problems with no report:', noReportLtrProblems.length);
+        console.log('[Dashboard Debug] SLTR problems with no report:', noReportSltrProblems.length);
+
+        this.followupLtrProblems = noReportLtrProblems;
+        this.followupSltrProblems = noReportSltrProblems;
+
+        console.log('Fetched LTR problems without reports:', this.followupLtrProblems);
+        console.log('Fetched SLTR problems without reports:', this.followupSltrProblems);
       } catch (error) {
         console.error('Failed to fetch LTR/SLTR problems:', error);
         this.followupLtrProblems = [];
+        this.followupSltrProblems = [];
       } finally {
         this.loadingFollowupLtr = false;
       }
@@ -3158,8 +3236,8 @@ p {
 }
 
 .dashboard-title {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: #2c3e50;
   margin-bottom: 0.25rem;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
@@ -3204,35 +3282,30 @@ p {
 }
 
 .stats-row {
-  gap: 0.5rem;
+  gap: 0rem;
   justify-content: center;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0rem;
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: transparent;
   border-radius: 10px;
-  padding: 1rem;
-  box-shadow: 0 4px 16px rgba(31, 38, 135, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 0.25rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   transition: all 0.3s ease;
-  height: 70px;
-  width: 200px;
+  height: 55px;
+  width: 150px;
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
 }
 
 .stat-icon {
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -3265,6 +3338,10 @@ p {
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
 }
 
+.weekly-sltr .stat-icon {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+}
+
 .placeholder .stat-icon {
   background: linear-gradient(135deg, #95a5a6, #7f8c8d);
 }
@@ -3275,17 +3352,17 @@ p {
 }
 
 .stat-number {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #2c3e50;
   line-height: 1;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.1rem;
 }
 
 .stat-label {
-  font-size: 0.45rem;
+  font-size: 0.5rem;
   color: #7f8c8d;
-  font-weight: 500;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }

@@ -61,5 +61,10 @@ export default {
     onMounted(updateBreadcrumbs)
     return {}
   },
+  pluginOptions: {
+    singleSpa: {
+      importMapOverrides: false, // Disable import-map-overrides UI
+    },
+  },
 }
 </script>
