@@ -87,6 +87,8 @@ const getProblemView = async (req, res, next) => {
     const { problemCategory } = search;
     const { limitView } = search;
     const { groupBy } = search;
+    const { sortColumn } = search;
+    const { sortDirection } = search;
 
     console.log('Limit View:', limitView);
     console.log('Limit:', limit);
@@ -250,6 +252,21 @@ const getProblemView = async (req, res, next) => {
         file_report
     `;
     let orderBy = 'ORDER BY fid ASC';
+    if (sortColumn && sortDirection) {
+      const validSortColumns = ['fid', 'fstart_time', 'fmc_name', 'ferror_name', 'foperator', 'fline', 'fdur'];
+      const validSortDirections = ['asc', 'desc'];
+
+      if (validSortColumns.includes(sortColumn) && validSortDirections.includes(sortDirection.toLowerCase())) {
+        if (sortColumn === 'fend_time') {
+          orderBy = `ORDER BY ${sortColumn} ${sortDirection.toUpperCase()}`;
+        } else if (sortColumn === 'fdur') {
+          orderBy = `ORDER BY CAST(${sortColumn} AS UNSIGNED) ${sortDirection.toUpperCase()}`;
+        } else {
+          orderBy = `ORDER BY ${sortColumn} ${sortDirection.toUpperCase()}`;
+        }
+      }
+    }
+
     if (limitView == 'group') {
       if (groupBy == 'monthly') {
         selectFields = "CONCAT(YEAR(fstart_time), '-', LPAD(MONTH(fstart_time), 2, '0')) as date, COUNT(*) as count";

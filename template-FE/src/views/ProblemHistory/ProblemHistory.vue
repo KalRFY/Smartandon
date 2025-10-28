@@ -66,6 +66,7 @@
           @ltb="ltb"
           @download="downloadExcel"
           @filterCategory="onFilterCategory"
+          @sort="onSort"
         />
       </div>
     </div>
@@ -150,6 +151,8 @@ export default {
       lamaAnalysis: [],
       selectedFiltered: '',
       sparepartsOption: [],
+      sortColumn: null,
+      sortDirection: 'asc',
 
       o6Options: [
         {
@@ -420,6 +423,8 @@ export default {
           machineName: machineLabel || undefined,
           problem: filters.selectedProblem && filters.selectedProblem !== '' ? filters.selectedProblem : undefined,
           problemCategory: filters.problemCategory !== null ? filters.problemCategory : undefined,
+          sortColumn: filters.sortColumn || undefined,
+          sortDirection: filters.sortDirection || undefined,
         }
 
         console.log(
@@ -1030,6 +1035,22 @@ export default {
       // console.log('Filter time1: ', filterStartDate, filterFinishDate, selectedLine, selectedMachineName, selectedProblem, problemCategory);
     },
 
+    onSort(sortData) {
+      this.sortColumn = sortData.column
+      this.sortDirection = sortData.direction
+      // Re-fetch data with sorting parameters
+      this.fetchProblems(this.currentPage, {
+        filterStartDate: this.filterStartDate,
+        filterFinishDate: this.filterFinishDate,
+        selectedLine: this.selectedLine,
+        selectedMachineName: this.selectedMachineName,
+        selectedProblem: this.selectedProblem,
+        problemCategory: this.selectedProblemCategory,
+        sortColumn: this.sortColumn,
+        sortDirection: this.sortDirection,
+      })
+    },
+
     async fetchAllProblemsForExport() {
       this.tableLoading = true; // Show loading indicator for export
       try {
@@ -1041,6 +1062,8 @@ export default {
           machineName: this.selectedMachineName ? this.machineOptions.find(m => m.id === this.selectedMachineName)?.label : undefined,
           problem: this.selectedProblem || undefined,
           problemCategory: this.selectedProblemCategory || undefined,
+          sortColumn: this.sortColumn || undefined,
+          sortDirection: this.sortDirection || undefined,
         };
 
         console.log('[Export] Fetching all problems with params:', params);

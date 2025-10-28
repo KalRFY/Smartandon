@@ -1,179 +1,270 @@
 <template>
+  <!-- Machine -->
   <CRow class="mb-3">
     <CCol>
       <CCard>
-        <CCardHeader style="font-weight: bold; font-size: medium;">
-          Add New Machines
-        </CCardHeader>
         <CCardBody>
           <CRow class="mb-3">
-            <CCol md="6">
-              <label style="font-size: small;" class="form-label">Machine Name</label>
-              <CFormInput
-                id="machineName"
-                required
-                type="text"
-                aria-describedby="machineName"
-                v-model="selectedMachine.fmc_name"
-              />
-            </CCol>
-            <CCol md="3">
-              <label style="font-size: small;" class="form-label">Maker</label>
-              <Treeselect
-                id="makerSelect"
-                v-model="selectedMachine.fmaker"
-                :options="makerOptions"
-                :searchable="true"
-                :clearable="true"
-                placeholder="Select maker"
-                :value-consists-of="['id']"
-                :value-key="'id'"
-                :label-key="'label'"
-              />
-            </CCol>
-            <CCol md="3">
-              <label style="font-size: small;" for="lineSelect" class="form-label">Line</label>
-              <Treeselect
-                id="lineSelect"
-                v-model="selectedMachine.lineId"
-                :options="lineOptions"
-                :searchable="true"
-                :clearable="true"
-                placeholder="Select line"
-                :value-consists-of="['id']"
-                :value-key="'id'"
-                :label-key="'label'"
-              />
-            </CCol>
-          </CRow>
-          <CRow class="mb-3">
-            <CCol md="6">
-              <label style="font-size: small;" class="form-label">Serial Number</label>
-              <CFormInput
-                id="fsn"
-                type="text"
-                v-model="selectedMachine.fsn"
-              />
-            </CCol>
-            <CCol md="3">
-              <label style="font-size: small;" class="form-label">Machine Type</label>
-              <CFormInput
-                id="type"
-                type="text"
-                v-model="selectedMachine.ftype"
-              />
-            </CCol>
-            <CCol md="3">
-              <label style="font-size: small;" class="form-label">Operation No</label>
-              <CFormInput
-                id="operationNo"
-                type="text"
-                v-model="selectedMachine.foperation_no"
-              />
+            <CCol>
+              <CCard>
+                <CCardHeader style="font-weight: bold; font-size: medium;">
+                  Add New Machines
+                </CCardHeader>
+                <CCardBody>
+                  <CRow class="mb-3">
+                    <CCol md="6">
+                      <label style="font-size: small;" class="form-label">Machine Name</label>
+                      <CFormInput
+                        id="machineName"
+                        required
+                        type="text"
+                        aria-describedby="machineName"
+                        v-model="selectedMachine.fmc_name"
+                      />
+                    </CCol>
+                    <CCol md="3">
+                      <label style="font-size: small;" class="form-label">Maker</label>
+                      <Treeselect
+                        id="makerSelect"
+                        v-model="selectedMachine.fmaker"
+                        :options="makerOptions"
+                        :searchable="true"
+                        :clearable="true"
+                        placeholder="Select maker"
+                        :value-consists-of="['id']"
+                        :value-key="'id'"
+                        :label-key="'label'"
+                      />
+                    </CCol>
+                    <CCol md="3">
+                      <label style="font-size: small;" for="lineSelect" class="form-label">Line</label>
+                      <Treeselect
+                        id="lineSelect"
+                        v-model="selectedMachine.lineId"
+                        :options="lineOptions"
+                        :searchable="true"
+                        :clearable="true"
+                        placeholder="Select line"
+                        :value-consists-of="['id']"
+                        :value-key="'id'"
+                        :label-key="'label'"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3">
+                    <CCol md="6">
+                      <label style="font-size: small;" class="form-label">Serial Number</label>
+                      <CFormInput
+                        id="fsn"
+                        type="text"
+                        v-model="selectedMachine.fsn"
+                      />
+                    </CCol>
+                    <CCol md="3">
+                      <label style="font-size: small;" class="form-label">Machine Type</label>
+                      <CFormInput
+                        id="type"
+                        type="text"
+                        v-model="selectedMachine.ftype"
+                      />
+                    </CCol>
+                    <CCol md="3">
+                      <label style="font-size: small;" class="form-label">Operation No</label>
+                      <CFormInput
+                        id="operationNo"
+                        type="text"
+                        v-model="selectedMachine.foperation_no"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md="9">
+                      <label style="font-size: small;" class="form-label">Machine Description</label>
+                      <CFormInput
+                        id="description"
+                        type="text"
+                        v-model="selectedMachine.fop_desc"
+                      />
+                    </CCol>
+                    <CCol md="3">
+                      <label style="font-size: small;" class="form-label">Weight</label>
+                      <CFormInput
+                        id="weight"
+                        type="number"
+                        v-model="selectedMachine.fweight"
+                        placeholder="in kg"
+                      />
+                    </CCol>
+                  </CRow>
+                  <hr></hr>
+                  <CRow class="mb-3">
+                    <CCol>
+                      <CFormCheck
+                        id="agreeTermsNew"
+                        v-model="agreeTermsNew"
+                        label="I agree to the terms and conditions for adding new machine data"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3" md="12">
+                    <CCol>
+                      <CButton
+                        style="width: 100%"
+                        color="primary"
+                        @click="saveNewMachine"
+                        :disabled="!agreeTermsNew"
+                      >
+                        Save New Machine
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </CCard>
+        
+        
             </CCol>
           </CRow>
           <CRow>
-            <CCol md="9">
-              <label style="font-size: small;" class="form-label">Machine Description</label>
-              <CFormInput
-                id="description"
-                type="text"
-                v-model="selectedMachine.fop_desc"
-              />
-            </CCol>
-            <CCol md="3">
-              <label style="font-size: small;" class="form-label">Weight</label>
-              <CFormInput
-                id="weight"
-                type="number"
-                v-model="selectedMachine.fweight"
-                placeholder="in kg"
-              />
-            </CCol>
-          </CRow>
-          <hr></hr>
-          <CRow class="mb-3">
             <CCol>
-              <CFormCheck
-                id="agreeTermsNew"
-                v-model="agreeTermsNew"
-                label="I agree to the terms and conditions for adding new machine data"
-              />
-            </CCol>
-          </CRow>
-          <CRow class="mb-3" md="12">
-            <CCol>
-              <CButton
-                style="width: 100%"
-                color="primary"
-                @click="saveNewMachine"
-                :disabled="!agreeTermsNew"
-              >
-                Save New Machine
-              </CButton>
+              <CCard>
+                <CCardHeader style="font-weight: bold; font-size: medium;">All Machines</CCardHeader>
+                <CCardBody>
+                  <CRow>
+                    <CCol class="mb-3">
+                      <CTable bordered hover responsive>
+                        <CTableHead color="dark">
+                          <CTableRow>
+                            <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Machine Name</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Maker</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Line</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Serial Number</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Weight</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Type</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Operation</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Description</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Edit</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Action</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          <CTableRow v-for="(machine,idx) in machines" :key="machine.fid">
+                            <CTableDataCell>{{ idx + 1}}</CTableDataCell>
+                            <CTableDataCell>{{ machine.fmc_name }}</CTableDataCell>
+                            <CTableDataCell>{{ machine.fmaker}}</CTableDataCell>
+                            <CTableDataCell>{{ machine.fline}}</CTableDataCell>
+                            <CTableDataCell>{{ machine.fsn }}</CTableDataCell>
+                            <CTableDataCell>{{ machine.fweight}}</CTableDataCell>
+                            <CTableDataCell>{{ machine.ftype}}</CTableDataCell>
+                            <CTableDataCell>{{ machine.foperation_no}}</CTableDataCell>
+                            <CTableDataCell>{{ machine.fop_desc}}</CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                color="info"
+                                style="font-size: x-small; color: white; font-weight: bold; width: 100%;"
+                                @click="openEditMachineModal(machine)"
+                              >
+                                Edit
+                              </CButton>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                color="danger"
+                                style="font-size: x-small; color: white; font-weight: bold;"
+                                @click="openDeleteMachineModal(machine)"
+                              >
+                                Delete
+                              </CButton>
+                            </CTableDataCell>
+                          </CTableRow>
+                        </CTableBody>
+                      </CTable>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </CCard>
             </CCol>
           </CRow>
         </CCardBody>
       </CCard>
-
-
     </CCol>
   </CRow>
+
+  <!-- Maker -->
   <CRow>
     <CCol>
       <CCard>
-        <CCardHeader style="font-weight: bold; font-size: medium;">All Machines</CCardHeader>
         <CCardBody>
+          <CRow class="mb-3">
+            <CCol>
+              <CCard>
+                <CCardHeader style="font-weight: bold; font-size: medium;">
+                  Add New Maker
+                </CCardHeader>
+                <CCardBody>
+                  <CRow class="mb-3">
+                    <CCol md="6">
+                      <label style="font-size: small;" class="form-label">Add Maker</label>
+                      <CFormInput
+                        id="machineName"
+                        required
+                        type="text"
+                        aria-describedby="machineName"
+                        v-model="selectedMachine.fmc_name"
+                      />
+                    </CCol>
+                  </CRow>
+                  <hr></hr>
+                  <CRow class="mb-3">
+                    <CCol>
+                      <CFormCheck
+                        id="agreeTermsNew"
+                        v-model="agreeTermsNew"
+                        label="I agree to the terms and conditions for adding new machine data"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3" md="12">
+                    <CCol>
+                      <CButton
+                        style="width: 100%"
+                        color="primary"
+                        @click="saveNewMachine"
+                        :disabled="!agreeTermsNew"
+                      >
+                        Save New Machine
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
           <CRow>
-            <CCol class="mb-3">
-              <CTable bordered hover responsive>
-                <CTableHead color="dark">
-                  <CTableRow>
-                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Machine Name</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Maker</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Serial Number</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Weight</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Type</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Operation</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Description</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Edit</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Action</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  <CTableRow v-for="(machine,idx) in machines" :key="machine.fid">
-                    <CTableDataCell>{{ idx + 1}}</CTableDataCell>
-                    <CTableDataCell>{{ machine.fmc_name }}</CTableDataCell>
-                    <CTableDataCell>{{ machine.fmaker}}</CTableDataCell>
-                    <CTableDataCell>{{ machine.fline}}</CTableDataCell>
-                    <CTableDataCell>{{ machine.fsn }}</CTableDataCell>
-                    <CTableDataCell>{{ machine.fweight}}</CTableDataCell>
-                    <CTableDataCell>{{ machine.ftype}}</CTableDataCell>
-                    <CTableDataCell>{{ machine.foperation_no}}</CTableDataCell>
-                    <CTableDataCell>{{ machine.fop_desc}}</CTableDataCell>
-                    <CTableDataCell>
-                      <CButton
-                        color="info"
-                        style="font-size: x-small; color: white; font-weight: bold; width: 100%;"
-                        @click="openEditMachineModal(machine)"
-                      >
-                        Edit
-                      </CButton>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <CButton
-                        color="danger"
-                        style="font-size: x-small; color: white; font-weight: bold;"
-                        @click="openDeleteMachineModal(machine)"
-                      >
-                        Delete
-                      </CButton>
-                    </CTableDataCell>
-                  </CTableRow>
-                </CTableBody>
-              </CTable>
+            <CCol>
+              <CCard>
+                <CCardHeader style="font-weight: bold; font-size: medium;">All Makers</CCardHeader>
+                <CCardBody>
+                  <CRow>
+                    <CCol class="mb-3">
+                      <CTable bordered hover responsive>
+                        <CTableHead color="dark">
+                          <CTableRow>
+                            <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Maker Name</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          <CTableRow v-for="(maker, idx) in makerOptions" :key="maker.id">
+                            <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
+                            <CTableDataCell>{{ maker.label }}</CTableDataCell>
+                          </CTableRow>
+                        </CTableBody>
+                      </CTable>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </CCard>
             </CCol>
           </CRow>
         </CCardBody>
