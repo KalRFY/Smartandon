@@ -59,8 +59,9 @@ const getQ6AnalysisController = async (req, res, next) => {
     };
 
     const colorForIndex = (i) => {
-      const hue = (i * 47) % 360;
-      return `hsl(${hue}, 65%, 55%)`;
+      // Generate a random hex color
+      const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+      return randomColor;
     };
 
     const responseMap = {

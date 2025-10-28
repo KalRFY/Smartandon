@@ -1,8 +1,8 @@
 <template>
-  <CContainer fluid v-if="seriesData && seriesData.length > 0" id="chart">
+  <CContainer fluid v-if="isDataValid" id="chart">
     <ApexChart
       :options="options"
-      :series="seriesData"
+      :series="validSeriesData"
       type="line"
       height="350"
     />
@@ -39,6 +39,27 @@ const { graphData, seriesData } = toRefs(props);
 
 const router = useRouter();
 
+const isValidHexColor = (color) => {
+  return /^#([0-9A-F]{3}){1,2}$/i.test(color);
+};
+
+const sanitizeColors = (colors) => {
+  const defaultColors = ['#FF5733', '#33FF57', '#3357FF', '#F033FF', '#FF33A1'];
+  if (!Array.isArray(colors)) return defaultColors;
+  const validColors = colors.filter(isValidHexColor);
+  return validColors.length > 0 ? validColors : defaultColors;
+};
+
+const isDataValid = computed(() => {
+  const s = Array.isArray(seriesData?.value) ? seriesData.value : [];
+  return s.length > 0 && s.every(series => series && Array.isArray(series.data) && series.data.length > 0);
+});
+
+const validSeriesData = computed(() => {
+  const s = Array.isArray(seriesData?.value) ? seriesData.value : [];
+  return s.filter(series => series && Array.isArray(series.data) && series.data.length > 0);
+});
+
 const options = computed(() => {
     try {
         const g = graphData?.value ?? {};
@@ -58,7 +79,7 @@ const options = computed(() => {
             },
             },
         },
-        colors: g.chartOptions?.colors ?? [],
+        colors: sanitizeColors(g.chartOptions?.colors),
         legend: { show: false },
         stroke: { 
             width: g.chartOptions?.strokeWidth ?? [4]
