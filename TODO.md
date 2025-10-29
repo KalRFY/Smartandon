@@ -1,14 +1,18 @@
-# Task Completed: Make Line Duration Cards Clickable to Open Problems Modal
+# TODO List for PIC Treeselect Implementation
 
-## Summary of Changes:
-- Added modal functionality for displaying today's problems per line
-- Fixed API calls to use line_id instead of line name
-- Added detailed console logging for debugging
-- Commented out old OEE section as requested
-- All line duration cards are now clickable and open a modal showing today's problems for that line
-
-## Implementation Details:
-- Modal displays problems with columns: No, Machine, Line, Problem, Duration, Status, Action
-- API filters problems by today's date and specific line ID
-- Added cursor pointer styling for better UX
-- Modal closes properly and resets data on close
+## Tasks
+- [x] Add member fetching functionality to TemporaryActionList.vue
+- [x] Add memberOption data property
+- [x] Replace PIC CFormInput with Treeselect in add modal
+- [x] Update saveNewItem method to handle member selection
+- [x] Ensure view modal displays PIC name correctly
+- [x] Call fetchMembers in created() lifecycle
+- [x] Add handleMachineSelection method for auto-selecting line based on machine
+- [x] Add watch for newItem.fmc to auto-select line
+- [x] Test member selection functionality
+- [x] Verify data saving and display works correctly
+- [x] Implement unified modal for add/edit functionality
+- [x] Remove separate view modal
+- [x] Add update functionality
+- [x] Add updateTemporaryAction controller method
+- [x] Add PUT route for update

@@ -26,7 +26,7 @@
 
             <div class="mb-4">
               <label for="password" class="form-label ms-3">Password</label>
-               <div class="input-wrapper">
+              <div class="input-wrapper">
                 <input
                   v-model="password"
                   type="password"
@@ -35,7 +35,8 @@
                   placeholder="Enter your password"
                   required
                 />
-              </div> 
+              </div>
+              <label style="font-size: xx-small;" class="ms-3">(Pass 4 digit awal nomor hp yang terdaftar)</label>
             </div>
 
             <button 
@@ -166,6 +167,7 @@ const onLogin = async () => {
 }
 
 .card-content {
+  padding-right: 35px;
   display: flex;
   height: 100%;
 }
@@ -437,9 +439,14 @@ const onLogin = async () => {
 }
 
 @media (max-width: 768px) {
+  .login-page {
+    padding: 16px;
+  }
+
   .login-card {
-    margin: 16px;
-    min-width: auto !important;
+    margin: 0;
+    width: 100%;
+    max-width: none;
   }
 
   .login-header {
@@ -455,12 +462,27 @@ const onLogin = async () => {
     display: none;
   }
 
+  .form-side {
+    padding: 32px 24px;
+  }
+
   .form-control {
     padding: 12px 14px;
+    margin-left: 0;
+  }
+
+  .form-label {
+    margin-left: 0;
   }
 
   .btn-accent {
     padding: 14px 20px;
+    margin-left: 0;
+  }
+
+  .text-center {
+    margin-left: 0;
+    text-align: center;
   }
 }
 

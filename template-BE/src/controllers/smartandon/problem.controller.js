@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { object } = require('joi');
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment-timezone');
 const { sequelize } = require('../../models');
 
 const getProblem = async (req, res, next) => {
@@ -86,6 +87,8 @@ const getProblemView = async (req, res, next) => {
     const { problemCategory } = search;
     const { limitView } = search;
     const { groupBy } = search;
+    const { sortColumn } = search;
+    const { sortDirection } = search;
 
     console.log('Limit View:', limitView);
     console.log('Limit:', limit);
@@ -104,6 +107,7 @@ const getProblemView = async (req, res, next) => {
         limitClause = ``;
         groupClause = 'GROUP BY fline';
       } else {
+        limitClause = ``;
         groupClause = 'GROUP BY DATE(fstart_time)';
       }
       limitClause = '';
@@ -116,15 +120,19 @@ const getProblemView = async (req, res, next) => {
     let whereClause = 'WHERE fid IS NOT NULL';
     const replacements = {};
 
-    if (startDate || finishDate) {
-      if (startDate && finishDate && startDate === finishDate) {
-        whereClause += ` AND DATE(fstart_time) = '${startDate}'`;
+    // Convert dates to WIB timezone for consistent comparison
+    const startDateWIB = startDate ? moment.tz(startDate, 'Asia/Jakarta').format('YYYY-MM-DD') : null;
+    const finishDateWIB = finishDate ? moment.tz(finishDate, 'Asia/Jakarta').format('YYYY-MM-DD') : null;
+
+    if (startDateWIB || finishDateWIB) {
+      if (startDateWIB && finishDateWIB && startDateWIB === finishDateWIB) {
+        whereClause += ` AND DATE(CONVERT_TZ(fstart_time, '+00:00', '+07:00')) = '${startDateWIB}'`;
       } else {
-        if (startDate) {
-          whereClause += ` AND DATE(fstart_time) >= '${startDate}'`;
+        if (startDateWIB) {
+          whereClause += ` AND DATE(CONVERT_TZ(fstart_time, '+00:00', '+07:00')) >= '${startDateWIB}'`;
         }
-        if (finishDate) {
-          whereClause += ` AND DATE(fend_time) <= '${finishDate}'`;
+        if (finishDateWIB) {
+          whereClause += ` AND DATE(CONVERT_TZ(fend_time, '+00:00', '+07:00')) <= '${finishDateWIB}'`;
         }
       }
     }
@@ -244,6 +252,21 @@ const getProblemView = async (req, res, next) => {
         file_report
     `;
     let orderBy = 'ORDER BY fid ASC';
+    if (sortColumn && sortDirection) {
+      const validSortColumns = ['fid', 'fstart_time', 'fmc_name', 'ferror_name', 'foperator', 'fline', 'fdur'];
+      const validSortDirections = ['asc', 'desc'];
+
+      if (validSortColumns.includes(sortColumn) && validSortDirections.includes(sortDirection.toLowerCase())) {
+        if (sortColumn === 'fend_time') {
+          orderBy = `ORDER BY ${sortColumn} ${sortDirection.toUpperCase()}`;
+        } else if (sortColumn === 'fdur') {
+          orderBy = `ORDER BY CAST(${sortColumn} AS UNSIGNED) ${sortDirection.toUpperCase()}`;
+        } else {
+          orderBy = `ORDER BY ${sortColumn} ${sortDirection.toUpperCase()}`;
+        }
+      }
+    }
+
     if (limitView == 'group') {
       if (groupBy == 'monthly') {
         selectFields = "CONCAT(YEAR(fstart_time), '-', LPAD(MONTH(fstart_time), 2, '0')) as date, COUNT(*) as count";
@@ -681,18 +704,16 @@ const updateProblem = async (req, res, next) => {
       updateField += `, t1.fshift = :shift`;
     }
     if (startDate) {
-      // Convert to WIB timezone if needed
-      const startDateWIB = new Date(startDate);
-      startDateWIB.setHours(startDateWIB.getHours() + 7); // Adjust to WIB
+      // Convert to WIB timezone using moment
+      const startDateWIB = moment.tz(startDate, 'Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss');
       updateField += `, t1.fstart_time = :startDate`;
-      replacements.startDate = startDateWIB.toISOString().slice(0, 19).replace('T', ' ');
+      replacements.startDate = startDateWIB;
     }
     if (finishDate) {
-      // Convert to WIB timezone if needed
-      const finishDateWIB = new Date(finishDate);
-      finishDateWIB.setHours(finishDateWIB.getHours() + 7); // Adjust to WIB
+      // Convert to WIB timezone using moment
+      const finishDateWIB = moment.tz(finishDate, 'Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss');
       updateField += `, t1.fend_time = :finishDate`;
-      replacements.finishDate = finishDateWIB.toISOString().slice(0, 19).replace('T', ' ');
+      replacements.finishDate = finishDateWIB;
     }
     if (problemCategory) {
       updateField += `, t1.problemCategory = :problemCategory`;

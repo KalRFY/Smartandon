@@ -206,8 +206,6 @@
     </CCol>
   </CRow>
 
-
-  
   <CRow class="mb-3">
     <CCol>
       <div
@@ -1113,6 +1111,7 @@ export default {
         const response = await api.get('/smartandon/problemView', { search: JSON.stringify(params) });
         this.usageProblems = response.data.data;
         this.generateUsageChart(this.usageProblems);
+        this.generateTopSparepartUsage(this.usageProblems);
       } catch (error) {
         console.error('Failed to fetch usage data:', error);
       }
@@ -1653,7 +1652,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #ffffffcc;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

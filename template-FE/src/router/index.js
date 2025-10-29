@@ -86,6 +86,19 @@ const appRoutes = [
       title: 'Sparepart Analysis',
     },
   },
+
+  {
+    path: '/app/JobAnalysis',
+    name: 'Job Analysis',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/JobAnalysis.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Job Analysis',
+    },
+  },
   // Add the uncommented Quality Operational route
   // {
   //   path: '/qdc/quality-operational',
@@ -108,6 +121,16 @@ const appRoutes = [
     },
   },
   {
+    path: '/app/Q6-Analysis',
+    name: 'Q6Analysis',
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/q6analysis/Q6Analysis.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'Q6 Analysis',
+    },
+  },
+  {
     path: '/app/ProblemHistory',
     name: 'Problem History',
     component: () =>
@@ -117,6 +140,18 @@ const appRoutes = [
     meta: {
       requiresAuth: true,
       title: 'Problem History',
+    },
+  },
+  {
+    path: '/app/TemporaryActionList',
+    name: 'Temporary Action List',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/TemporaryActionList.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Temporary Action List',
     },
   },
   {
@@ -259,7 +294,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // Update document title
   if (to.meta.title) {
-    document.title = `Template MFG - ${to.meta.title}`
+    document.title = `Smartandon - ${to.meta.title}`
   }
 
   const token = localStorage.token

@@ -531,4 +531,51 @@ export default {
 .w-100 {
   width: 100% !important;
 }
+
+/* Mobile responsive adjustments for table columns */
+@media (max-width: 768px) {
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    /* Description column */
+    min-width: 300px;
+  }
+
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    /* Actual Time column */
+    min-width: 140px;
+  }
+
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    /* Ideal Time column */
+    min-width: 140px;
+  }
+
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    /* Q6 Category column */
+    min-width: 250px;
+  }
+
+  .table th:nth-child(6),
+  .table td:nth-child(6) {
+    /* Actions column */
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    /* Description column - even wider on very small screens */
+    min-width: 220px;
+  }
+
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    /* Q6 Category column - even wider on very small screens */
+    min-width: 280px;
+  }
+}
 </style>
