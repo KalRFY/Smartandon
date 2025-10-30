@@ -30,7 +30,7 @@
             </CCol>
         </CRow>
 
-        <hr />
+        <div class="mt-4"></div>
 
         <div v-if="isLoading" class="text-center py-4">
             <CSpinner color="primary" />
