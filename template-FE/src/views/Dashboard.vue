@@ -1738,7 +1738,7 @@ export default {
       },
       {
         title: 'KY Machines',
-        icon: 'TriangleAlert',
+        icon: 'cilWarning',
         description: 'Machine hazard prediction and safety observation records',
         color: 'secondary',
         route: '/app/KYMachine',
@@ -1751,25 +1751,11 @@ export default {
         route: '/app/TemporaryActionList',
       },
       {
-        title: 'KY Machines',
-        icon: 'TriangleAlert',
-        description: 'Machine hazard prediction and safety observation records',
-        color: 'secondary',
-        route: '/app/KYMachine',
-      },
-      {
         title: 'TPM System',
         icon: 'cilMemory',
         description: 'TPM System management',
         color: 'info',
         route: '/app/tpm-redirect',
-      },
-      {
-        title: 'Order Spareparts',
-        icon: 'BarChart2',
-        description: 'Order Spareparts',
-        color: 'secondary',
-        route: '/app/order-spareparts-redirect',
       },
     ]
 

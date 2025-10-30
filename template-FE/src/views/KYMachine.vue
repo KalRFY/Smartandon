@@ -9,15 +9,18 @@
                         <CCol :xs="6">
                             <CFormLabel>Line</CFormLabel>
                             <CFormSelect v-model="filter.fline">
-                                <option v-for="opt in getLinesOpts" :key="opt.value" :value="opt.value">
+                                <option value="-1">Select Line</option>
+                                <option v-for="opt in lineOptions" :key="opt.value" :value="opt.value">
                                     {{ opt.text }}
                                 </option>
                             </CFormSelect>
                         </CCol>
+
                         <CCol :xs="6">
                             <CFormLabel>Machine</CFormLabel>
                             <CFormSelect v-model="filter.fid">
-                                <option v-for="opt in getMachinesOpts" :key="opt.value" :value="opt.value">
+                                <option value="-1">Select Machine</option>
+                                <option v-for="opt in machineOptions" :key="opt.value" :value="opt.value">
                                     {{ opt.text }}
                                 </option>
                             </CFormSelect>
@@ -44,7 +47,7 @@
                 </CTableRow>
             </CTableHead>
             <CTableBody>
-                <CTableRow v-for="(item, i) in kyData" :key="item.machine_id">
+                <CTableRow v-for="(item, i) in filteredKyData" :key="item.machine_id || i">
                     <CTableDataCell>{{ i + 1 }}</CTableDataCell>
                     <CTableDataCell>{{ item.line_nm }}</CTableDataCell>
                     <CTableDataCell>{{ item.machine_nm }}</CTableDataCell>
@@ -167,6 +170,7 @@ import STOP6_CATEGORY from "../constants/stop6Category"
 import isNotEmpty from '../functions/isNotEmpty'
 import Swal from "sweetalert2"
 import { mapGetters } from "vuex"
+import api from "@/apis/CommonAPI"
 
 import {
     CContainer,
@@ -230,6 +234,7 @@ export default {
             machines: [],
             kyData: [],
             detailsKyData: [],
+            filteredKyData: [],
             descriptionRules: [
                 (value) => {
                     if (value) return true
@@ -237,6 +242,10 @@ export default {
                 },
             ],
             countInitFilterApply: 0,
+            selectedLine: "ALL",
+            selectedMachine: "ALL",
+            lineOptions: [],
+            machineOptions: [],
         }
     },
 
@@ -248,28 +257,40 @@ export default {
                     this.kyObj.details && this.kyObj.stop6_category ? true : false
             },
         },
-        filter: {
-            deep: true,
-            async handler() {
-                if (this.filter.fline !== -1) {
-                    await this.$store.dispatch("storeGetMachines", this.filter.fline)
-                }
-                await this.getKy()
-            },
-        },
-    },
 
-    computed: {
-        ...mapGetters(["getMachinesOpts", "getLinesOpts"]),
+        "filter.fline"(newVal) {
+            this.applyFilter()
+        },
+
+        "filter.fid"(newVal) {
+            this.applyFilter()
+        },
     },
 
     methods: {
         async getFilterData() {
             try {
-                await this.$store.dispatch("storeGetLines")
-                await this.$store.dispatch("storeGetMachines")
+                this.isLoading = true
+
+                const [machineResponse, lineResponse] = await Promise.all([
+                    api.get('/smartandon/machine'),
+                    api.get('/smartandon/line')
+                ])
+
+                this.lineOptions = (lineResponse.data || []).map(l => ({
+                    value: l.fid,
+                    text: l.fline
+                }))
+
+                this.machineOptions = (machineResponse.data || []).map(m => ({
+                    value: m.fid,
+                    text: m.fmc_name
+                }))
+
             } catch (error) {
-                console.log(error)
+                console.error("getFilterData() error:", error)
+            } finally {
+                this.isLoading = false
             }
         },
 
@@ -290,19 +311,25 @@ export default {
                 })
 
                 this.kyData = rawKy.data?.data?.[0] || []
-                this.filter.fline = rawKy.data?.data?.[1] || "-1"
 
-                this.machines = (rawKy.data?.data?.[0] || []).map((mc) => ({
+                const apiFilterLine = rawKy.data?.data?.[1]
+                if (apiFilterLine) {
+                    this.filter.fline = apiFilterLine
+                }
+
+                this.machines = (this.kyData || []).map((mc) => ({
                     machine_id: mc.machine_id,
                     machine_nm: mc.machine_nm,
                 }))
 
+                this.applyFilter()
+
                 this.countInitFilterApply++
-                this.isLoading = false
             } catch (error) {
-                this.isLoading = false
                 console.error("getKy() error:", error)
                 alert("Gagal memuat data KY Machine")
+            } finally {
+                this.isLoading = false
             }
         },
 
@@ -410,6 +437,32 @@ export default {
                 alert("Gagal menghapus KY Machine")
             }
         },
+
+        applyFilter() {
+            let data = this.kyData
+
+            if (this.filter.fline !== "-1" && this.filter.fline !== "ALL") {
+                const selectedLine = this.lineOptions.find(
+                    (opt) => opt.value == this.filter.fline
+                )?.text?.toLowerCase()
+
+                data = data.filter(
+                    (item) => item.line_nm?.toLowerCase() === selectedLine
+                )
+            }
+
+            if (this.filter.fid !== "-1" && this.filter.fid !== "ALL") {
+                const selectedMachine = this.machineOptions.find(
+                    (opt) => opt.value == this.filter.fid
+                )?.text?.toLowerCase()
+
+                data = data.filter(
+                    (item) => item.machine_nm?.toLowerCase() === selectedMachine
+                )
+            }
+
+            this.filteredKyData = data
+        },
     },
 
     async mounted() {
@@ -422,6 +475,7 @@ export default {
 
         await this.getFilterData()
         await this.getKy()
+        this.applyFilter()
     },
 }
 </script>
