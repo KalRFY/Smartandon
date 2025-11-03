@@ -26,8 +26,13 @@
           {{ error }}
         </div>
         <div v-else>
-          <div class="chart-container" ref="chartContainer">
-            <canvas ref="chartCanvas"></canvas>
+          <div class="chart-container">
+            <apexchart
+              type="line"
+              :options="chartOptions"
+              :series="series"
+              height="350"
+            ></apexchart>
           </div>
           <CAccordion :active-item-key="null">
             <CAccordionItem :item-key="1">
@@ -101,7 +106,7 @@ import {
   RefreshCw,
   Download,
 } from 'lucide-vue-next'
-import Chart from 'chart.js/auto'
+import VueApexCharts from 'vue3-apexcharts'
 import * as XLSX from 'xlsx'
 
 export default {
@@ -129,6 +134,7 @@ export default {
     BarChart2,
     RefreshCw,
     Download,
+    apexchart: VueApexCharts,
   },
   props: {
     title: { type: String, required: true },
@@ -145,34 +151,11 @@ export default {
     const isExpanded = ref(true)
     const loading = ref(false)
     const error = ref(null)
-    const chartCanvas = ref(null)
-    const chartInstance = ref(null)
 
-    const destroyChart = () => {
-      if (chartInstance.value) {
-        try {
-          if (
-            chartInstance.value.options &&
-            chartInstance.value.options.animation
-          ) {
-            chartInstance.value.options.animation = false
-          }
-          chartInstance.value.destroy()
-        } catch (e) {
-          console.error('Error destroying chart:', e)
-          error.value = 'Failed to destroy chart: ' + e.message
-        }
-        chartInstance.value = null
-      }
-    }
+
 
     const toggleExpanded = () => {
       isExpanded.value = !isExpanded.value
-      if (isExpanded.value) {
-        nextTick(renderChart)
-      } else {
-        destroyChart()
-      }
     }
     const refreshData = () => {
       loading.value = true
@@ -180,7 +163,6 @@ export default {
       setTimeout(() => {
         loading.value = false
         emit('refresh', props.panelId)
-        nextTick(renderChart)
       }, 1000)
     }
     const exportData = () => {
@@ -228,85 +210,154 @@ export default {
         : BarChart2,
     )
 
-    const getChartConfig = () => {
+    const series = computed(() => {
       if (!props.chartData || props.chartData.length === 0) {
-        return {
-          type: 'bar',
-          data: { labels: [], datasets: [{ label: 'No Data', data: [] }] },
-          options: { responsive: true, maintainAspectRatio: false },
-        }
+        return [{
+          name: 'No Data',
+          data: []
+        }]
       }
-      const dataLabel = 'Duration (mins)'
       const sortedData = [...props.chartData].sort(
         (a, b) => b.quantity - a.quantity,
       )
-      return {
-        type: 'bar',
-        data: {
-          labels: sortedData.map((item) => item.name),
-          datasets: [
-            {
-              label: dataLabel,
-              backgroundColor: '#4dabf7',
-              data: sortedData.map((item) => item.quantity),
-              order: 1,
-            },
-          ],
+
+      // Calculate cumulative percentage
+      const total = sortedData.reduce((sum, item) => sum + item.quantity, 0)
+      let cumulative = 0
+      const cumulativePercentages = sortedData.map((item) => {
+        cumulative += item.quantity
+        return Math.round((cumulative / total) * 100)
+      })
+
+      return [{
+        name: 'Duration (mins)',
+        type: 'column',
+        data: sortedData.map((item) => item.quantity),
+      }, {
+        name: 'Cumulative %',
+        type: 'line',
+        data: cumulativePercentages,
+      }]
+    })
+
+    const chartOptions = computed(() => ({
+      chart: {
+        type: 'line',
+        height: 350,
+        toolbar: {
+          show: false
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          layout: { padding: { left: 10, right: 25, top: 25, bottom: 10 } },
-          plugins: {
-            title: {
-              display: true,
-              text: `${props.title} - Problem Duration Chart`,
-              font: { size: 16, weight: 'bold' },
-            },
-            legend: { position: 'top' },
-            tooltip: { mode: 'index', intersect: false },
-          },
-          scales: {
-            x: { title: { display: true, text: 'Problems' } },
-            y: {
-              display: true,
-              position: 'left',
-              title: { display: true, text: dataLabel },
-              beginAtZero: true,
-            },
-          },
-        },
-      }
-    }
-    const renderChart = async () => {
-      await nextTick()
-      destroyChart()
-      if (!chartCanvas.value) return
-      const ctx = chartCanvas.value.getContext('2d')
-      if (!ctx) return
-      try {
-        chartInstance.value = new Chart(ctx, getChartConfig())
-      } catch (err) {
-        error.value = 'Failed to render chart: ' + err.message
-      }
-    }
-    watch(
-      () => [props.chartData],
-      () => {
-        if (isExpanded.value) nextTick(renderChart)
+        background: 'transparent'
       },
-      { deep: true },
-    )
-    watch(isExpanded, (val) => {
-      if (val) nextTick(renderChart)
-      else destroyChart()
-    })
-    onMounted(() => {
-      if (isExpanded.value) setTimeout(renderChart, 100)
-    })
-    onUnmounted(() => {
-      destroyChart()
-    })
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: '55%',
+          endingShape: 'rounded'
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        enabledOnSeries: [1],
+        formatter: function(val) {
+          return val + '%'
+        },
+        style: {
+          fontSize: '12px',
+          colors: ['#304758']
+        },
+        offsetY: -10
+      },
+      stroke: {
+        show: true,
+        width: [0, 4],
+        curve: 'straight'
+      },
+      markers: {
+        size: [0, 6],
+        colors: ['#fff'],
+        strokeColors: '#00E396',
+        strokeWidth: 2,
+        hover: {
+          size: 7
+        }
+      },
+      xaxis: {
+        categories: props.chartData && props.chartData.length > 0
+          ? [...props.chartData].sort((a, b) => b.quantity - a.quantity).map((item) => item.name)
+          : [],
+        title: {
+          text: 'Problems'
+        },
+        labels: {
+          rotate: -45,
+          style: {
+            fontSize: '12px'
+          }
+        }
+      },
+      yaxis: [{
+        title: {
+          text: 'Duration (mins)',
+        },
+      }, {
+        opposite: true,
+        title: {
+          text: 'Cumulative %'
+        },
+        labels: {
+          formatter: function (val) {
+            return val + '%'
+          }
+        }
+      }],
+      fill: {
+        opacity: 1
+      },
+      tooltip: {
+        shared: true,
+        intersect: false,
+        y: {
+          formatter: function (val, { seriesIndex }) {
+            if (seriesIndex === 0) {
+              return val + " mins"
+            } else {
+              return val + "%"
+            }
+          }
+        }
+      },
+      title: {
+        text: `${props.title} - Problem Duration Chart`,
+        align: 'center',
+        style: {
+          fontSize: '14px',
+          fontWeight: 'bold'
+        }
+      },
+      responsive: [{
+        breakpoint: 768,
+        options: {
+          chart: {
+            height: 300
+          },
+          xaxis: {
+            labels: {
+              rotate: -90,
+              style: {
+                fontSize: '10px'
+              }
+            }
+          },
+          title: {
+            style: {
+              fontSize: '12px'
+            }
+          }
+        }
+      }]
+    }))
+
 
     const formatDateTime = (dateStr) => {
       if (!dateStr) return ''
@@ -325,12 +376,13 @@ export default {
       isExpanded,
       loading,
       error,
-      chartCanvas,
       toggleExpanded,
       refreshData,
       exportData,
       panelIcon,
       formatDateTime,
+      series,
+      chartOptions,
     }
   },
 }
@@ -348,11 +400,12 @@ export default {
 
 .chart-container {
   position: relative;
-  height: 400px;
   width: 100%;
   margin-bottom: 20px;
   border: 1px solid #eaeaea;
   padding: 10px;
+  overflow: hidden;
+  background-color: transparent;
 }
 
 .action-btn {

@@ -223,21 +223,19 @@ const updateTemporaryAction = async (req, res, next) => {
 const deleteTemporaryAction = async (req, res, next) => {
   try {
     const { fid } = req.params;
-
     console.log('Deleting temporary action with fid:', fid);
 
-    const deleteQuery = `DELETE FROM tb_henkaten WHERE fid = ?`;
-
+    const deleteQuery = `
+      DELETE FROM tb_henkaten
+      WHERE fid = :fid
+    `;
     const [result] = await sequelize.query(deleteQuery, {
-      replacements: [fid],
-      type: sequelize.QueryTypes.DELETE
+      replacements: { fid },
     });
 
-    if (result === 0) {
+    if (result.affectedRows === 0) {
       return res.status(httpStatus.NOT_FOUND).json({ message: 'Temporary action not found' });
     }
-
-    console.log('Delete result:', result);
 
     res.status(httpStatus.OK).json({ message: 'Temporary action deleted successfully' });
   } catch (error) {
