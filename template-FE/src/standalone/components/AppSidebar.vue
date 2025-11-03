@@ -118,23 +118,9 @@
             },
             {
               component: 'CNavItem',
-              to: '/app/q6-analysis',
-              name: 'Q6 Analysis',
-              icon: 'cilMagnifyingGlass',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
               to: '/app/CMFollowup',
               name: 'CM Followup',
               icon: 'cilCalendar',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/order-spareparts-redirect',
-              name: 'Order Spareparts',
-              icon: 'cilCart',
               parentId: 'ROOT',
             },
             {
@@ -153,23 +139,9 @@
             },
             {
               component: 'CNavItem',
-              to: '/app/EditDataSmartandon',
-              name: 'Edit Data Smartandon',
-              icon: 'cilClipboard',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/SparepartAnalysis',
-              name: 'Sparepart Analysis',
-              icon: 'cilBarChart',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/JobAnalysis',
-              name: 'Job Analysis',
-              icon: 'cilFolderOpen',
+              to: '/app/q6-analysis',
+              name: 'Q6 Analysis',
+              icon: 'cilMagnifyingGlass',
               parentId: 'ROOT',
             },
             {
@@ -189,6 +161,34 @@
           parentId: 'ROOT',
 
             items: [
+              {
+                component: 'CNavItem',
+                to: '/app/SparepartAnalysis',
+                name: 'Sparepart Analysis',
+                icon: 'cilBarChart',
+                parentId: 'ROOT',
+              },
+              {
+                component: 'CNavItem',
+                to: '/app/JobAnalysis',
+                name: 'Job Analysis',
+                icon: 'cilFolderOpen',
+                parentId: 'ROOT',
+              },
+              {
+                component: 'CNavItem',
+                to: '/app/EditDataSmartandon',
+                name: 'Edit Data Smartandon',
+                icon: 'cilClipboard',
+                parentId: 'ROOT',
+              },
+              {
+                component: 'CNavItem',
+                to: '/app/order-spareparts-redirect',
+                name: 'Order Spareparts',
+                icon: 'cilCart',
+                parentId: 'ROOT',
+              },
               {
                 component: 'CNavItem',
                 to: '/app/tpm-redirect',

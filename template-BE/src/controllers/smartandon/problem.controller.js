@@ -89,10 +89,13 @@ const getProblemView = async (req, res, next) => {
     const { groupBy } = search;
     const { sortColumn } = search;
     const { sortDirection } = search;
+    const { weeklyCount } = search;
 
     console.log('Limit View:', limitView);
     console.log('Limit:', limit);
     console.log('groupBy:', groupBy);
+    console.log('[BE] Parsed search:', search);
+    console.log('[BE] weeklyCount:', weeklyCount);
 
     let limitClause = `LIMIT ${limit} OFFSET ${offset}`;
     let groupClause = '';
@@ -176,6 +179,26 @@ const getProblemView = async (req, res, next) => {
       limitClause = ``;
       console.log('Iyaaaaa');
       whereClause += ` AND fpart_change IS NOT NULL AND TRIM(fpart_change) != ''`;
+    }
+
+    if (weeklyCount) {
+      console.log('[BE WeeklyCount] Weekly count mode activated');
+
+      // Calculate Monday of current week and today in WIB timezone
+      const monday = moment.tz('Asia/Jakarta').startOf('week').add(1, 'day').format('YYYY-MM-DD');
+      const today = moment.tz('Asia/Jakarta').format('YYYY-MM-DD');
+
+      console.log('[BE WeeklyCount] Calculated dates:');
+      console.log('  - Monday (start of week):', monday);
+      console.log('  - Today (end of week):', today);
+      console.log('  - Current timezone:', moment.tz.guess());
+
+      whereClause += ` AND DATE(fstart_time) >= '${monday}'`;
+      whereClause += ` AND DATE(fstart_time) <= '${today}'`;
+      whereClause += ` AND problemCategory IN (3, 4)`;
+
+      console.log('[BE WeeklyCount] Filtering for problemCategory IN (3=LTR, 4=SLTR)');
+      limitClause = ``;
     }
 
     console.log(whereClause);
@@ -278,6 +301,15 @@ const getProblemView = async (req, res, next) => {
       orderBy = groupBy == 'line' ? 'ORDER BY line ASC' : 'ORDER BY date ASC';
     }
 
+    if (weeklyCount) {
+      selectFields = 'problemCategory, COUNT(*) as count';
+      orderBy = 'ORDER BY problemCategory ASC';
+      groupClause = 'GROUP BY problemCategory';
+
+      console.log('[BE WeeklyCount] Select fields:', selectFields);
+      console.log('[BE WeeklyCount] Group clause:', groupClause);
+    }
+
     const dataQuery = `
       SELECT ${selectFields}
       FROM v_current_error_2
@@ -294,12 +326,40 @@ const getProblemView = async (req, res, next) => {
       replacements,
     });
 
-    res.status(httpStatus.OK).json({
-      total,
-      page,
-      limit,
-      data: problemsView,
-    });
+    if (weeklyCount) {
+      console.log('[BE WeeklyCount] Raw query results:', problemsView);
+    }
+
+    if (weeklyCount) {
+      // Initialize counts
+      let ltrCount = 0;
+      let sltrCount = 0;
+
+      // Process results
+      problemsView.forEach(row => {
+        if (parseInt(row.problemCategory) === 3) {
+          ltrCount = row.count;
+        } else if (parseInt(row.problemCategory) === 4) {
+          sltrCount = row.count;
+        }
+      });
+
+      console.log('[BE WeeklyCount] Processed counts:');
+      console.log('  - LTR count (problemCategory=3):', ltrCount);
+      console.log('  - SLTR count (problemCategory=4):', sltrCount);
+
+      res.status(httpStatus.OK).json({
+        ltrCount,
+        sltrCount,
+      });
+    } else {
+      res.status(httpStatus.OK).json({
+        total,
+        page,
+        limit,
+        data: problemsView,
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -1185,6 +1245,8 @@ const deleteProblem = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 module.exports = {
   getProblem,

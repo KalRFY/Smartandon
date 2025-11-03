@@ -1,8 +1,8 @@
 <template>
-  <CRow class="mb-3 justify-content-center">
-    <CCol md="12" lg="10">
+  <CRow>
+    <CCol>
       <CCard class="mb-3">
-        <CCardBody class="p-3">
+        <CCardBody>
           <CRow class="align-items-end">
             <CCol md="3">
               <label class="form-label fw-semibold">Start Date</label>
@@ -62,7 +62,7 @@
                   v-for="range in timeRanges"
                   :key="range.value"
                   size="sm"
-                  color="outline-secondary"
+                  color="primary"
                   @click="selectTimeRange(range.value)"
                   :disabled="isLoading"
                 >

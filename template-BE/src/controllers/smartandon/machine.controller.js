@@ -4,14 +4,50 @@ const { sequelize } = require('../../models');
 
 const getMachine = async (req, res, next) => {
   try {
+    let filters = {};
+    if (req.query.search) {
+      try {
+        filters = JSON.parse(req.query.search);
+        console.log('[BE Debug] EditDataSmartandon received filters:', filters);
+      } catch (e) {
+        return res.status(httpStatus.BAD_REQUEST).json({ message: 'Invalid search parameter' });
+      }
+    }
+
+    let whereClause = 'fid IS NOT NULL AND (is_deleted IS NULL OR is_deleted = 0)';
+    const replacements = {};
+
+    if (filters.line) {
+      whereClause += ' AND fline = :line';
+      replacements.line = filters.line;
+      console.log('[BE Debug] EditDataSmartandon filtering by line:', filters.line);
+    }
+
+    if (filters.maker) {
+      whereClause += ' AND fmaker = :maker';
+      replacements.maker = filters.maker;
+      console.log('[BE Debug] EditDataSmartandon filtering by maker:', filters.maker);
+    }
+
+    if (filters.description) {
+      whereClause += ' AND fop_desc LIKE :description';
+      replacements.description = `%${filters.description}%`;
+      console.log('[BE Debug] EditDataSmartandon filtering by description:', filters.description);
+    }
+
+    console.log('[BE Debug] EditDataSmartandon final whereClause:', whereClause);
+    console.log('[BE Debug] EditDataSmartandon replacements:', replacements);
+
     const [machines, metadata] = await sequelize.query(`
       SELECT fid, line_id, fline, fmc_name, fmaker, idx_pos, fsn, fweight, fdate, fop_desc, fcell, fpost,
              isNotifTl, isNotifGl, isNotifSh, isNotifDph, isNotifDdh, created_by, created_at, updated_by, updated_at,
              is_deleted, foperation_no, ftype
       FROM tb_mc
-      WHERE fid IS NOT NULL AND (is_deleted IS NULL OR is_deleted = 0)
+      WHERE ${whereClause}
       ORDER BY fid ASC
-    `);
+    `, { replacements });
+
+    console.log('[BE Debug] EditDataSmartandon query returned machines:', machines.length);
     res.status(httpStatus.OK).json(machines);
   } catch (error) {
     next(error);

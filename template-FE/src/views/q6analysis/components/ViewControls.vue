@@ -1,5 +1,5 @@
 <template>
-  <CRow class="mb-3 justify-content-center">
+  <CRow class="justify-content-center">
     <CCol md="10" lg="8" class="w-100">
       <CCard class="w-100 mb-3">
         <CCardBody class="d-flex justify-content-center align-items-center p-2 gap-3">

@@ -6,7 +6,7 @@
           <!-- Filter Section -->
           <CRow class="mb-3">
             <CCol lg="3" class="mb-3">
-              <CFormLabel for="startDate">Start Date</CFormLabel>
+              <CFormLabel for="startDate" class="fw-bold">Start Date</CFormLabel>
               <CFormInput
                 id="startDate"
                 type="date"
@@ -14,7 +14,7 @@
               />
             </CCol>
             <CCol lg="3" class="mb-3">
-              <CFormLabel for="endDate">End Date</CFormLabel>
+              <CFormLabel for="endDate" class="fw-bold">End Date</CFormLabel>
               <CFormInput
                 id="endDate"
                 type="date"
@@ -22,7 +22,7 @@
               />
             </CCol>
             <CCol lg="3" class="mb-3">
-              <CFormLabel for="lineSelect">Line</CFormLabel>
+              <CFormLabel for="lineSelect" class="fw-bold">Line</CFormLabel>
               <Treeselect
                 id="lineSelect"
                 :searchable="true"
@@ -39,7 +39,7 @@
               />
             </CCol>
             <CCol lg="3" class="mb-3">
-              <CFormLabel for="machineSelect">Machine</CFormLabel>
+              <CFormLabel for="machineSelect" class="fw-bold">Machine</CFormLabel>
               <Treeselect
                 id="machineSelect"
                 :searchable="true"
@@ -58,7 +58,7 @@
           </CRow>
           <CRow class="mb-3">
             <CCol lg="12">
-              <CFormLabel for="problemName">Problem Name</CFormLabel>
+              <CFormLabel for="problemName" class="fw-bold">Problem Name</CFormLabel>
               <CFormInput
                 id="problemName"
                 type="text"
@@ -331,6 +331,32 @@
     </CModalFooter>
   </CModal>
 
+  <!-- Delete Confirmation Modal -->
+  <CModal
+    :visible="showDeleteModal"
+    @close="closeDeleteModal"
+    size="md"
+    backdrop="static"
+  >
+    <CModalHeader>
+      <CModalTitle>Confirm Delete</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <p>Are you sure you want to delete this temporary action?</p>
+      <p><strong>Item:</strong> {{ itemToDelete ? itemToDelete.fchanges_item : '' }}</p>
+      <p><strong>Line:</strong> {{ itemToDelete ? itemToDelete.fline : '' }}</p>
+      <p><strong>Machine:</strong> {{ itemToDelete ? itemToDelete.fmc : '' }}</p>
+      <p class="text-danger">This action cannot be undone.</p>
+    </CModalBody>
+    <CModalFooter>
+      <CButton color="secondary" @click="closeDeleteModal">
+        Cancel
+      </CButton>
+      <CButton color="danger" @click="proceedDelete">
+        Delete
+      </CButton>
+    </CModalFooter>
+  </CModal>
 
 </template>
 
@@ -363,6 +389,8 @@ export default {
       showModal: false,
       modalMode: 'add', // 'add' or 'edit'
       selectedProblem: null,
+      showDeleteModal: false,
+      itemToDelete: null,
       newItem: {
         fchanges_item: null,
         fmc: null,
@@ -697,8 +725,17 @@ export default {
     },
 
     confirmDelete(problem) {
-      if (confirm(`Are you sure you want to delete this temporary action: "${problem.fchanges_item}"?`)) {
-        this.deleteProblem(problem.fid);
+      this.itemToDelete = problem;
+      this.showDeleteModal = true;
+    },
+    closeDeleteModal() {
+      this.showDeleteModal = false;
+      this.itemToDelete = null;
+    },
+    proceedDelete() {
+      if (this.itemToDelete) {
+        this.deleteProblem(this.itemToDelete.fid);
+        this.closeDeleteModal();
       }
     },
     async deleteProblem(fid) {
@@ -711,8 +748,7 @@ export default {
           throw new Error('Failed to delete item');
         }
       } catch (error) {
-        console.error('Failed to delete temporary item:', error);
-        alert('Failed to delete item. Please try again.');
+        alert('Error deleting temporary: ' + error.message);
       }
     },
   },

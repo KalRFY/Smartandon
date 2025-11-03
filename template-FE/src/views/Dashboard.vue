@@ -108,7 +108,7 @@
                   <FileText size="20" />
                 </div>
                 <div class="stat-content">
-                  <div class="stat-number">{{ getWeeklyLtrCount }}</div>
+                  <div class="stat-number">{{ weeklyLtrCount }}</div>
                   <div class="stat-label">LTR This Week</div>
                 </div>
               </div>
@@ -119,7 +119,7 @@
                   <FileText size="20" />
                 </div>
                 <div class="stat-content">
-                  <div class="stat-number">{{ getWeeklySltrCount }}</div>
+                  <div class="stat-number">{{ weeklySltrCount }}</div>
                   <div class="stat-label">SLTR This Week</div>
                 </div>
               </div>
@@ -1399,6 +1399,8 @@ export default {
       followupLtrProblems: [],
       followupSltrProblems: [],
       loadingFollowupLtr: false,
+      weeklyLtrCount: 0,
+      weeklySltrCount: 0,
 
       visibleEditModal: false,
       editModalLoading: false,
@@ -1764,83 +1766,110 @@ export default {
     }
   },
 
-  async created() {
+    async created() {
     this.startAutoRefresh();
     // Initialize charts and LTR table data
         await this.fetchChartData();
         await this.fetchLtrData();
         await this.fetchFollowupLtrProblems();
         await this.fetchWeeklyTotalDuration();
+        await this.fetchWeeklyLtrSltrCount();
     // Initialize filtered dashboard cards
     this.filteredDashboardCards = this.dashboardCards;
   },
   beforeUnmount() {
     this.stopAutoRefresh();
   },
-    computed: {
-      chunkedDashboardCards() {
-        // Cache the result to avoid recalculation on every access
-        if (!this._chunkedCache || this._lastFilteredCards !== this.filteredDashboardCards) {
-          const chunkSize = 3;
-          const chunks = [];
-          for (let i = 0; i < this.filteredDashboardCards.length; i += chunkSize) {
-            chunks.push(this.filteredDashboardCards.slice(i, i + chunkSize));
-          }
-          this._chunkedCache = chunks;
-          this._lastFilteredCards = this.filteredDashboardCards;
+  computed: {
+    chunkedDashboardCards() {
+      // Cache the result to avoid recalculation on every access
+      if (!this._chunkedCache || this._lastFilteredCards !== this.filteredDashboardCards) {
+        const chunkSize = 3;
+        const chunks = [];
+        for (let i = 0; i < this.filteredDashboardCards.length; i += chunkSize) {
+          chunks.push(this.filteredDashboardCards.slice(i, i + chunkSize));
         }
-        return this._chunkedCache;
-      },
-      getWeeklyLtrCount() {
-        // Count LTR problems from this week (LTR = problemCategory 3)
-        const today = moment().format('YYYY-MM-DD');
-        const monday = moment().startOf('week').add(1, 'day').format('YYYY-MM-DD');
-        console.log('[getWeeklyLtrCount] Monday:', monday);
-        console.log('[getWeeklyLtrCount] Today:', today);
-        const ltrProblems = this.followupLtrProblems.filter(problem => {
-          const problemDate = moment(problem.fstart_time).format('YYYY-MM-DD');
-          return problemDate >= monday && problemDate <= today;
-        });
-        console.log('[getWeeklyLtrCount] Filtered LTR problems:', ltrProblems);
-        console.log('[getWeeklyLtrCount] LTR count:', ltrProblems.length);
-        return ltrProblems.length;
-      },
-      getWeeklySltrCount() {
-        // Count SLTR problems from this week (SLTR = problemCategory 4)
-        const today = moment().format('YYYY-MM-DD');
-        const monday = moment().startOf('week').add(1, 'day').format('YYYY-MM-DD');
-        const sltrProblems = this.followupSltrProblems.filter(problem => {
-          const problemDate = moment(problem.fstart_time).format('YYYY-MM-DD');
-          return problemDate >= monday && problemDate <= today;
-        });
-        return sltrProblems.length;
-      },
-      visibleChunkedDashboardCards() {
-        const allChunks = this.chunkedDashboardCards;
-        return this.showAllNavigation ? allChunks : allChunks.slice(0, 2);
-      },
-      shouldShowMoreButton() {
-        return this.chunkedDashboardCards.length > 2;
-      },
-      currentProblemsCount() {
-        // Count active problems (problems without fend_time)
-        return this.lineProblems.filter(problem => !problem.fend_time).length;
-      },
-      monthlyProblemsCount() {
-        // Count problems from current month
-        const currentMonth = moment().month();
-        const currentYear = moment().year();
-        return this.lineProblems.filter(problem => {
-          const problemDate = moment(problem.fstart_time);
-          return problemDate.month() === currentMonth && problemDate.year() === currentYear;
-        }).length;
-      },
-      cumulativeMonthlyProblemsCount() {
-        // Count total problems for this month (cumulative)
-        return this.cumulativeMonthlyProblems;
-      },
+        this._chunkedCache = chunks;
+        this._lastFilteredCards = this.filteredDashboardCards;
+      }
+      return this._chunkedCache;
     },
+
+    visibleChunkedDashboardCards() {
+      const allChunks = this.chunkedDashboardCards;
+      return this.showAllNavigation ? allChunks : allChunks.slice(0, 2);
+    },
+    shouldShowMoreButton() {
+      return this.chunkedDashboardCards.length > 2;
+    },
+    currentProblemsCount() {
+      // Count active problems (problems without fend_time)
+      return this.lineProblems.filter(problem => !problem.fend_time).length;
+    },
+    monthlyProblemsCount() {
+      // Count problems from current month
+      const currentMonth = moment().month();
+      const currentYear = moment().year();
+      return this.lineProblems.filter(problem => {
+        const problemDate = moment(problem.fstart_time);
+        return problemDate.month() === currentMonth && problemDate.year() === currentYear;
+      }).length;
+    },
+    cumulativeMonthlyProblemsCount() {
+      // Count total problems for this month (cumulative)
+      return this.cumulativeMonthlyProblems;
+    },
+  },
   methods: {
+    async fetchWeeklyLtrSltrCount() {
+      try {
+        console.log('[FE fetchWeeklyLtrSltrCount] Starting API call...');
+
+        const weeklyParams = {
+          weeklyCount: 1,
+          limitView: 0
+        };
+        console.log('Fetching ltr sltr with params:', weeklyParams);
+        const weeklyResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(weeklyParams) });
+
+        // const weeklyParams = {
+        //   weeklyCount: true,
+        //   limitView: 0
+        // };
+        // console.log('Fetching ltr sltr with params:', weeklyParams);
+        // const weeklyResponse = await api.get('/smartandon/problemView', { search: JSON.stringify(weeklyParams) });
+
+        // const response = await api.get('/smartandon/problemView', {
+        //   params: {
+        //     search: JSON.stringify({
+        //       weeklyCount: 1,
+        //       limitView: 0,
+        //     })
+        //   }
+        // });
+
+
+        console.log('[FE fetchWeeklyLtrSltrCount] API response received:', weeklyResponse.data);
+
+        if (weeklyResponse.data) {
+          this.weeklyLtrCount = weeklyResponse.data.ltrCount || 0;
+          this.weeklySltrCount = weeklyResponse.data.sltrCount || 0;
+
+          console.log('[FE fetchWeeklyLtrSltrCount] Updated counts:');
+          console.log('  - LTR count:', this.weeklyLtrCount);
+          console.log('  - SLTR count:', this.weeklySltrCount);
+        } else {
+          console.warn('[FE fetchWeeklyLtrSltrCount] No data in response');
+          this.weeklyLtrCount = 0;
+          this.weeklySltrCount = 0;
+        }
+      } catch (error) {
+        console.error('[FE fetchWeeklyLtrSltrCount] Error fetching weekly LTR/SLTR count:', error);
+        console.error('[FE fetchWeeklyLtrSltrCount] Error details:', error.response?.data || error.message);
+        this.weeklyLtrCount = 0;
+        this.weeklySltrCount = 0;
+      }
+    },
     async fetchDashboardData() {
       try {
         const responseMachines = await api.get('/smartandon/machine');
@@ -1912,17 +1941,10 @@ export default {
         this.loadingProblemActive = false;
       }
 
-
-
       try {
         const responseOeeData = await api.get('/smartandon/oeeDataSmartandon');
         this.oeeDataSmartandon = responseOeeData.data;
 
-        // Process the synced data to populate oeeTarget, oeeActual, oeePlan arrays
-        this.oeeTarget = [];
-        this.oeeActual = [];
-        this.oeePlan = [];
-        this.oee = [];
 
         // Group data by line and map to the expected format
         const lineData = {};
@@ -1964,162 +1986,8 @@ export default {
           }
         });
 
-        console.log('Processed OEE Target:', this.oeeTarget);
-        console.log('Processed OEE Actual:', this.oeeActual);
-        console.log('Processed OEE Plan:', this.oeePlan);
-        console.log('Processed OEE:', this.oee);
       } catch (error) {
         console.log('Failed to fetch synced OEE data:', error);
-        // Fallback to old endpoints if synced data fails
-        try {
-          const responseOeeTarget = await api.get('/smartandon/oeeTarget');
-          this.oeeTarget = responseOeeTarget.data;
-          console.log('Fallback OEE Target:', this.oeeTarget);
-        } catch (fallbackError) {
-          console.log('Fallback OEE target also failed:', fallbackError);
-        }
-        try {
-          const responseOeeActual = await api.get('/smartandon/oeeActual');
-          this.oeeActual = responseOeeActual.data;
-        } catch (fallbackError) {
-          console.log('Fallback OEE actual also failed:', fallbackError);
-        }
-        try {
-          const responseOeePlan = await api.get('/smartandon/oeePlan');
-          this.oeePlan = responseOeePlan.data;
-        } catch (fallbackError) {
-          console.log('Fallback OEE plan also failed:', fallbackError);
-        }
-      }
-      try {
-        const responseOee = await api.get('/smartandon/oee');
-        this.oee = responseOee.data;
-        this.oeeOption = responseOee.data.map((oeeValue) => ({
-          id: oeeValue.GROUP_NAME,
-          label: oeeValue.TAG_NAME,
-          labelOee: oeeValue.REG_VALUE,
-        }));
-        const uniqueOee = {};
-        this.oee.forEach((item) => {
-          if (!uniqueOee[item.DEV_NAME]) {
-            uniqueOee[item.DEV_NAME] = parseFloat(item.REG_VALUE);
-          }
-        });
-        const maxOeeValue = Math.max(...Object.values(uniqueOee));
-        this.chartDataPerLine = Object.entries(uniqueOee).map(([devName, value]) => {
-          const normalizedValue = (value / maxOeeValue) * 100;
-          return {
-            label: devName,
-            series: [normalizedValue],
-            options: {
-              chart: {
-                height: 250,
-                type: 'radialBar',
-                offsetY: 0,
-                sparkline: {
-                  enabled: true,
-                },
-              },
-              plotOptions: {
-                radialBar: {
-                  startAngle: -90,
-                  endAngle: 90,
-                  track: {
-                    background: '#e7e7e7',
-                    strokeWidth: '150%',
-                    margin: 5,
-                    dropShadow: {
-                      enabled: true,
-                      top: 2,
-                      left: 0,
-                      color: '#999',
-                      opacity: 1,
-                      blur: 2,
-                    },
-                  },
-                  hollow: {
-                    size: '50%',
-                  },
-                  dataLabels: {
-                    name: {
-                      show: false,
-                    },
-                    value: {
-                      offsetY: -2,
-                      fontSize: '16px',
-                      formatter: function (val) {
-                        if (val >= 99.9) {
-                          return '99.99%';
-                        }
-                        return val.toFixed(2) + '%';
-                      },
-                    },
-                  },
-                },
-              },
-              fill: {
-                type: 'gradient',
-                gradient: {
-                  shade: 'light',
-                  shadeIntensity: 0.4,
-                  inverseColors: false,
-                  opacityFrom: 1,
-                  opacityTo: 1,
-                  stops: [0, 50, 53, 91],
-                },
-              },
-              labels: [devName],
-              yaxis: {
-                max: 100,
-              },
-            },
-          };
-        });
-        const cumulativeOeeData = {};
-        this.oee.forEach((item) => {
-          if (!cumulativeOeeData[item.DEV_NAME]) {
-            cumulativeOeeData[item.DEV_NAME] = parseFloat(item.REG_VALUE);
-          }
-        });
-        this.cumulativeOeeSeries = Object.values(cumulativeOeeData);
-        const maxValue = Object.values(cumulativeOeeData).length > 0 ? Math.max(...Object.values(cumulativeOeeData)) : 100;
-        this.cumulativeOeeOptions = {
-          chart: {
-            type: 'polarArea',
-            height: 275,
-          },
-          labels: Object.keys(cumulativeOeeData),
-          fill: {
-            opacity: 0.8,
-          },
-          stroke: {
-            width: 1,
-            colors: undefined,
-          },
-          yaxis: {
-            show: true,
-            min: 0,
-            max: maxValue * 1.1,
-          },
-          legend: {
-            position: 'right',
-          },
-          responsive: [
-            {
-              breakpoint: 480,
-              options: {
-                chart: {
-                  height: 300,
-                },
-                legend: {
-                  position: 'bottom',
-                },
-              },
-            },
-          ],
-        };
-      } catch (error) {
-        console.error('Failed to fetch or process OEE data:', error);
       }
 
       try {
@@ -2337,6 +2205,7 @@ export default {
             this.fetchLtrData();
             this.fetchFollowupLtrProblems();
             this.fetchWeeklyTotalDuration();
+            this.fetchWeeklyLtrSltrCount();
           } else {
             alert('Failed to save input');
           }
@@ -2877,6 +2746,7 @@ export default {
           this.fetchLtrData()
           this.fetchDashboardData()
           this.fetchWeeklyTotalDuration()
+          this.fetchWeeklyLtrSltrCount()
         } else {
           throw new Error('Failed to update problem, status: ' + response.status)
         }
@@ -3127,6 +2997,7 @@ export default {
             }
             // Refresh dashboard data
             this.fetchDashboardData();
+            this.fetchWeeklyLtrSltrCount();
           } else {
             alert('Failed to delete problem. Status: ' + response.status);
           }
