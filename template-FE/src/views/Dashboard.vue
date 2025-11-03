@@ -1250,6 +1250,7 @@ import {
   BookText,
   Search,
   Trash2,
+  TriangleAlert,
   TrendingUp,
   ShoppingCart,
   Edit,
@@ -1262,8 +1263,8 @@ import { useRouter } from 'vue-router'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 import { CFormSelect } from '@coreui/vue'
-import { ModelSelect } from 'vue-search-select'
-import "vue-search-select/dist/VueSearchSelect.css"
+import { ModelSelect } from 'vue3-search-select'
+import 'vue3-search-select/Vue-Search-Select.css'
 import EditProblemModal from './ProblemHistory/EditProblemModal.vue'
 const visibleStaticBackdropDemo = ref(false);
 const visibleEnd = ref(false)
@@ -1623,6 +1624,7 @@ export default {
     BookText,
     Search,
     Trash2,
+    TriangleAlert,
     CChart,
     ApexCharts,
     CTable,
@@ -1735,6 +1737,13 @@ export default {
         description: 'Job analysis and insights',
         color: 'info',
         route: '/app/JobAnalysis',
+      },
+      {
+        title: 'KY Machines',
+        icon: 'cilWarning',
+        description: 'Machine hazard prediction and safety observation records',
+        color: 'secondary',
+        route: '/app/KYMachine',
       },
       {
         title: 'Temporary Action List',

@@ -1,5 +1,7 @@
 import { createStore } from 'vuex'
-import MODALS from "@/store/MODALS.module";
+import MODALS from '@/store/MODALS.module'
+import line from './modules/line'
+import machine from './modules/machine'
 
 export default createStore({
   state: {
@@ -19,6 +21,8 @@ export default createStore({
   },
   actions: {},
   modules: {
-    MODALS
+    MODALS,
+    line,
+    machine,
   },
 })

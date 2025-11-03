@@ -104,6 +104,13 @@
             // },
             {
               component: 'CNavItem',
+              to: '/app/MTBFMTTR',
+              name: 'MTBF MTTR',
+              icon: 'cilSpeedometer',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
               to: '/app/ProblemHistory',
               name: 'Problem History',
               icon: 'cilHistory',
@@ -125,16 +132,23 @@
             },
             {
               component: 'CNavItem',
-              to: '/app/MTBFMTTR',
-              name: 'MTBF MTTR',
-              icon: 'cilSpeedometer',
+              to: '/app/KYMachine',
+              name: 'KY Machines',
+              icon: 'cilWarning',
               parentId: 'ROOT',
             },
             {
               component: 'CNavItem',
-              to: '/app/LTBSummary',
-              name: 'LTB Report Status',
-              icon: 'cilDescription',
+              to: '/app/order-spareparts-redirect',
+              name: 'Order Spareparts',
+              icon: 'cilCart',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/SparepartAnalysis',
+              name: 'Sparepart Analysis',
+              icon: 'cilBarChart',
               parentId: 'ROOT',
             },
             {

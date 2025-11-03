@@ -21,6 +21,7 @@ const tambahAnalysis = require('./smartandon/tambahAnalysis');
 
 const authRoutes = require('./smartandon/auth');
 const userRoutes = require('./smartandon/user');
+const kyMachineRoutes = require('./smartandon/kyMachine');
 const sparepartRoutes = require('./smartandon/spareparts');
 const q6Routes = require('./smartandon/q6.route');
 const temporaryActionListRoutes = require('./smartandon/temporaryactionlist');
@@ -107,6 +108,10 @@ const defaultRoutes = [
   {
     path: '/smartandon',
     route: sparepartRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: kyMachineRoutes,
   },
   {
     path: '/q6',

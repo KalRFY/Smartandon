@@ -174,7 +174,16 @@ const appRoutes = [
       title: 'CM Followup',
     },
   },
-  /*define other routes in here*/
+  {
+    path: '/app/KYMachine',
+    name: 'KY Machines',
+    component: () =>
+      import(/* webpackChunkName: "reports" */ '@/views/KYMachine.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'KY Machines',
+    },
+  },
   {
     path: '/app/tpm-redirect',
     name: 'Redirect TPM',

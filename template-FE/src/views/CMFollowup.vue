@@ -140,12 +140,7 @@ async function fetchCMFollowup() {
 
   try {
     const apiFilters = { ...filters.value }
-    if (filters.value.keyword) {
-      apiFilters.start_date = ''
-      apiFilters.end_date = ''
-    }
-
-    let rawData = await getCMFollowup(apiFilters)
+    const rawData = await getCMFollowup(apiFilters)
 
     if (filters.value.category === "Thema") {
       console.log("Filtering for Thema category")
