@@ -18,7 +18,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env'+(param_dot_env===''?'':(
 const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('prod', 'dev', 'local').default('dev'),
-    PORT: Joi.number().default(3000),
+    PORT: Joi.number().default(9500),
     USER_DB_NEW: Joi.string().default('administrator').description('Database user'),
     PASSWORD_DB_NEW: Joi.string().default('4dm1nComp1teR').description('Database password'),
     NAME_DB_NEW: Joi.string().default('mt-sys').description('Database name'),

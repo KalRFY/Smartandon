@@ -115,7 +115,7 @@ const onLogin = async () => {
         success.value = 'Login successful!'
         setTimeout(() => {
           success.value = ''
-          window.location.href = '/#/app/dashboard'
+          window.location.href = '/smartandon/fe/#/app/dashboard'
         }, 3000)
         const data = response.data
         console.log('Login data:', data)
