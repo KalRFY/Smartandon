@@ -18,6 +18,8 @@ package.lock.json
 package-lock.json
 .husky/.gitignore
 
+*.jpg
+*.jpeg
 *.png
 *.jfif
 *.xml
