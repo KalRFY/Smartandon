@@ -1,6 +1,6 @@
 <template>
-<CRow class="mb-3">
-    <CCol class="mb-3">
+  <CRow>
+    <CCol class="mb-1">
       <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
         <CCardBody>
           <CRow>
@@ -87,7 +87,7 @@
         </div>
       </CRow>
     </CCol> -->
-    <CCol sm="2" class="mb-3">
+    <CCol sm="2" class="mb-1">
       <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
         <CCardBody>
           <CRow>
@@ -108,15 +108,32 @@
         </CCardBody>
       </div>
     </CCol>
+    <CCol sm="2" class="mb-1">
+      <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
+        <CCardBody>
+          <!-- <CRow>
+            <CFormLabel style="font-weight: bold; font-size: medium;">Legend</CFormLabel>
+          </CRow> -->
+          <CRow class="mb-2">
+            <CCol>
+              <CButton style="width: 100%; font-size: x-small; font-weight: bold; background-color: #FF7F7F; color: white;" @click="onClickFilterWhyCm(1)">
+                <label>5 Why Belum di isi</label>
+              </CButton>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCoL>
+              <CButton style="width: 100%; font-size: x-small; font-weight: bold; background-color: #FFFFA0;" @click="onClickFilterWhyCm(2)">
+                <label>C/M Belum di isi</label>
+              </CButton>
+            </CCoL>
+          </CRow>
+        </CCardBody>
+      </div>
+    </CCol>
   </CRow>
   <CRow>
     <CCol>
-      <CButton style="width: 50%; font-size: x-small; font-weight: bold; background-color: #FF7F7F; color: white;" @click="onClickFilterWhyCm(1)">
-        <label>5 Why Belum di isi</label>
-      </CButton>
-      <CButton style="width: 50%; font-size: x-small; font-weight: bold; background-color: #FFFFA0;" @click="onClickFilterWhyCm(2)">
-        <label>C/M Belum di isi</label>
-      </CButton>
     </CCol>
   </CRow>
   

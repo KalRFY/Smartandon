@@ -37,6 +37,34 @@
                                     :key="chartKey"
                                     :graphData="graphData"
                                     :seriesData="seriesData"
+                                    :categories="q6Categories"
+                                    :title="'Q6 Analysis Graph'"
+                                />
+                            </CContainer>
+                        </template>
+                    </CCardBody>
+                </CCard>
+            </CCol>
+        </CRow>
+
+        <CRow class="production-lines-container flex flex-column">
+            <CCol cols="12" class="line-chart-container w-100">
+                <CCard class="w-100">
+                    <CCardBody>
+                        <template v-if="isLoading">
+                            <CContainer fluid class="loading-message text-center">Loading data...</CContainer>
+                        </template>
+                        <template v-else>
+                            <CContainer fluid v-if="o6SeriesData.length === 0" class="empty-message text-center">
+                                No data available
+                            </CContainer>
+                            <CContainer fluid v-else class="chart-wrapper" v-show="o6ChartReady">
+                                <Q6Charts
+                                    :key="o6ChartKey"
+                                    :graphData="o6GraphData"
+                                    :seriesData="o6SeriesData"
+                                    :categories="o6Categories"
+                                    :title="'O6 Analysis Graph'"
                                 />
                             </CContainer>
                         </template>
@@ -63,6 +91,29 @@ const seriesData = ref([])
 const chartReady = ref(false)
 const chartKey = ref(0)
 const graphData = ref({})
+
+const o6SeriesData = ref([])
+const o6ChartReady = ref(false)
+const o6ChartKey = ref(0)
+const o6GraphData = ref({})
+
+const q6Categories = [
+  'Q1 (Diagnose)',
+  'Q2 (SpareParts)',
+  'Q3 (Tools)',
+  'Q4 (Maintenance Ability)',
+  'Q5 (Machine Setting)',
+  'Q6 (Machine Backup)'
+]
+
+const o6Categories = [
+  'O1 (Design & Installation)',
+  'O2 (Henkaten Issue)',
+  'O3 (PM Issue)',
+  'O4 (Symptom)',
+  'O5 (Environment & 3rd Factor)',
+  'O6 (Lifetime Issue)'
+]
 
 const now = new Date()
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -108,12 +159,40 @@ const fetchQ6Data = async() => {
     }
 }
 
+const fetchO6Data = async() => {
+    try {
+        isLoading.value = true
+    const params = {
+      line: selectedLine.value,
+      startDate: startDate.value,
+      endDate: endDate.value,
+      isFreq: isFreq.value,
+    }
+        const response = await api.get('/q6/o6-analysis', params)
+        if (response.status !== 200) {
+            throw new Error(`API request failed with status ${response.status}`)
+        }
+        const data = response.data.data || response.data || {}
+        o6GraphData.value = data
+        o6SeriesData.value = Array.isArray(data.series) ? data.series : []
+
+        console.log('Fetched O6 data:', data)
+        console.log('O6 Series length:', o6SeriesData.value.length)
+    } catch(e) {
+        console.error('Error fetching O6 data:', e)
+    } finally {
+        isLoading.value = false
+    }
+}
+
 onMounted(async() => {
     try {
         await nextTick()
         chartReady.value = true
+        o6ChartReady.value = true
         await fetchQ6Data()
-        
+        await fetchO6Data()
+
         setInterval(() => {
             const now = new Date()
             currentTime.value = now.toLocaleString()
@@ -135,11 +214,15 @@ const search = async () => {
     isLoading.value = true
     try {
         chartReady.value = false
+        o6ChartReady.value = false
         await new Promise((r) => setTimeout(r, 100))
         await fetchQ6Data()
+        await fetchO6Data()
         await nextTick()
         chartReady.value = true
+        o6ChartReady.value = true
         chartKey.value += 1
+        o6ChartKey.value += 1
         await new Promise((r) => setTimeout(r, 400))
     } finally {
         isLoading.value = false

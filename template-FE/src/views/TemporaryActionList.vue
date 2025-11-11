@@ -7,21 +7,47 @@
           <CRow class="mb-3">
             <CCol lg="3" class="mb-3">
               <CFormLabel for="startDate" class="fw-bold">Start Date</CFormLabel>
-              <CFormInput
-                id="startDate"
-                type="date"
-                v-model="startDate"
-              />
+              <CInputGroup>
+                <CInputGroupText id="basic-addon1">
+                  <Clock size="16" />
+                </CInputGroupText>
+                <CFormInput
+                  id="startDate"
+                  type="date"
+                  v-model="startDate"
+                  aria-label="Start Date"
+                  aria-describedby="basic-addon1"
+                />
+              </CInputGroup>
             </CCol>
             <CCol lg="3" class="mb-3">
               <CFormLabel for="endDate" class="fw-bold">End Date</CFormLabel>
-              <CFormInput
-                id="endDate"
-                type="date"
-                v-model="endDate"
-              />
+              <CInputGroup>
+                <CInputGroupText id="basic-addon2">
+                  <Clock size="16" />
+                </CInputGroupText>
+                <CFormInput
+                  id="endDate"
+                  type="date"
+                  v-model="endDate"
+                  aria-label="End Date"
+                  aria-describedby="basic-addon2"
+                />
+              </CInputGroup>
             </CCol>
-            <CCol lg="3" class="mb-3">
+            <CCol lg="2" class="mb-3">
+              <CFormLabel for="statusSelect" class="fw-bold">Status</CFormLabel>
+              <CFormSelect
+                id="statusSelect"
+                v-model="selectedStatus"
+                @change="handleStatusChange"
+              >
+                <option value="">All Status</option>
+                <option value="0">Temporary</option>
+                <option value="1">Fix</option>
+              </CFormSelect>
+            </CCol>
+            <CCol lg="2" class="mb-3">
               <CFormLabel for="lineSelect" class="fw-bold">Line</CFormLabel>
               <Treeselect
                 id="lineSelect"
@@ -38,7 +64,7 @@
                 @input="handleLineChange"
               />
             </CCol>
-            <CCol lg="3" class="mb-3">
+            <CCol lg="2" class="mb-3">
               <CFormLabel for="machineSelect" class="fw-bold">Machine</CFormLabel>
               <Treeselect
                 id="machineSelect"
@@ -55,18 +81,22 @@
                 @input="handleMachineChange"
               />
             </CCol>
-          </CRow>
-          <CRow class="mb-3">
             <CCol lg="12">
-              <CFormLabel for="problemName" class="fw-bold">Problem Name</CFormLabel>
-              <CFormInput
-                id="problemName"
-                type="text"
-                v-model="problemName"
-                placeholder="Enter problem name"
-              />
+              <CFormLabel for="basic-url" class="fw-bold">Description Search</CFormLabel>
+              <CInputGroup>
+                <CInputGroupText id="basic-addon3">Description</CInputGroupText>
+                <CFormInput
+                  id="problemName"
+                  type="text"
+                  v-model="problemName"
+                  placeholder="Enter problem description"
+                  aria-label="Description"
+                  aria-describedby="basic-addon3"
+                />
+              </CInputGroup>
             </CCol>
           </CRow>
+
           <hr></hr>
           <CRow lg="12" class="mb-3">
             <CCol lg="3" class="mb-3">
@@ -153,9 +183,10 @@
                     <CTableHeaderCell scope="col" style="width: 1%; text-align: center;">No</CTableHeaderCell>
                     <CTableHeaderCell scope="col" style="width: 8%; text-align: center;">Date</CTableHeaderCell>
                     <CTableHeaderCell scope="col" style="width: 10%; text-align: center;">Line</CTableHeaderCell>
+                    <CTableHeaderCell scope="col" style="width: 10%; text-align: center;">fpic</CTableHeaderCell>
                     <CTableHeaderCell scope="col" style="width: 10%; text-align: center;">Machine Name</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Description</CTableHeaderCell>
-                    <CTableHeaderCell scope="col" style="text-align: center;">Status</CTableHeaderCell>
+                    <CTableHeaderCell scope="col" style="width: 6%; text-align: center;">Status</CTableHeaderCell>
                     <CTableHeaderCell scope="col" style="width: 15%; text-align: center;">Action</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -164,6 +195,7 @@
                     <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
                     <CTableDataCell>{{ formatDate(problem.fdate) }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fline }}</CTableDataCell>
+                    <CTableDataCell>{{ problem.fpic }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fmc }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fchanges_item }}</CTableDataCell>
                     <CTableDataCell class="text-center">
@@ -185,7 +217,7 @@
                       </CButton>
                       <CButton
                         class="me-2"
-                        color="danger"
+                        color="primary"
                         style="
                           font-size: x-small;
                           font-weight: bold;
@@ -363,10 +395,10 @@
 <script>
 import { ref, computed } from 'vue'
 import moment from 'moment'
-import { CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCard, CCardBody, CCardHeader, CRow, CCol, CFormInput, CFormSelect, CButton, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter, CForm, CFormLabel, CFormTextarea } from '@coreui/vue';
+import { CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCard, CCardBody, CCardHeader, CRow, CCol, CFormInput, CFormSelect, CButton, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter, CForm, CFormLabel, CFormTextarea, CInputGroup, CInputGroupText } from '@coreui/vue';
 import Treeselect from 'vue3-treeselect';
 import 'vue3-treeselect/dist/vue3-treeselect.css';
-import { BarChart3, AlertTriangle, CheckCircle2, Plus, Trash2, Edit } from 'lucide-vue-next'
+import { BarChart3, AlertTriangle, CheckCircle2, Plus, Trash2, Edit, Clock } from 'lucide-vue-next'
 import api from '../apis/CommonAPI'
 
 export default {
@@ -375,11 +407,12 @@ export default {
     return {
       problems: [],
       loading: false,
+      problemName: '',
       startDate: '',
       endDate: '',
-      problemName: '',
       selectedLines: null,
       selectedMachines: null,
+      selectedStatus: '',
       lineOptions: [],
       machineOptions: [],
       machines: [],
@@ -428,6 +461,14 @@ export default {
     Plus,
     Trash2,
     Edit,
+    Clock,
+    CInputGroup,
+    CInputGroupText,
+    CCard,
+    CCardBody,
+    CCardHeader,
+    CRow,
+    CCol,
   },
 
   computed: {
@@ -525,6 +566,7 @@ export default {
         if (this.startDate) params.startDate = this.startDate;
         if (this.endDate) params.endDate = this.endDate;
         if (this.problemName) params.problemName = this.problemName;
+        if (this.selectedStatus !== '') params.status = this.selectedStatus;
 
         // Convert selectedLines IDs to labels
         if (this.selectedLines) {
@@ -570,6 +612,7 @@ export default {
       this.problemName = '';
       this.selectedLines = null;
       this.selectedMachines = null;
+      this.selectedStatus = '';
     },
     openAddModal() {
       this.modalMode = 'add';
@@ -722,6 +765,10 @@ export default {
     handleMachineChange(value) {
       console.log('Machine selection changed:', value);
       this.selectedMachines = value;
+    },
+    handleStatusChange(value) {
+      console.log('Status selection changed:', value);
+      this.selectedStatus = value;
     },
 
     confirmDelete(problem) {

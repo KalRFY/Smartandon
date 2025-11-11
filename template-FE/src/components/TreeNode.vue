@@ -12,11 +12,12 @@
           <CIcon :icon="showChildren ? 'cil-minus' : 'cil-plus'" />
         </CButton>
         
-        <CFormInput
+        <CFormTextarea
           v-model="localNode.description"
           placeholder="Enter description"
           class="node-input"
           @input="updateNode"
+          style="font-size: small;"
         />
         
         <CButton 

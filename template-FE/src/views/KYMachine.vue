@@ -153,14 +153,6 @@
                 <CButton color="secondary" @click="clearSubmit">Close</CButton>
             </CModalFooter>
         </CModal>
-
-        <!-- Loading Overlay -->
-        <CModal :visible="isLoading" size="sm" alignment="center">
-            <CModalBody class="text-center">
-                <CSpinner color="primary" />
-                <p class="mt-2 mb-0">Loading...</p>
-            </CModalBody>
-        </CModal>
     </CContainer>
 </template>
 

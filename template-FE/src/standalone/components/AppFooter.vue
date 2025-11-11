@@ -8,7 +8,7 @@
     </div>
     <div class="ms-auto">
       <span class="me-1" target="_blank">Developed by</span>
-      <a href="https://coreui.io/vue">Khalif</a>
+      <a href="https://www.linkedin.com/in/khalif-raflika-868404246/">Khalif</a>
     </div>
   </CFooter>
 </template>

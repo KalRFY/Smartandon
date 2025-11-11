@@ -369,3 +369,11 @@ export default {
 
 }
 </script>
+
+<style scoped>
+@media (max-width: 360px) {
+  .btn {
+    border-radius: 0.375rem !important;
+  }
+}
+</style>

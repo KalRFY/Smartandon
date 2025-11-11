@@ -3,59 +3,64 @@ const path = require('path');
 const moment = require('moment-timezone');
 const { sequelize } = require('../../models');
 
-const getTemporaryAction = async (req, res, next) => {
+const getFocusThema = async (req, res, next) => {
   try {
     const { startDate, endDate, problemName, line, machine, status } = req.query;
 
     console.log('Received query params:', { startDate, endDate, problemName, line, machine, status });
 
-    let whereClause = 'WHERE fid IS NOT NULL';
+    let whereClause = 'WHERE id_m_member IS NOT NULL';
 
     if (startDate) {
-      whereClause += ` AND fdate >= '${startDate}'`;
+      whereClause += ` AND problem_start_time >= '${startDate}'`;
     }
     if (endDate) {
-      whereClause += ` AND fdate <= '${endDate}'`;
+      whereClause += ` AND problem_end_time <= '${endDate}'`;
     }
     if (problemName) {
-      whereClause += ` AND (fproblem LIKE '%${problemName}%' OR fchanges_item LIKE '%${problemName}%' OR fnote LIKE '%${problemName}%')`;
+      whereClause += ` AND problem_name LIKE '%${problemName}%'`;
     }
     if (line) {
-      whereClause += ` AND fline = '${line}'`;
+      whereClause += ` AND problem_line = '${line}'`;
     }
     if (machine) {
-      whereClause += ` AND fmc = '${machine}'`;
+      whereClause += ` AND problem_machine = '${machine}'`;
     }
     if (status !== undefined && status !== null && status !== '') {
-      whereClause += ` AND fstatus = '${status}'`;
+      whereClause += ` AND problem_shift = '${status}'`;
     }
 
     console.log('Generated WHERE clause:', whereClause);
 
-    const [temporay, metadata] = await sequelize.query(`
+    const [focusThemaData, metadata] = await sequelize.query(`
       SELECT
         fid,
-        fdate,
-        fline,
-        fmc,
-        fproblem,
-        fchanges_item,
-        fpart_type,
-        fpic,
-        fwork_no,
-        fnote,
-        fstatus
-      FROM tb_henkaten
+        id_m_member,
+        member_name,
+        member_shift,
+        member_role,
+        member_phone,
+        member_img,
+        id_m_problem,
+        problem_line,
+        problem_machine,
+        problem_name,
+        problem_start_time,
+        problem_end_time,
+        problem_shift,
+        fdur,
+        created_at
+      FROM v_ft_member
       ${whereClause}
       ORDER BY fid ASC
     `);
 
-    console.log('Query result count:', temporay.length);
-    console.log('First few results:', temporay.slice(0, 3));
+    console.log('Query result count:', focusThemaData.length);
+    console.log('First few results:', focusThemaData.slice(0, 3));
 
-    res.status(httpStatus.OK).json(temporay);
+    res.status(httpStatus.OK).json(focusThemaData);
   } catch (error) {
-    console.error('Error in getTemporaryAction:', error);
+    console.error('Error in getFocusThema:', error);
     next(error);
   }
 };
@@ -248,7 +253,7 @@ const deleteTemporaryAction = async (req, res, next) => {
 };
 
 module.exports = {
-  getTemporaryAction,
+  getFocusThema,
   createTemporaryAction,
   updateTemporaryAction,
   deleteTemporaryAction,

@@ -13,7 +13,7 @@ const comparePassword = (password, hash) => {
 };
 
 const generateLoginToken = (payload) => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '5h' });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '5d' });
 };
 
 module.exports = {

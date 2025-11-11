@@ -1,4 +1,5 @@
 <template>
+  
   <CRow>
     <CCol>
       <h3>LTB Report Status</h3>
@@ -49,6 +50,9 @@
                 <option value="LTR">LTR</option>
                 <option value="SLTR">SLTR</option>
               </CFormSelect>
+              <CButton v-if="monthlyDetails.length > 0" color="secondary" @click="clearMonthlyFilter" size="sm">
+                Clear Filter
+              </CButton>
             </CCol>
           </CRow>
 
@@ -68,7 +72,7 @@
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                <CTableRow v-for="(item, index) in filteredProblems" :key="item.fid || index">
+                <CTableRow v-for="(item, index) in (monthlyDetails.length > 0 ? monthlyDetails : filteredProblems)" :key="item.fid || index">
                   <CTableDataCell>{{ index + 1 }}</CTableDataCell>
                   <CTableDataCell>{{ formatDate(item.fstart_time) }}</CTableDataCell>
                   <CTableDataCell>{{ item.fmc_name }}</CTableDataCell>
@@ -109,6 +113,55 @@
                     type="bar"
                     height="350"
                   />
+                </CCol>
+              </CRow>
+
+              <!-- Monthly Details Table -->
+              <CRow class="mt-4">
+                <CCol>
+                  <CCard>
+                    <CCardHeader>
+                      <strong>{{ selectedMonthName ? `Details for ${selectedMonthName} ${selectedYear}` : 'Monthly Details' }}</strong>
+                      <CButton v-if="selectedMonthName" color="secondary" size="sm" @click="clearMonthlyFilter" class="float-end">
+                        Clear
+                      </CButton>
+                    </CCardHeader>
+                    <CCardBody>
+                      <div v-if="monthlyDetails.length > 0">
+                        <CTable bordered hover responsive>
+                          <CTableHead>
+                            <CTableRow>
+                              <CTableHeaderCell>No</CTableHeaderCell>
+                              <CTableHeaderCell>Date</CTableHeaderCell>
+                              <CTableHeaderCell>Machine</CTableHeaderCell>
+                              <CTableHeaderCell>Problem Description</CTableHeaderCell>
+                              <CTableHeaderCell>Duration</CTableHeaderCell>
+                              <CTableHeaderCell>TL Check</CTableHeaderCell>
+                              <CTableHeaderCell>GL Check</CTableHeaderCell>
+                              <CTableHeaderCell>SH Check</CTableHeaderCell>
+                              <CTableHeaderCell>Mgr Check</CTableHeaderCell>
+                            </CTableRow>
+                          </CTableHead>
+                          <CTableBody>
+                            <CTableRow v-for="(item, index) in monthlyDetails" :key="item.fid || index">
+                              <CTableDataCell>{{ index + 1 }}</CTableDataCell>
+                              <CTableDataCell>{{ formatDate(item.fstart_time) }}</CTableDataCell>
+                              <CTableDataCell>{{ item.fmc_name }}</CTableDataCell>
+                              <CTableDataCell class="text-left">{{ item.ferror_name }}</CTableDataCell>
+                              <CTableDataCell>{{ item.fdur }} min</CTableDataCell>
+                              <CTableDataCell><span :class="['indicator', item.tlCheck]" /></CTableDataCell>
+                              <CTableDataCell><span :class="['indicator', item.lhCheck]" /></CTableDataCell>
+                              <CTableDataCell><span :class="['indicator', item.shCheck]" /></CTableDataCell>
+                              <CTableDataCell><span :class="['indicator', item.dhCheck]" /></CTableDataCell>
+                            </CTableRow>
+                          </CTableBody>
+                        </CTable>
+                      </div>
+                      <div v-else class="text-center">
+                        {{ selectedMonthName ? 'No data available for this month.' : 'Click on a bar in the chart to view monthly details.' }}
+                      </div>
+                    </CCardBody>
+                  </CCard>
                 </CCol>
               </CRow>
             </CCardBody>
@@ -188,6 +241,9 @@ export default {
       isLoading: false,
       currentTab: 0,
       selectedYear: null,
+      showMonthlyModal: false,
+      monthlyDetails: [],
+      selectedMonthName: '',
       graphData: {
         labels: [],
         datasets: []
@@ -198,6 +254,12 @@ export default {
           height: 350,
           toolbar: {
             show: true
+          },
+          events: {
+            dataPointSelection: (event, chartContext, config) => {
+              const monthIndex = config.dataPointIndex;
+              this.showMonthlyDetails(monthIndex);
+            }
           }
         },
         plotOptions: {
@@ -259,39 +321,7 @@ export default {
           return machineName.includes(keyword) || problemName.includes(keyword)
         })
       }
-      if (this.selectedFilter === 'LTR') {
-        list = list.filter(item => {
-          const lineKey = (item.fline || '').trim().toLowerCase()
-          const group = LINE_MAP[lineKey] || ''
-          const duration = Number(item.fdur)
-          if (group === 'casting' && duration >= 120 && duration <= 659) {
-            return true
-          }
-          if (group === 'machining' && duration >= 120 && duration <= 359) {
-            return true
-          }
-          if (group === 'assy' && duration >= 15 && duration <= 179) {
-            return true
-          }
-          return false
-        })
-      } else if (this.selectedFilter === 'SLTR') {
-        list = list.filter(item => {
-          const lineKey = (item.fline || '').trim().toLowerCase()
-          const group = LINE_MAP[lineKey] || ''
-          const duration = Number(item.fdur)
-          if (group === 'casting' && duration > 659) {
-            return true
-          }
-          if (group === 'machining' && duration > 359) {
-            return true
-          }
-          if (group === 'assy' && duration > 179) {
-            return true
-          }
-          return false
-        })
-      }
+      // Remove manual filtering since data is now fetched from API with proper filtering
       return list
     },
     yearOptions() {
@@ -347,10 +377,20 @@ export default {
         return 'delayed'
       }
     },
-    getTlIndicator(item) {
-      const hasPermanentCM = item.fpermanet_cm !== null
-      const hasOldPermanentCM = item.fpermanet_cm_lama !== null
-      if (hasPermanentCM || hasOldPermanentCM) {
+    getTlIndicator(fpermanet_cm, fpermanet_cm_lama) {
+      const isNonEmpty = (value) => {
+        if (Array.isArray(value)) {
+          return value.length > 0
+        } else if (typeof value === 'string') {
+          const trimmed = value.trim()
+          if (trimmed === '' || trimmed === '[]') {
+            return false
+          }
+          return true
+        }
+        return false
+      }
+      if (isNonEmpty(fpermanet_cm) || isNonEmpty(fpermanet_cm_lama)) {
         return 'approved'
       } else {
         return 'delayed'
@@ -360,7 +400,7 @@ export default {
       return raw.map(item => {
         const processedItem = {
           ...item,
-          tlCheck: this.getTlIndicator(item),
+          tlCheck: this.getTlIndicator(item.fpermanet_cm, item.fpermanet_cm_lama),
           lhCheck: this.getClass(Number(item.cmLhApprove), item.cmLhFeedback),
           shCheck: this.getClass(Number(item.cmShApprove), item.cmShFeedback),
           dhCheck: this.getClass(Number(item.cmDhApprove), item.cmDhFeedback)
@@ -412,6 +452,36 @@ export default {
         this.isLoading = false
       }
     },
+    async fetchFilteredData(type) {
+      this.isLoading = true
+      try {
+        const response = await api.get(`/summary/ltr-sltr-summary?type=${type}`)
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch filtered LTB summary, status: ' + response.status)
+        }
+        let raw = response.data.data.delayProblems
+        raw = Array.isArray(raw[0]) ? raw[0] : raw
+        console.log(`▶️ RAW SAMPLE for ${type}:`, raw[0])
+        console.log(`📋 Total ${type} problems loaded:`, raw.length)
+
+        this.problems = this.prepareProblems(raw)
+        this.graphData = this.prepareGraphData(this.problems)
+
+        console.log(`✅ ${type} Problems processed:`, this.problems.length)
+        console.log('📊 Graph data prepared:', this.graphData)
+
+        if (this.yearOptions.length > 0) {
+          this.selectedYear = this.yearOptions[0]
+          console.log('🎯 Selected year set to:', this.selectedYear)
+        }
+        // Initialize chart series with empty data
+        this.updateChartSeries()
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.isLoading = false
+      }
+    },
     updateChartSeries() {
       if (!this.selectedYear) {
         this.chartSeries[0].data = new Array(12).fill(0)
@@ -439,6 +509,23 @@ export default {
         monthlyData: monthlyData,
         chartSeries: this.chartSeries[0].data
       })
+    },
+    showMonthlyDetails(monthIndex) {
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      this.selectedMonthName = monthNames[monthIndex];
+      const year = this.selectedYear;
+
+      // Filter problems for the selected month and year
+      this.monthlyDetails = this.problems.filter(item => {
+        const date = new Date(item.fstart_time);
+        return date.getFullYear() === Number(year) && date.getMonth() === monthIndex;
+      });
+
+      console.log(`Showing details for ${this.selectedMonthName} ${year}:`, this.monthlyDetails.length, 'problems');
+    },
+    clearMonthlyFilter() {
+      this.monthlyDetails = [];
+      this.selectedMonthName = '';
     }
   },
   watch: {
