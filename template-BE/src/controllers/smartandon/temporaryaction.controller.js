@@ -5,9 +5,9 @@ const { sequelize } = require('../../models');
 
 const getTemporaryAction = async (req, res, next) => {
   try {
-    const { startDate, endDate, problemName, line, machine } = req.query;
+    const { startDate, endDate, problemName, line, machine, status } = req.query;
 
-    console.log('Received query params:', { startDate, endDate, problemName, line, machine });
+    console.log('Received query params:', { startDate, endDate, problemName, line, machine, status });
 
     let whereClause = 'WHERE fid IS NOT NULL';
 
@@ -18,13 +18,16 @@ const getTemporaryAction = async (req, res, next) => {
       whereClause += ` AND fdate <= '${endDate}'`;
     }
     if (problemName) {
-      whereClause += ` AND fproblem LIKE '%${problemName}%'`;
+      whereClause += ` AND (fproblem LIKE '%${problemName}%' OR fchanges_item LIKE '%${problemName}%' OR fnote LIKE '%${problemName}%')`;
     }
     if (line) {
       whereClause += ` AND fline = '${line}'`;
     }
     if (machine) {
       whereClause += ` AND fmc = '${machine}'`;
+    }
+    if (status !== undefined && status !== null && status !== '') {
+      whereClause += ` AND fstatus = '${status}'`;
     }
 
     console.log('Generated WHERE clause:', whereClause);

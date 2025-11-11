@@ -1,4 +1,5 @@
 <template>
+  
   <CRow>
     <CCol class="mb-3">
       <CCard class="main-dashboard-card" style="width: 100%; height: 100%;">
@@ -57,6 +58,15 @@
             </CCol>
           </CRow>
 
+          <!-- <CRow class="dashboard-header-mobile">
+            <CCol class="mobile-title-col">
+              <label class="dashboard-title-mobile">Smartandon Dashboard</label>
+            </CCol>
+            <CCol class="mobile-time-col">
+              <small class="text-muted mobile-time">Last updated: {{ getCurrentTime() }}</small>
+            </CCol>
+          </CRow> -->
+
           <CRow class="stats-row">
             <CCol style="width: 15%;" sm="4">
               <div class="stat-card active-problems">
@@ -75,7 +85,7 @@
                   <Clock size="20" />
                 </div>
                 <div class="stat-content">
-                  <div class="stat-number">{{ getTodayProblemsCount() }}</div>
+                  <div class="stat-number">{{ todayProblemsCount }}</div>
                   <div class="stat-label">Problems Today</div>
                 </div>
               </div>
@@ -1263,8 +1273,8 @@ import { useRouter } from 'vue-router'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 import { CFormSelect } from '@coreui/vue'
-import { ModelSelect } from 'vue3-search-select'
-import 'vue3-search-select/Vue-Search-Select.css'
+import { ModelSelect } from 'vue-search-select'
+import "vue-search-select/dist/VueSearchSelect.css"
 import EditProblemModal from './ProblemHistory/EditProblemModal.vue'
 const visibleStaticBackdropDemo = ref(false);
 const visibleEnd = ref(false)
@@ -1402,6 +1412,7 @@ export default {
       loadingFollowupLtr: false,
       weeklyLtrCount: 0,
       weeklySltrCount: 0,
+      todayProblemsCount: 0,
 
       visibleEditModal: false,
       editModalLoading: false,
@@ -1697,13 +1708,6 @@ export default {
         route: '/app/CMFollowup',
       },
       {
-        title: 'Order Spareparts',
-        icon: 'cilCart',
-        description: 'Order Spareparts',
-        color: 'warning',
-        route: '/app/order-spareparts-redirect',
-      },
-      {
         title: 'MTBF MTTR',
         icon: 'cilSpeedometer',
         description: 'Mean Time Between Failures metrics',
@@ -1718,11 +1722,32 @@ export default {
         route: '/app/LTBSummary',
       },
       {
-        title: 'Edit Data Smartandon',
-        icon: 'cilClipboard',
-        description: 'Edit Smartandon data',
-        color: 'dark',
-        route: '/app/EditDataSmartandon',
+        title: 'KY Machines',
+        icon: 'cilWarning',
+        description: 'Machine hazard prediction and safety observation records',
+        color: 'secondary',
+        route: '/app/KYMachine',
+      },
+      {
+        title: 'Q6 Analysis',
+        icon: 'cilMagnifyingGlass',
+        description: 'Q6 analysis and insights',
+        color: 'primary',
+        route: '/app/q6-analysis',
+      },
+      {
+        title: 'Temporary Action List',
+        icon: 'cilJustifyLeft',
+        description: 'Temporary action list management',
+        color: 'warning',
+        route: '/app/TemporaryActionList',
+      },
+      {
+        title: 'Floating Plunger Tips',
+        icon: 'cilLineStyle',
+        description: 'Floating plunger tips and guidance',
+        color: 'info',
+        route: '/app/FloatingPlungerTips',
       },
       {
         title: 'Sparepart Analysis',
@@ -1739,18 +1764,25 @@ export default {
         route: '/app/JobAnalysis',
       },
       {
-        title: 'KY Machines',
-        icon: 'cilWarning',
-        description: 'Machine hazard prediction and safety observation records',
-        color: 'secondary',
-        route: '/app/KYMachine',
+        title: 'Focus Thema',
+        icon: 'cilBlurCircular',
+        description: 'Focus Thema management',
+        color: 'success',
+        route: '/app/FocusThema',
       },
       {
-        title: 'Temporary Action List',
-        icon: 'cilJustifyLeft',
-        description: 'Temporary action list management',
+        title: 'Edit Data Smartandon',
+        icon: 'cilClipboard',
+        description: 'Edit Smartandon data',
+        color: 'dark',
+        route: '/app/EditDataSmartandon',
+      },
+      {
+        title: 'Order Spareparts',
+        icon: 'cilCart',
+        description: 'Order Spareparts',
         color: 'warning',
-        route: '/app/TemporaryActionList',
+        route: '/app/order-spareparts-redirect',
       },
       {
         title: 'TPM System',
@@ -1783,6 +1815,7 @@ export default {
         await this.fetchFollowupLtrProblems();
         await this.fetchWeeklyTotalDuration();
         await this.fetchWeeklyLtrSltrCount();
+        await this.fetchTodayProblemsCount();
     // Initialize filtered dashboard cards
     this.filteredDashboardCards = this.dashboardCards;
   },
@@ -2123,7 +2156,8 @@ export default {
       this.fetchDashboardData();
       this.autoRefreshInterval = setInterval(() => {
         this.fetchDashboardData();
-      }, 30000); // 30 seconds
+        this.fetchTodayProblemsCount();
+      }, 120000); // 2 minutes
     },
     stopAutoRefresh() {
       if (this.autoRefreshInterval) {
@@ -2215,6 +2249,7 @@ export default {
             this.fetchFollowupLtrProblems();
             this.fetchWeeklyTotalDuration();
             this.fetchWeeklyLtrSltrCount();
+            this.fetchTodayProblemsCount();
           } else {
             alert('Failed to save input');
           }
@@ -2756,6 +2791,7 @@ export default {
           this.fetchDashboardData()
           this.fetchWeeklyTotalDuration()
           this.fetchWeeklyLtrSltrCount()
+          this.fetchTodayProblemsCount()
         } else {
           throw new Error('Failed to update problem, status: ' + response.status)
         }
@@ -2793,19 +2829,26 @@ export default {
       // if (value >= 75) return 'warning';
       // return 'danger';
     },
-    getTodayProblemsCount() {
-      // Use data from frequency chart for today's problems count
-      const today = moment().format('YYYY-MM-DD');
-      const todayTimestamp = new Date(today).getTime();
-
-      // Find today's data point in the frequency series
-      const todayDataPoint = this.problemFrequencySeries[0].data.find(point => {
-        const pointDate = new Date(point[0]).toDateString();
-        const todayDate = new Date(todayTimestamp).toDateString();
-        return pointDate === todayDate;
-      });
-
-      return todayDataPoint ? todayDataPoint[1] : 0;
+    async fetchTodayProblemsCount() {
+      try {
+        const today = moment().format('YYYY-MM-DD');
+        const params = {
+          startDate: today,
+          finishDate: today,
+          limitView: 0
+        };
+        console.log('Fetching today problems count with params:', params);
+        const response = await api.get('/smartandon/problemView', { search: JSON.stringify(params) });
+        console.log('Today problems count response:', response);
+        if (response.data && response.data.data) {
+          this.todayProblemsCount = response.data.data.length;
+          console.log('Today problems count:', this.todayProblemsCount);
+        }
+        // Don't reset to 0 if no data or on error - keep previous value
+      } catch (error) {
+        console.error('Failed to fetch today problems count:', error);
+        // Don't reset to 0 on error - keep previous value
+      }
     },
     getTotalWeekDuration() {
       return Object.values(this.todayLineDurations).reduce((sum, duration) => sum + duration, 0);

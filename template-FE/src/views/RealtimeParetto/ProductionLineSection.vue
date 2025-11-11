@@ -51,7 +51,6 @@
                         >Last Occurred</CTableHeaderCell
                       >
                       <CTableHeaderCell scope="col">Problem</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Operator</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Duration</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
@@ -64,7 +63,6 @@
                         formatDateTime(row.startTime)
                       }}</CTableDataCell>
                       <CTableDataCell>{{ row.problem }}</CTableDataCell>
-                      <CTableDataCell>{{ row.operator }}</CTableDataCell>
                       <CTableDataCell>{{ row.duration }}</CTableDataCell>
                     </CTableRow>
                   </CTableBody>

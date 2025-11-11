@@ -15,15 +15,6 @@ import { useRouter } from 'vue-router';
 import ApexChart from 'vue3-apexcharts'
 import { CContainer } from '@coreui/vue'
 
-const q6Categories = [
-  'Q1 (Diagnose)',
-  'Q2 (SpareParts)',
-  'Q3 (Tools)',
-  'Q4 (Maintenance Ability)',
-  'Q5 (Machine Setting)',
-  'Q6 (Machine Backup)'
-]
-
 const props = defineProps({
   graphData: {
     type: Object,
@@ -33,9 +24,17 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  categories: {
+    type: Array,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
 });
 
-const { graphData, seriesData } = toRefs(props);
+const { graphData, seriesData, categories, title } = toRefs(props);
 
 const router = useRouter();
 
@@ -84,15 +83,15 @@ const options = computed(() => {
         stroke: { 
             width: g.chartOptions?.strokeWidth ?? [4]
         },
-        title: { text: 'Q6 Analysis Graph' },
+        title: { text: title.value },
         dataLabels: {
             enabled: true,
             enabledOnSeries: g.chartOptions?.enabledOnSeries ?? [],
         },
 
-        labels: q6Categories,
+        labels: categories.value,
         xaxis: {
-            categories: q6Categories
+            categories: categories.value
         },
         yaxis: Array.isArray(g.chartOptions?.yaxis) && g.chartOptions.yaxis.length > 0
             ? g.chartOptions.yaxis[0]

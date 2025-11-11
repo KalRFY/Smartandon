@@ -104,13 +104,6 @@
             // },
             {
               component: 'CNavItem',
-              to: '/app/MTBFMTTR',
-              name: 'MTBF MTTR',
-              icon: 'cilSpeedometer',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
               to: '/app/ProblemHistory',
               name: 'Problem History',
               icon: 'cilHistory',
@@ -132,23 +125,23 @@
             },
             {
               component: 'CNavItem',
+              to: '/app/MTBFMTTR',
+              name: 'MTBF MTTR',
+              icon: 'cilSpeedometer',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/LTBSummary',
+              name: 'LTB Report Status',
+              icon: 'cilDescription',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
               to: '/app/KYMachine',
               name: 'KY Machines',
               icon: 'cilWarning',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/order-spareparts-redirect',
-              name: 'Order Spareparts',
-              icon: 'cilCart',
-              parentId: 'ROOT',
-            },
-            {
-              component: 'CNavItem',
-              to: '/app/SparepartAnalysis',
-              name: 'Sparepart Analysis',
-              icon: 'cilBarChart',
               parentId: 'ROOT',
             },
             {
@@ -165,6 +158,27 @@
               icon: 'cilJustifyLeft',
               parentId: 'ROOT',
             },
+            {
+              component: 'CNavItem',
+              to: '/app/FloatingPlungerTips',
+              name: 'Floating Plunger Tips',
+              icon: 'cilLineStyle',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/SparepartAnalysis',
+              name: 'Sparepart Analysis',
+              icon: 'cilBarChart',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/JobAnalysis',
+              name: 'Job Analysis',
+              icon: 'cilFolderOpen',
+              parentId: 'ROOT',
+            },
           ]
         },
         {
@@ -177,16 +191,9 @@
             items: [
               {
                 component: 'CNavItem',
-                to: '/app/SparepartAnalysis',
-                name: 'Sparepart Analysis',
-                icon: 'cilBarChart',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/JobAnalysis',
-                name: 'Job Analysis',
-                icon: 'cilFolderOpen',
+                to: '/app/FocusThema',
+                name: 'Focus Thema',
+                icon: 'cilBlurCircular',
                 parentId: 'ROOT',
               },
               {

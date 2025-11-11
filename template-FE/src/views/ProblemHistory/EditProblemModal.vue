@@ -315,14 +315,11 @@
             required
             v-model="localSubmit.avCategory"
           >
-            <option :value="localSubmit.avCategory" selected>
-              {{ localSubmit.avCategory }}
-            </option>
             <option disabled value="">Choose AV Category...</option>
-            <option value="1">MESIN</option>
-            <option value="2">DIES</option>
-            <option value="3">TOOL</option>
-            <option value="4">COOLANT</option>
+            <option value="MESIN">MESIN</option>
+            <option value="DIES">DIES</option>
+            <option value="TOOL">TOOL</option>
+            <option value="COOLANT">COOLANT</option>
           </CFormSelect>
         </CCol>
         <CCol md="6">
@@ -394,9 +391,17 @@
             </option>
             <option disabled value="">Choose problem Category...</option>
             <option :value="1">Small</option>
-            <option :value="2">Repeat</option>
-            <option :value="3">LTR</option>
-            <option :value="4">SLTR</option>
+            <option :value="2">Repeat (Problem yang sama terjadi lebih dari 2 kali dalam sehari)</option>
+            <option :value="3">LTR
+              (Casting: Durasi antara 120 hingga 659 menit.
+              Machining: Durasi antara 120 hingga 359 menit.
+              Assy (Assembly): Durasi antara 15 hingga 179 menit.)
+            </option>
+            <option :value="4">SLTR
+              (Casting: Durasi lebih dari 659 menit.
+              Machining: Durasi lebih dari 359 menit.
+              Assy (Assembly): Durasi lebih dari 179 menit.)
+            </option>
           </CFormSelect>
         </CCol>
       </CRow>
@@ -1126,16 +1131,15 @@
                         />
                       </CCol>
                       <CCol xs="6" md="2">
-                        <CFormSelect v-model="yokotenForm.pic">
-                          <option value="">PIC</option>
-                          <option
-                            v-for="pic in picOptions"
-                            :key="pic.value"
-                            :value="pic.value"
-                          >
-                            {{ pic.label }}
-                          </option>
-                        </CFormSelect>
+                        <Treeselect
+                          v-model="yokotenForm.pic"
+                          :options="picOptions"
+                          :searchable="true"
+                          :clearable="true"
+                          placeholder="Select PIC"
+                          :value-key="'id'"
+                          :label-key="'label'"
+                        />
                       </CCol>
                       <CCol xs="6" md="2">
                         <CFormInput
@@ -1257,20 +1261,17 @@
                             <option value="Sparepart">Sparepart</option>
                           </CFormSelect>
                         </CCol>
-                        <CCol xs="12" md="2">
-                          <CFormSelect
-                            v-model="countermeasureKenapaTerjadiForm.pic"
-                          >
-                            <option value="">PIC</option>
-                            <option
-                              v-for="pic in picOptions"
-                              :key="pic.value"
-                              :value="pic.value"
-                            >
-                              {{ pic.label }}
-                            </option>
-                          </CFormSelect>
-                        </CCol>
+                      <CCol xs="12" md="2">
+                        <Treeselect
+                          v-model="countermeasureKenapaTerjadiForm.pic"
+                          :options="picOptions"
+                          :searchable="true"
+                          :clearable="true"
+                          placeholder="Select PIC"
+                          :value-key="'id'"
+                          :label-key="'label'"
+                        />
+                      </CCol>
                       <CCol xs="auto">
                         <CButton style="color: white;" color="success" @click="submitCountermeasureKenapaTerjadi">Submit</CButton>
                       </CCol>
@@ -1415,18 +1416,15 @@
                         </CFormSelect>
                       </CCol>
                       <CCol xs="12" md="2">
-                        <CFormSelect
+                        <Treeselect
                           v-model="countermeasureKenapaLamaForm.pic"
-                        >
-                          <option value="">PIC</option>
-                          <option
-                            v-for="pic in picOptions"
-                            :key="pic.value"
-                            :value="pic.value"
-                          >
-                            {{ pic.label }}
-                          </option>
-                        </CFormSelect>
+                          :options="picOptions"
+                          :searchable="true"
+                          :clearable="true"
+                          placeholder="Select PIC"
+                          :value-key="'id'"
+                          :label-key="'label'"
+                        />
                       </CCol>
                       <CCol xs="auto">
                         <CButton style="color: white;" color="success" @click="submitCountermeasureKenapaLama">Submit</CButton>
@@ -2432,15 +2430,7 @@ export default {
       try {
         let avCategories = '';
 
-        if (localSubmit.value.avCategory === '1') {
-          avCategories = 'MESIN'
-        } else if (localSubmit.value.avCategory === '2') {
-          avCategories = 'DIES'
-        } else if (localSubmit.value.avCategory === '3') {
-          avCategories = 'TOOL'
-        } else if (localSubmit.value.avCategory === '4') {
-          avCategories = 'COOLANT'
-        }
+        avCategories = localSubmit.value.avCategory
 
         if (!localSubmit.value || !localSubmit.value.machineName) {
           alert('Please input machine name')
@@ -2814,7 +2804,7 @@ export default {
     const editYokoten = (idx) => {
       const item = yokotenList.value[idx]
       if (item) {
-        const picOption = picOptions.value.find(opt => opt.label === item.pic)
+        const picOption = picOptions.value.find(opt => String(opt.value) === String(item.pic))
         yokotenForm.value = {
           ...item,
           pic: picOption ? picOption.value : item.pic
@@ -2872,7 +2862,7 @@ export default {
     const editCountermeasureKenapaTerjadi = (idx) => {
       const item = countermeasureKenapaTerjadiList.value[idx]
       if (item) {
-        const picOption = picOptions.value.find(opt => opt.label === item.pic)
+        const picOption = picOptions.value.find(opt => String(opt.value) === String(item.pic))
         countermeasureKenapaTerjadiForm.value = {
           ...item,
           pic: picOption ? picOption.value : item.pic
@@ -2974,7 +2964,7 @@ export default {
     const editCountermeasureKenapaLama = (idx) => {
       const item = countermeasureKenapaLamaList.value[idx]
       if (item) {
-        const picOption = picOptions.value.find(opt => opt.label === item.pic)
+        const picOption = picOptions.value.find(opt => String(opt.value) === String(item.pic))
         countermeasureKenapaLamaForm.value = {
           ...item,
           pic: picOption ? picOption.value : item.pic
@@ -3169,7 +3159,7 @@ export default {
 
           picOptions.value = Array.isArray(data)
             ? data.map((m) => ({
-              value: String(m.fid) || m.name,
+              id: m.fname,
               label: m.fname,
             }))
             : []

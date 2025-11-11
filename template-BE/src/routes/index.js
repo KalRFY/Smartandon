@@ -25,6 +25,8 @@ const kyMachineRoutes = require('./smartandon/kyMachine');
 const sparepartRoutes = require('./smartandon/spareparts');
 const q6Routes = require('./smartandon/q6.route');
 const temporaryActionListRoutes = require('./smartandon/temporaryactionlist');
+const focusThemaRoutes = require('./smartandon/focusThema');
+const floatingPlungerTipsRoutes = require('./smartandon/floatingPlungerTips');
 
 const GaugeRoute = require('./qdc/Guage.route');
 const CommonRoute = require('./qdc/Common.route');
@@ -120,6 +122,14 @@ const defaultRoutes = [
   {
     path: '/smartandon',
     route: temporaryActionListRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: focusThemaRoutes,
+  },
+  {
+    path: '/smartandon',
+    route: floatingPlungerTipsRoutes,
   },
 ];
 

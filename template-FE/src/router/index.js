@@ -154,6 +154,33 @@ const appRoutes = [
       title: 'Temporary Action List',
     },
   },
+
+  {
+    path: '/app/FloatingPlungerTips',
+    name: 'Floating Plunger Tips',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/FloatingPlungerTips.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Floating Plunger Tips',
+    },
+  },
+
+  {
+    path: '/app/FocusThema',
+    name: 'Focus Thema',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/FocusThema.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Focus Thema',
+    },
+  },
+  
   {
     path: '/app/LTBSummary',
     name: 'LTB Summary',

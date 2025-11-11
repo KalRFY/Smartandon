@@ -15,6 +15,10 @@ class OEESyncService {
 
     this.isRunning = true;
     try {
+      // Check MariaDB connection before proceeding
+      await mariadbSequelize.authenticate();
+      console.log('MariaDB connection successful, proceeding with OEE data sync...');
+
       console.log('Starting OEE data sync from MariaDB to tb_prod2...');
 
       // Fetch all PROD data from MariaDB (using same pattern as working controller functions)
@@ -64,7 +68,11 @@ class OEESyncService {
 
       console.log(`OEE data sync completed successfully. Synced ${prodData.length} records.`);
     } catch (error) {
-      console.error('Error during OEE data sync:', error);
+      if (error.name === 'SequelizeConnectionError' || error.name === 'SequelizeConnectionRefusedError') {
+        console.error('MariaDB connection failed, skipping OEE sync:', error.message);
+      } else {
+        console.error('Error during OEE data sync:', error);
+      }
     } finally {
       this.isRunning = false;
     }
