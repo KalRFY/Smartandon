@@ -3117,13 +3117,12 @@ export default {
         console.log('API response for members:', res)
         if (res.status === 200) {
           const data = res.data.data || res.data
-          console.log('PIC options data:', data)
 
           // Filter members by current user's noreg for PIC options (keep filtered for PIC)
           let filteredData = data
           if (currentUserNoreg) {
             filteredData = data.filter(member => member.fnoreg === currentUserNoreg)
-            console.log(`Filtered members by noreg ${currentUserNoreg}:`, filteredData.length, 'members found')
+            // console.log(`Filtered members by noreg ${currentUserNoreg}:`, filteredData.length, 'members found')
           } else {
             console.warn('No current user noreg available, showing all members')
           }

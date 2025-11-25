@@ -1,5 +1,4 @@
 <template>
-  
   <CRow>
     <CCol>
       <h3>LTB Report Status</h3>

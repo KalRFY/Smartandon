@@ -7,8 +7,13 @@
       })
   ">
     <CSidebarBrand>
-      <img src="../assets/brand/Toyota_logo.png" class="img-fluid sidebar-brand-full" width="200" height="200" />
-      <img src="../assets/brand/Toyota_logo.png" class="sidebar-brand-narrow" width="36" height="10" />
+      <template v-if="showAndonText">
+        <div class="sidebar-brand-text sidebar-andon-text">ANDON</div>
+      </template>
+      <template v-else>
+        <img src="../assets/brand/Toyota_logo.png" class="img-fluid sidebar-brand-full" width="200" height="200" />
+        <img src="../assets/brand/Toyota_logo.png" class="sidebar-brand-narrow" width="36" height="10" />
+      </template>
     </CSidebarBrand>
     <AppSidebarNav v-bind:nav="nav" />
     <CSidebarToggler id="SidebarToggler" class="d-none d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
@@ -72,6 +77,7 @@
     },
     data() {
       return {
+        showAndonText: false,
         nav: [
           {
             component: 'CNavItem',
@@ -217,6 +223,13 @@
                 icon: 'cilMemory',
                 parentId: 'ROOT',
               },
+              // {
+              //   component: 'CNavItem',
+              //   to: '/app/RobotInspection',
+              //   name: 'Robot Inspection',
+              //   icon: 'cilJustifyLeft',
+              //   parentId: 'ROOT',
+              // },
             ]
           }
           // {
@@ -326,5 +339,55 @@
 
     //   //this.$router.push('/dc/dashboard');
     // }
+    methods: {
+      async fetchDataFrontend() {
+        try {
+
+          console.log('[FE fetchDataFrontend1] Starting API call...');
+          const frontendResponse = await api.get('/smartandon/frontend');
+
+          console.log('[FE fetchDataFrontend1] API response received:', frontendResponse.data);
+
+          if (frontendResponse.data && Array.isArray(frontendResponse.data) && frontendResponse.data.length > 0) {
+            console.log('[FE fetchDataFrontend1] First item of frontend data:', frontendResponse.data[0]);
+
+            if (frontendResponse.data[0].frontend === 1) {
+              this.showAndonText = true;
+            } else {
+              this.showAndonText = false;
+            }
+          } else {
+            
+            console.warn('[FE fetchDataFrontend1] No valid data array in response');
+            this.showAndonText = false;
+          }
+        } catch (error) {
+          console.error('[FE fetchDataFrontend1] Error fetching frontend data:', error);
+          console.error('[FE fetchDataFrontend1] Error details:', error.response?.data || error.message);
+          this.showAndonText = false;
+        }
+      },
+    },
+    mounted() {
+      this.fetchDataFrontend();
+      this.fetchInterval = setInterval(() => {
+        this.fetchDataFrontend();
+      }, 20 * 60 * 1000); // 20 minutes interval
+    },
+    beforeUnmount() {
+      if (this.fetchInterval) {
+        clearInterval(this.fetchInterval);
+      }
+    },
   }
   </script>
+
+<style scoped>
+  .sidebar-andon-text {
+    font-size: 50px;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    padding-left: 15px;
+    width: 100%;
+  }
+</style>

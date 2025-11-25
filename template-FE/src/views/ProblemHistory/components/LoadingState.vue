@@ -1,4 +1,3 @@
-<!-- LoadingState.vue -->
 <template>
   <div>
     <CFormLabel>Loading data...</CFormLabel>

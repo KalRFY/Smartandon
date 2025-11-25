@@ -73,6 +73,7 @@
         </div>
       </CCardBody>
     </CCard>
+
   </div>
 </template>
 
@@ -94,6 +95,11 @@ import {
   CTableHeaderCell,
   CTableDataCell,
   CSpinner,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
 } from '@coreui/vue'
 import {
   ChevronDown,
@@ -125,6 +131,11 @@ export default {
     CTableHeaderCell,
     CTableDataCell,
     CSpinner,
+    CModal,
+    CModalHeader,
+    CModalTitle,
+    CModalBody,
+    CModalFooter,
     ChevronDown,
     ChevronUp,
     FileSpreadsheet,
@@ -149,6 +160,9 @@ export default {
     const isExpanded = ref(true)
     const loading = ref(false)
     const error = ref(null)
+    const modalVisible = ref(false)
+    const selectedProblemData = ref([])
+    const selectedProblemName = ref('')
 
 
 
@@ -228,7 +242,7 @@ export default {
       })
 
       return [{
-        name: 'Duration (mins)',
+        name: props.metricMode === 'frequency' ? 'Frequency' : 'Duration (mins)',
         type: 'column',
         data: sortedData.map((item) => item.quantity),
       }, {
@@ -245,7 +259,35 @@ export default {
         toolbar: {
           show: false
         },
-        background: 'transparent'
+        background: 'transparent',
+        events: {
+          click: function(event, chartContext, config) {
+            console.log('Chart clicked:', { event, chartContext, config })
+            if (config && config.seriesIndex === 0 && config.dataPointIndex !== undefined) {
+              const categories = config.w?.config?.xaxis?.categories || []
+              console.log('Categories from config:', categories)
+              console.log('DataPointIndex:', config.dataPointIndex)
+              const problemName = categories[config.dataPointIndex]
+              console.log('Problem name:', problemName)
+
+              // Try alternative way to get categories
+              const sortedData = [...props.chartData].sort((a, b) => b.quantity - a.quantity)
+              const altCategories = sortedData.map(item => item.name)
+              console.log('Alternative categories from props:', altCategories)
+              const altProblemName = altCategories[config.dataPointIndex]
+              console.log('Alternative problem name:', altProblemName)
+
+              const finalProblemName = altProblemName || problemName
+              console.log('Final problem name:', finalProblemName)
+
+              if (finalProblemName) {
+                const problemData = props.tableData.filter(row => row.problem === finalProblemName).map(row => row.rawData || row)
+                console.log('Filtered problem data:', problemData)
+                emit('show-problem-modal', { problemName: finalProblemName, problemData })
+              }
+            }
+          }
+        }
       },
       plotOptions: {
         bar: {
@@ -294,9 +336,10 @@ export default {
           }
         }
       },
+
       yaxis: [{
         title: {
-          text: 'Duration (mins)',
+          text: props.metricMode === 'frequency' ? 'Frequency' : 'Duration (mins)',
         },
       }, {
         opposite: true,
@@ -318,7 +361,7 @@ export default {
         y: {
           formatter: function (val, { seriesIndex }) {
             if (seriesIndex === 0) {
-              return val + " mins"
+              return props.metricMode === 'frequency' ? val + " times" : val + " mins"
             } else {
               return val + "%"
             }
@@ -326,7 +369,7 @@ export default {
         }
       },
       title: {
-        text: `${props.title} - Problem Duration Chart`,
+        text: `${props.title} - Problem ${props.metricMode === 'frequency' ? 'Frequency' : 'Duration'} Chart`,
         align: 'center',
         style: {
           fontSize: '14px',
@@ -374,6 +417,9 @@ export default {
       isExpanded,
       loading,
       error,
+      modalVisible,
+      selectedProblemData,
+      selectedProblemName,
       toggleExpanded,
       refreshData,
       exportData,

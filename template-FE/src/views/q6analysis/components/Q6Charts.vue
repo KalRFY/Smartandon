@@ -72,7 +72,8 @@ const options = computed(() => {
             events: {
             dataPointSelection: (event, chartContext, config) => {
                 const si = config?.seriesIndex;
-                const item = s?.[si];
+                const di = config?.dataPointIndex;
+                const item = s?.[si]?.data?.[di];
                 if (!item || !item.fid) return;
                 router.push(`/editProblem?v_=${item.fid}`);
             },
@@ -87,6 +88,10 @@ const options = computed(() => {
         dataLabels: {
             enabled: true,
             enabledOnSeries: g.chartOptions?.enabledOnSeries ?? [],
+        },
+        tooltip: {
+            shared: true,
+            intersect: false
         },
 
         labels: categories.value,

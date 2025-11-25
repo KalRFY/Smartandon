@@ -1,5 +1,4 @@
 <template>
-  
   <CRow>
     <CCol class="mb-3">
       <CCard class="main-dashboard-card" style="width: 100%; height: 100%;">
@@ -67,7 +66,7 @@
             </CCol>
           </CRow> -->
 
-          <CRow class="stats-row">
+          <CRow class="stats-row" :class="{ 'landscape-mobile': isLandscapeMobile }">
             <CCol style="width: 15%;" sm="4">
               <div class="stat-card active-problems">
                 <div class="stat-icon">
@@ -1823,6 +1822,14 @@ export default {
     this.stopAutoRefresh();
   },
   computed: {
+    isLandscapeMobile() {
+      if (typeof window !== 'undefined') {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        return width > height && width <= 768;
+      }
+      return false;
+    },
     chunkedDashboardCards() {
       // Cache the result to avoid recalculation on every access
       if (!this._chunkedCache || this._lastFilteredCards !== this.filteredDashboardCards) {
@@ -1863,6 +1870,10 @@ export default {
     },
   },
   methods: {
+    handleResize() {
+      // Force re-computation of isLandscapeMobile
+      this.$forceUpdate();
+    },
     async fetchWeeklyLtrSltrCount() {
       try {
         console.log('[FE fetchWeeklyLtrSltrCount] Starting API call...');
@@ -3208,18 +3219,47 @@ p {
   gap: 0rem;
   justify-content: center;
   padding-bottom: 0rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stats-row.landscape-mobile {
+  gap: 0.5rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.stats-row.landscape-mobile .stat-card {
+  width: 140px;
+  height: 50px;
+  padding: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.stats-row.landscape-mobile .stat-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.stats-row.landscape-mobile .stat-number {
+  font-size: 1.2rem;
+}
+
+.stats-row.landscape-mobile .stat-label {
+  font-size: 0.6rem;
 }
 
 .stat-card {
   background: transparent;
   border-radius: 10px;
+  border: 1px;
   padding: 0.25rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
   transition: all 0.3s ease;
   height: 55px;
-  width: 150px;
+  width: 175px;
 }
 
 .stat-card:hover {
@@ -3227,8 +3267,8 @@ p {
 }
 
 .stat-icon {
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -3283,11 +3323,12 @@ p {
 }
 
 .stat-label {
-  font-size: 0.5rem;
-  color: #7f8c8d;
-  font-weight: 400;
+  font-size: 0.70rem;
+  color: #484e4f;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border: 1px;
 }
 
 /* Mobile hidden class */
@@ -3537,7 +3578,7 @@ p {
 
 .dashboard-card-wrapper {
   flex: 0 0 auto;
-  width: calc((100% - 40px) / 5); /* 5 cards visible with margins */
+  width: 200px; /* Fixed width for consistent card size */
   margin-right: 10px;
 }
 
@@ -3976,7 +4017,7 @@ p {
 }
 
 /* Mobile responsive layout for dashboard cards */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .dashboard-cards-container {
     flex-direction: column;
     overflow-x: hidden;

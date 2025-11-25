@@ -189,11 +189,11 @@
                         </CTableBody>
                       </CTable>
                       <CPagination class="mb-3" responsive>
-                        <CPaginationItem @click="goToPageFreq(1)" :disabled="currentPageFreq === 1">First</CPaginationItem>
-                        <CPaginationItem @click="goToPageFreq(currentPageFreq - 1)" :disabled="currentPageFreq === 1">Previous</CPaginationItem>
+                        <CPaginationItem @click="goToPageFreq(1)" :disabled="currentPageFreq === 1" style="font-size: 0.8em;">First</CPaginationItem>
+                        <CPaginationItem v-if="!isSmallScreen" @click="goToPageFreq(currentPageFreq - 1)" :disabled="currentPageFreq === 1">Previous</CPaginationItem>
                         <CPaginationItem v-for="page in visiblePagesFreq" :key="page" @click="goToPageFreq(page)" :active="page === currentPageFreq">{{ page }}</CPaginationItem>
-                        <CPaginationItem @click="goToPageFreq(currentPageFreq + 1)" :disabled="currentPageFreq === totalPagesFreq">Next</CPaginationItem>
-                        <CPaginationItem @click="goToPageFreq(totalPagesFreq)" :disabled="currentPageFreq === totalPagesFreq">Last</CPaginationItem>
+                        <CPaginationItem v-if="!isSmallScreen" @click="goToPageFreq(currentPageFreq + 1)" :disabled="currentPageFreq === totalPagesFreq">Next</CPaginationItem>
+                        <CPaginationItem @click="goToPageFreq(totalPagesFreq)" :disabled="currentPageFreq === totalPagesFreq" style="font-size: 0.8em;">Last</CPaginationItem>
                       </CPagination>
                     </CAccordionBody>
                   </CAccordionItem>
@@ -415,6 +415,7 @@
   />
 
   <CModal
+    size="lg"
     :visible="machineDetailsModalVisible"
     @close="machineDetailsModalVisible = false"
   >
@@ -457,6 +458,7 @@
   </CModal>
 
   <CModal
+    size="lg"
     :visible="usageDetailsModalVisible"
     @close="usageDetailsModalVisible = false"
   >
@@ -528,6 +530,7 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      windowWidth: window.innerWidth,
       problemFrequencySeries: [],
       problemFrequencyOptions: {},
       formatKey: 0,
@@ -606,6 +609,9 @@ export default {
   },
 
   computed: {
+    isSmallScreen() {
+      return this.windowWidth < 360
+    },
     visiblePages() {
       const total = this.totalPages
       const current = this.currentPage
@@ -692,10 +698,21 @@ export default {
     ApexCharts,
   },
 
+  mounted() {
+    window.addEventListener('resize', this.updateWindowWidth)
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateWindowWidth)
+  },
+
   watch: {
   },
 
   methods: {
+    updateWindowWidth() {
+      this.windowWidth = window.innerWidth
+    },
     formatDate(date) {
       return moment(date).format('DD/MM/YYYY');
     },
