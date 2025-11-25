@@ -5,10 +5,12 @@
       href="#"
       :disabled="currentPage === 1"
       @click.prevent="handlePageChange(1)"
+      style="font-size: 0.8em;"
     >
       First
     </CPaginationItem>
     <CPaginationItem
+      v-if="!isSmallScreen"
       href="#"
       :disabled="currentPage === 1"
       @click.prevent="handlePageChange(currentPage - 1)"
@@ -25,6 +27,7 @@
       {{ page }}
     </CPaginationItem>
     <CPaginationItem
+      v-if="!isSmallScreen"
       href="#"
       :disabled="currentPage === totalPages"
       @click.prevent="handlePageChange(currentPage + 1)"
@@ -35,6 +38,7 @@
       href="#"
       :disabled="currentPage === totalPages"
       @click.prevent="handlePageChange(totalPages)"
+      style="font-size: 0.8em;"
     >
       Last
     </CPaginationItem>
@@ -70,11 +74,34 @@ export default {
 
   emits: ['goToPage'],
 
+  data() {
+    return {
+      windowWidth: window.innerWidth,
+    }
+  },
+
+  mounted() {
+    window.addEventListener('resize', this.updateWindowWidth)
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateWindowWidth)
+  },
+
+  computed: {
+    isSmallScreen() {
+      return this.windowWidth < 360
+    },
+  },
+
   methods: {
     handlePageChange(page) {
       if (page !== this.currentPage && page >= 1 && page <= this.totalPages) {
         this.$emit('goToPage', page)
       }
+    },
+    updateWindowWidth() {
+      this.windowWidth = window.innerWidth
     },
   },
 }

@@ -110,120 +110,124 @@
             <CTabContent>
               <CTabPanel class="py-3" aria-labelledby="charts-tab-pane" :itemKey="'charts'">
                 <!-- ikdm-0102 Charts First -->
-                <CRow class="mb-3">
-                  <CCol lg="12" class="mb-3">
-                    <CCard class="chart-card">
-                      <CCardHeader>
-                        <strong>Upper Gap Tip for IKDM-0102</strong>
-                      </CCardHeader>
-                      <CCardBody>
-                        <div v-if="chartLoading" class="text-center">Loading chart...</div>
-                        <apexchart v-else-if="chartSeriesUpperGap0102[0]?.data?.length > 0 && chartOptionsUpperGap0102" type="line" height="350" :options="chartOptionsUpperGap0102" :series="chartSeriesUpperGap0102"></apexchart>
-                        <div v-else>No data available for Upper Gap Tip IKDM-0102</div>
-                      </CCardBody>
-                    </CCard>
-                  </CCol>
-                </CRow>
-                <CRow class="mb-3">
-                  <CCol lg="12" class="mb-3">
-                    <CCard class="chart-card">
-                      <CCardHeader>
-                        <strong>Upper Depth Tip for IKDM-0102</strong>
-                      </CCardHeader>
-                      <CCardBody>
-                        <div v-if="chartLoading" class="text-center">Loading chart...</div>
-                        <apexchart v-else-if="chartSeriesUpperDepth0102[0]?.data?.length > 0 && chartOptionsUpperDepth0102" type="line" height="350" :options="chartOptionsUpperDepth0102" :series="chartSeriesUpperDepth0102"></apexchart>
-                        <div v-else>No data available for Upper Depth Tip IKDM-0102</div>
-                      </CCardBody>
-                    </CCard>
-                  </CCol>
-                </CRow>
-                <CRow class="mb-3">
-                  <CCol lg="12" class="mb-3">
-                    <CCard class="chart-card">
-                      <CCardHeader>
-                        <strong>Lower Gap Tip for IKDM-0102</strong>
-                      </CCardHeader>
-                      <CCardBody>
-                        <div v-if="chartLoading" class="text-center">Loading chart...</div>
-                        <apexchart v-else-if="chartSeriesLowerGap0102[0]?.data?.length > 0 && chartOptionsLowerGap0102" type="line" height="350" :options="chartOptionsLowerGap0102" :series="chartSeriesLowerGap0102"></apexchart>
-                        <div v-else>No data available for Lower Gap Tip IKDM-0102</div>
-                      </CCardBody>
-                    </CCard>
-                  </CCol>
-                </CRow>
-                <CRow class="mb-3">
-                  <CCol lg="12" class="mb-3">
-                    <CCard class="chart-card">
-                      <CCardHeader>
-                        <strong>Lower Depth Tip for IKDM-0102</strong>
-                      </CCardHeader>
-                      <CCardBody>
-                        <div v-if="chartLoading" class="text-center">Loading chart...</div>
-                        <apexchart v-else-if="chartSeriesLowerDepth0102[0]?.data?.length > 0 && chartOptionsLowerDepth0102" type="line" height="350" :options="chartOptionsLowerDepth0102" :series="chartSeriesLowerDepth0102"></apexchart>
-                        <div v-else>No data available for Lower Depth Tip IKDM-0102</div>
-                      </CCardBody>
-                    </CCard>
-                  </CCol>
-                </CRow>
+                <div v-if="!selectedMachineLabel || selectedMachineLabel.includes('0102')">
+                  <CRow class="mb-3">
+                    <CCol lg="12" class="mb-3">
+                      <CCard class="chart-card">
+                        <CCardHeader>
+                          <strong>Upper Gap Tip for IKDM-0102</strong>
+                        </CCardHeader>
+                        <CCardBody>
+                          <div v-if="chartLoading" class="text-center">Loading chart...</div>
+                          <apexchart v-else-if="chartSeriesUpperGap0102[0]?.data?.length > 0 && chartOptionsUpperGap0102" type="line" height="350" :options="chartOptionsUpperGap0102" :series="chartSeriesUpperGap0102"></apexchart>
+                          <div v-else>No data available for Upper Gap Tip IKDM-0102</div>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3">
+                    <CCol lg="12" class="mb-3">
+                      <CCard class="chart-card">
+                        <CCardHeader>
+                          <strong>Upper Depth Tip for IKDM-0102</strong>
+                        </CCardHeader>
+                        <CCardBody>
+                          <div v-if="chartLoading" class="text-center">Loading chart...</div>
+                          <apexchart v-else-if="chartSeriesUpperDepth0102[0]?.data?.length > 0 && chartOptionsUpperDepth0102" type="line" height="350" :options="chartOptionsUpperDepth0102" :series="chartSeriesUpperDepth0102"></apexchart>
+                          <div v-else>No data available for Upper Depth Tip IKDM-0102</div>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3">
+                    <CCol lg="12" class="mb-3">
+                      <CCard class="chart-card">
+                        <CCardHeader>
+                          <strong>Lower Gap Tip for IKDM-0102</strong>
+                        </CCardHeader>
+                        <CCardBody>
+                          <div v-if="chartLoading" class="text-center">Loading chart...</div>
+                          <apexchart v-else-if="chartSeriesLowerGap0102[0]?.data?.length > 0 && chartOptionsLowerGap0102" type="line" height="350" :options="chartOptionsLowerGap0102" :series="chartSeriesLowerGap0102"></apexchart>
+                          <div v-else>No data available for Lower Gap Tip IKDM-0102</div>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3">
+                    <CCol lg="12" class="mb-3">
+                      <CCard class="chart-card">
+                        <CCardHeader>
+                          <strong>Lower Depth Tip for IKDM-0102</strong>
+                        </CCardHeader>
+                        <CCardBody>
+                          <div v-if="chartLoading" class="text-center">Loading chart...</div>
+                          <apexchart v-else-if="chartSeriesLowerDepth0102[0]?.data?.length > 0 && chartOptionsLowerDepth0102" type="line" height="350" :options="chartOptionsLowerDepth0102" :series="chartSeriesLowerDepth0102"></apexchart>
+                          <div v-else>No data available for Lower Depth Tip IKDM-0102</div>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  </CRow>
+                </div>
 
                 <!-- ikdm-0101 Charts Second -->
-                <CRow class="mb-3">
-                  <CCol lg="12" class="mb-3">
-                    <CCard class="chart-card">
-                      <CCardHeader>
-                        <strong>Upper Gap Tip for IKDM-0101</strong>
-                      </CCardHeader>
-                      <CCardBody>
-                        <div v-if="chartLoading" class="text-center">Loading chart...</div>
-                        <apexchart v-else-if="chartSeriesUpperGap0101[0]?.data?.length > 0 && chartOptionsUpperGap0101" type="line" height="350" :options="chartOptionsUpperGap0101" :series="chartSeriesUpperGap0101"></apexchart>
-                        <div v-else>No data available for Upper Gap Tip IKDM-0101</div>
-                      </CCardBody>
-                    </CCard>
-                  </CCol>
-                </CRow>
-                <CRow class="mb-3">
-                  <CCol lg="12" class="mb-3">
-                    <CCard class="chart-card">
-                      <CCardHeader>
-                        <strong>Upper Depth Tip for IKDM-0101</strong>
-                      </CCardHeader>
-                      <CCardBody>
-                        <div v-if="chartLoading" class="text-center">Loading chart...</div>
-                        <apexchart v-else-if="chartSeriesUpperDepth0101[0]?.data?.length > 0 && chartOptionsUpperDepth0101" type="line" height="350" :options="chartOptionsUpperDepth0101" :series="chartSeriesUpperDepth0101"></apexchart>
-                        <div v-else>No data available for Upper Depth Tip IKDM-0101</div>
-                      </CCardBody>
-                    </CCard>
-                  </CCol>
-                </CRow>
-                <CRow class="mb-3">
-                  <CCol lg="12" class="mb-3">
-                    <CCard class="chart-card">
-                      <CCardHeader>
-                        <strong>Lower Gap Tip for IKDM-0101</strong>
-                      </CCardHeader>
-                      <CCardBody>
-                        <div v-if="chartLoading" class="text-center">Loading chart...</div>
-                        <apexchart v-else-if="chartSeriesLowerGap0101[0]?.data?.length > 0 && chartOptionsLowerGap0101" type="line" height="350" :options="chartOptionsLowerGap0101" :series="chartSeriesLowerGap0101"></apexchart>
-                        <div v-else>No data available for Lower Gap Tip IKDM-0101</div>
-                      </CCardBody>
-                    </CCard>
-                  </CCol>
-                </CRow>
-                <CRow class="mb-3">
-                  <CCol lg="12" class="mb-3">
-                    <CCard class="chart-card">
-                      <CCardHeader>
-                        <strong>Lower Depth Tip for IKDM-0101</strong>
-                      </CCardHeader>
-                      <CCardBody>
-                        <div v-if="chartLoading" class="text-center">Loading chart...</div>
-                        <apexchart v-else-if="chartSeriesLowerDepth0101[0]?.data?.length > 0 && chartOptionsLowerDepth0101" type="line" height="350" :options="chartOptionsLowerDepth0101" :series="chartSeriesLowerDepth0101"></apexchart>
-                        <div v-else>No data available for Lower Depth Tip IKDM-0101</div>
-                      </CCardBody>
-                    </CCard>
-                  </CCol>
-                </CRow>
+                <div v-if="!selectedMachineLabel || selectedMachineLabel.includes('0101')">
+                  <CRow class="mb-3">
+                    <CCol lg="12" class="mb-3">
+                      <CCard class="chart-card">
+                        <CCardHeader>
+                          <strong>Upper Gap Tip for IKDM-0101</strong>
+                        </CCardHeader>
+                        <CCardBody>
+                          <div v-if="chartLoading" class="text-center">Loading chart...</div>
+                          <apexchart v-else-if="chartSeriesUpperGap0101[0]?.data?.length > 0 && chartOptionsUpperGap0101" type="line" height="350" :options="chartOptionsUpperGap0101" :series="chartSeriesUpperGap0101"></apexchart>
+                          <div v-else>No data available for Upper Gap Tip IKDM-0101</div>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3">
+                    <CCol lg="12" class="mb-3">
+                      <CCard class="chart-card">
+                        <CCardHeader>
+                          <strong>Upper Depth Tip for IKDM-0101</strong>
+                        </CCardHeader>
+                        <CCardBody>
+                          <div v-if="chartLoading" class="text-center">Loading chart...</div>
+                          <apexchart v-else-if="chartSeriesUpperDepth0101[0]?.data?.length > 0 && chartOptionsUpperDepth0101" type="line" height="350" :options="chartOptionsUpperDepth0101" :series="chartSeriesUpperDepth0101"></apexchart>
+                          <div v-else>No data available for Upper Depth Tip IKDM-0101</div>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3">
+                    <CCol lg="12" class="mb-3">
+                      <CCard class="chart-card">
+                        <CCardHeader>
+                          <strong>Lower Gap Tip for IKDM-0101</strong>
+                        </CCardHeader>
+                        <CCardBody>
+                          <div v-if="chartLoading" class="text-center">Loading chart...</div>
+                          <apexchart v-else-if="chartSeriesLowerGap0101[0]?.data?.length > 0 && chartOptionsLowerGap0101" type="line" height="350" :options="chartOptionsLowerGap0101" :series="chartSeriesLowerGap0101"></apexchart>
+                          <div v-else>No data available for Lower Gap Tip IKDM-0101</div>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  </CRow>
+                  <CRow class="mb-3">
+                    <CCol lg="12" class="mb-3">
+                      <CCard class="chart-card">
+                        <CCardHeader>
+                          <strong>Lower Depth Tip for IKDM-0101</strong>
+                        </CCardHeader>
+                        <CCardBody>
+                          <div v-if="chartLoading" class="text-center">Loading chart...</div>
+                          <apexchart v-else-if="chartSeriesLowerDepth0101[0]?.data?.length > 0 && chartOptionsLowerDepth0101" type="line" height="350" :options="chartOptionsLowerDepth0101" :series="chartSeriesLowerDepth0101"></apexchart>
+                          <div v-else>No data available for Lower Depth Tip IKDM-0101</div>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  </CRow>
+                </div>
               </CTabPanel>
               <CTabPanel class="py-3" aria-labelledby="table-tab-pane" :itemKey="'table'">
                 <!-- Table Content -->
@@ -601,6 +605,13 @@ export default {
         }))
       ];
     },
+    selectedMachineLabel() {
+      if (this.selectedMachines) {
+        const machineObj = this.machineOptions.find(m => m.id === this.selectedMachines);
+        return machineObj ? machineObj.label : null;
+      }
+      return null;
+    },
   },
 
   watch: {
@@ -808,7 +819,7 @@ export default {
                 color: '#fff',
                 background: '#FF0000'
               },
-              text: 'Threshold 0.1'
+              text: 'Threshold 0.1 mm'
             }
           }]
         },
@@ -1139,7 +1150,7 @@ export default {
                 color: '#fff',
                 background: '#FF0000'
               },
-              text: 'Threshold 0.1'
+              text: 'Threshold 0.1 mm'
             }
           }]
         },
@@ -1346,6 +1357,36 @@ export default {
         title: { text: 'Lower Depth Tip for IKDM-0102', align: 'left' },
         markers: { size: 4 },
         grid: { show: true, borderColor: '#e7e7e7' },
+        annotations: {
+          yaxis: [{
+            y: 3,
+            borderColor: '#FF0000',
+            strokeDashArray: 0,
+            strokeWidth: 3,
+            label: {
+              borderColor: '#FF0000',
+              style: {
+                color: '#fff',
+                background: '#FF0000'
+              },
+              text: 'Threshold 3 mm'
+            }
+          },
+          {
+            y: 5,
+            borderColor: '#FF0000',
+            strokeDashArray: 0,
+            strokeWidth: 3,
+            label: {
+              borderColor: '#FF0000',
+              style: {
+                color: '#fff',
+                background: '#FF0000'
+              },
+              text: 'Threshold 5 mm'
+            }
+          }]
+        },
         dataLabels: {
           enabled: true,
           offsetY: -10,

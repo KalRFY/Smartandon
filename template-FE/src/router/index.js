@@ -169,6 +169,19 @@ const appRoutes = [
   },
 
   {
+    path: '/app/RobotInspection',
+    name: 'Robot Inspection',
+    component: () =>
+      import(
+        /* webpackChunkName: "reports" */ '@/views/RobotInspection.vue'
+      ),
+    meta: {
+      requiresAuth: true,
+      title: 'Robot Inspection',
+    },
+  },
+
+  {
     path: '/app/FocusThema',
     name: 'Focus Thema',
     component: () =>

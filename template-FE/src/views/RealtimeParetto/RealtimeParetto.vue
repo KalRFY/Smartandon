@@ -78,11 +78,11 @@
         <div class="d-flex justify-content-between align-items-center">
           <h3 class="m-0">REALTIME PARETO</h3>
           <div class="d-flex align-items-center">
-            <span class="me-3">{{ currentDate }}</span>
             <div class="live-indicator d-flex align-items-center">
               <span class="live-dot"></span>
-              <span class="ms-1">{{ currentTime }}</span>
             </div>
+            <span class="me-3"></span>
+            <span class="me-3">{{ currentDate }}</span>
           </div>
         </div>
       </CCardHeader>
@@ -145,7 +145,7 @@
             <ProductionLineSection :title="line.title" :panelId="line.panelId" :chartData="getChartData(line)"
               :tableData="getTableData(line)" :viewMode="viewMode" :metricMode="metricMode"
               :minQuantity="line.minQuantity" @refresh="handleRefresh(line.panelId)" @view-item="viewItem"
-              @edit-item="editItem" @delete-item="deleteItem" />
+              @edit-item="editItem" @delete-item="deleteItem" @show-problem-modal="showProblemModal" />
           </template>
         </div>
 
@@ -164,6 +164,14 @@
       </CCardBody>
     </CCard>
   </div>
+
+  <ProblemDetailsModal
+    :visible="modalVisible"
+    :problem-name="selectedProblemName"
+    :problem-data="selectedProblemData"
+    @close="closeProblemModal"
+  />
+  
 </template>
 
 <script>
@@ -191,6 +199,7 @@ import {
   BarChart2,
 } from 'lucide-vue-next'
 import ProductionLineSection from './ProductionLineSection.vue'
+import ProblemDetailsModal from './ProblemDetailsModal.vue'
 import api from '@/apis/CommonAPI'
 
 export default {
@@ -215,6 +224,7 @@ export default {
     AlertTriangle,
     BarChart2,
     ProductionLineSection,
+    ProblemDetailsModal,
   },
   setup() {
     const todayStr = (() => {
@@ -251,6 +261,10 @@ export default {
     const isFilterProblem = ref(false)
     const isOrderFreq = ref(false)
     let clockInterval = null
+
+    const modalVisible = ref(false)
+    const selectedProblemName = ref('')
+    const selectedProblemData = ref([])
 
     onMounted(async () => {
       console.log('RealtimePareto component mounted')
@@ -502,6 +516,7 @@ export default {
         operator: problem.operator || 'N/A',
         startTime: problem.fstart_time,
         duration: `${problem.fdur} min`,
+        rawData: problem, // Keep raw data for modal
       }))
     }
 
@@ -520,6 +535,20 @@ export default {
 
     const deleteItem = (item) => {
       console.log('Delete item:', item)
+    }
+
+    const showProblemModal = (data) => {
+      console.log('showProblemModal called with data:', data)
+      selectedProblemName.value = data.problemName
+      selectedProblemData.value = data.problemData
+      modalVisible.value = true
+      console.log('Modal state after show:', { modalVisible: modalVisible.value, selectedProblemName: selectedProblemName.value, selectedProblemData: selectedProblemData.value })
+    }
+
+    const closeProblemModal = () => {
+      modalVisible.value = false
+      selectedProblemName.value = ''
+      selectedProblemData.value = []
     }
 
     return {
@@ -549,6 +578,11 @@ export default {
       viewItem,
       editItem,
       deleteItem,
+      showProblemModal,
+      closeProblemModal,
+      modalVisible,
+      selectedProblemName,
+      selectedProblemData,
     }
   },
 }

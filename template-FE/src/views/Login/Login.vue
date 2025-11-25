@@ -39,7 +39,7 @@
               <label style="font-size: xx-small;" class="ms-3">(Pass 4 digit awal nomor hp yang terdaftar)</label>
             </div>
 
-            <button 
+            <button
               type="submit" 
               class="btn btn-accent w-100 ms-3" 
               :disabled="isLoading"
@@ -61,7 +61,7 @@
           </div>
         </div>
 
-        <div class="image-side">
+        <div v-if="showElements" class="image-side">
            <div class="image-wrapper">
             <img 
               :src="loginPhoto" 
@@ -86,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import loginPhoto from '@/assets/images/plant_1.jpg';
 import api from '@/apis/CommonAPI'
 const password = ref('')
@@ -94,6 +94,26 @@ const isLoading = ref(false)
 const error = ref('')
 const noreg = ref('')
 const success = ref('')
+const showElements = ref(true)
+
+const fetchFrontendFlag = async () => {
+  try {
+    const response = await api.get('/smartandon/frontend')
+    const data = response.data
+    if (data && Array.isArray(data) && data.length > 0 && data[0].frontend === 1) {
+      showElements.value = false
+    } else {
+      showElements.value = true
+    }
+  } catch (e) {
+    console.error('Error fetching frontend flag:', e)
+    showElements.value = true
+  }
+}
+
+onMounted(() => {
+  fetchFrontendFlag()
+})
 
 const onLogin = async () => {
   error.value = ''
