@@ -22,10 +22,18 @@
               <CTableRow>
                 <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
                 <CTableHeaderCell>Description</CTableHeaderCell>
-                <CTableHeaderCell style="width: 120px">Actual Time (Min)</CTableHeaderCell>
-                <CTableHeaderCell style="width: 120px">Ideal Time (Min)</CTableHeaderCell>
-                <CTableHeaderCell style="width: 200px">Q6 Category</CTableHeaderCell>
-                <CTableHeaderCell style="width: 120px">Actions</CTableHeaderCell>
+                <CTableHeaderCell style="width: 120px"
+                  >Actual Time (Min)</CTableHeaderCell
+                >
+                <CTableHeaderCell style="width: 120px"
+                  >Ideal Time (Min)</CTableHeaderCell
+                >
+                <CTableHeaderCell style="width: 200px"
+                  >Q6 Category</CTableHeaderCell
+                >
+                <CTableHeaderCell style="width: 120px"
+                  >Actions</CTableHeaderCell
+                >
               </CTableRow>
             </CTableHead>
             <CTableBody>
@@ -105,22 +113,30 @@
                   >
                     <option value="">Choose Q6 Category...</option>
                     <option value="Q1">
-                      Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))
+                      Q1: Diagnose (Meeting, accuracy check (run-out, backlash,
+                      etc))
                     </option>
                     <option value="Q2">
-                      Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)
+                      Q2: Sparepart (Part preparation, fabrication of part,
+                      repair of damage part due to unavailability at SPW)
                     </option>
                     <option value="Q3">
-                      Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)
+                      Q3: Tool (Special tools preparation, change of tools,
+                      personal tool, change dresser, safety tool)
                     </option>
                     <option value="Q4">
-                      Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
+                      Q4: Maint. Ability (Repair, overhaul, part replace,
+                      tomoken, 5S)
                     </option>
                     <option value="Q5">
-                      Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))
+                      Q5: Setting Ability (Quality checking, program adjustment,
+                      program zeroing, position memory set, autosizer setting &
+                      amp, PSW set, backlash adjustment (slide gib / kamisori,
+                      parameter set, centering, etc))
                     </option>
                     <option value="Q6">
-                      Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
+                      Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's
+                      dandori)
                     </option>
                   </CFormSelect>
                   <CFormFeedback
@@ -138,10 +154,16 @@
                       size="sm"
                       @click="toggleEditMode(item.id)"
                       :disabled="isProcessing"
-                      :aria-label="editingItems[item.id] ? 'Save changes' : 'Edit item'"
+                      :aria-label="
+                        editingItems[item.id] ? 'Save changes' : 'Edit item'
+                      "
                     >
                       <CIcon
-                        :icon="editingItems[item.id] ? 'cil-paper-plane' : 'cil-pencil'"
+                        :icon="
+                          editingItems[item.id]
+                            ? 'cil-paper-plane'
+                            : 'cil-pencil'
+                        "
                       />
                     </CButton>
                     <CButton
@@ -213,7 +235,7 @@ import {
   CFormSelect,
   CFormFeedback,
   CButton,
-  CIcon
+  CIcon,
 } from '@coreui/vue'
 
 export default {
@@ -233,31 +255,34 @@ export default {
     CFormSelect,
     CFormFeedback,
     CButton,
-    CIcon
+    CIcon,
   },
   props: {
     modelValue: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     title: {
       type: String,
-      default: 'Step Repair'
+      default: 'Step Repair',
     },
     maxItems: {
       type: Number,
-      default: 5
+      default: 5,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:modelValue', 'validation-change'],
 
   setup(props, { emit }) {
     console.log('StepRepairTable setup - initial modelValue:', props.modelValue)
-    console.log('StepRepairTable setup - props:', JSON.stringify(props, null, 2))
+    console.log(
+      'StepRepairTable setup - props:',
+      JSON.stringify(props, null, 2),
+    )
     const items = ref([...props.modelValue])
     const editingItems = ref({})
     const validationErrors = ref({})
@@ -266,11 +291,17 @@ export default {
 
     // Computed properties
     const totalActualTime = computed(() => {
-      return items.value.reduce((sum, item) => sum + (Number(item.actualTime) || 0), 0)
+      return items.value.reduce(
+        (sum, item) => sum + (Number(item.actualTime) || 0),
+        0,
+      )
     })
 
     const totalIdealTime = computed(() => {
-      return items.value.reduce((sum, item) => sum + (Number(item.idealTime) || 0), 0)
+      return items.value.reduce(
+        (sum, item) => sum + (Number(item.idealTime) || 0),
+        0,
+      )
     })
 
     const efficiency = computed(() => {
@@ -292,11 +323,17 @@ export default {
         errors.stepDesc = 'Description is required'
       }
 
-      if (item.actualTime !== undefined && (isNaN(item.actualTime) || item.actualTime < 0)) {
+      if (
+        item.actualTime !== undefined &&
+        (isNaN(item.actualTime) || item.actualTime < 0)
+      ) {
         errors.actualTime = 'Actual time must be a positive number'
       }
 
-      if (item.idealTime !== undefined && (isNaN(item.idealTime) || item.idealTime < 0)) {
+      if (
+        item.idealTime !== undefined &&
+        (isNaN(item.idealTime) || item.idealTime < 0)
+      ) {
         errors.idealTime = 'Ideal time must be a positive number'
       }
 
@@ -311,9 +348,10 @@ export default {
 
       isAdding.value = true
       try {
-        const newId = items.value.length > 0
-          ? Math.max(...items.value.map(item => item.id)) + 1
-          : 1
+        const newId =
+          items.value.length > 0
+            ? Math.max(...items.value.map((item) => item.id)) + 1
+            : 1
 
         const newItem = {
           id: newId,
@@ -321,7 +359,7 @@ export default {
           actualTime: 0,
           idealTime: 0,
           quick6: '',
-          result: null
+          result: null,
         }
 
         items.value.push(newItem)
@@ -351,7 +389,7 @@ export default {
 
       if (isEditing) {
         // Save mode - validate before saving
-        const item = items.value.find(item => item.id === itemId)
+        const item = items.value.find((item) => item.id === itemId)
         if (item) {
           const errors = validateItem(item)
           validationErrors.value[itemId] = errors
@@ -371,7 +409,7 @@ export default {
 
     const updateModelValue = () => {
       // Filter out empty items before sending to backend, but keep items in editing mode
-      const nonEmptyItems = items.value.filter(item => {
+      const nonEmptyItems = items.value.filter((item) => {
         const isEditing = editingItems.value[item.id]
         // Consider an item non-empty if it has meaningful data or is in editing mode
         const hasDescription = item.stepDesc && item.stepDesc.trim().length > 0
@@ -380,39 +418,57 @@ export default {
         const hasQ6Category = item.quick6 && item.quick6.trim().length > 0
 
         // Keep item if it's in editing mode or has any meaningful data
-        return isEditing || hasDescription || hasActualTime || hasIdealTime || hasQ6Category
+        return (
+          isEditing ||
+          hasDescription ||
+          hasActualTime ||
+          hasIdealTime ||
+          hasQ6Category
+        )
       })
 
       emit('update:modelValue', [...nonEmptyItems])
       emit('validation-change', {
         isValid: Object.keys(validationErrors.value).length === 0,
-        errors: validationErrors.value
+        errors: validationErrors.value,
       })
     }
 
     // Watch for external changes
-    watch(() => props.modelValue, (newValue) => {
-      console.log('StepRepairTable - modelValue changed:', newValue)
-      console.log('StepRepairTable - modelValue type:', typeof newValue)
-      console.log('StepRepairTable - modelValue isArray:', Array.isArray(newValue))
-      items.value = [...newValue]
-      console.log('StepRepairTable - items updated:', items.value)
-    }, { deep: true })
+    watch(
+      () => props.modelValue,
+      (newValue) => {
+        console.log('StepRepairTable - modelValue changed:', newValue)
+        console.log('StepRepairTable - modelValue type:', typeof newValue)
+        console.log(
+          'StepRepairTable - modelValue isArray:',
+          Array.isArray(newValue),
+        )
+        items.value = [...newValue]
+        console.log('StepRepairTable - items updated:', items.value)
+      },
+      { deep: true },
+    )
 
     // Initialize editing states
-    watch(items, (newItems) => {
-      const editingState = { ...editingItems.value } // Preserve existing edit states
+    watch(
+      items,
+      (newItems) => {
+        const editingState = { ...editingItems.value } // Preserve existing edit states
 
-      newItems.forEach(item => {
-        // Only auto-enable edit mode for items that don't have an explicit edit state
-        if (editingState[item.id] === undefined) {
-          // Auto-enable edit mode for empty items (newly added items)
-          editingState[item.id] = !item.stepDesc || item.stepDesc.trim() === ''
-        }
-      })
+        newItems.forEach((item) => {
+          // Only auto-enable edit mode for items that don't have an explicit edit state
+          if (editingState[item.id] === undefined) {
+            // Auto-enable edit mode for empty items (newly added items)
+            editingState[item.id] =
+              !item.stepDesc || item.stepDesc.trim() === ''
+          }
+        })
 
-      editingItems.value = editingState
-    }, { immediate: true, deep: true })
+        editingItems.value = editingState
+      },
+      { immediate: true, deep: true },
+    )
 
     return {
       items,
@@ -427,9 +483,9 @@ export default {
       addItem,
       deleteItem,
       toggleEditMode,
-      validateItem
+      validateItem,
     }
-  }
+  },
 }
 </script>
 

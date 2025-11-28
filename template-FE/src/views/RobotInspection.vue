@@ -8,9 +8,20 @@
             <CCol lg="2" v-for="i in 5" :key="i" class="mb-3">
               <div class="camera-placeholder">
                 <div class="camera-icon">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14.828 14.828a4 4 0 0 1-5.656 0M9 10h6l-3-3-3 3z"/>
-                    <circle cx="12" cy="13" r="3"/>
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M14.828 14.828a4 4 0 0 1-5.656 0M9 10h6l-3-3-3 3z"
+                    />
+                    <circle cx="12" cy="13" r="3" />
                   </svg>
                 </div>
                 <div class="camera-label">Camera {{ i }}</div>
@@ -29,7 +40,7 @@
       </CCard>
     </CCol>
   </CRow>
-  
+
   <CRow>
     <CCol>
       <div class="main-card">
@@ -47,7 +58,8 @@
                   width: 100%;
                 "
                 @click="openUploadModal"
-              >+ Upload Inspection Media +</CButton>
+                >+ Upload Inspection Media +</CButton
+              >
             </CCol>
           </CRow>
           <CRow>
@@ -56,37 +68,89 @@
               <CTable bordered hover responsive class="hour-table">
                 <CTableHead color="dark">
                   <CTableRow>
-                    <CTableHeaderCell scope="col" style="width: 1%; text-align: center;">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col" style="width: 8%; text-align: center;">Date</CTableHeaderCell>
-                    <CTableHeaderCell scope="col" style="width: 10%; text-align: center;">Robot ID</CTableHeaderCell>
-                    <CTableHeaderCell scope="col" style="width: 10%; text-align: center;">Line</CTableHeaderCell>
-                    <CTableHeaderCell scope="col" style="width: 10%; text-align: center;">Machine</CTableHeaderCell>
+                    <CTableHeaderCell
+                      scope="col"
+                      style="width: 1%; text-align: center"
+                      >No</CTableHeaderCell
+                    >
+                    <CTableHeaderCell
+                      scope="col"
+                      style="width: 8%; text-align: center"
+                      >Date</CTableHeaderCell
+                    >
+                    <CTableHeaderCell
+                      scope="col"
+                      style="width: 10%; text-align: center"
+                      >Robot ID</CTableHeaderCell
+                    >
+                    <CTableHeaderCell
+                      scope="col"
+                      style="width: 10%; text-align: center"
+                      >Line</CTableHeaderCell
+                    >
+                    <CTableHeaderCell
+                      scope="col"
+                      style="width: 10%; text-align: center"
+                      >Machine</CTableHeaderCell
+                    >
                     <CTableHeaderCell scope="col">AI Results</CTableHeaderCell>
-                    <CTableHeaderCell scope="col" style="width: 6%; text-align: center;">Status</CTableHeaderCell>
-                    <CTableHeaderCell scope="col" style="width: 15%; text-align: center;">Action</CTableHeaderCell>
+                    <CTableHeaderCell
+                      scope="col"
+                      style="width: 6%; text-align: center"
+                      >Status</CTableHeaderCell
+                    >
+                    <CTableHeaderCell
+                      scope="col"
+                      style="width: 15%; text-align: center"
+                      >Action</CTableHeaderCell
+                    >
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  <CTableRow v-for="(inspection, idx) in inspections" :key="inspection.id">
+                  <CTableRow
+                    v-for="(inspection, idx) in inspections"
+                    :key="inspection.id"
+                  >
                     <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
-                    <CTableDataCell>{{ formatDate(inspection.inspection_date) }}</CTableDataCell>
+                    <CTableDataCell>{{
+                      formatDate(inspection.inspection_date)
+                    }}</CTableDataCell>
                     <CTableDataCell>{{ inspection.robot_id }}</CTableDataCell>
-                    <CTableDataCell>{{ getLineName(inspection.robot_id) }}</CTableDataCell>
-                    <CTableDataCell>{{ getMachineName(inspection.robot_id) }}</CTableDataCell>
+                    <CTableDataCell>{{
+                      getLineName(inspection.robot_id)
+                    }}</CTableDataCell>
+                    <CTableDataCell>{{
+                      getMachineName(inspection.robot_id)
+                    }}</CTableDataCell>
                     <CTableDataCell>
                       <div class="ai-results">
                         <div class="confidence-score">
-                          Confidence: {{ inspection.ai_results ? inspection.ai_results.confidence_score.toFixed(1) : 'N/A' }}%
+                          Confidence:
+                          {{
+                            inspection.ai_results
+                              ? inspection.ai_results.confidence_score.toFixed(
+                                  1,
+                                )
+                              : 'N/A'
+                          }}%
                         </div>
                         <div class="issues-count">
-                          Issues: {{ inspection.ai_results && inspection.ai_results.detected_issues ? inspection.ai_results.detected_issues.length : 0 }}
+                          Issues:
+                          {{
+                            inspection.ai_results &&
+                            inspection.ai_results.detected_issues
+                              ? inspection.ai_results.detected_issues.length
+                              : 0
+                          }}
                         </div>
                       </div>
                     </CTableDataCell>
                     <CTableDataCell class="text-center">
-                      <span :class="getStatusClass(inspection.status)">{{ getStatusLabel(inspection.status) }}</span>
+                      <span :class="getStatusClass(inspection.status)">{{
+                        getStatusLabel(inspection.status)
+                      }}</span>
                     </CTableDataCell>
-                    <CTableDataCell style="text-align: center;">
+                    <CTableDataCell style="text-align: center">
                       <CButton
                         class="me-2"
                         color="info"
@@ -150,8 +214,6 @@
     </CCol>
   </CRow>
 
-
-
   <!-- Details Modal -->
   <CModal
     :visible="showDetailsModal"
@@ -166,34 +228,62 @@
       <CRow v-if="selectedInspection">
         <CCol md="6">
           <h6>Inspection Media:</h6>
-          <img v-if="isImageFile(selectedInspection.image_path)" :src="getImageUrl(selectedInspection.image_path)" alt="Inspection" class="details-image" />
-          <video v-else :src="getImageUrl(selectedInspection.image_path)" controls class="details-video"></video>
+          <img
+            v-if="isImageFile(selectedInspection.image_path)"
+            :src="getImageUrl(selectedInspection.image_path)"
+            alt="Inspection"
+            class="details-image"
+          />
+          <video
+            v-else
+            :src="getImageUrl(selectedInspection.image_path)"
+            controls
+            class="details-video"
+          ></video>
         </CCol>
         <CCol md="6">
           <h6>AI Analysis Results:</h6>
           <div class="ai-analysis">
             <div class="confidence-bar">
-              <span>Overall Confidence: {{ selectedInspection.ai_results.confidence_score.toFixed(1) }}%</span>
-              <CProgress :value="selectedInspection.ai_results.confidence_score" class="mt-2" />
+              <span
+                >Overall Confidence:
+                {{
+                  selectedInspection.ai_results.confidence_score.toFixed(1)
+                }}%</span
+              >
+              <CProgress
+                :value="selectedInspection.ai_results.confidence_score"
+                class="mt-2"
+              />
             </div>
             <div class="detected-issues mt-3">
               <h6>Detected Issues:</h6>
               <ul>
-                <li v-for="issue in selectedInspection.ai_results.detected_issues" :key="issue.type">
-                  <strong>{{ issue.type }}</strong> - Severity: {{ issue.severity }} ({{ issue.confidence }}% confidence)
-                  <br><small>Location: {{ issue.location }}</small>
+                <li
+                  v-for="issue in selectedInspection.ai_results.detected_issues"
+                  :key="issue.type"
+                >
+                  <strong>{{ issue.type }}</strong> - Severity:
+                  {{ issue.severity }} ({{ issue.confidence }}% confidence)
+                  <br /><small>Location: {{ issue.location }}</small>
                 </li>
               </ul>
             </div>
             <div class="recommendations mt-3">
               <h6>Recommendations:</h6>
               <ul>
-                <li v-for="rec in selectedInspection.ai_results.recommendations" :key="rec">
+                <li
+                  v-for="rec in selectedInspection.ai_results.recommendations"
+                  :key="rec"
+                >
                   {{ rec }}
                 </li>
               </ul>
             </div>
-            <div v-if="selectedInspection.user_validation" class="user-validation mt-3">
+            <div
+              v-if="selectedInspection.user_validation"
+              class="user-validation mt-3"
+            >
               <h6>User Validation:</h6>
               <p>{{ selectedInspection.user_validation }}</p>
             </div>
@@ -202,9 +292,7 @@
       </CRow>
     </CModalBody>
     <CModalFooter>
-      <CButton color="secondary" @click="closeDetailsModal">
-        Close
-      </CButton>
+      <CButton color="secondary" @click="closeDetailsModal"> Close </CButton>
     </CModalFooter>
   </CModal>
 
@@ -225,8 +313,15 @@
             <CFormLabel for="robotId">Robot ID</CFormLabel>
             <CInputGroup>
               <CInputGroupText>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </CInputGroupText>
               <input
@@ -242,9 +337,16 @@
             <CFormLabel for="cameraId">Camera ID</CFormLabel>
             <CInputGroup>
               <CInputGroupText>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M14.828 14.828a4 4 0 0 1-5.656 0M9 10h6l-3-3-3 3z"/>
-                  <circle cx="12" cy="13" r="3"/>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M14.828 14.828a4 4 0 0 1-5.656 0M9 10h6l-3-3-3 3z" />
+                  <circle cx="12" cy="13" r="3" />
                 </svg>
               </CInputGroupText>
               <input
@@ -274,15 +376,29 @@
           <CCol>
             <div class="file-preview">
               <h6>Preview:</h6>
-              <img v-if="isImage" :src="filePreview" alt="Preview" class="preview-image" />
-              <video v-else :src="filePreview" controls class="preview-video"></video>
+              <img
+                v-if="isImage"
+                :src="filePreview"
+                alt="Preview"
+                class="preview-image"
+              />
+              <video
+                v-else
+                :src="filePreview"
+                controls
+                class="preview-video"
+              ></video>
             </div>
           </CCol>
         </CRow>
       </CForm>
     </CModalBody>
     <CModalFooter>
-      <CButton color="secondary" @click="closeUploadModal" :disabled="uploading">
+      <CButton
+        color="secondary"
+        @click="closeUploadModal"
+        :disabled="uploading"
+      >
         Cancel
       </CButton>
       <CButton
@@ -308,27 +424,60 @@
     </CModalHeader>
     <CModalBody>
       <p>Are you sure you want to delete this inspection?</p>
-      <p><strong>Robot ID:</strong> {{ itemToDelete ? itemToDelete.robot_id : '' }}</p>
-      <p><strong>Date:</strong> {{ itemToDelete ? formatDate(itemToDelete.inspection_date) : '' }}</p>
+      <p>
+        <strong>Robot ID:</strong>
+        {{ itemToDelete ? itemToDelete.robot_id : '' }}
+      </p>
+      <p>
+        <strong>Date:</strong>
+        {{ itemToDelete ? formatDate(itemToDelete.inspection_date) : '' }}
+      </p>
       <p class="text-danger">This action cannot be undone.</p>
     </CModalBody>
     <CModalFooter>
-      <CButton color="secondary" @click="closeDeleteModal">
-        Cancel
-      </CButton>
-      <CButton color="danger" @click="proceedDelete">
-        Delete
-      </CButton>
+      <CButton color="secondary" @click="closeDeleteModal"> Cancel </CButton>
+      <CButton color="danger" @click="proceedDelete"> Delete </CButton>
     </CModalFooter>
   </CModal>
-
 </template>
 
 <script>
 import moment from 'moment'
-import { CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCard, CCardBody, CCardHeader, CRow, CCol, CButton, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter, CForm, CFormLabel, CFormTextarea, CInputGroup, CInputGroupText, CProgress } from '@coreui/vue';
+import {
+  CTable,
+  CTableHead,
+  CTableBody,
+  CTableHeaderCell,
+  CTableRow,
+  CTableDataCell,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CRow,
+  CCol,
+  CButton,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
+  CForm,
+  CFormLabel,
+  CFormTextarea,
+  CInputGroup,
+  CInputGroupText,
+  CProgress,
+} from '@coreui/vue'
 
-import { BarChart3, AlertTriangle, CheckCircle2, Trash2, Eye, Check, X } from 'lucide-vue-next'
+import {
+  BarChart3,
+  AlertTriangle,
+  CheckCircle2,
+  Trash2,
+  Eye,
+  Check,
+  X,
+} from 'lucide-vue-next'
 import api from '../apis/CommonAPI'
 
 export default {
@@ -346,7 +495,7 @@ export default {
       selectedFile: null,
       filePreview: '',
       uploading: false,
-      selectedCamera: null
+      selectedCamera: null,
     }
   },
 
@@ -385,24 +534,22 @@ export default {
 
   computed: {
     totalInspections() {
-      if (!Array.isArray(this.inspections)) return 0;
-      return this.inspections.length;
+      if (!Array.isArray(this.inspections)) return 0
+      return this.inspections.length
     },
     pendingCount() {
-      if (!Array.isArray(this.inspections)) return 0;
-      return this.inspections.filter(i => i.status === 'pending').length;
+      if (!Array.isArray(this.inspections)) return 0
+      return this.inspections.filter((i) => i.status === 'pending').length
     },
     approvedCount() {
-      if (!Array.isArray(this.inspections)) return 0;
-      return this.inspections.filter(i => i.status === 'approved').length;
+      if (!Array.isArray(this.inspections)) return 0
+      return this.inspections.filter((i) => i.status === 'approved').length
     },
 
     isImage() {
-      return this.selectedFile && this.selectedFile.type.startsWith('image/');
-    }
+      return this.selectedFile && this.selectedFile.type.startsWith('image/')
+    },
   },
-
-
 
   methods: {
     formatDate(dateString) {
@@ -416,165 +563,181 @@ export default {
 
     async fetchLines() {
       try {
-        const responseLines = await api.get('/smartandon/line');
-        console.log('[FE Debug] Line API response:', responseLines.data);
-        this.lines = responseLines.data;
+        const responseLines = await api.get('/smartandon/line')
+        console.log('[FE Debug] Line API response:', responseLines.data)
+        this.lines = responseLines.data
         this.lineOptions = responseLines.data.map((line) => ({
           id: line.fid,
           label: line.fline,
-        }));
-        console.log('[FE Debug] Line options created:', this.lineOptions);
+        }))
+        console.log('[FE Debug] Line options created:', this.lineOptions)
       } catch (error) {
-        console.error('Failed to fetch lines:', error);
-        this.lineOptions = [];
+        console.error('Failed to fetch lines:', error)
+        this.lineOptions = []
       }
     },
     async fetchMachines() {
       try {
-        const responseMachines = await api.get('/smartandon/machine');
-        this.machines = responseMachines.data;
+        const responseMachines = await api.get('/smartandon/machine')
+        this.machines = responseMachines.data
         this.machineOptions = responseMachines.data.map((machine) => ({
           id: machine.fid,
           label: machine.fmc_name,
-        }));
+        }))
       } catch (error) {
-        console.error('Failed to fetch machines:', error);
+        console.error('Failed to fetch machines:', error)
       }
     },
 
     async fetchInspections() {
-      this.loading = true;
+      this.loading = true
       try {
-        const response = await api.get('/robot-inspection');
+        const response = await api.get('/robot-inspection')
         if (response.status !== 200) {
-          throw new Error('Failed to fetch inspections, status: ' + response.status);
+          throw new Error(
+            'Failed to fetch inspections, status: ' + response.status,
+          )
         }
-        console.log('Response data:', response.data);
-        this.inspections = Array.isArray(response.data) ? response.data : [];
+        console.log('Response data:', response.data)
+        this.inspections = Array.isArray(response.data) ? response.data : []
       } catch (error) {
-        console.error('Failed to fetch inspections:', error);
+        console.error('Failed to fetch inspections:', error)
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
     getStatusLabel(status) {
-      return status === 'pending' ? 'Pending' : status === 'approved' ? 'Approved' : 'Rejected';
+      return status === 'pending'
+        ? 'Pending'
+        : status === 'approved'
+        ? 'Approved'
+        : 'Rejected'
     },
     getStatusClass(status) {
-      return status === 'pending' ? 'status-pending' : status === 'approved' ? 'status-approved' : 'status-rejected';
+      return status === 'pending'
+        ? 'status-pending'
+        : status === 'approved'
+        ? 'status-approved'
+        : 'status-rejected'
     },
 
     confirmDelete(problem) {
-      this.itemToDelete = problem;
-      this.showDeleteModal = true;
+      this.itemToDelete = problem
+      this.showDeleteModal = true
     },
     closeDeleteModal() {
-      this.showDeleteModal = false;
-      this.itemToDelete = null;
+      this.showDeleteModal = false
+      this.itemToDelete = null
     },
     proceedDelete() {
       if (this.itemToDelete) {
-        this.deleteInspection(this.itemToDelete.id);
-        this.closeDeleteModal();
+        this.deleteInspection(this.itemToDelete.id)
+        this.closeDeleteModal()
       }
     },
     async deleteInspection(id) {
       try {
-        const response = await api.delete(`/robot-inspection/${id}`);
+        const response = await api.delete(`/robot-inspection/${id}`)
         if (response.status === 200) {
-          alert('Inspection deleted successfully!');
-          await this.fetchInspections();
+          alert('Inspection deleted successfully!')
+          await this.fetchInspections()
         } else {
-          throw new Error('Failed to delete inspection');
+          throw new Error('Failed to delete inspection')
         }
       } catch (error) {
-        alert('Error deleting inspection: ' + error.message);
+        alert('Error deleting inspection: ' + error.message)
       }
     },
 
     // New methods for robot inspection
     openUploadModal() {
-      this.showUploadModal = true;
+      this.showUploadModal = true
     },
 
     closeUploadModal() {
-      this.showUploadModal = false;
-      this.selectedRobot = null;
-      this.selectedFile = null;
-      this.filePreview = '';
-      this.selectedCamera = null;
+      this.showUploadModal = false
+      this.selectedRobot = null
+      this.selectedFile = null
+      this.filePreview = ''
+      this.selectedCamera = null
     },
 
     onFileChange(event) {
-      const file = event.target.files[0];
+      const file = event.target.files[0]
       if (file) {
-        this.selectedFile = file;
-        const reader = new FileReader();
+        this.selectedFile = file
+        const reader = new FileReader()
         reader.onload = (e) => {
-          this.filePreview = e.target.result;
-        };
-        reader.readAsDataURL(file);
+          this.filePreview = e.target.result
+        }
+        reader.readAsDataURL(file)
       }
     },
 
     async uploadInspection() {
       if (!this.selectedRobot || !this.selectedFile) {
-        alert('Please select a robot and upload a file.');
-        return;
+        alert('Please select a robot and upload a file.')
+        return
       }
 
-      this.uploading = true;
+      this.uploading = true
       try {
-        const formData = new FormData();
-        formData.append('robot_id', this.selectedRobot);
-        formData.append('inspection_media', this.selectedFile);
-        formData.append('camera_id', this.selectedCamera);
+        const formData = new FormData()
+        formData.append('robot_id', this.selectedRobot)
+        formData.append('inspection_media', this.selectedFile)
+        formData.append('camera_id', this.selectedCamera)
 
-        const response = await api.post('/robot-inspection/ai-analyze', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        const response = await api.post(
+          '/robot-inspection/ai-analyze',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        )
 
         if (response.status === 201) {
-          alert('Inspection uploaded and analyzed successfully!');
-          this.closeUploadModal();
-          await this.fetchInspections();
+          alert('Inspection uploaded and analyzed successfully!')
+          this.closeUploadModal()
+          await this.fetchInspections()
         } else {
-          throw new Error('Failed to upload inspection');
+          throw new Error('Failed to upload inspection')
         }
       } catch (error) {
-        console.error('Upload error:', error);
-        alert('Error uploading inspection: ' + error.message);
+        console.error('Upload error:', error)
+        alert('Error uploading inspection: ' + error.message)
       } finally {
-        this.uploading = false;
+        this.uploading = false
       }
     },
 
     inspectCamera(cameraId) {
-      console.log('Inspecting camera:', cameraId);
-      this.selectedCamera = cameraId;
-      this.openUploadModal();
+      console.log('Inspecting camera:', cameraId)
+      this.selectedCamera = cameraId
+      this.openUploadModal()
     },
 
     viewInspectionDetails(inspection) {
-      this.selectedInspection = inspection;
-      this.showDetailsModal = true;
+      this.selectedInspection = inspection
+      this.showDetailsModal = true
     },
 
     closeDetailsModal() {
-      this.showDetailsModal = false;
-      this.selectedInspection = null;
+      this.showDetailsModal = false
+      this.selectedInspection = null
     },
 
     async approveInspection(inspection) {
-      await this.updateInspectionStatus(inspection.id, 'approved');
+      await this.updateInspectionStatus(inspection.id, 'approved')
     },
 
     async rejectInspection(inspection) {
-      const validation = prompt('Please provide validation reason for rejection:');
+      const validation = prompt(
+        'Please provide validation reason for rejection:',
+      )
       if (validation !== null) {
-        await this.updateInspectionStatus(inspection.id, 'rejected', validation);
+        await this.updateInspectionStatus(inspection.id, 'rejected', validation)
       }
     },
 
@@ -582,42 +745,47 @@ export default {
       try {
         const response = await api.put(`/robot-inspection/${id}`, {
           status,
-          user_validation: validation
-        });
+          user_validation: validation,
+        })
 
         if (response.status === 200) {
-          alert(`Inspection ${status} successfully!`);
-          await this.fetchInspections();
+          alert(`Inspection ${status} successfully!`)
+          await this.fetchInspections()
         } else {
-          throw new Error(`Failed to ${status} inspection`);
+          throw new Error(`Failed to ${status} inspection`)
         }
       } catch (error) {
-        alert(`Error ${status}ing inspection: ` + error.message);
+        alert(`Error ${status}ing inspection: ` + error.message)
       }
     },
 
     getLineName(robotId) {
       // Mock function - replace with actual logic to get line name from robot ID
-      return `Line ${Math.floor(robotId / 10) + 1}`;
+      return `Line ${Math.floor(robotId / 10) + 1}`
     },
 
     getMachineName(robotId) {
       // Mock function - replace with actual logic to get machine name from robot ID
-      return `Machine ${robotId}`;
+      return `Machine ${robotId}`
     },
 
     isImageFile(path) {
-      return path && (path.toLowerCase().endsWith('.jpg') || path.toLowerCase().endsWith('.jpeg') || path.toLowerCase().endsWith('.png'));
+      return (
+        path &&
+        (path.toLowerCase().endsWith('.jpg') ||
+          path.toLowerCase().endsWith('.jpeg') ||
+          path.toLowerCase().endsWith('.png'))
+      )
     },
 
     getImageUrl(path) {
-      return `http://localhost:3000${path}`;
+      return `http://localhost:3000${path}`
     },
   },
   async created() {
-    console.log('Robot Inspection page opened - fetching data...');
-    await this.fetchInspections();
-    console.log('Data fetching completed for Robot Inspection');
+    console.log('Robot Inspection page opened - fetching data...')
+    await this.fetchInspections()
+    console.log('Data fetching completed for Robot Inspection')
   },
 }
 </script>
@@ -762,5 +930,4 @@ export default {
   border-bottom: 2px solid #007bff;
   padding-bottom: 5px;
 }
-
 </style>

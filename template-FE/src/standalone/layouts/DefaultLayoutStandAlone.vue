@@ -1,9 +1,13 @@
 <template>
   <div>
-
     <AppSidebar />
-    
-    <div :class="['wrapper d-flex flex-column min-vh-100', { 'bg-blurred': isBgBlurred }]">
+
+    <div
+      :class="[
+        'wrapper d-flex flex-column min-vh-100',
+        { 'bg-blurred': isBgBlurred },
+      ]"
+    >
       <AppHeader />
       <div class="body flex-grow-1 px-1">
         <CContainer fluid>
@@ -46,7 +50,11 @@ export default {
       }))
       // Add Home if not present
       if (breadcrumbs.length > 0 && breadcrumbs[0].name !== 'Home') {
-        breadcrumbs.unshift({ name: 'Home', path: '#/dc/dashboard', active: false })
+        breadcrumbs.unshift({
+          name: 'Home',
+          path: '#/dc/dashboard',
+          active: false,
+        })
       }
       // Show only the last two items (previous and current)
       if (breadcrumbs.length > 2) {
@@ -78,42 +86,56 @@ export default {
   methods: {
     async fetchDataFrontend() {
       try {
+        console.log('[FE fetchDataFrontend] Starting API call...')
+        const frontendResponse = await api.get('/smartandon/frontend')
 
-        console.log('[FE fetchDataFrontend] Starting API call...');
-        const frontendResponse = await api.get('/smartandon/frontend');
+        console.log(
+          '[FE fetchDataFrontend] API response received:',
+          frontendResponse.data,
+        )
 
-        console.log('[FE fetchDataFrontend] API response received:', frontendResponse.data);
-
-        if (frontendResponse.data && Array.isArray(frontendResponse.data) && frontendResponse.data.length > 0) {
-          console.log('[FE fetchDataFrontend] First item of frontend data:', frontendResponse.data[0]);
+        if (
+          frontendResponse.data &&
+          Array.isArray(frontendResponse.data) &&
+          frontendResponse.data.length > 0
+        ) {
+          console.log(
+            '[FE fetchDataFrontend] First item of frontend data:',
+            frontendResponse.data[0],
+          )
 
           if (frontendResponse.data[0].frontend === 1) {
-            this.isBgBlurred = false;
+            this.isBgBlurred = false
           } else {
-            this.isBgBlurred = true;
+            this.isBgBlurred = true
           }
         } else {
-          
-          console.warn('[FE fetchDataFrontend] No valid data array in response');
+          console.warn('[FE fetchDataFrontend] No valid data array in response')
 
-          this.isBgBlurred = true;
+          this.isBgBlurred = true
         }
       } catch (error) {
-        console.error('[FE fetchDataFrontend] Error fetching frontend data:', error);
-        console.error('[FE fetchDataFrontend] Error details:', error.response?.data || error.message);
-        this.isBgBlurred = true;
+        console.error(
+          '[FE fetchDataFrontend] Error fetching frontend data:',
+          error,
+        )
+        console.error(
+          '[FE fetchDataFrontend] Error details:',
+          error.response?.data || error.message,
+        )
+        this.isBgBlurred = true
       }
     },
   },
   mounted() {
-    this.fetchDataFrontend();
+    this.fetchDataFrontend()
     this.fetchInterval = setInterval(() => {
-      this.fetchDataFrontend();
-    }, 20 * 60 * 1000); // 20 minutes interval
+      this.fetchDataFrontend()
+    }, 20 * 60 * 1000) // 20 minutes interval
   },
   beforeUnmount() {
     if (this.fetchInterval) {
-      clearInterval(this.fetchInterval);
+      clearInterval(this.fetchInterval)
     }
   },
 }

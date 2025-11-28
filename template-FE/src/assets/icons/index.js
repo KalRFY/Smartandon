@@ -1581,7 +1581,7 @@ import {
   cilYen,
   cilZoomIn,
   cilZoomOut,
-  cilZoom
+  cilZoom,
 } from '@coreui/icons'
 
 export const iconsSet = Object.assign(
@@ -2138,7 +2138,7 @@ export const iconsSet = Object.assign(
     cilYen,
     cilZoomIn,
     cilZoomOut,
-    cilZoom
+    cilZoom,
   },
   /*{
     cifAd,

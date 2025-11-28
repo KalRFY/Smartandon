@@ -2,27 +2,27 @@
   <div class="tree-node" :style="{ marginLeft: level * 20 + 'px' }">
     <div class="node-content">
       <div class="node-input-group">
-        <CButton 
+        <CButton
           v-if="level < 3"
-          color="secondary" 
-          size="sm" 
+          color="secondary"
+          size="sm"
           class="me-2"
           @click="toggleChildren"
         >
           <CIcon :icon="showChildren ? 'cil-minus' : 'cil-plus'" />
         </CButton>
-        
+
         <CFormTextarea
           v-model="localNode.description"
           placeholder="Enter description"
           class="node-input"
           @input="updateNode"
-          style="font-size: small;"
+          style="font-size: small"
         />
-        
-        <CButton 
-          color="danger" 
-          size="sm" 
+
+        <CButton
+          color="danger"
+          size="sm"
           class="ms-2"
           @click="$emit('delete:node')"
         >
@@ -30,20 +30,23 @@
         </CButton>
       </div>
       <div class="node-actions">
-        <CButton 
+        <CButton
           v-if="level < 3"
-          color="success" 
-          size="sm" 
+          color="success"
+          size="sm"
           @click="addChild"
           class="add-child-btn"
         >
-          <CIcon style="color: white;" icon="cil-plus"/>
-          <label style="color: white;"> Add Child</label>
+          <CIcon style="color: white" icon="cil-plus" />
+          <label style="color: white"> Add Child</label>
         </CButton>
       </div>
     </div>
-    
-    <div v-if="showChildren && localNode.subItems && localNode.subItems.length" class="children-container">
+
+    <div
+      v-if="showChildren && localNode.subItems && localNode.subItems.length"
+      class="children-container"
+    >
       <TreeNode
         v-for="(child, index) in localNode.subItems"
         :key="child.id"
@@ -65,27 +68,30 @@ export default {
   name: 'TreeNode',
   components: {
     CButton,
-    CFormInput,
     CIcon,
   },
   props: {
     node: {
       type: Object,
-      required: true
+      required: true,
     },
     level: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   emits: ['update:node', 'delete:node', 'add:child'],
   setup(props, { emit }) {
     const localNode = ref({ ...props.node })
     const showChildren = ref(true)
 
-    watch(() => props.node, (newNode) => {
-      localNode.value = { ...newNode }
-    }, { deep: true })
+    watch(
+      () => props.node,
+      (newNode) => {
+        localNode.value = { ...newNode }
+      },
+      { deep: true },
+    )
 
     const updateNode = () => {
       emit('update:node', localNode.value)
@@ -98,7 +104,7 @@ export default {
       localNode.value.subItems.push({
         id: Date.now() + Math.random().toString(36).substr(2, 9),
         description: '',
-        subItems: []
+        subItems: [],
       })
       updateNode()
     }
@@ -125,7 +131,7 @@ export default {
         localNode.value.subItems[childIndex].subItems.push({
           id: Date.now() + Math.random().toString(36).substr(2, 9),
           description: '',
-          subItems: []
+          subItems: [],
         })
         updateNode()
       }
@@ -143,9 +149,9 @@ export default {
       updateChild,
       deleteChild,
       addGrandchild,
-      toggleChildren
+      toggleChildren,
     }
-  }
+  },
 }
 </script>
 

@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
     /**
      * Get Line
      */
-    static searchLine = async () => {
+    static async searchLine() {
       return new Promise(async(resolve, reject) => {
         await sequelize.query(
           "qdc_common_line_data"

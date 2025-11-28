@@ -8,11 +8,11 @@
             <CInputGroupText id="basic-addon1">
               <Clock size="16" />
             </CInputGroupText>
-            <CFormInput 
-              id="startDate" 
-              type="date" 
+            <CFormInput
+              id="startDate"
+              type="date"
               :model-value="filterStartDate"
-              @update:model-value="$emit('update:filterStartDate', $event)" 
+              @update:model-value="$emit('update:filterStartDate', $event)"
             />
           </CInputGroup>
         </CCol>
@@ -23,43 +23,43 @@
             <CInputGroupText id="basic-addon2">
               <Clock size="16" />
             </CInputGroupText>
-            <CFormInput 
-              id="finishDate" 
-              type="date" 
+            <CFormInput
+              id="finishDate"
+              type="date"
               :model-value="filterFinishDate"
-              @update:model-value="$emit('update:filterFinishDate', $event)" 
+              @update:model-value="$emit('update:filterFinishDate', $event)"
             />
           </CInputGroup>
         </CCol>
 
         <CCol class="md-3">
           <CFormLabel for="lineSelect">Line</CFormLabel>
-            <Treeselect
-              id="lineSelect"
-              :model-value="selectedLine"
-              @update:model-value="$emit('update:selectedLine', $event)"
-              :options="lineOptions"
-              :multiple="false"
-              :searchable="true"
-              :clearable="true"
-              :disabled="!lineOptions.length"
-              placeholder="Select line"
-            />
+          <Treeselect
+            id="lineSelect"
+            :model-value="selectedLine"
+            @update:model-value="$emit('update:selectedLine', $event)"
+            :options="lineOptions"
+            :multiple="false"
+            :searchable="true"
+            :clearable="true"
+            :disabled="!lineOptions.length"
+            placeholder="Select line"
+          />
         </CCol>
 
         <CCol class="md-3">
           <CFormLabel for="selectedMachineName">Machine Name</CFormLabel>
-            <Treeselect
-              id="selectedMachineName"
-              :model-value="selectedMachineName"
-              @update:model-value="$emit('update:selectedMachineName', $event)"
-              :options="machineOptions"
-              :multiple="false"
-              :searchable="true"
-              :clearable="true"
-              :disabled="!machineOptions.length"
-              placeholder="Select machine"
-            />
+          <Treeselect
+            id="selectedMachineName"
+            :model-value="selectedMachineName"
+            @update:model-value="$emit('update:selectedMachineName', $event)"
+            :options="machineOptions"
+            :multiple="false"
+            :searchable="true"
+            :clearable="true"
+            :disabled="!machineOptions.length"
+            placeholder="Select machine"
+          />
         </CCol>
       </CRow>
 
@@ -81,7 +81,10 @@
 
         <CCol md="1" class="px-1">
           <CFormLabel>Category</CFormLabel>
-          <CFormSelect :model-value="selectedCategory" @update:model-value="$emit('update:selectedCategory', $event)">
+          <CFormSelect
+            :model-value="selectedCategory"
+            @update:model-value="$emit('update:selectedCategory', $event)"
+          >
             <option value="">All</option>
             <option value="Taskforce">TASKFORCE</option>
             <option value="Thema">Focus Thema Member</option>
@@ -90,7 +93,10 @@
 
         <CCol md="1" class="px-1">
           <CFormLabel>Shift</CFormLabel>
-          <CFormSelect :model-value="selectedShift" @update:model-value="$emit('update:selectedShift', $event)">
+          <CFormSelect
+            :model-value="selectedShift"
+            @update:model-value="$emit('update:selectedShift', $event)"
+          >
             <option value="">All</option>
             <option value="Red">Red Shift</option>
             <option value="White">White Shift</option>
@@ -102,21 +108,21 @@
 
       <CRow class="mt-4 mb-3">
         <CCol sm="2">
-          <CButton 
-            :disabled="loading" 
-            style="width: 100%" 
-            color="dark" 
-            variant="outline" 
+          <CButton
+            :disabled="loading"
+            style="width: 100%"
+            color="dark"
+            variant="outline"
             @click="$emit('reset')"
           >
             Reset
           </CButton>
         </CCol>
         <CCol sm="10">
-          <CButton 
-            :disabled="loading" 
-            style="width: 100%" 
-            color="primary" 
+          <CButton
+            :disabled="loading"
+            style="width: 100%"
+            color="primary"
             @click="$emit('search')"
           >
             Search

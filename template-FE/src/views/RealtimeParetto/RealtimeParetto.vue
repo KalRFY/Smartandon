@@ -4,7 +4,7 @@
       <CCardHeader class="text-white">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <strong style="font-size: medium;">Search</strong>
+            <strong style="font-size: medium">Search</strong>
           </div>
         </div>
       </CCardHeader>
@@ -34,14 +34,22 @@
         <CRow class="mb-3">
           <CCol>
             <CFormLabel for="av-category">AV Category</CFormLabel>
-            <CFormSelect id="av-category" v-model="selectedCategory" :options="avCategories" />
+            <CFormSelect
+              id="av-category"
+              v-model="selectedCategory"
+              :options="avCategories"
+            />
           </CCol>
         </CRow>
 
         <CRow>
           <CCol>
-            <CButton color="primary" class="w-100 d-flex align-items-center justify-content-center" @click="search"
-              :disabled="isLoading">
+            <CButton
+              color="primary"
+              class="w-100 d-flex align-items-center justify-content-center"
+              @click="search"
+              :disabled="isLoading"
+            >
               <SearchIcon class="me-2" size="16" />
               {{ isLoading ? 'Loading...' : 'Search' }}
             </CButton>
@@ -53,18 +61,47 @@
             <div class="quick-filter-section">
               <div class="quick-filter-title mb-2">Quick Filters</div>
               <div class="d-flex flex-wrap gap-2">
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('today')">Today</CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('yesterdayAll')">Yesterday All
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('today')"
+                  >Today</CBadge
+                >
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('yesterdayAll')"
+                  >Yesterday All
                 </CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('yesterdayDay')">Yesterday Day
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('yesterdayDay')"
+                  >Yesterday Day
                 </CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('yesterdayNight')">Yesterday
-                  Night</CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('lastNight')">Last Night
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('yesterdayNight')"
+                  >Yesterday Night</CBadge
+                >
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('lastNight')"
+                  >Last Night
                 </CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('thisMonth')">This Month
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('thisMonth')"
+                  >This Month
                 </CBadge>
-                <CBadge color="info" class="quick-filter-badge" @click="selectTimeRange('lastMonth')">Last Month
+                <CBadge
+                  color="info"
+                  class="quick-filter-badge"
+                  @click="selectTimeRange('lastMonth')"
+                  >Last Month
                 </CBadge>
               </div>
             </div>
@@ -94,13 +131,26 @@
               <CCardBody>
                 <h5 class="control-title">View Controls</h5>
                 <div class="d-flex flex-wrap gap-2">
-                  <CButtonGroup role="group" aria-label="Machine or Problem view">
-                    <CButton :color="viewMode === 'machines' ? 'primary' : 'outline-primary'
-                      " @click="toggleViewMode('machines')" :disabled="isLoading">
+                  <CButtonGroup
+                    role="group"
+                    aria-label="Machine or Problem view"
+                  >
+                    <CButton
+                      :color="
+                        viewMode === 'machines' ? 'primary' : 'outline-primary'
+                      "
+                      @click="toggleViewMode('machines')"
+                      :disabled="isLoading"
+                    >
                       <Tool size="16" class="me-1" /> Machine View
                     </CButton>
-                    <CButton :color="viewMode === 'problems' ? 'primary' : 'outline-primary'
-                      " @click="toggleViewMode('problems')" :disabled="isLoading">
+                    <CButton
+                      :color="
+                        viewMode === 'problems' ? 'primary' : 'outline-primary'
+                      "
+                      @click="toggleViewMode('problems')"
+                      :disabled="isLoading"
+                    >
                       <AlertTriangle size="16" class="me-1" /> Problem View
                     </CButton>
                   </CButtonGroup>
@@ -113,17 +163,30 @@
               <CCardBody>
                 <h5 class="control-title">Metric Controls</h5>
                 <div class="d-flex flex-wrap gap-2">
-                  <CButtonGroup role="group" aria-label="Duration or Frequency view">
-                    <CButton :color="metricMode === 'duration'
-                        ? 'primary'
-                        : 'outline-primary'
-                      " @click="toggleMetricMode('duration')" :disabled="isLoading">
+                  <CButtonGroup
+                    role="group"
+                    aria-label="Duration or Frequency view"
+                  >
+                    <CButton
+                      :color="
+                        metricMode === 'duration'
+                          ? 'primary'
+                          : 'outline-primary'
+                      "
+                      @click="toggleMetricMode('duration')"
+                      :disabled="isLoading"
+                    >
                       <Clock size="16" class="me-1" /> Duration
                     </CButton>
-                    <CButton :color="metricMode === 'frequency'
-                        ? 'primary'
-                        : 'outline-primary'
-                      " @click="toggleMetricMode('frequency')" :disabled="isLoading">
+                    <CButton
+                      :color="
+                        metricMode === 'frequency'
+                          ? 'primary'
+                          : 'outline-primary'
+                      "
+                      @click="toggleMetricMode('frequency')"
+                      :disabled="isLoading"
+                    >
                       <BarChart2 size="16" class="me-1" /> Frequency
                     </CButton>
                   </CButtonGroup>
@@ -140,12 +203,28 @@
           <p class="mt-3">Loading production data...</p>
         </div>
 
-        <div v-else-if="dataLoaded && productionLines.length > 0" class="production-lines">
-          <template v-for="(line, index) in productionLines" :key="`line-${index}-${line.title || index}`">
-            <ProductionLineSection :title="line.title" :panelId="line.panelId" :chartData="getChartData(line)"
-              :tableData="getTableData(line)" :viewMode="viewMode" :metricMode="metricMode"
-              :minQuantity="line.minQuantity" @refresh="handleRefresh(line.panelId)" @view-item="viewItem"
-              @edit-item="editItem" @delete-item="deleteItem" @show-problem-modal="showProblemModal" />
+        <div
+          v-else-if="dataLoaded && productionLines.length > 0"
+          class="production-lines"
+        >
+          <template
+            v-for="(line, index) in productionLines"
+            :key="`line-${index}-${line.title || index}`"
+          >
+            <ProductionLineSection
+              :title="line.title"
+              :panelId="line.panelId"
+              :chartData="getChartData(line)"
+              :tableData="getTableData(line)"
+              :viewMode="viewMode"
+              :metricMode="metricMode"
+              :minQuantity="line.minQuantity"
+              @refresh="handleRefresh(line.panelId)"
+              @view-item="viewItem"
+              @edit-item="editItem"
+              @delete-item="deleteItem"
+              @show-problem-modal="showProblemModal"
+            />
           </template>
         </div>
 
@@ -156,7 +235,11 @@
             <p class="text-muted">
               Please check your connection or try refreshing the page.
             </p>
-            <CButton color="primary" @click="fetchAllData" :disabled="isLoading">
+            <CButton
+              color="primary"
+              @click="fetchAllData"
+              :disabled="isLoading"
+            >
               <SearchIcon size="16" class="me-1" /> Retry
             </CButton>
           </div>
@@ -171,7 +254,6 @@
     :problem-data="selectedProblemData"
     @close="closeProblemModal"
   />
-  
 </template>
 
 <script>
@@ -542,7 +624,11 @@ export default {
       selectedProblemName.value = data.problemName
       selectedProblemData.value = data.problemData
       modalVisible.value = true
-      console.log('Modal state after show:', { modalVisible: modalVisible.value, selectedProblemName: selectedProblemName.value, selectedProblemData: selectedProblemData.value })
+      console.log('Modal state after show:', {
+        modalVisible: modalVisible.value,
+        selectedProblemName: selectedProblemName.value,
+        selectedProblemData: selectedProblemData.value,
+      })
     }
 
     const closeProblemModal = () => {

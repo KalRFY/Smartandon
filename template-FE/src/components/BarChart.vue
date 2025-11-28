@@ -11,14 +11,13 @@ import {
   Legend,
   BarElement,
   CategoryScale,
-  LinearScale
+  LinearScale,
 } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 defineProps({
   chartData: Object,
-  options: Object
+  options: Object,
 })
-
 </script>

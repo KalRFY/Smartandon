@@ -1,78 +1,100 @@
 <template>
-    <CContainer fluid class="q6-analysis-dashboard">
-        <DashboardHeader
-            :username="username"
-            :currentDate="currentDate"
-            :currentTime="currentTime"
-        />
+  <CContainer fluid class="q6-analysis-dashboard">
+    <DashboardHeader
+      :username="username"
+      :currentDate="currentDate"
+      :currentTime="currentTime"
+    />
 
-        <SearchPanel
-            v-model:startDate="startDate"
-            v-model:endDate="endDate"
-            v-model:selectedLine="selectedLine"
-            :isLoading="isLoading"
-            @search="search"
-            @selectTimeRange="selectTimeRange"
-        />
+    <SearchPanel
+      v-model:startDate="startDate"
+      v-model:endDate="endDate"
+      v-model:selectedLine="selectedLine"
+      :isLoading="isLoading"
+      @search="search"
+      @selectTimeRange="selectTimeRange"
+    />
 
-        <ViewControls
-            v-model:abnormal="abnormal"
-            v-model:isFreq="isFreq"
-            :isLoading="isLoading"
-        />
+    <ViewControls
+      v-model:abnormal="abnormal"
+      v-model:isFreq="isFreq"
+      :isLoading="isLoading"
+    />
 
-        <CRow class="production-lines-container flex flex-column">
-            <CCol cols="12" class="line-chart-container w-100">
-                <CCard class="w-100">
-                    <CCardBody>
-                        <template v-if="isLoading">
-                            <CContainer fluid class="loading-message text-center">Loading data...</CContainer>
-                        </template>
-                        <template v-else>
-                            <CContainer fluid v-if="seriesData.length === 0" class="empty-message text-center">
-                                No data available
-                            </CContainer>
-                            <CContainer fluid v-else class="chart-wrapper" v-show="chartReady">
-                                <Q6Charts
-                                    :key="chartKey"
-                                    :graphData="graphData"
-                                    :seriesData="seriesData"
-                                    :categories="q6Categories"
-                                    :title="'Q6 Analysis Graph'"
-                                />
-                            </CContainer>
-                        </template>
-                    </CCardBody>
-                </CCard>
-            </CCol>
-        </CRow>
+    <CRow class="production-lines-container flex flex-column">
+      <CCol cols="12" class="line-chart-container w-100">
+        <CCard class="w-100">
+          <CCardBody>
+            <template v-if="isLoading">
+              <CContainer fluid class="loading-message text-center"
+                >Loading data...</CContainer
+              >
+            </template>
+            <template v-else>
+              <CContainer
+                fluid
+                v-if="seriesData.length === 0"
+                class="empty-message text-center"
+              >
+                No data available
+              </CContainer>
+              <CContainer
+                fluid
+                v-else
+                class="chart-wrapper"
+                v-show="chartReady"
+              >
+                <Q6Charts
+                  :key="chartKey"
+                  :graphData="graphData"
+                  :seriesData="seriesData"
+                  :categories="q6Categories"
+                  :title="'Q6 Analysis Graph'"
+                />
+              </CContainer>
+            </template>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
 
-        <CRow class="production-lines-container flex flex-column">
-            <CCol cols="12" class="line-chart-container w-100">
-                <CCard class="w-100">
-                    <CCardBody>
-                        <template v-if="isLoading">
-                            <CContainer fluid class="loading-message text-center">Loading data...</CContainer>
-                        </template>
-                        <template v-else>
-                            <CContainer fluid v-if="o6SeriesData.length === 0" class="empty-message text-center">
-                                No data available
-                            </CContainer>
-                            <CContainer fluid v-else class="chart-wrapper" v-show="o6ChartReady">
-                                <Q6Charts
-                                    :key="o6ChartKey"
-                                    :graphData="o6GraphData"
-                                    :seriesData="o6SeriesData"
-                                    :categories="o6Categories"
-                                    :title="'O6 Analysis Graph'"
-                                />
-                            </CContainer>
-                        </template>
-                    </CCardBody>
-                </CCard>
-            </CCol>
-        </CRow>
-    </CContainer>
+    <CRow class="production-lines-container flex flex-column">
+      <CCol cols="12" class="line-chart-container w-100">
+        <CCard class="w-100">
+          <CCardBody>
+            <template v-if="isLoading">
+              <CContainer fluid class="loading-message text-center"
+                >Loading data...</CContainer
+              >
+            </template>
+            <template v-else>
+              <CContainer
+                fluid
+                v-if="o6SeriesData.length === 0"
+                class="empty-message text-center"
+              >
+                No data available
+              </CContainer>
+              <CContainer
+                fluid
+                v-else
+                class="chart-wrapper"
+                v-show="o6ChartReady"
+              >
+                <Q6Charts
+                  :key="o6ChartKey"
+                  :graphData="o6GraphData"
+                  :seriesData="o6SeriesData"
+                  :categories="o6Categories"
+                  :title="'O6 Analysis Graph'"
+                />
+              </CContainer>
+            </template>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
+  </CContainer>
 </template>
 
 <script setup>
@@ -103,7 +125,7 @@ const q6Categories = [
   'Q3 (Tools)',
   'Q4 (Maintenance Ability)',
   'Q5 (Machine Setting)',
-  'Q6 (Machine Backup)'
+  'Q6 (Machine Backup)',
 ]
 
 const o6Categories = [
@@ -112,29 +134,55 @@ const o6Categories = [
   'O3 (PM Issue)',
   'O4 (Symptom)',
   'O5 (Environment & 3rd Factor)',
-  'O6 (Lifetime Issue)'
+  'O6 (Lifetime Issue)',
 ]
 
 const now = new Date()
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+const days = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
 ]
-currentDate.value = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+currentDate.value = `${days[now.getDay()]}, ${
+  months[now.getMonth()]
+} ${now.getDate()}, ${now.getFullYear()}`
 
 const isLoading = ref(false)
 
 const selectedLine = ref('ALL')
-const startDate = ref(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`)
-const endDate = ref(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`)
+const startDate = ref(
+  `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`,
+)
+const endDate = ref(
+  `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+    now.getDate(),
+  ).padStart(2, '0')}`,
+)
 
 const abnormal = ref(false)
 const isFreq = ref(false)
 
-const fetchQ6Data = async() => {
-    try {
-        isLoading.value = true
+const fetchQ6Data = async () => {
+  try {
+    isLoading.value = true
     const params = {
       line: selectedLine.value,
       startDate: startDate.value,
@@ -142,129 +190,129 @@ const fetchQ6Data = async() => {
       isAbnormal: abnormal.value,
       isFreq: isFreq.value,
     }
-        const response = await api.get('/q6/q6-analysis', params)
-        if (response.status !== 200) {
-            throw new Error(`API request failed with status ${response.status}`)
-        }
-        const data = response.data.data || response.data || {}
-        graphData.value = data
-        seriesData.value = Array.isArray(data.series) ? data.series : []
-
-        console.log('Fetched Q6 data:', data)
-        console.log('Series length:', seriesData.value.length)
-    } catch(e) {
-        console.error('Error fetching Q6 data:', e)
-    } finally {
-        isLoading.value = false
+    const response = await api.get('/q6/q6-analysis', params)
+    if (response.status !== 200) {
+      throw new Error(`API request failed with status ${response.status}`)
     }
+    const data = response.data.data || response.data || {}
+    graphData.value = data
+    seriesData.value = Array.isArray(data.series) ? data.series : []
+
+    console.log('Fetched Q6 data:', data)
+    console.log('Series length:', seriesData.value.length)
+  } catch (e) {
+    console.error('Error fetching Q6 data:', e)
+  } finally {
+    isLoading.value = false
+  }
 }
 
-const fetchO6Data = async() => {
-    try {
-        isLoading.value = true
+const fetchO6Data = async () => {
+  try {
+    isLoading.value = true
     const params = {
       line: selectedLine.value,
       startDate: startDate.value,
       endDate: endDate.value,
       isFreq: isFreq.value,
     }
-        const response = await api.get('/q6/o6-analysis', params)
-        if (response.status !== 200) {
-            throw new Error(`API request failed with status ${response.status}`)
-        }
-        const data = response.data.data || response.data || {}
-        o6GraphData.value = data
-        o6SeriesData.value = Array.isArray(data.series) ? data.series : []
-
-        console.log('Fetched O6 data:', data)
-        console.log('O6 Series length:', o6SeriesData.value.length)
-    } catch(e) {
-        console.error('Error fetching O6 data:', e)
-    } finally {
-        isLoading.value = false
+    const response = await api.get('/q6/o6-analysis', params)
+    if (response.status !== 200) {
+      throw new Error(`API request failed with status ${response.status}`)
     }
+    const data = response.data.data || response.data || {}
+    o6GraphData.value = data
+    o6SeriesData.value = Array.isArray(data.series) ? data.series : []
+
+    console.log('Fetched O6 data:', data)
+    console.log('O6 Series length:', o6SeriesData.value.length)
+  } catch (e) {
+    console.error('Error fetching O6 data:', e)
+  } finally {
+    isLoading.value = false
+  }
 }
 
-onMounted(async() => {
-    try {
-        await nextTick()
-        chartReady.value = true
-        o6ChartReady.value = true
-        await fetchQ6Data()
-        await fetchO6Data()
+onMounted(async () => {
+  try {
+    await nextTick()
+    chartReady.value = true
+    o6ChartReady.value = true
+    await fetchQ6Data()
+    await fetchO6Data()
 
-        setInterval(() => {
-            const now = new Date()
-            currentTime.value = now.toLocaleString()
-        }, 1000)
-    } catch (error) {
-        console.error('Error in onMounted:', error)
-        isLoading.value = false
-    }
+    setInterval(() => {
+      const now = new Date()
+      currentTime.value = now.toLocaleString()
+    }, 1000)
+  } catch (error) {
+    console.error('Error in onMounted:', error)
+    isLoading.value = false
+  }
 })
 
 const formatDate = (date) => {
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 const search = async () => {
-    isLoading.value = true
-    try {
-        chartReady.value = false
-        o6ChartReady.value = false
-        await new Promise((r) => setTimeout(r, 100))
-        await fetchQ6Data()
-        await fetchO6Data()
-        await nextTick()
-        chartReady.value = true
-        o6ChartReady.value = true
-        chartKey.value += 1
-        o6ChartKey.value += 1
-        await new Promise((r) => setTimeout(r, 400))
-    } finally {
-        isLoading.value = false
-    }
+  isLoading.value = true
+  try {
+    chartReady.value = false
+    o6ChartReady.value = false
+    await new Promise((r) => setTimeout(r, 100))
+    await fetchQ6Data()
+    await fetchO6Data()
+    await nextTick()
+    chartReady.value = true
+    o6ChartReady.value = true
+    chartKey.value += 1
+    o6ChartKey.value += 1
+    await new Promise((r) => setTimeout(r, 400))
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const selectTimeRange = async (range) => {
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    switch (range) {
-        case 'today':
-        startDate.value = formatDate(today)
-        endDate.value = formatDate(now)
-        break
-        case 'lastWeek': {
-        const s = new Date(today)
-        s.setDate(today.getDate() - 7)
-        startDate.value = formatDate(s)
-        endDate.value = formatDate(today)
-        break
-        }
-        case 'lastMonth': {
-        const s = new Date(today)
-        s.setMonth(today.getMonth() - 1)
-        startDate.value = formatDate(s)
-        endDate.value = formatDate(today)
-        break
-        }
-        case 'lastQuarter': {
-        const s = new Date(today)
-        s.setMonth(today.getMonth() - 3)
-        startDate.value = formatDate(s)
-        endDate.value = formatDate(today)
-        break
-        }
-        case 'thisYear': {
-        const s = new Date(today.getFullYear(), 0, 1)
-        startDate.value = formatDate(s)
-        endDate.value = formatDate(today)
-        break
-        }
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  switch (range) {
+    case 'today':
+      startDate.value = formatDate(today)
+      endDate.value = formatDate(now)
+      break
+    case 'lastWeek': {
+      const s = new Date(today)
+      s.setDate(today.getDate() - 7)
+      startDate.value = formatDate(s)
+      endDate.value = formatDate(today)
+      break
     }
-    search()
+    case 'lastMonth': {
+      const s = new Date(today)
+      s.setMonth(today.getMonth() - 1)
+      startDate.value = formatDate(s)
+      endDate.value = formatDate(today)
+      break
+    }
+    case 'lastQuarter': {
+      const s = new Date(today)
+      s.setMonth(today.getMonth() - 3)
+      startDate.value = formatDate(s)
+      endDate.value = formatDate(today)
+      break
+    }
+    case 'thisYear': {
+      const s = new Date(today.getFullYear(), 0, 1)
+      startDate.value = formatDate(s)
+      endDate.value = formatDate(today)
+      break
+    }
+  }
+  search()
 }
 </script>
 

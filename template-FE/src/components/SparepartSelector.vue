@@ -75,11 +75,11 @@ export default {
       try {
         const response = await fetch('/api/smartandon/spareparts')
         const data = await response.json()
-        
+
         // Handle both response formats
         const spareparts = data.data || data
-        
-        this.sparepartOptions = spareparts.map(sparepart => ({
+
+        this.sparepartOptions = spareparts.map((sparepart) => ({
           id: sparepart.sparepart_id,
           label: `${sparepart.sparepart_nm} (${sparepart.material_number})`,
           material_number: sparepart.material_number,

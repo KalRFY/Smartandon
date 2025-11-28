@@ -1,2 +1,8 @@
 node_modules
 bin
+logs
+uploads
+swagger.js
+tmp.js
+*.config.js
+*.conf.js

@@ -14,7 +14,7 @@
             </CTableRow>
           </CTableHead>
           <CTableBody>
-            <CTableRow  v-for="type in types" :key="type.type_id">
+            <CTableRow v-for="type in types" :key="type.type_id">
               <CTableDataCell>{{ type.type_id }}</CTableDataCell>
               <CTableDataCell>{{ type.type_nm }}</CTableDataCell>
             </CTableRow>
@@ -23,8 +23,7 @@
         <p v-else>Loading data...</p>
       </CCol>
     </CRow>
-    <CContainer fluid>
-    </CContainer>
+    <CContainer fluid> </CContainer>
   </div>
 
   <CRow>
@@ -37,7 +36,10 @@
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow v-for="sparepart in spareparts" :key="sparepart.sparepart_id">
+          <CTableRow
+            v-for="sparepart in spareparts"
+            :key="sparepart.sparepart_id"
+          >
             <CTableDataCell>{{ sparepart.sparepart_id }}</CTableDataCell>
             <CTableDataCell>{{ sparepart.sparepart_nm }}</CTableDataCell>
           </CTableRow>
@@ -67,7 +69,7 @@
       <p v-else>Loading data...</p>
     </CCol>
   </CRow>
-  
+
   <CRow>
     <CCol class="mb-3">
       <CTable v-if="problems.length" bordered hover responsive>
@@ -115,18 +117,16 @@
         <CTableHead>
           <CTableRow>
             <!-- <CTableHeaderCell>No</CTableHeaderCell> -->
-             <CTableHeaderCell scope="col">Line</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Line</CTableHeaderCell>
             <CTableHeaderCell scope="col">OEE</CTableHeaderCell>
             <CTableHeaderCell scope="col">Value</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
           <CTableRow v-for="oeeValue in oee" :key="oeeValue.CLIENT_HDL">
-
             <CTableDataCell>{{ oeeValue.GROUP_NAME }}</CTableDataCell>
             <CTableDataCell>{{ oeeValue.TAG_NAME }}</CTableDataCell>
             <CTableDataCell>{{ oeeValue.REG_VALUE }}</CTableDataCell>
-
           </CTableRow>
         </CTableBody>
       </CTable>
@@ -176,7 +176,10 @@
             <CTableRow v-else-if="problemActive.length === 0">
               <CTableDataCell colspan="6" class="text-center">No active problems</CTableDataCell>
             </CTableRow> -->
-            <CTableRow v-for="(problem, idx) in problemActive" :key="problem.fid">
+            <CTableRow
+              v-for="(problem, idx) in problemActive"
+              :key="problem.fid"
+            >
               <CTableDataCell>{{ idx + 1 }}</CTableDataCell>
               <CTableDataCell>{{ problem.fmc_name }}</CTableDataCell>
               <CTableDataCell>{{ problem.foperator }}</CTableDataCell>
@@ -189,33 +192,42 @@
       </CCard>
     </CCol>
   </CRow>
-
-
-
-
-
 </template>
 
 <script>
 import { ref } from 'vue'
-import { CButton, CCard, CCardBody, CCardTitle, CContainer, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableRow, CTableDataCell, CCardHeader, CCardText } from '@coreui/vue';
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCardTitle,
+  CContainer,
+  CTable,
+  CTableHead,
+  CTableBody,
+  CTableHeaderCell,
+  CTableRow,
+  CTableDataCell,
+  CCardHeader,
+  CCardText,
+} from '@coreui/vue'
 import { CChart } from '@coreui/vue-chartjs'
 import ApexCharts from 'vue3-apexcharts'
 import MainChartExample from './charts/MainChartExample'
 import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
 import api from '../apis/CommonAPI'
-import { 
-  AlertTriangle, 
-  Clock, 
-  Timer, 
-  History, 
-  BarChart2, 
+import {
+  AlertTriangle,
+  Clock,
+  Timer,
+  History,
+  BarChart2,
   FileText,
-  ChartColumnIncreasing, 
-  BookText 
-} from 'lucide-vue-next';
-import { useRouter } from 'vue-router';
+  ChartColumnIncreasing,
+  BookText,
+} from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
@@ -260,117 +272,123 @@ export default {
       sparepartsOption: [],
       problemActive: [],
       loadingProblemActive: false,
-      limitView: 0
-    };
+      limitView: 0,
+    }
   },
   async created() {
     try {
-      const response = await api.get('/smartandon/spareparts');
+      const response = await api.get('/smartandon/spareparts')
       if (response.status !== 200) {
-        throw new Error('Failed to fetch spareparts, status: ' + response.status);
+        throw new Error(
+          'Failed to fetch spareparts, status: ' + response.status,
+        )
       }
-      this.spareparts = response.data?.data || response.data;
-      this.sparepartsOption = this.spareparts.map(sparepart => ({
+      this.spareparts = response.data?.data || response.data
+      this.sparepartsOption = this.spareparts.map((sparepart) => ({
         id: sparepart.sparepart_id,
-        label: sparepart.sparepart_nm
-      }));
+        label: sparepart.sparepart_nm,
+      }))
     } catch (error) {
-      console.error('Failed to fetch spareparts:', error);
+      console.error('Failed to fetch spareparts:', error)
     }
     try {
-      this.loadingProblemActive = true;
-      this.limitView = 0;
+      this.loadingProblemActive = true
+      this.limitView = 0
       const response = await api.get('/smartandon/problemView', {
-          limitView: 0,
-      });
+        limitView: 0,
+      })
       if (response.status !== 200) {
-        throw new Error('Failed to fetch active problems, status: ' + response.status);
+        throw new Error(
+          'Failed to fetch active problems, status: ' + response.status,
+        )
       }
-      this.problemActive = response.data?.data || response.data;
-      console.log('Filtered active problems:', this.problemActive);
+      this.problemActive = response.data?.data || response.data
+      console.log('Filtered active problems:', this.problemActive)
     } catch (error) {
-      console.error('Failed to fetch active problems:', error);
-      this.problemActive = [];
+      console.error('Failed to fetch active problems:', error)
+      this.problemActive = []
     } finally {
-      this.loadingProblemActive = false;
+      this.loadingProblemActive = false
     }
     try {
-      const response = await api.get('/smartandon/qcc-m-types');
+      const response = await api.get('/smartandon/qcc-m-types')
       if (response.status !== 200) {
-        throw new Error('Failed to fetch qcc_m_types, status: ' + response.status);
+        throw new Error(
+          'Failed to fetch qcc_m_types, status: ' + response.status,
+        )
       }
-      this.types = response.data?.data || response.data;
+      this.types = response.data?.data || response.data
     } catch (error) {
-      console.error('Failed to fetch qcc_m_types:', error);
+      console.error('Failed to fetch qcc_m_types:', error)
     }
     try {
-      const response = await api.get('/smartandon/line');
+      const response = await api.get('/smartandon/line')
       if (response.status !== 200) {
-        throw new Error('Failed to fetch lines, status: ' + response.status);
+        throw new Error('Failed to fetch lines, status: ' + response.status)
       }
-      this.lines = response.data?.data || response.data;
-      this.lineOptions = this.lines.map(line => ({
+      this.lines = response.data?.data || response.data
+      this.lineOptions = this.lines.map((line) => ({
         id: line.fid,
-        label: line.fline
-      }));
+        label: line.fline,
+      }))
     } catch (error) {
-      console.error('Failed to fetch lines:', error);
+      console.error('Failed to fetch lines:', error)
     }
     try {
-      const response = await api.get('/smartandon/machine');
+      const response = await api.get('/smartandon/machine')
       if (response.status !== 200) {
-        throw new Error('Failed to fetch machines, status: ' + response.status);
+        throw new Error('Failed to fetch machines, status: ' + response.status)
       }
-      this.machines = response.data?.data || response.data;
-      this.machineOptions = this.machines.map(machine => ({
+      this.machines = response.data?.data || response.data
+      this.machineOptions = this.machines.map((machine) => ({
         id: machine.fid,
-        label: machine.fmc_name
-      }));
+        label: machine.fmc_name,
+      }))
     } catch (error) {
-      console.error('Failed to fetch machines:', error);
+      console.error('Failed to fetch machines:', error)
     }
     try {
-      const response = await api.get('/smartandon/problemId');
+      const response = await api.get('/smartandon/problemId')
       if (response.status !== 200) {
-        throw new Error('Failed to fetch problems, status: ' + response.status);
+        throw new Error('Failed to fetch problems, status: ' + response.status)
       }
-      this.problems = response.data?.data || response.data;
-      this.problemOption = this.problems.map(problem => ({
+      this.problems = response.data?.data || response.data
+      this.problemOption = this.problems.map((problem) => ({
         id: problem.fid,
-        label: problem.ferror_name
-      }));
+        label: problem.ferror_name,
+      }))
     } catch (error) {
-      console.error('Failed to fetch problems:', error);
+      console.error('Failed to fetch problems:', error)
     }
     try {
-      const response = await api.get('/smartandon/oee');
+      const response = await api.get('/smartandon/oee')
       if (response.status !== 200) {
-        throw new Error('Failed to fetch oee, status: ' + response.status);
+        throw new Error('Failed to fetch oee, status: ' + response.status)
       }
-      this.oee = response.data?.data || response.data;
-      this.oeeOption = this.oee.map(oeeValue => ({
+      this.oee = response.data?.data || response.data
+      this.oeeOption = this.oee.map((oeeValue) => ({
         id: oeeValue.GROUP_NAME,
         label: oeeValue.TAG_NAME,
-        labelOee: oeeValue.REG_VALUE
-      }));
+        labelOee: oeeValue.REG_VALUE,
+      }))
     } catch (error) {
-      console.error('Failed to fetch oee:', error);
+      console.error('Failed to fetch oee:', error)
     }
     try {
-      const response = await api.get('/smartandon/member');
+      const response = await api.get('/smartandon/member')
       if (response.status !== 200) {
-        throw new Error('Failed to fetch member, status: ' + response.status);
+        throw new Error('Failed to fetch member, status: ' + response.status)
       }
-      this.members = response.data?.data || response.data;
-      this.memberOption = this.members.map(member => ({
+      this.members = response.data?.data || response.data
+      this.memberOption = this.members.map((member) => ({
         id: member.fid,
-        label: member.fname
-      }));
+        label: member.fname,
+      }))
     } catch (error) {
-      console.error('Failed to fetch member:', error);
+      console.error('Failed to fetch member:', error)
     }
   },
-};
+}
 </script>
 
 <style scoped>

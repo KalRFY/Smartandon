@@ -19,8 +19,8 @@ export default {
   components: {
     CContainer,
   },
-  setup(){
-  /*
+  setup() {
+    /*
     const getBreadcrumbs = () => {
       return router.currentRoute.value.matched.map((route) => {
         return {
@@ -37,6 +37,6 @@ export default {
       console.log(localStorage.breadcrumbs)
     })
 	*/
-  }
+  },
 }
 </script>

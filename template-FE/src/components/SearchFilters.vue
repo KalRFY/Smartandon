@@ -3,7 +3,9 @@
   <CRow class="mb-3">
     <CCol>
       <CCard>
-        <CCardHeader style="font-weight: bold; font-size: medium;">Search</CCardHeader>
+        <CCardHeader style="font-weight: bold; font-size: medium"
+          >Search</CCardHeader
+        >
         <CCardBody>
           <CRow>
             <CCol md="3" class="mb-3">
@@ -42,22 +44,22 @@
 
             <CCol md="3" class="mb-3">
               <CCol class="md-6">
-              <label for="lineSelect" class="form-label">Line</label>
-              <Treeselect
-                id="lineSelect"
-                :model-value="selectedLine"
-                @update:model-value="handleLineUpdate"
-                :multiple="false"
-                :flat="true"
-                :options="lineOptions"
-                :searchable="true"
-                :clearable="true"
-                placeholder="Select or input line"
-                @input="$emit('machineInput')"
-                :value-consists-of="['id']"
-                :value-key="'id'"
-                :label-key="'label'"
-              />
+                <label for="lineSelect" class="form-label">Line</label>
+                <Treeselect
+                  id="lineSelect"
+                  :model-value="selectedLine"
+                  @update:model-value="handleLineUpdate"
+                  :multiple="false"
+                  :flat="true"
+                  :options="lineOptions"
+                  :searchable="true"
+                  :clearable="true"
+                  placeholder="Select or input line"
+                  @input="$emit('machineInput')"
+                  :value-consists-of="['id']"
+                  :value-key="'id'"
+                  :label-key="'label'"
+                />
               </CCol>
             </CCol>
 

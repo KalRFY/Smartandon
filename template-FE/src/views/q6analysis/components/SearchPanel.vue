@@ -22,7 +22,7 @@
                 :disabled="isLoading"
               />
             </CCol>
-            
+
             <CCol md="3">
               <label class="form-label fw-semibold">Production Line</label>
               <CFormSelect
@@ -30,12 +30,16 @@
                 @change="updateSelectedLine"
                 :disabled="isLoading"
               >
-                <option v-for="line in productionLines" :key="line.value" :value="line.value">
+                <option
+                  v-for="line in productionLines"
+                  :key="line.value"
+                  :value="line.value"
+                >
                   {{ line.label }}
                 </option>
               </CFormSelect>
             </CCol>
-            
+
             <CCol md="3">
               <CButton
                 color="primary"
@@ -47,17 +51,17 @@
                   <CSpinner size="sm" class="me-2" />
                   Loading...
                 </template>
-                <template v-else>
-                  Search
-                </template>
+                <template v-else> Search </template>
               </CButton>
             </CCol>
           </CRow>
-          
+
           <CRow class="mt-3">
             <CCol cols="12">
               <CContainer fluid class="d-flex flex-wrap gap-2 p-0">
-                <small class="text-muted me-2 align-self-center">Quick select:</small>
+                <small class="text-muted me-2 align-self-center"
+                  >Quick select:</small
+                >
                 <CButton
                   v-for="range in timeRanges"
                   :key="range.value"
@@ -95,20 +99,26 @@ const props = defineProps({
   startDate: String,
   endDate: String,
   selectedLine: String,
-  isLoading: Boolean
+  isLoading: Boolean,
 })
 
-const emit = defineEmits(['update:startDate', 'update:endDate', 'update:selectedLine', 'search', 'selectTimeRange'])
+const emit = defineEmits([
+  'update:startDate',
+  'update:endDate',
+  'update:selectedLine',
+  'search',
+  'selectTimeRange',
+])
 
 const productionLines = [
-  {value: 'ALL', label: 'All' },
+  { value: 'ALL', label: 'All' },
   { value: 'LPDC', label: 'LPDC Line' },
   { value: 'HPDC', label: 'HPDC Line' },
   { value: 'Cam Shaft', label: 'CAM SHAFT Line' },
   { value: 'Crank shaft', label: 'CRANK SHAFT Line' },
   { value: 'Cylinder Head', label: 'CYLINDER HEAD Line' },
   { value: 'Cylinder Block', label: 'CYLINDER BLOCK Line' },
-  { value: 'ASSY LINE', label: 'ASSY LINE' }
+  { value: 'ASSY LINE', label: 'ASSY LINE' },
 ]
 
 const timeRanges = [
@@ -116,7 +126,7 @@ const timeRanges = [
   { value: 'lastWeek', label: 'Last Week' },
   { value: 'lastMonth', label: 'Last Month' },
   { value: 'lastQuarter', label: 'Last Quarter' },
-  { value: 'thisYear', label: 'This Year' }
+  { value: 'thisYear', label: 'This Year' },
 ]
 
 const updateStartDate = (event) => {

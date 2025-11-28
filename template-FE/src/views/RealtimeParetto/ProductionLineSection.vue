@@ -73,7 +73,6 @@
         </div>
       </CCardBody>
     </CCard>
-
   </div>
 </template>
 
@@ -164,8 +163,6 @@ export default {
     const selectedProblemData = ref([])
     const selectedProblemName = ref('')
 
-
-
     const toggleExpanded = () => {
       isExpanded.value = !isExpanded.value
     }
@@ -201,7 +198,9 @@ export default {
           type: 'application/octet-stream',
         })
         const url = URL.createObjectURL(blob)
-        const exportFileDefaultName = `${props.title}_${props.viewMode}_${props.metricMode}_${new Date().toISOString()}.xlsx`
+        const exportFileDefaultName = `${props.title}_${props.viewMode}_${
+          props.metricMode
+        }_${new Date().toISOString()}.xlsx`
         const linkElement = document.createElement('a')
         linkElement.href = url
         linkElement.download = exportFileDefaultName
@@ -224,10 +223,12 @@ export default {
 
     const series = computed(() => {
       if (!props.chartData || props.chartData.length === 0) {
-        return [{
-          name: 'No Data',
-          data: []
-        }]
+        return [
+          {
+            name: 'No Data',
+            data: [],
+          },
+        ]
       }
       const sortedData = [...props.chartData].sort(
         (a, b) => b.quantity - a.quantity,
@@ -241,15 +242,19 @@ export default {
         return Math.round((cumulative / total) * 100)
       })
 
-      return [{
-        name: props.metricMode === 'frequency' ? 'Frequency' : 'Duration (mins)',
-        type: 'column',
-        data: sortedData.map((item) => item.quantity),
-      }, {
-        name: 'Cumulative %',
-        type: 'line',
-        data: cumulativePercentages,
-      }]
+      return [
+        {
+          name:
+            props.metricMode === 'frequency' ? 'Frequency' : 'Duration (mins)',
+          type: 'column',
+          data: sortedData.map((item) => item.quantity),
+        },
+        {
+          name: 'Cumulative %',
+          type: 'line',
+          data: cumulativePercentages,
+        },
+      ]
     })
 
     const chartOptions = computed(() => ({
@@ -257,13 +262,17 @@ export default {
         type: 'line',
         height: 350,
         toolbar: {
-          show: false
+          show: false,
         },
         background: 'transparent',
         events: {
-          click: function(event, chartContext, config) {
+          click: function (event, chartContext, config) {
             console.log('Chart clicked:', { event, chartContext, config })
-            if (config && config.seriesIndex === 0 && config.dataPointIndex !== undefined) {
+            if (
+              config &&
+              config.seriesIndex === 0 &&
+              config.dataPointIndex !== undefined
+            ) {
               const categories = config.w?.config?.xaxis?.categories || []
               console.log('Categories from config:', categories)
               console.log('DataPointIndex:', config.dataPointIndex)
@@ -271,8 +280,10 @@ export default {
               console.log('Problem name:', problemName)
 
               // Try alternative way to get categories
-              const sortedData = [...props.chartData].sort((a, b) => b.quantity - a.quantity)
-              const altCategories = sortedData.map(item => item.name)
+              const sortedData = [...props.chartData].sort(
+                (a, b) => b.quantity - a.quantity,
+              )
+              const altCategories = sortedData.map((item) => item.name)
               console.log('Alternative categories from props:', altCategories)
               const altProblemName = altCategories[config.dataPointIndex]
               console.log('Alternative problem name:', altProblemName)
@@ -281,37 +292,42 @@ export default {
               console.log('Final problem name:', finalProblemName)
 
               if (finalProblemName) {
-                const problemData = props.tableData.filter(row => row.problem === finalProblemName).map(row => row.rawData || row)
+                const problemData = props.tableData
+                  .filter((row) => row.problem === finalProblemName)
+                  .map((row) => row.rawData || row)
                 console.log('Filtered problem data:', problemData)
-                emit('show-problem-modal', { problemName: finalProblemName, problemData })
+                emit('show-problem-modal', {
+                  problemName: finalProblemName,
+                  problemData,
+                })
               }
             }
-          }
-        }
+          },
+        },
       },
       plotOptions: {
         bar: {
           horizontal: false,
           columnWidth: '55%',
-          endingShape: 'rounded'
+          endingShape: 'rounded',
         },
       },
       dataLabels: {
         enabled: true,
         enabledOnSeries: [1],
-        formatter: function(val) {
+        formatter: function (val) {
           return val + '%'
         },
         style: {
           fontSize: '12px',
-          colors: ['#304758']
+          colors: ['#304758'],
         },
-        offsetY: -10
+        offsetY: -10,
       },
       stroke: {
         show: true,
         width: [0, 4],
-        curve: 'straight'
+        curve: 'straight',
       },
       markers: {
         size: [0, 6],
@@ -319,41 +335,50 @@ export default {
         strokeColors: '#00E396',
         strokeWidth: 2,
         hover: {
-          size: 7
-        }
+          size: 7,
+        },
       },
       xaxis: {
-        categories: props.chartData && props.chartData.length > 0
-          ? [...props.chartData].sort((a, b) => b.quantity - a.quantity).map((item) => item.name)
-          : [],
+        categories:
+          props.chartData && props.chartData.length > 0
+            ? [...props.chartData]
+                .sort((a, b) => b.quantity - a.quantity)
+                .map((item) => item.name)
+            : [],
         title: {
-          text: 'Problems'
+          text: 'Problems',
         },
         labels: {
           rotate: -45,
           style: {
-            fontSize: '12px'
-          }
-        }
+            fontSize: '12px',
+          },
+        },
       },
 
-      yaxis: [{
-        title: {
-          text: props.metricMode === 'frequency' ? 'Frequency' : 'Duration (mins)',
+      yaxis: [
+        {
+          title: {
+            text:
+              props.metricMode === 'frequency'
+                ? 'Frequency'
+                : 'Duration (mins)',
+          },
         },
-      }, {
-        opposite: true,
-        title: {
-          text: 'Cumulative %'
+        {
+          opposite: true,
+          title: {
+            text: 'Cumulative %',
+          },
+          labels: {
+            formatter: function (val) {
+              return val + '%'
+            },
+          },
         },
-        labels: {
-          formatter: function (val) {
-            return val + '%'
-          }
-        }
-      }],
+      ],
       fill: {
-        opacity: 1
+        opacity: 1,
       },
       tooltip: {
         shared: true,
@@ -361,44 +386,49 @@ export default {
         y: {
           formatter: function (val, { seriesIndex }) {
             if (seriesIndex === 0) {
-              return props.metricMode === 'frequency' ? val + " times" : val + " mins"
+              return props.metricMode === 'frequency'
+                ? val + ' times'
+                : val + ' mins'
             } else {
-              return val + "%"
+              return val + '%'
             }
-          }
-        }
+          },
+        },
       },
       title: {
-        text: `${props.title} - Problem ${props.metricMode === 'frequency' ? 'Frequency' : 'Duration'} Chart`,
+        text: `${props.title} - Problem ${
+          props.metricMode === 'frequency' ? 'Frequency' : 'Duration'
+        } Chart`,
         align: 'center',
         style: {
           fontSize: '14px',
-          fontWeight: 'bold'
-        }
+          fontWeight: 'bold',
+        },
       },
-      responsive: [{
-        breakpoint: 768,
-        options: {
-          chart: {
-            height: 300
-          },
-          xaxis: {
-            labels: {
-              rotate: -90,
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: {
+              height: 300,
+            },
+            xaxis: {
+              labels: {
+                rotate: -90,
+                style: {
+                  fontSize: '10px',
+                },
+              },
+            },
+            title: {
               style: {
-                fontSize: '10px'
-              }
-            }
+                fontSize: '12px',
+              },
+            },
           },
-          title: {
-            style: {
-              fontSize: '12px'
-            }
-          }
-        }
-      }]
+        },
+      ],
     }))
-
 
     const formatDateTime = (dateStr) => {
       if (!dateStr) return ''

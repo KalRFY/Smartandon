@@ -1,6 +1,8 @@
 <template>
   <div class="mb-3 p-2 bg-dark text-light legend-wrapper">
-    <div class="d-flex justify-content-evenly align-items-center text-center w-100">
+    <div
+      class="d-flex justify-content-evenly align-items-center text-center w-100"
+    >
       <div class="legend-item">
         <div class="dot bg-white"></div>
         <span class="label">finished</span>
@@ -19,8 +21,8 @@
 
 <script>
 export default {
-  name: "LegendStatus",
-};
+  name: 'LegendStatus',
+}
 </script>
 
 <style>

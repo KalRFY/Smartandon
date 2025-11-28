@@ -1,6 +1,4 @@
 /* eslint-disable global-require */
-/* eslint-disable security/detect-non-literal-require */
-/* eslint-disable import/no-dynamic-require */
 
 const Sequelize = require('sequelize');
 const { qdc_pg_db, qdc_db } = require('../config/config');

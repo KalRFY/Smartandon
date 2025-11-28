@@ -1,22 +1,25 @@
 <template>
-    <CCard class="mb-4 header-card">
-        <CCardHeader class="text-white">
-            <CRow class="align-items-center d-flex">
-                <CCol class="">
-                <h3 class="m-0">Q6 ANALYSIS DASHBOARD</h3>
-                </CCol>
-                <CCol class="text-end">
-                <CContainer fluid class="d-flex justify-content-center align-items-center gap-5 p-0">
-                    <span class="w-50">{{ currentDate }}</span>
-                    <CContainer fluid class="live-indicator align-items-center p-0">
-                    <span class="live-dot"></span>
-                    <span class="ms-1">{{ currentTime }}</span>
-                    </CContainer>
-                </CContainer>
-                </CCol>
-            </CRow>
-        </CCardHeader>
-    </CCard>
+  <CCard class="mb-4 header-card">
+    <CCardHeader class="text-white">
+      <CRow class="align-items-center d-flex">
+        <CCol class="">
+          <h3 class="m-0">Q6 ANALYSIS DASHBOARD</h3>
+        </CCol>
+        <CCol class="text-end">
+          <CContainer
+            fluid
+            class="d-flex justify-content-center align-items-center gap-5 p-0"
+          >
+            <span class="w-50">{{ currentDate }}</span>
+            <CContainer fluid class="live-indicator align-items-center p-0">
+              <span class="live-dot"></span>
+              <span class="ms-1">{{ currentTime }}</span>
+            </CContainer>
+          </CContainer>
+        </CCol>
+      </CRow>
+    </CCardHeader>
+  </CCard>
 </template>
 
 <script setup>

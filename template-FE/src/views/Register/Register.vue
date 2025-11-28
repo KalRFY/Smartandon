@@ -1,7 +1,8 @@
 <template>
-  <div class="register-page d-flex align-items-center justify-content-center min-vh-100 bg-light bg-blurred">
-    <div class="register-header text-center mb-4">
-    </div>
+  <div
+    class="register-page d-flex align-items-center justify-content-center min-vh-100 bg-light bg-blurred"
+  >
+    <div class="register-header text-center mb-4"></div>
 
     <div class="register-card card shadow">
       <div class="card-content d-flex">
@@ -13,13 +14,13 @@
             <div class="mb-3">
               <label for="name" class="form-label ms-3">Name</label>
               <div class="input-wrapper">
-                <input 
-                  v-model="name" 
-                  type="text" 
-                  class="form-control ms-3" 
-                  id="name" 
-                  placeholder="Enter your name" 
-                  required 
+                <input
+                  v-model="name"
+                  type="text"
+                  class="form-control ms-3"
+                  id="name"
+                  placeholder="Enter your name"
+                  required
                 />
               </div>
             </div>
@@ -27,13 +28,13 @@
             <div class="mb-3">
               <label for="noreg" class="form-label ms-3">Noreg</label>
               <div class="input-wrapper">
-                <input 
-                  v-model="noreg" 
-                  type="text" 
-                  class="form-control ms-3" 
-                  id="noreg" 
+                <input
+                  v-model="noreg"
+                  type="text"
+                  class="form-control ms-3"
+                  id="noreg"
                   placeholder="Enter your noreg"
-                  required 
+                  required
                 />
               </div>
             </div>
@@ -41,24 +42,24 @@
             <div class="mb-4">
               <label for="phone" class="form-label ms-3">Phone</label>
               <div class="input-wrapper">
-                <input 
-                  v-model="phone" 
-                  type="tel" 
-                  class="form-control ms-3" 
-                  id="phone" 
+                <input
+                  v-model="phone"
+                  type="tel"
+                  class="form-control ms-3"
+                  id="phone"
                   placeholder="Enter your phone number"
-                  required 
+                  required
                 />
               </div>
             </div>
 
             <button
-              type="submit" 
-              class="btn btn-accent w-100 ms-3" 
+              type="submit"
+              class="btn btn-accent w-100 ms-3"
               :disabled="isLoading"
             >
-              <span 
-                v-if="isLoading" 
+              <span
+                v-if="isLoading"
                 class="spinner-border spinner-border-sm me-2"
               ></span>
               <span v-else>Register</span>
@@ -67,21 +68,14 @@
 
           <div class="text-center mt-3 ms-4">
             <span>Already have an account?</span>
-            <a 
-              href="./#/auth/login/" 
-              class="register-link ms-1"
-            >Login</a>
-          </div> 
+            <a href="./#/auth/login/" class="register-link ms-1">Login</a>
+          </div>
         </div>
 
         <div v-if="showElements" class="image-side">
-           <div class="image-wrapper">
-            <img 
-              :src="loginPhoto" 
-              alt="Plant 1" 
-              class="login-image" 
-            />
-           </div>
+          <div class="image-wrapper">
+            <img :src="loginPhoto" alt="Plant 1" class="login-image" />
+          </div>
         </div>
       </div>
     </div>
@@ -100,7 +94,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import loginPhoto from '@/assets/images/plant_1.jpg';
+import loginPhoto from '@/assets/images/plant_1.jpg'
 import api from '@/apis/CommonAPI'
 const name = ref('')
 const noreg = ref('')
@@ -114,7 +108,12 @@ const fetchFrontendFlag = async () => {
   try {
     const response = await api.get('/smartandon/frontend')
     const data = response.data
-    if (data && Array.isArray(data) && data.length > 0 && data[0].frontend === 1) {
+    if (
+      data &&
+      Array.isArray(data) &&
+      data.length > 0 &&
+      data[0].frontend === 1
+    ) {
       showElements.value = false
     } else {
       showElements.value = true
@@ -161,9 +160,13 @@ const onRegister = async () => {
     } else {
       const errorData = response?.response?.data
       if (errorData && errorData.errors) {
-        throw new Error(errorData.errors[0] || 'Registration failed. Please try again.')
+        throw new Error(
+          errorData.errors[0] || 'Registration failed. Please try again.',
+        )
       } else if (errorData && errorData.message) {
-        throw new Error(errorData.message || 'Registration failed. Please try again.')
+        throw new Error(
+          errorData.message || 'Registration failed. Please try again.',
+        )
       } else {
         throw new Error('Registration failed. Please try again.')
       }

@@ -15,11 +15,11 @@ import './styles/sweetalert2.css'
 import 'vue-select/dist/vue-select.css'
 import Highcharts from 'highcharts'
 import HighchartsVue from 'highcharts-vue'
-import VCalendar from 'v-calendar';
-import 'v-calendar/style.css';
-if(process.env.VUE_APP_STANDALONE_SINGLE_SPA==='true'){
-  require('@/components/StandAloneStyle.vue');
-}else{
+import VCalendar from 'v-calendar'
+import 'v-calendar/style.css'
+if (process.env.VUE_APP_STANDALONE_SINGLE_SPA === 'true') {
+  require('@/components/StandAloneStyle.vue')
+} else {
   require('@/components/SingleSpaStyle.vue')
 }
 const vueLifecycles = singleSpaVue({
@@ -47,7 +47,7 @@ const vueLifecycles = singleSpaVue({
     app.component('CIcon', CIcon)
     app.component('v-select', vSelect)
     app.use(HighchartsVue, {
-      highcharts: Highcharts
+      highcharts: Highcharts,
     })
     app.use(VCalendar, {})
   },

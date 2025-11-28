@@ -2,7 +2,12 @@
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
       <li class="page-item" :class="{ disabled: currentPage === 1 }">
-        <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
+        <a
+          class="page-link"
+          href="#"
+          @click.prevent="changePage(currentPage - 1)"
+          >Previous</a
+        >
       </li>
       <li
         class="page-item"
@@ -10,10 +15,17 @@
         :key="page"
         :class="{ active: currentPage === page }"
       >
-        <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
+        <a class="page-link" href="#" @click.prevent="changePage(page)">{{
+          page
+        }}</a>
       </li>
       <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-        <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
+        <a
+          class="page-link"
+          href="#"
+          @click.prevent="changePage(currentPage + 1)"
+          >Next</a
+        >
       </li>
     </ul>
   </nav>
@@ -35,11 +47,11 @@ export default {
   methods: {
     changePage(page) {
       if (page >= 1 && page <= this.totalPages) {
-        this.$emit('page-changed', page);
+        this.$emit('page-changed', page)
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>

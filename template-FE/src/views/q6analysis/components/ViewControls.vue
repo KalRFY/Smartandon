@@ -2,8 +2,13 @@
   <CRow class="justify-content-center">
     <CCol md="10" lg="8" class="w-100">
       <CCard class="w-100 mb-3">
-        <CCardBody class="d-flex justify-content-center align-items-center p-2 gap-3">
-          <CContainer fluid class="d-flex justify-content-center align-items-center gap-2 p-0">
+        <CCardBody
+          class="d-flex justify-content-center align-items-center p-2 gap-3"
+        >
+          <CContainer
+            fluid
+            class="d-flex justify-content-center align-items-center gap-2 p-0"
+          >
             <CFormSwitch
               v-model="abnormalModel"
               :disabled="isLoading"
@@ -13,7 +18,10 @@
             <label for="switch-abnormal" class="mb-0">Abnormal</label>
           </CContainer>
 
-          <CContainer fluid class="d-flex justify-content-center align-items-center gap-2 p-0">
+          <CContainer
+            fluid
+            class="d-flex justify-content-center align-items-center gap-2 p-0"
+          >
             <CFormSwitch
               v-model="isFreqModel"
               :disabled="isLoading"
@@ -42,7 +50,7 @@ import {
 const props = defineProps({
   abnormal: { type: Boolean, default: false },
   isFreq: { type: Boolean, default: false },
-  isLoading: { type: Boolean, default: false }
+  isLoading: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['update:abnormal', 'update:isFreq'])

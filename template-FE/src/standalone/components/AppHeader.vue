@@ -1,21 +1,24 @@
 <template>
   <CHeader position="sticky" class="mb-4">
     <CContainer fluid>
-      <CHeaderToggler class="ps-1 mt-1 mb-1" @click="$store.commit('toggleSidebar')">
-        <CIcon icon="cil-menu" size="lg" style="color: #EB0A1E" />
+      <CHeaderToggler
+        class="ps-1 mt-1 mb-1"
+        @click="$store.commit('toggleSidebar')"
+      >
+        <CIcon icon="cil-menu" size="lg" style="color: #eb0a1e" />
       </CHeaderToggler>
       <CHeaderBrand class="mx-auto d-lg-none d-md-none">
-        <h3 id="headerLabel1">{{headerLabel}}</h3>
+        <h3 id="headerLabel1">{{ headerLabel }}</h3>
       </CHeaderBrand>
       <CHeaderNav class="d-none d-md-flex ms-3 mb-1 me-auto">
-        <h3 id="headerLabel2">{{headerLabel}}</h3>
+        <h3 id="headerLabel2">{{ headerLabel }}</h3>
       </CHeaderNav>
       <CHeaderNav>
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
     </CContainer>
     <CHeaderDivider />
-    <CContainer fluid style="height: 19px !important; min-height: 19px; ">
+    <CContainer fluid style="height: 19px !important; min-height: 19px">
       <CRow>
         <CCol>
           <AppBreadcrumb />
@@ -35,9 +38,9 @@ export default {
     AppBreadcrumb,
     AppHeaderDropdownAccnt,
   },
-  data(){
+  data() {
     return {
-      headerLabel: process.env.VUE_APP_HEADER_LABEL
+      headerLabel: process.env.VUE_APP_HEADER_LABEL,
     }
   },
   setup() {
@@ -54,7 +57,8 @@ export default {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#headerLabel1, #headerLabel2 {
+#headerLabel1,
+#headerLabel2 {
   color: #333333;
   font-weight: 600;
   margin: 0;

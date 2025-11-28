@@ -16,7 +16,12 @@
       </div>
       <CRow class="mb-3">
         <CCol md="6">
-          <label style="font-size: medium; font-weight: bold;" for="machineSelect" class="form-label">Machine Name</label>
+          <label
+            style="font-size: medium; font-weight: bold"
+            for="machineSelect"
+            class="form-label"
+            >Machine Name</label
+          >
           <Treeselect
             id="machineSelect"
             v-model="localSubmit.machineName"
@@ -32,7 +37,12 @@
           />
         </CCol>
         <CCol md="6">
-          <label style="font-size: medium; font-weight: bold;" for="lineSelect" class="form-label">Line</label>
+          <label
+            style="font-size: medium; font-weight: bold"
+            for="lineSelect"
+            class="form-label"
+            >Line</label
+          >
           <Treeselect
             id="lineSelect"
             v-model="localSubmit.line"
@@ -51,7 +61,9 @@
       </CRow>
       <CRow class="mb-3">
         <CCol md="6">
-          <label style="font-size: medium; font-weight: bold;" class="form-label">Operation No.</label>
+          <label style="font-size: medium; font-weight: bold" class="form-label"
+            >Operation No.</label
+          >
           <CFormInput
             feedbackInvalid="Operation No."
             id="Problems"
@@ -62,7 +74,9 @@
           />
         </CCol>
         <CCol md="6">
-          <label style="font-size: medium; font-weight: bold;" class="form-label">Maker</label>
+          <label style="font-size: medium; font-weight: bold" class="form-label"
+            >Maker</label
+          >
           <CFormInput
             feedbackInvalid="Maker"
             id="Problems"
@@ -75,7 +89,9 @@
       </CRow>
       <CRow md="12" class="mb-3">
         <CCol>
-          <label style="font-size: medium; font-weight: bold;" class="form-label">Problems</label>
+          <label style="font-size: medium; font-weight: bold" class="form-label"
+            >Problems</label
+          >
           <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
@@ -92,7 +108,11 @@
             <CCardBody>
               <CRow>
                 <CCol md="8">
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Uraian Kejadian</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Uraian Kejadian</label
+                  >
                   <CFormInput
                     feedbackInvalid="Please input the problems"
                     id="Problems"
@@ -102,7 +122,11 @@
                   />
                 </CCol>
                 <CCol md="4">
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Upload Image</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Upload Image</label
+                  >
                   <CFormInput
                     type="file"
                     feedbackInvalid="Please input the problems"
@@ -113,7 +137,7 @@
                   <img
                     :src="displayUploadImgImage"
                     width="200"
-                    style="cursor: pointer;"
+                    style="cursor: pointer"
                     v-if="displayUploadImgImage"
                     @click="showFullSizeImageUpload = true"
                   />
@@ -126,24 +150,33 @@
 
       <CModal
         :visible="showFullSizeImageUpload"
-        @update:visible="val => showFullSizeImageUpload = val"
+        @update:visible="(val) => (showFullSizeImageUpload = val)"
         @close="showFullSizeImageUpload = false"
         size="lg"
         aria-labelledby="fullSizeImageLabel"
         centered
       >
         <CModalHeader>
-          <CModalTitle id="fullSizeImageLabel">Upload Image Preview</CModalTitle>
+          <CModalTitle id="fullSizeImageLabel"
+            >Upload Image Preview</CModalTitle
+          >
         </CModalHeader>
 
-        <CModalBody style="text-align: center;">
-          <img :src="displayUploadImgImage" style="max-width: 100%; max-height: 80vh;" />
+        <CModalBody style="text-align: center">
+          <img
+            :src="displayUploadImgImage"
+            style="max-width: 100%; max-height: 80vh"
+          />
         </CModalBody>
 
         <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImageUpload = false">Close</CButton>
+          <CButton
+            color="secondary"
+            size="sm"
+            @click="showFullSizeImageUpload = false"
+            >Close</CButton
+          >
         </CModalFooter>
-        
       </CModal>
 
       <CRow class="mb-3">
@@ -152,7 +185,11 @@
             <CCardBody>
               <CRow>
                 <CCol md="8">
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Ilustrasi Standart</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Ilustrasi Standart</label
+                  >
                   <CFormInput
                     feedbackInvalid="Please input the problems"
                     id="Problems"
@@ -162,7 +199,11 @@
                   />
                 </CCol>
                 <CCol md="4">
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Standart Image</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Standart Image</label
+                  >
                   <CFormInput
                     type="file"
                     feedbackInvalid="Please input the problems"
@@ -173,7 +214,7 @@
                   <img
                     :src="displayStandardImage"
                     width="200"
-                    style="cursor: pointer;"
+                    style="cursor: pointer"
                     v-if="displayStandardImage"
                     @click="showFullSizeImageStandart = true"
                   />
@@ -186,22 +227,32 @@
 
       <CModal
         :visible="showFullSizeImageStandart"
-        @update:visible="val => showFullSizeImageStandart = val"
+        @update:visible="(val) => (showFullSizeImageStandart = val)"
         @close="showFullSizeImageStandart = false"
         size="lg"
         aria-labelledby="fullSizeImageStandartLabel"
         centered
       >
         <CModalHeader>
-          <CModalTitle id="fullSizeImageStandartLabel">Standart Image Preview</CModalTitle>
+          <CModalTitle id="fullSizeImageStandartLabel"
+            >Standart Image Preview</CModalTitle
+          >
         </CModalHeader>
 
-        <CModalBody style="text-align: center;">
-          <img :src="displayStandardImage" style="max-width: 100%; max-height: 80vh;" />
+        <CModalBody style="text-align: center">
+          <img
+            :src="displayStandardImage"
+            style="max-width: 100%; max-height: 80vh"
+          />
         </CModalBody>
 
         <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImageStandart = false">Close</CButton>
+          <CButton
+            color="secondary"
+            size="sm"
+            @click="showFullSizeImageStandart = false"
+            >Close</CButton
+          >
         </CModalFooter>
       </CModal>
 
@@ -211,7 +262,11 @@
             <CCardBody>
               <CRow>
                 <CCol md="8">
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Ilustrasi Actual</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Ilustrasi Actual</label
+                  >
                   <CFormInput
                     feedbackInvalid="Please input the problems"
                     id="Problems"
@@ -221,7 +276,11 @@
                   />
                 </CCol>
                 <CCol md="4">
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Actual Image</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Actual Image</label
+                  >
                   <CFormInput
                     type="file"
                     feedbackInvalid="Please input the problems"
@@ -232,7 +291,7 @@
                   <img
                     :src="displayActualImage"
                     width="200"
-                    style="cursor: pointer;"
+                    style="cursor: pointer"
                     v-if="displayActualImage"
                     @click="showFullSizeImageActual = true"
                   />
@@ -245,28 +304,40 @@
 
       <CModal
         :visible="showFullSizeImageActual"
-        @update:visible="val => showFullSizeImageActual = val"
+        @update:visible="(val) => (showFullSizeImageActual = val)"
         @close="showFullSizeImageActual = false"
         size="lg"
         aria-labelledby="fullSizeImageActualLabel"
         centered
       >
         <CModalHeader>
-          <CModalTitle id="fullSizeImageActualLabel">Actual Image Preview</CModalTitle>
+          <CModalTitle id="fullSizeImageActualLabel"
+            >Actual Image Preview</CModalTitle
+          >
         </CModalHeader>
 
-        <CModalBody style="text-align: center;">
-          <img :src="displayActualImage" style="max-width: 100%; max-height: 80vh;" />
+        <CModalBody style="text-align: center">
+          <img
+            :src="displayActualImage"
+            style="max-width: 100%; max-height: 80vh"
+          />
         </CModalBody>
 
         <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImageActual = false">Close</CButton>
+          <CButton
+            color="secondary"
+            size="sm"
+            @click="showFullSizeImageActual = false"
+            >Close</CButton
+          >
         </CModalFooter>
       </CModal>
 
       <CRow md="12" class="mb-3">
         <CCol>
-          <label style="font-size: medium; font-weight: bold;" class="form-label">Gap Between Standar and Actual</label>
+          <label style="font-size: medium; font-weight: bold" class="form-label"
+            >Gap Between Standar and Actual</label
+          >
           <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
@@ -288,26 +359,33 @@
       </CRow> -->
       <CRow md="12" class="mb-3">
         <CCol>
-          <label style="font-size: medium; font-weight: bold;" for="operatorSelect" class="form-label">Operator</label>
-        <Treeselect
-          id="operatorSelect"
-          v-model="localSubmit.operator"
-          :multiple="true"
-          :flat="true"
-          :options="filteredMemberOption"
-          :searchable="true"
-          :clearable="true"
-          placeholder="Select or input member"
-          @input="onMachineInput"
-          :value-consists-of="['id']"
-          :value-key="'id'"
-          :label-key="'label'"
-        />
+          <label
+            style="font-size: medium; font-weight: bold"
+            for="operatorSelect"
+            class="form-label"
+            >Operator</label
+          >
+          <Treeselect
+            id="operatorSelect"
+            v-model="localSubmit.operator"
+            :multiple="true"
+            :flat="true"
+            :options="filteredMemberOption"
+            :searchable="true"
+            :clearable="true"
+            placeholder="Select or input member"
+            @input="onMachineInput"
+            :value-consists-of="['id']"
+            :value-key="'id'"
+            :label-key="'label'"
+          />
         </CCol>
       </CRow>
       <CRow class="mb-3">
         <CCol md="6">
-          <label style="font-size: medium; font-weight: bold;" class="form-label">AV Category</label>
+          <label style="font-size: medium; font-weight: bold" class="form-label"
+            >AV Category</label
+          >
           <CFormSelect
             aria-describedby="avCategory"
             feedbackInvalid="Please select the AV Category."
@@ -323,7 +401,9 @@
           </CFormSelect>
         </CCol>
         <CCol md="6">
-          <label style="font-size: medium; font-weight: bold;" class="form-label">Shift</label>
+          <label style="font-size: medium; font-weight: bold" class="form-label"
+            >Shift</label
+          >
           <CFormSelect
             aria-describedby="shift"
             feedbackInvalid="Please select the shift."
@@ -343,29 +423,53 @@
       </CRow>
       <CRow class="mb-3">
         <CCol md="6">
-          <label style="font-size: medium; font-weight: bold;" for="startDateModal" class="form-label">Start Date</label>
+          <label
+            style="font-size: medium; font-weight: bold"
+            for="startDateModal"
+            class="form-label"
+            >Start Date</label
+          >
           <CInputGroup>
             <CInputGroupText id="basic-addon1">
               <CIcon icon="cilClock" size="l" />
             </CInputGroupText>
-            <CFormInput id="startDateModal" type="datetime-local" required v-model="localSubmit.startDate"
-              aria-label="Start Date" aria-describedby="basic-addon1" />
+            <CFormInput
+              id="startDateModal"
+              type="datetime-local"
+              required
+              v-model="localSubmit.startDate"
+              aria-label="Start Date"
+              aria-describedby="basic-addon1"
+            />
           </CInputGroup>
         </CCol>
         <CCol md="6">
-          <label style="font-size: medium; font-weight: bold;" for="finishDateModal" class="form-label">Finish Date</label>
+          <label
+            style="font-size: medium; font-weight: bold"
+            for="finishDateModal"
+            class="form-label"
+            >Finish Date</label
+          >
           <CInputGroup>
             <CInputGroupText id="basic-addon2">
               <CIcon icon="cilClock" size="l" />
             </CInputGroupText>
-            <CFormInput id="finishDateModal" type="datetime-local" required v-model="localSubmit.finishDate"
-              aria-label="Finish Date" aria-describedby="basic-addon2" />
+            <CFormInput
+              id="finishDateModal"
+              type="datetime-local"
+              required
+              v-model="localSubmit.finishDate"
+              aria-label="Finish Date"
+              aria-describedby="basic-addon2"
+            />
           </CInputGroup>
         </CCol>
       </CRow>
       <CRow md="12" class="mb-3">
         <CCol>
-          <label style="font-size: medium; font-weight: bold;" class="form-label">Duration (min)</label>
+          <label style="font-size: medium; font-weight: bold" class="form-label"
+            >Duration (min)</label
+          >
           <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
@@ -377,7 +481,9 @@
         </CCol>
       </CRow>
       <CRow md="12" class="mb-3">
-        <label style="font-size: medium; font-weight: bold;" class="form-label">Problem Category:</label>
+        <label style="font-size: medium; font-weight: bold" class="form-label"
+          >Problem Category:</label
+        >
         <CCol>
           <CFormSelect
             aria-describedby="problemCategory"
@@ -391,23 +497,27 @@
             </option>
             <option disabled value="">Choose problem Category...</option>
             <option :value="1">Small</option>
-            <option :value="2">Repeat (Problem yang sama terjadi lebih dari 2 kali dalam sehari)</option>
-            <option :value="3">LTR
-              (Casting: Durasi antara 120 hingga 659 menit.
-              Machining: Durasi antara 120 hingga 359 menit.
-              Assy (Assembly): Durasi antara 15 hingga 179 menit.)
+            <option :value="2">
+              Repeat (Problem yang sama terjadi lebih dari 2 kali dalam sehari)
             </option>
-            <option :value="4">SLTR
-              (Casting: Durasi lebih dari 659 menit.
-              Machining: Durasi lebih dari 359 menit.
-              Assy (Assembly): Durasi lebih dari 179 menit.)
+            <option :value="3">
+              LTR (Casting: Durasi antara 120 hingga 659 menit. Machining:
+              Durasi antara 120 hingga 359 menit. Assy (Assembly): Durasi antara
+              15 hingga 179 menit.)
+            </option>
+            <option :value="4">
+              SLTR (Casting: Durasi lebih dari 659 menit. Machining: Durasi
+              lebih dari 359 menit. Assy (Assembly): Durasi lebih dari 179
+              menit.)
             </option>
           </CFormSelect>
         </CCol>
       </CRow>
       <CRow md="12" class="mb-3">
         <CCol>
-          <label style="font-size: medium; font-weight: bold;" class="form-label">Item Temporary Action</label>
+          <label style="font-size: medium; font-weight: bold" class="form-label"
+            >Item Temporary Action</label
+          >
           <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
@@ -527,7 +637,11 @@
             <CCardBody>
               <CRow>
                 <CCol>
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">5 Why (Kenapa Terjadi) Image</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >5 Why (Kenapa Terjadi) Image</label
+                  >
                   <CFormInput
                     type="file"
                     feedbackInvalid="Please input the problems"
@@ -538,7 +652,7 @@
                   <img
                     :src="displayImg_problem"
                     width="200"
-                    style="cursor: pointer;"
+                    style="cursor: pointer"
                     v-if="displayImg_problem"
                     @click="showFullSizeImage = true"
                   />
@@ -551,24 +665,33 @@
 
       <CModal
         :visible="showFullSizeImage"
-        @update:visible="val => showFullSizeImage = val"
+        @update:visible="(val) => (showFullSizeImage = val)"
         @close="showFullSizeImage = false"
         size="lg"
         aria-labelledby="fullSizeImageLabel"
         centered
       >
         <CModalHeader>
-          <CModalTitle id="fullSizeImageLabel">5 Why (Kenapa Terjadi) Image Preview</CModalTitle>
+          <CModalTitle id="fullSizeImageLabel"
+            >5 Why (Kenapa Terjadi) Image Preview</CModalTitle
+          >
         </CModalHeader>
 
-        <CModalBody style="text-align: center;">
-          <img :src="displayImg_problem" style="max-width: 100%; max-height: 80vh;" />
+        <CModalBody style="text-align: center">
+          <img
+            :src="displayImg_problem"
+            style="max-width: 100%; max-height: 80vh"
+          />
         </CModalBody>
 
         <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImage = false">Close</CButton>
+          <CButton
+            color="secondary"
+            size="sm"
+            @click="showFullSizeImage = false"
+            >Close</CButton
+          >
         </CModalFooter>
-        
       </CModal>
 
       <CRow md="12" class="mb-3">
@@ -577,7 +700,11 @@
             <CCardBody>
               <CRow>
                 <CCol>
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">5 Why (Kenapa Lama) Image</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >5 Why (Kenapa Lama) Image</label
+                  >
                   <CFormInput
                     type="file"
                     feedbackInvalid="Please input the problems"
@@ -588,7 +715,7 @@
                   <img
                     :src="displayWhyLamaImage"
                     width="200"
-                    style="cursor: pointer;"
+                    style="cursor: pointer"
                     v-if="displayWhyLamaImage"
                     @click="showFullSizeImageLama = true"
                   />
@@ -601,26 +728,35 @@
 
       <CModal
         :visible="showFullSizeImageLama"
-        @update:visible="val => showFullSizeImageLama = val"
+        @update:visible="(val) => (showFullSizeImageLama = val)"
         @close="showFullSizeImageLama = false"
         size="lg"
         aria-labelledby="fullSizeImageLabel"
         centered
       >
         <CModalHeader>
-          <CModalTitle id="fullSizeImageLabel">5 Why (Kenapa Lama) Image Preview</CModalTitle>
+          <CModalTitle id="fullSizeImageLabel"
+            >5 Why (Kenapa Lama) Image Preview</CModalTitle
+          >
         </CModalHeader>
 
-        <CModalBody style="text-align: center;">
-          <img :src="displayWhyLamaImage" style="max-width: 100%; max-height: 80vh;" />
+        <CModalBody style="text-align: center">
+          <img
+            :src="displayWhyLamaImage"
+            style="max-width: 100%; max-height: 80vh"
+          />
         </CModalBody>
 
         <CModalFooter>
-          <CButton color="secondary" size="sm" @click="showFullSizeImageLama = false">Close</CButton>
+          <CButton
+            color="secondary"
+            size="sm"
+            @click="showFullSizeImageLama = false"
+            >Close</CButton
+          >
         </CModalFooter>
-        
       </CModal>
-      
+
       <CRow md="12" class="mb-3">
         <CCol>
           <CCard>
@@ -631,7 +767,11 @@
                     <CCardBody>
                       <CRow>
                         <CCol>
-                          <label style="font-size: medium; font-weight: bold;" class="form-label">O6 Category:</label>
+                          <label
+                            style="font-size: medium; font-weight: bold"
+                            class="form-label"
+                            >O6 Category:</label
+                          >
                           <CFormSelect
                             aria-describedby="O6 Category"
                             feedbackInvalid="Please select the O6 Category."
@@ -642,28 +782,34 @@
                             <option :value="localSubmit.oCategory" selected>
                               {{ oCategoryName }}
                             </option>
-                            <option disabled value="">Choose problem 06 Category...</option>
+                            <option disabled value="">
+                              Choose problem 06 Category...
+                            </option>
                             <option :value="1">
-                              O1: Design & Installation (Design / Installation Not Good
-                              (Refers to Function Check / Eng. Memo))
+                              O1: Design & Installation (Design / Installation
+                              Not Good (Refers to Function Check / Eng. Memo))
                             </option>
                             <option :value="2">
-                              O2: Henkaten Issue (No Enough Trial, No Confirm (others team))
+                              O2: Henkaten Issue (No Enough Trial, No Confirm
+                              (others team))
                             </option>
                             <option :value="3">
                               O3: PM Issue (No Have/Unclear, Unclear Methode,
-                              Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)
+                              Confine/Invisible, Out of Periode, No Have Time,
+                              Lack of Skill)
                             </option>
                             <option :value="4">
-                              O4: Symptom (No Have Symptom, Have Symptom but Unfollow
-                              Activity)
+                              O4: Symptom (No Have Symptom, Have Symptom but
+                              Unfollow Activity)
                             </option>
                             <option :value="5">
-                              O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible
-                              Area, Unpredictable (water leak / crush))
+                              O5: Environment & 3rd Factor (Dirty, Confine
+                              Space, Invisible Area, Unpredictable (water leak /
+                              crush))
                             </option>
                             <option :value="6">
-                              O6: Lifetime Issue (Out of Standard Running, Over Capacity)
+                              O6: Lifetime Issue (Out of Standard Running, Over
+                              Capacity)
                             </option>
                           </CFormSelect>
                         </CCol>
@@ -678,7 +824,11 @@
                     <CCardBody>
                       <CRow>
                         <CCol>
-                          <label style="font-size: medium; font-weight: bold;" class="form-label">Q6 Category:</label>
+                          <label
+                            style="font-size: medium; font-weight: bold"
+                            class="form-label"
+                            >Q6 Category:</label
+                          >
                           <CFormSelect
                             aria-describedby="Q6 Category"
                             feedbackInvalid="Please select the Q6 Category."
@@ -689,24 +839,36 @@
                             <option :value="localSubmit.qCategory" selected>
                               {{ qCategoryName }}
                             </option>
-                            <option disabled value="">Choose problem Q6 Category...</option>
+                            <option disabled value="">
+                              Choose problem Q6 Category...
+                            </option>
                             <option :value="1">
-                              Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))
+                              Q1: Diagnose (Meeting, accuracy check (run-out,
+                              backlash, etc))
                             </option>
                             <option :value="2">
-                              Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)
+                              Q2: Sparepart (Part preparation, fabrication of
+                              part, repair of damage part due to unavailability
+                              at SPW)
                             </option>
                             <option :value="3">
-                              Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)
+                              Q3: Tool (Special tools preparation, change of
+                              tools, personal tool, change dresser, safety tool)
                             </option>
                             <option :value="4">
-                              Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
+                              Q4: Maint. Ability (Repair, overhaul, part
+                              replace, tomoken, 5S)
                             </option>
                             <option :value="5">
-                              Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))
+                              Q5: Setting Ability (Quality checking, program
+                              adjustment, program zeroing, position memory set,
+                              autosizer setting & amp, PSW set, backlash
+                              adjustment (slide gib / kamisori, parameter set,
+                              centering, etc))
                             </option>
                             <option :value="6">
-                              Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
+                              Q6: Back-Up (Back-Up MC's Preparation, Back-Up
+                              MC's dandori)
                             </option>
                           </CFormSelect>
                         </CCol>
@@ -721,7 +883,15 @@
                     <CCardBody>
                       <CRow>
                         <CCol>
-                          <label style="font-size: medium; font-weight: bold;" class="form-label">PM6 Category:<span v-if="localSubmit.oCategory === '3'" style="color: red;">*</span></label>
+                          <label
+                            style="font-size: medium; font-weight: bold"
+                            class="form-label"
+                            >PM6 Category:<span
+                              v-if="localSubmit.oCategory === '3'"
+                              style="color: red"
+                              >*</span
+                            ></label
+                          >
                           <CFormSelect
                             aria-describedby="PM Category"
                             feedbackInvalid="Please select the PM Category."
@@ -734,25 +904,19 @@
                             <option :value="localSubmit.pmCategory" selected>
                               {{ pmCategoryName }}
                             </option>
-                            <option disabled value="">Choose problem PM Category...</option>
+                            <option disabled value="">
+                              Choose problem PM Category...
+                            </option>
                             <option :value="1">
                               PM1: No Have / Unclear Item
                             </option>
-                            <option :value="2">
-                              PM2: Un-clear Method
-                            </option>
+                            <option :value="2">PM2: Un-clear Method</option>
                             <option :value="3">
                               PM3: Confine / Invinsible Area
                             </option>
-                            <option :value="4">
-                              PM4: Out of Period Check
-                            </option>
-                            <option :value="5">
-                              PM5: No Have Time
-                            </option>
-                            <option :value="6">
-                              PM6: Lack of Skill
-                            </option>
+                            <option :value="4">PM4: Out of Period Check</option>
+                            <option :value="5">PM5: No Have Time</option>
+                            <option :value="6">PM6: Lack of Skill</option>
                           </CFormSelect>
                         </CCol>
                       </CRow>
@@ -773,8 +937,18 @@
                 <CCol>
                   <div class="d-flex align-items-center mb-3">
                     <CIcon icon="cil-star" class="text-primary me-2" />
-                    <label style="font-size: large; font-weight: bold; color: #0d6efd;" class="form-label mb-0">Step Repair New (Primary)</label>
-                    <small class="text-muted ms-2">- Main step repair tracking with detailed timing</small>
+                    <label
+                      style="
+                        font-size: large;
+                        font-weight: bold;
+                        color: #0d6efd;
+                      "
+                      class="form-label mb-0"
+                      >Step Repair New (Primary)</label
+                    >
+                    <small class="text-muted ms-2"
+                      >- Main step repair tracking with detailed timing</small
+                    >
                   </div>
                   <StepRepairTable
                     v-model="localSubmit.stepRepairNew"
@@ -798,15 +972,29 @@
                 <CCol>
                   <div class="d-flex align-items-center mb-3">
                     <CIcon icon="cil-history" class="text-warning me-2" />
-                    <label style="font-size: medium; font-weight: bold; color: #fd7e14;" class="form-label mb-0">Step Repair (Legacy Data)</label>
-                    <small class="text-muted ms-2">- Legacy format (hidden when empty)</small>
+                    <label
+                      style="
+                        font-size: medium;
+                        font-weight: bold;
+                        color: #fd7e14;
+                      "
+                      class="form-label mb-0"
+                      >Step Repair (Legacy Data)</label
+                    >
+                    <small class="text-muted ms-2"
+                      >- Legacy format (hidden when empty)</small
+                    >
                   </div>
                   <CTable bordered>
                     <CTableHead>
                       <CTableRow>
-                        <CTableHeaderCell style="width: 50px">No</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 50px"
+                          >No</CTableHeaderCell
+                        >
                         <CTableHeaderCell>Description</CTableHeaderCell>
-                        <CTableHeaderCell style="width: 120px">Actions</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 120px"
+                          >Actions</CTableHeaderCell
+                        >
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
@@ -820,7 +1008,9 @@
                             type="text"
                             v-model="item.stepDesc"
                             placeholder="Enter description"
-                            :disabled="!editingStepRepair || !editingStepRepair[item.id]"
+                            :disabled="
+                              !editingStepRepair || !editingStepRepair[item.id]
+                            "
                           />
                         </CTableDataCell>
                         <CTableDataCell>
@@ -831,7 +1021,14 @@
                             @click="editStepRepair(index)"
                           >
                             <CIcon
-                              :icon="editingStepRepair && editingStepRepair[localSubmit.stepRepair[index].id] === true ? 'cil-paper-plane' : 'cil-pencil'"
+                              :icon="
+                                editingStepRepair &&
+                                editingStepRepair[
+                                  localSubmit.stepRepair[index].id
+                                ] === true
+                                  ? 'cil-paper-plane'
+                                  : 'cil-pencil'
+                              "
                             />
                           </CButton>
                           <CButton
@@ -871,13 +1068,21 @@
                   />
         </CCol>
       </CRow> -->
-      <CRow md="12" class="mb-3" v-if="localSubmit.partChange && localSubmit.partChange.trim() !== ''">
+      <CRow
+        md="12"
+        class="mb-3"
+        v-if="localSubmit.partChange && localSubmit.partChange.trim() !== ''"
+      >
         <CCol>
           <CCard>
             <CCardBody>
               <CRow>
                 <CCol>
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Part Change</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Part Change</label
+                  >
                   <CFormInput
                     feedbackInvalid="Please input the problems"
                     id="Problems"
@@ -895,9 +1100,18 @@
         <CCol>
           <CCard>
             <CCardBody>
-              <label style="font-size: medium; font-weight: bold;" class="form-label">Sparepart</label>
+              <label
+                style="font-size: medium; font-weight: bold"
+                class="form-label"
+                >Sparepart</label
+              >
               <div v-if="sparepart_list.length === 0">
-                <CButton class="mb-3" color="primary" @click="toggleSparepartForm">Tambah Sparepart</CButton>
+                <CButton
+                  class="mb-3"
+                  color="primary"
+                  @click="toggleSparepartForm"
+                  >Tambah Sparepart</CButton
+                >
               </div>
               <div v-if="showSparepartForm" class="mb-3">
                 <CRow class="g-2 align-items-center">
@@ -1049,8 +1263,18 @@
                 </CRow>
                 <CRow class="mt-2 g-2 align-items-center">
                   <CCol md="10" class="d-flex gap-2">
-                    <CButton style="color: white;" color="success" @click="submitSparepart">Submit</CButton>
-                    <CButton style="color: white;" color="secondary" @click="cancelSparepart">Cancel</CButton>
+                    <CButton
+                      style="color: white"
+                      color="success"
+                      @click="submitSparepart"
+                      >Submit</CButton
+                    >
+                    <CButton
+                      style="color: white"
+                      color="secondary"
+                      @click="cancelSparepart"
+                      >Cancel</CButton
+                    >
                   </CCol>
                 </CRow>
               </div>
@@ -1072,20 +1296,50 @@
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
-                    <CTableRow v-for="(sparepart, index) in sparepart_list" :key="index">
+                    <CTableRow
+                      v-for="(sparepart, index) in sparepart_list"
+                      :key="index"
+                    >
                       <CTableDataCell>{{ index + 1 }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.sparepart?.label || '' }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.partSimilar || '' }}</CTableDataCell>
-                      <CTableDataCell>{{ formatCurrency(sparepart.price) }}</CTableDataCell>
+                      <CTableDataCell>{{
+                        sparepart.sparepart?.label || ''
+                      }}</CTableDataCell>
+                      <CTableDataCell>{{
+                        sparepart.partSimilar || ''
+                      }}</CTableDataCell>
+                      <CTableDataCell>{{
+                        formatCurrency(sparepart.price)
+                      }}</CTableDataCell>
                       <CTableDataCell>{{ sparepart.vendor }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.quantity || 1 }}</CTableDataCell>
-                      <CTableDataCell>{{ mapSparepartStatus(sparepart.status) }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.isModify || 'NO' }}</CTableDataCell>
-                      <CTableDataCell>{{ formatCurrency(sparepart.total || 0) }}</CTableDataCell>
-                      <CTableDataCell>{{ sparepart.description || '' }}</CTableDataCell>
+                      <CTableDataCell>{{
+                        sparepart.quantity || 1
+                      }}</CTableDataCell>
+                      <CTableDataCell>{{
+                        mapSparepartStatus(sparepart.status)
+                      }}</CTableDataCell>
+                      <CTableDataCell>{{
+                        sparepart.isModify || 'NO'
+                      }}</CTableDataCell>
+                      <CTableDataCell>{{
+                        formatCurrency(sparepart.total || 0)
+                      }}</CTableDataCell>
+                      <CTableDataCell>{{
+                        sparepart.description || ''
+                      }}</CTableDataCell>
                       <CTableDataCell>
-                        <CButton color="warning" size="sm" class="me-2" @click="editSparepart(index)">Edit</CButton>
-                        <CButton color="danger" size="sm" @click="removeSparepart(index)">Remove</CButton>
+                        <CButton
+                          color="warning"
+                          size="sm"
+                          class="me-2"
+                          @click="editSparepart(index)"
+                          >Edit</CButton
+                        >
+                        <CButton
+                          color="danger"
+                          size="sm"
+                          @click="removeSparepart(index)"
+                          >Remove</CButton
+                        >
                       </CTableDataCell>
                     </CTableRow>
                   </CTableBody>
@@ -1101,7 +1355,9 @@
                   <CRow>
                     <CCol md="3">
                       <small class="text-muted">Total Sparepart Cost</small>
-                      <div class="fw-bold">{{ formatCurrency(totalSparepartCost) }}</div>
+                      <div class="fw-bold">
+                        {{ formatCurrency(totalSparepartCost) }}
+                      </div>
                     </CCol>
                   </CRow>
                 </div>
@@ -1116,9 +1372,16 @@
             <CCardBody>
               <CRow>
                 <CCol>
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Yokoten</label>
-                  <div style="height: 100;" v-if="yokotenList.length === 0">
-                    <CButton color="primary" @click="showYokotenForm = true" class="mb-3"
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Yokoten</label
+                  >
+                  <div style="height: 100" v-if="yokotenList.length === 0">
+                    <CButton
+                      color="primary"
+                      @click="showYokotenForm = true"
+                      class="mb-3"
                       >Tambah Yokoten</CButton
                     >
                   </div>
@@ -1154,10 +1417,20 @@
                         </CFormSelect>
                       </CCol>
                       <CCol xs="auto">
-                        <CButton style="color: white;" color="success" @click="submitYokoten">Submit</CButton>
+                        <CButton
+                          style="color: white"
+                          color="success"
+                          @click="submitYokoten"
+                          >Submit</CButton
+                        >
                       </CCol>
                       <CCol xs="auto">
-                        <CButton style="color: white;" color="secondary" @click="cancelYokoten">Cancel</CButton>
+                        <CButton
+                          style="color: white"
+                          color="secondary"
+                          @click="cancelYokoten"
+                          >Cancel</CButton
+                        >
                       </CCol>
                     </CRow>
                   </div>
@@ -1173,7 +1446,10 @@
                         </CTableRow>
                       </CTableHead>
                       <CTableBody>
-                        <CTableRow v-for="(item, idx) in yokotenList" :key="idx">
+                        <CTableRow
+                          v-for="(item, idx) in yokotenList"
+                          :key="idx"
+                        >
                           <CTableDataCell>{{ item.machine }}</CTableDataCell>
                           <CTableDataCell>{{
                             picOptions.find(
@@ -1221,7 +1497,11 @@
             <CCardBody>
               <CRow>
                 <CCol>
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Countermeasure (kenapa terjadi)</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Countermeasure (kenapa terjadi)</label
+                  >
                   <div v-if="countermeasureKenapaTerjadiList.length === 0">
                     <CButton
                       class="mb-3"
@@ -1230,37 +1510,37 @@
                       >Tambah Countermeasure</CButton
                     >
                   </div>
-                    <div v-if="showCountermeasureKenapaTerjadiForm">
-                      <CRow class="mb-2 g-2">
-                        <CCol xs="12" md="auto">
-                          <CFormCheck
-                            v-model="countermeasureKenapaTerjadiForm.isAction"
-                            label="Ini Action?"
-                          />
-                        </CCol>
-                        <CCol xs="12" md="4">
-                          <CFormInput
-                            v-model="countermeasureKenapaTerjadiForm.cmDesc"
-                            placeholder="Countermeasure/Action"
-                          />
-                        </CCol>
-                        <CCol xs="6" md="2">
-                          <CFormInput
-                            type="date"
-                            v-model="countermeasureKenapaTerjadiForm.datePlan"
-                          />
-                        </CCol>
-                        <CCol xs="6" md="2">
-                          <CFormSelect
-                            v-model="countermeasureKenapaTerjadiForm.category"
-                          >
-                            <option value="">C/M Category</option>
-                            <option value="Improvement">Improvement</option>
-                            <option value="Training">Training</option>
-                            <option value="Revisi TPM">Revisi TPM</option>
-                            <option value="Sparepart">Sparepart</option>
-                          </CFormSelect>
-                        </CCol>
+                  <div v-if="showCountermeasureKenapaTerjadiForm">
+                    <CRow class="mb-2 g-2">
+                      <CCol xs="12" md="auto">
+                        <CFormCheck
+                          v-model="countermeasureKenapaTerjadiForm.isAction"
+                          label="Ini Action?"
+                        />
+                      </CCol>
+                      <CCol xs="12" md="4">
+                        <CFormInput
+                          v-model="countermeasureKenapaTerjadiForm.cmDesc"
+                          placeholder="Countermeasure/Action"
+                        />
+                      </CCol>
+                      <CCol xs="6" md="2">
+                        <CFormInput
+                          type="date"
+                          v-model="countermeasureKenapaTerjadiForm.datePlan"
+                        />
+                      </CCol>
+                      <CCol xs="6" md="2">
+                        <CFormSelect
+                          v-model="countermeasureKenapaTerjadiForm.category"
+                        >
+                          <option value="">C/M Category</option>
+                          <option value="Improvement">Improvement</option>
+                          <option value="Training">Training</option>
+                          <option value="Revisi TPM">Revisi TPM</option>
+                          <option value="Sparepart">Sparepart</option>
+                        </CFormSelect>
+                      </CCol>
                       <CCol xs="12" md="2">
                         <Treeselect
                           v-model="countermeasureKenapaTerjadiForm.pic"
@@ -1273,37 +1553,55 @@
                         />
                       </CCol>
                       <CCol xs="auto">
-                        <CButton style="color: white;" color="success" @click="submitCountermeasureKenapaTerjadi">Submit</CButton>
+                        <CButton
+                          style="color: white"
+                          color="success"
+                          @click="submitCountermeasureKenapaTerjadi"
+                          >Submit</CButton
+                        >
                       </CCol>
                       <CCol xs="auto">
-                        <CButton style="color: white;" color="secondary" @click="cancelCountermeasureKenapaTerjadi">Cancel</CButton>
+                        <CButton
+                          style="color: white"
+                          color="secondary"
+                          @click="cancelCountermeasureKenapaTerjadi"
+                          >Cancel</CButton
+                        >
                       </CCol>
-                      </CRow>
-                      <CRow v-if="typeof countermeasureKenapaTerjadiForm._editIdx === 'number'" class="mb-2 g-2">
-                        <CCol xs="6" md="2">
-                          <CFormSelect
-                            v-model="countermeasureKenapaTerjadiForm.judg"
-                          >
-                            <option value="belum">Belum</option>
-                            <option value="sudah">Sudah</option>
-                          </CFormSelect>
-                        </CCol>
-                        <CCol xs="12" md="10">
-                          <CFormTextarea
-                            v-model="countermeasureKenapaTerjadiForm.result"
-                            placeholder="Result Notes"
-                            rows="2"
-                          />
-                        </CCol>
-                      </CRow>
-                    </div>
+                    </CRow>
+                    <CRow
+                      v-if="
+                        typeof countermeasureKenapaTerjadiForm._editIdx ===
+                        'number'
+                      "
+                      class="mb-2 g-2"
+                    >
+                      <CCol xs="6" md="2">
+                        <CFormSelect
+                          v-model="countermeasureKenapaTerjadiForm.judg"
+                        >
+                          <option value="belum">Belum</option>
+                          <option value="sudah">Sudah</option>
+                        </CFormSelect>
+                      </CCol>
+                      <CCol xs="12" md="10">
+                        <CFormTextarea
+                          v-model="countermeasureKenapaTerjadiForm.result"
+                          placeholder="Result Notes"
+                          rows="2"
+                        />
+                      </CCol>
+                    </CRow>
+                  </div>
                   <div v-if="countermeasureKenapaTerjadiList.length > 0">
                     <div class="table-responsive">
                       <CTable bordered>
                         <CTableHead>
                           <CTableRow>
                             <CTableHeaderCell>Action?</CTableHeaderCell>
-                            <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
+                            <CTableHeaderCell
+                              >Countermeasure/Action</CTableHeaderCell
+                            >
                             <CTableHeaderCell>Plan Date</CTableHeaderCell>
                             <CTableHeaderCell>C/M Category</CTableHeaderCell>
                             <CTableHeaderCell>PIC</CTableHeaderCell>
@@ -1314,7 +1612,9 @@
                         </CTableHead>
                         <CTableBody>
                           <CTableRow
-                            v-for="(item, idx) in countermeasureKenapaTerjadiList"
+                            v-for="(
+                              item, idx
+                            ) in countermeasureKenapaTerjadiList"
                             :key="idx"
                           >
                             <CTableDataCell>{{
@@ -1335,7 +1635,11 @@
                               </CFormSelect>
                             </CTableDataCell>
                             <CTableDataCell>
-                              <CFormTextarea v-model="item.result" disabled rows="2" />
+                              <CFormTextarea
+                                v-model="item.result"
+                                disabled
+                                rows="2"
+                              />
                             </CTableDataCell>
                             <CTableDataCell>
                               <CButton
@@ -1375,7 +1679,11 @@
             <CCardBody>
               <CRow>
                 <CCol>
-                  <label style="font-size: medium; font-weight: bold;" class="form-label">Countermeasure (kenapa Lama)</label>
+                  <label
+                    style="font-size: medium; font-weight: bold"
+                    class="form-label"
+                    >Countermeasure (kenapa Lama)</label
+                  >
                   <div v-if="countermeasureKenapaLamaList.length === 0">
                     <CButton
                       class="mb-3"
@@ -1427,13 +1735,29 @@
                         />
                       </CCol>
                       <CCol xs="auto">
-                        <CButton style="color: white;" color="success" @click="submitCountermeasureKenapaLama">Submit</CButton>
+                        <CButton
+                          style="color: white"
+                          color="success"
+                          @click="submitCountermeasureKenapaLama"
+                          >Submit</CButton
+                        >
                       </CCol>
                       <CCol xs="auto">
-                        <CButton style="color: white;" color="secondary" @click="cancelCountermeasureKenapaLama">Cancel</CButton>
+                        <CButton
+                          style="color: white"
+                          color="secondary"
+                          @click="cancelCountermeasureKenapaLama"
+                          >Cancel</CButton
+                        >
                       </CCol>
                     </CRow>
-                    <CRow v-if="typeof countermeasureKenapaLamaForm._editIdx === 'number'" class="mb-2 g-2">
+                    <CRow
+                      v-if="
+                        typeof countermeasureKenapaLamaForm._editIdx ===
+                        'number'
+                      "
+                      class="mb-2 g-2"
+                    >
                       <CCol xs="6" md="2">
                         <CFormSelect
                           v-model="countermeasureKenapaLamaForm.judg"
@@ -1451,12 +1775,17 @@
                       </CCol>
                     </CRow>
                   </div>
-                  <div v-if="countermeasureKenapaLamaList.length > 0" class="table-responsive">
+                  <div
+                    v-if="countermeasureKenapaLamaList.length > 0"
+                    class="table-responsive"
+                  >
                     <CTable bordered hover responsive>
                       <CTableHead>
                         <CTableRow>
                           <CTableHeaderCell>Action?</CTableHeaderCell>
-                          <CTableHeaderCell>Countermeasure/Action</CTableHeaderCell>
+                          <CTableHeaderCell
+                            >Countermeasure/Action</CTableHeaderCell
+                          >
                           <CTableHeaderCell>Plan Date</CTableHeaderCell>
                           <CTableHeaderCell>C/M Category</CTableHeaderCell>
                           <CTableHeaderCell>PIC</CTableHeaderCell>
@@ -1488,7 +1817,11 @@
                             </CFormSelect>
                           </CTableDataCell>
                           <CTableDataCell>
-                            <CFormTextarea v-model="item.result" disabled rows="2" />
+                            <CFormTextarea
+                              v-model="item.result"
+                              disabled
+                              rows="2"
+                            />
                           </CTableDataCell>
                           <CTableDataCell>
                             <CButton
@@ -1526,7 +1859,9 @@
           <!-- Legend Status -->
           <CRow class="mb-4">
             <CCol>
-              <div class="d-flex align-items-center justify-content-center gap-4 p-3 bg-light rounded">
+              <div
+                class="d-flex align-items-center justify-content-center gap-4 p-3 bg-light rounded"
+              >
                 <div class="d-flex align-items-center gap-2">
                   <div class="status-circle status-none"></div>
                   <small class="text-muted">none</small>
@@ -1554,8 +1889,21 @@
                   <h5>Approval Status 5 Why</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                      <CButton style="color: white;" size="sm" color="success" @click="onApprove('5why')">Approve</CButton>
-                      <CButton style="color: white;" size="sm" color="info" class="ms-2" @click="onComment('5why')">Comment</CButton>
+                      <CButton
+                        style="color: white"
+                        size="sm"
+                        color="success"
+                        @click="onApprove('5why')"
+                        >Approve</CButton
+                      >
+                      <CButton
+                        style="color: white"
+                        size="sm"
+                        color="info"
+                        class="ms-2"
+                        @click="onComment('5why')"
+                        >Comment</CButton
+                      >
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1565,21 +1913,43 @@
                   </CRow>
                   <CRow class="text-center py-3">
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit, 'fiveWhyTlApprove')" />
+                      <span
+                        class="status-circle"
+                        :class="statusClass(localSubmit, 'fiveWhyTlApprove')"
+                      />
                     </CCol>
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit, 'fiveWhyLhApprove')" />
+                      <span
+                        class="status-circle"
+                        :class="statusClass(localSubmit, 'fiveWhyLhApprove')"
+                      />
                     </CCol>
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit, 'fiveWhyShApprove')" />
+                      <span
+                        class="status-circle"
+                        :class="statusClass(localSubmit, 'fiveWhyShApprove')"
+                      />
                     </CCol>
                   </CRow>
 
                   <h5 class="mt-4">Approval Status Countermeasure</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                      <CButton style="color: white;" size="sm" color="success" @click="onApprove('counter')">Approve</CButton>
-                      <CButton style="color: white;" size="sm" color="info" class="ms-2" @click="onComment('counter')">Comment</CButton>
+                      <CButton
+                        style="color: white"
+                        size="sm"
+                        color="success"
+                        @click="onApprove('counter')"
+                        >Approve</CButton
+                      >
+                      <CButton
+                        style="color: white"
+                        size="sm"
+                        color="info"
+                        class="ms-2"
+                        @click="onComment('counter')"
+                        >Comment</CButton
+                      >
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1589,21 +1959,43 @@
                   </CRow>
                   <CRow class="text-center py-3">
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit, 'cmTlApprove')" />
+                      <span
+                        class="status-circle"
+                        :class="statusClass(localSubmit, 'cmTlApprove')"
+                      />
                     </CCol>
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit, 'cmLhApprove')" />
+                      <span
+                        class="status-circle"
+                        :class="statusClass(localSubmit, 'cmLhApprove')"
+                      />
                     </CCol>
                     <CCol>
-                      <span class="status-circle" :class="statusClass(localSubmit, 'cmShApprove')" />
+                      <span
+                        class="status-circle"
+                        :class="statusClass(localSubmit, 'cmShApprove')"
+                      />
                     </CCol>
                   </CRow>
 
                   <h5 class="mt-4">Approval Status Departement Head</h5>
                   <CRow class="text-center mb-3">
                     <CCol>
-                    <CButton style="color: white;" size="sm" color="success" @click="onApprove('dph')">Approve</CButton>
-                    <CButton style="color: white;" size="sm" color="info" class="ms-2" @click="onComment('dph')">Comment</CButton>
+                      <CButton
+                        style="color: white"
+                        size="sm"
+                        color="success"
+                        @click="onApprove('dph')"
+                        >Approve</CButton
+                      >
+                      <CButton
+                        style="color: white"
+                        size="sm"
+                        color="info"
+                        class="ms-2"
+                        @click="onComment('dph')"
+                        >Comment</CButton
+                      >
                     </CCol>
                   </CRow>
                   <CRow class="bg-black text-white fw-bold text-center py-2">
@@ -1611,7 +2003,10 @@
                   </CRow>
                   <CRow class="justify-content-center text-center py-3 mb-4">
                     <CCol xs="auto">
-                      <span class="status-circle" :class="statusClass(localSubmit, 'cmDhApprove')" />
+                      <span
+                        class="status-circle"
+                        :class="statusClass(localSubmit, 'cmDhApprove')"
+                      />
                     </CCol>
                   </CRow>
 
@@ -1669,7 +2064,9 @@
                         </CCol>
                       </CRow>
                       <CRow v-if="localSubmit.cmLhFeedback" class="mb-2">
-                        <CCol md="2" class="fw-bold">Countermeasure - LH/GL:</CCol>
+                        <CCol md="2" class="fw-bold"
+                          >Countermeasure - LH/GL:</CCol
+                        >
                         <CCol md="10">
                           <CFormTextarea
                             v-model="localSubmit.cmLhFeedback"
@@ -1689,7 +2086,9 @@
                         </CCol>
                       </CRow>
                       <CRow v-if="localSubmit.cmDhFeedback" class="mb-2">
-                        <CCol md="2" class="fw-bold">Countermeasure - DPH:</CCol>
+                        <CCol md="2" class="fw-bold"
+                          >Countermeasure - DPH:</CCol
+                        >
                         <CCol md="10">
                           <CFormTextarea
                             v-model="localSubmit.cmDhFeedback"
@@ -1712,8 +2111,13 @@
             <label class="form-label">Last Report File</label>
           </CCol>
           <CCol md="12">
-            <CButton style="width: 100%" :color="localSubmit.file_report ? 'primary' : 'secondary'"
-              @click="downloadLastReportFile" :disabled="!localSubmit.file_report" v-if="localSubmit.file_report">
+            <CButton
+              style="width: 100%"
+              :color="localSubmit.file_report ? 'primary' : 'secondary'"
+              @click="downloadLastReportFile"
+              :disabled="!localSubmit.file_report"
+              v-if="localSubmit.file_report"
+            >
               Download Last Report File
             </CButton>
             <CButton style="width: 100%" color="warning" disabled v-else>
@@ -1725,7 +2129,11 @@
       <CRow md="12" class="mb-3">
         <CCol>
           <CCol md="12">
-            <CButton style="width: 100%" :color="'secondary'" @click="downloadTemplateFile">
+            <CButton
+              style="width: 100%"
+              :color="'secondary'"
+              @click="downloadTemplateFile"
+            >
               Download Template
             </CButton>
           </CCol>
@@ -1733,27 +2141,50 @@
       </CRow>
       <CRow md="12" class="mb-3">
         <CCol>
-          <CFormInput type="file" feedbackInvalid="Please input the problems" id="Problems" label="Upload Report"
-            required @change="onFileChange($event, 'uploadFile')" />
+          <CFormInput
+            type="file"
+            feedbackInvalid="Please input the problems"
+            id="Problems"
+            label="Upload Report"
+            required
+            @change="onFileChange($event, 'uploadFile')"
+          />
         </CCol>
       </CRow>
       <CRow xs="12" class="mb-3">
         <CCol>
-          <CFormCheck feedbackInvalid="You must agree before submitting." id="invalidCheck"
-            label="Agree to terms and conditions" required type="checkbox" v-model="localSubmit.agreeTerms" />
+          <CFormCheck
+            feedbackInvalid="You must agree before submitting."
+            id="invalidCheck"
+            label="Agree to terms and conditions"
+            required
+            type="checkbox"
+            v-model="localSubmit.agreeTerms"
+          />
         </CCol>
       </CRow>
 
       <!-- Comment Modal -->
       <CModal
         :visible="showCommentModal"
-        @update:visible="val => showCommentModal = val"
+        @update:visible="(val) => (showCommentModal = val)"
         @close="cancelComment"
         aria-labelledby="commentModalLabel"
       >
         <CModalHeader>
           <CModalTitle id="commentModalLabel">
-            Add Comment for {{ currentSection === '5why' ? '5 Why' : currentSection === 'counter' ? 'Countermeasure' : currentSection === 'dph' ? 'Department Head' : 'Section' }} - {{ currentUserName }}{{ currentUserRole ? ' (' + currentUserRole + ')' : '' }}
+            Add Comment for
+            {{
+              currentSection === '5why'
+                ? '5 Why'
+                : currentSection === 'counter'
+                ? 'Countermeasure'
+                : currentSection === 'dph'
+                ? 'Department Head'
+                : 'Section'
+            }}
+            - {{ currentUserName
+            }}{{ currentUserRole ? ' (' + currentUserRole + ')' : '' }}
           </CModalTitle>
         </CModalHeader>
         <CModalBody>
@@ -1774,9 +2205,7 @@
       <CButton color="secondary" @click="$emit('close')"> Close </CButton>
 
       <CButton color="primary" @click="saveSubmit" :disabled="isSaving">
-        <span v-if="isSaving">
-          <CSpinner size="sm" /> Saving...
-        </span>
+        <span v-if="isSaving"> <CSpinner size="sm" /> Saving... </span>
         <span v-else> Submit </span>
       </CButton>
     </CModalFooter>
@@ -1900,10 +2329,15 @@ export default {
 
     const parseStepRepair = (stepRepair) => {
       if (!stepRepair || typeof stepRepair !== 'string')
-        return [{ id: 1, stepDesc: '', quick6: '', idealTime: 0, actualTime: 0 }]
+        return [
+          { id: 1, stepDesc: '', quick6: '', idealTime: 0, actualTime: 0 },
+        ]
       const cleaned = stepRepair.trim()
       const lines = cleaned.split(/\r?\n/).filter((line) => line.trim() !== '')
-      if (lines.length === 0) return [{ id: 1, stepDesc: '', quick6: '', idealTime: 0, actualTime: 0 }]
+      if (lines.length === 0)
+        return [
+          { id: 1, stepDesc: '', quick6: '', idealTime: 0, actualTime: 0 },
+        ]
       return lines.map((line, index) => ({
         id: index + 1,
         stepDesc: line.trim(),
@@ -1982,116 +2416,140 @@ export default {
         console.error('Error parsing tambahAnalysisTerjadi:', error)
         return []
       }
-    };
+    }
 
     const hasAnalysisContent = (arr) => {
-      if (!Array.isArray(arr) || arr.length === 0) return false;
+      if (!Array.isArray(arr) || arr.length === 0) return false
 
       const checkNode = (node) => {
-        if (!node) return false;
-        const desc = node.description || node.name || '';
-        if (desc.trim() !== '') return true;
+        if (!node) return false
+        const desc = node.description || node.name || ''
+        if (desc.trim() !== '') return true
         if (node.subItems && Array.isArray(node.subItems)) {
-          return node.subItems.some(checkNode);
+          return node.subItems.some(checkNode)
         }
-        return false;
-      };
+        return false
+      }
 
-      return arr.some(checkNode);
-    };
+      return arr.some(checkNode)
+    }
 
     const hasCountermeasureContent = (arr) => {
-      if (!Array.isArray(arr) || arr.length === 0) return false;
-      return arr.some(item => item.cmDesc && item.cmDesc.trim() !== '');
-    };
+      if (!Array.isArray(arr) || arr.length === 0) return false
+      return arr.some((item) => item.cmDesc && item.cmDesc.trim() !== '')
+    }
 
     // Ubah struktur backend -> struktur TreeNode (description/subItems)
     const convertBackendToTreeNode = (list) => {
-      if (!list) return [];
-      let arr = [];
-      
+      if (!list) return []
+      let arr = []
+
       if (typeof list === 'string') {
         try {
-          arr = JSON.parse(list);
+          arr = JSON.parse(list)
         } catch (e) {
-          console.error('Error parsing JSON:', e);
-          return [];
+          console.error('Error parsing JSON:', e)
+          return []
         }
       } else if (Array.isArray(list)) {
-        arr = list;
+        arr = list
       } else {
-        return [];
+        return []
       }
 
-      return arr.map((item) => {
-        if (!item) return null;
-        
-        return {
-          id: item.id || (Date.now() + Math.random().toString(36).slice(2)),
-          description: item.description || item.name || '',
-          subItems: convertBackendToTreeNode(item.children || item.subItems || [])
-        };
-      }).filter(Boolean);
+      return arr
+        .map((item) => {
+          if (!item) return null
+
+          return {
+            id: item.id || Date.now() + Math.random().toString(36).slice(2),
+            description: item.description || item.name || '',
+            subItems: convertBackendToTreeNode(
+              item.children || item.subItems || [],
+            ),
+          }
+        })
+        .filter(Boolean)
     }
 
     // Ubah struktur TreeNode -> struktur backend (name/children/isLeaf/pid)
     const convertTreeNodeToBackend = (nodes, pid = 0) => {
       if (!Array.isArray(nodes)) {
-        return [];
+        return []
       }
-      
-      return nodes.map((node) => {
-        if (!node) return null;
-        
-        const nodeId = typeof node.id === 'number' ? node.id : Date.now() + Math.floor(Math.random() * 1000);
-        const children = convertTreeNodeToBackend(node.subItems || node.children || [], nodeId);
-        
-        return {
-          id: nodeId,
-          isLeaf: !children || children.length === 0,
-          name: node.description || node.name || node.text || '',
-          pid: pid,
-          children: children
-        };
-      }).filter(Boolean);
+
+      return nodes
+        .map((node) => {
+          if (!node) return null
+
+          const nodeId =
+            typeof node.id === 'number'
+              ? node.id
+              : Date.now() + Math.floor(Math.random() * 1000)
+          const children = convertTreeNodeToBackend(
+            node.subItems || node.children || [],
+            nodeId,
+          )
+
+          return {
+            id: nodeId,
+            isLeaf: !children || children.length === 0,
+            name: node.description || node.name || node.text || '',
+            pid: pid,
+            children: children,
+          }
+        })
+        .filter(Boolean)
     }
 
     const localSubmit = ref({
-      sparepart: null,
-      tambahAnalysisTerjadi: parseTambahAnalysis(submitData.value?.tambahAnalysisTerjadi || '[]'),
-      tambahAnalisisLama: parseTambahAnalysis(submitData.value?.tambahAnalisisLama || '[]'),
-      ...(submitData.value || {}),
-      rootcauses5Why: parseFrealProb(submitData.value?.freal_prob),
-      stepRepairArray: parseStepRepair(submitData.value?.stepRepair),
-      stepRepairNew: parseStepRepairNew(submitData.value?.fstep_new),
-      comments5WhySH: submitData.value?.fiveWhyShFeedback || '',
-      comments5WhyLH: submitData.value?.fiveWhyLhFeedback || '',
-      fiveWhyTlApprove: submitData.value?.fiveWhyTlApprove ?? 0,
-      fiveWhyLhApprove: submitData.value?.fiveWhyLhApprove ?? 0,
-      fiveWhyShApprove: submitData.value?.fiveWhyShApprove ?? 0,
-      cmTlApprove: submitData.value?.cmTlApprove ?? 0,
-      cmLhApprove: submitData.value?.cmLhApprove ?? 0,
-      cmShApprove: submitData.value?.cmShApprove ?? 0,
-      cmDhApprove: submitData.value?.cmDhApprove ?? 0,
-      fiveWhyLhFeedback: submitData.value?.fiveWhyLhFeedback ?? '',
-      fiveWhyShFeedback: submitData.value?.fiveWhyShFeedback ?? '',
-      cmLhFeedback: submitData.value?.cmLhFeedback ?? '',
-      cmShFeedback: submitData.value?.cmShFeedback ?? '',
-      cmTlFeedback: submitData.value?.cmTlFeedback ?? '',
-      cmDhFeedback: submitData.value?.cmDhFeedback ?? '',
-    }),
-    totalSparepartCost = computed(() => {
-      return sparepart_list.value.reduce((sum, item) => sum + (Number(item.total) || 0), 0)
-    })
+        sparepart: null,
+        tambahAnalysisTerjadi: parseTambahAnalysis(
+          submitData.value?.tambahAnalysisTerjadi || '[]',
+        ),
+        tambahAnalisisLama: parseTambahAnalysis(
+          submitData.value?.tambahAnalisisLama || '[]',
+        ),
+        ...(submitData.value || {}),
+        rootcauses5Why: parseFrealProb(submitData.value?.freal_prob),
+        stepRepairArray: parseStepRepair(submitData.value?.stepRepair),
+        stepRepairNew: parseStepRepairNew(submitData.value?.fstep_new),
+        comments5WhySH: submitData.value?.fiveWhyShFeedback || '',
+        comments5WhyLH: submitData.value?.fiveWhyLhFeedback || '',
+        fiveWhyTlApprove: submitData.value?.fiveWhyTlApprove ?? 0,
+        fiveWhyLhApprove: submitData.value?.fiveWhyLhApprove ?? 0,
+        fiveWhyShApprove: submitData.value?.fiveWhyShApprove ?? 0,
+        cmTlApprove: submitData.value?.cmTlApprove ?? 0,
+        cmLhApprove: submitData.value?.cmLhApprove ?? 0,
+        cmShApprove: submitData.value?.cmShApprove ?? 0,
+        cmDhApprove: submitData.value?.cmDhApprove ?? 0,
+        fiveWhyLhFeedback: submitData.value?.fiveWhyLhFeedback ?? '',
+        fiveWhyShFeedback: submitData.value?.fiveWhyShFeedback ?? '',
+        cmLhFeedback: submitData.value?.cmLhFeedback ?? '',
+        cmShFeedback: submitData.value?.cmShFeedback ?? '',
+        cmTlFeedback: submitData.value?.cmTlFeedback ?? '',
+        cmDhFeedback: submitData.value?.cmDhFeedback ?? '',
+      }),
+      totalSparepartCost = computed(() => {
+        return sparepart_list.value.reduce(
+          (sum, item) => sum + (Number(item.total) || 0),
+          0,
+        )
+      })
 
-    console.log('Initial localSubmit setup:', JSON.stringify(localSubmit.value, null, 2))
-    console.log('Initial stepRepairNew from setup:', localSubmit.value.stepRepairNew)
+    console.log(
+      'Initial localSubmit setup:',
+      JSON.stringify(localSubmit.value, null, 2),
+    )
+    console.log(
+      'Initial stepRepairNew from setup:',
+      localSubmit.value.stepRepairNew,
+    )
 
     const validatedCustom01 = ref(false)
     const isSaving = ref(false)
     const editingRootcauses = ref({})
     const editingStepRepair = ref({})
-
 
     const initializeEditingRootcauses = (rootcausesArray) => {
       const editingState = {}
@@ -2167,7 +2625,7 @@ export default {
     }
 
     watch(submitData, (newVal) => {
-      if (!newVal) return;
+      if (!newVal) return
       let rootcausesArray = []
       if (
         Array.isArray(newVal?.rootcauses5Why) &&
@@ -2216,11 +2674,29 @@ export default {
       if (Array.isArray(newVal?.stepRepair) && newVal.stepRepair.length > 0) {
         stepRepairArray = newVal.stepRepair.map((item, index) => {
           if (typeof item === 'string') {
-            return { id: index + 1, stepDesc: item, quick6: '', idealTime: 0, actualTime: 0 }
+            return {
+              id: index + 1,
+              stepDesc: item,
+              quick6: '',
+              idealTime: 0,
+              actualTime: 0,
+            }
           } else if (item && typeof item.description === 'string') {
-            return { id: item.id || index + 1, stepDesc: item.description, quick6: '', idealTime: 0, actualTime: 0 }
+            return {
+              id: item.id || index + 1,
+              stepDesc: item.description,
+              quick6: '',
+              idealTime: 0,
+              actualTime: 0,
+            }
           } else {
-            return { id: index + 1, stepDesc: '', quick6: '', idealTime: 0, actualTime: 0 }
+            return {
+              id: index + 1,
+              stepDesc: '',
+              quick6: '',
+              idealTime: 0,
+              actualTime: 0,
+            }
           }
         })
         console.log('stepRepair from array:', stepRepairArray)
@@ -2230,7 +2706,13 @@ export default {
           if (Array.isArray(parsed)) {
             stepRepairArray = parsed.map((item, index) => {
               if (typeof item === 'string') {
-                return { id: index + 1, stepDesc: item, quick6: '', idealTime: 0, actualTime: 0 }
+                return {
+                  id: index + 1,
+                  stepDesc: item,
+                  quick6: '',
+                  idealTime: 0,
+                  actualTime: 0,
+                }
               } else if (item && typeof item.description === 'string') {
                 return {
                   id: item.id || index + 1,
@@ -2240,7 +2722,13 @@ export default {
                   actualTime: 0,
                 }
               } else {
-                return { id: index + 1, stepDesc: '', quick6: '', idealTime: 0, actualTime: 0 }
+                return {
+                  id: index + 1,
+                  stepDesc: '',
+                  quick6: '',
+                  idealTime: 0,
+                  actualTime: 0,
+                }
               }
             })
             console.log('Parsed stepRepair from JSON:', stepRepairArray)
@@ -2256,7 +2744,9 @@ export default {
         stepRepairArray = parseStepRepair(newVal.fstep_repair)
         console.log('Parsed stepRepair from fstep_repair:', stepRepairArray)
       } else {
-        stepRepairArray = [{ id: 1, stepDesc: '', quick6: '', idealTime: 0, actualTime: 0 }]
+        stepRepairArray = [
+          { id: 1, stepDesc: '', quick6: '', idealTime: 0, actualTime: 0 },
+        ]
         console.log('Default stepRepair array:', stepRepairArray)
       }
 
@@ -2264,48 +2754,103 @@ export default {
       console.log('stepRepairNewArray result:', stepRepairNewArray)
       localSubmit.value.stepRepairNew = stepRepairNewArray
 
-      console.log('submitData newVal before assign:', newVal);
-      console.log('newVal keys before assign:', Object.keys(newVal || {}));
-      console.log('newVal oCategory:', newVal?.oCategory, 'type:', typeof newVal?.oCategory);
-      console.log('newVal qCategory:', newVal?.qCategory, 'type:', typeof newVal?.qCategory);
-      console.log('newVal pmCategory:', newVal?.pmCategory, 'type:', typeof newVal?.pmCategory);
+      console.log('submitData newVal before assign:', newVal)
+      console.log('newVal keys before assign:', Object.keys(newVal || {}))
+      console.log(
+        'newVal oCategory:',
+        newVal?.oCategory,
+        'type:',
+        typeof newVal?.oCategory,
+      )
+      console.log(
+        'newVal qCategory:',
+        newVal?.qCategory,
+        'type:',
+        typeof newVal?.qCategory,
+      )
+      console.log(
+        'newVal pmCategory:',
+        newVal?.pmCategory,
+        'type:',
+        typeof newVal?.pmCategory,
+      )
 
-      Object.assign(localSubmit.value, newVal || {});
-      console.log('localSubmit after assign - oCategory:', localSubmit.value.oCategory, 'type:', typeof localSubmit.value.oCategory);
-      console.log('localSubmit after assign - qCategory:', localSubmit.value.qCategory, 'type:', typeof localSubmit.value.qCategory);
-      console.log('localSubmit after assign - pmCategory:', localSubmit.value.pmCategory, 'type:', typeof localSubmit.value.pmCategory);
+      Object.assign(localSubmit.value, newVal || {})
+      console.log(
+        'localSubmit after assign - oCategory:',
+        localSubmit.value.oCategory,
+        'type:',
+        typeof localSubmit.value.oCategory,
+      )
+      console.log(
+        'localSubmit after assign - qCategory:',
+        localSubmit.value.qCategory,
+        'type:',
+        typeof localSubmit.value.qCategory,
+      )
+      console.log(
+        'localSubmit after assign - pmCategory:',
+        localSubmit.value.pmCategory,
+        'type:',
+        typeof localSubmit.value.pmCategory,
+      )
 
       // Map pilih* fields to *Category as numbers for select matching
-      localSubmit.value.oCategory = String(Number(newVal?.pilihO6 ?? newVal?.oCategory ?? 0)) || '';
-      localSubmit.value.qCategory = String(Number(newVal?.pilihQ6 ?? newVal?.qCategory ?? 0)) || '';
-      localSubmit.value.pmCategory = String(Number(newVal?.pilihPM6 ?? newVal?.pmCategory ?? 0)) || '';
+      localSubmit.value.oCategory =
+        String(Number(newVal?.pilihO6 ?? newVal?.oCategory ?? 0)) || ''
+      localSubmit.value.qCategory =
+        String(Number(newVal?.pilihQ6 ?? newVal?.qCategory ?? 0)) || ''
+      localSubmit.value.pmCategory =
+        String(Number(newVal?.pilihPM6 ?? newVal?.pmCategory ?? 0)) || ''
       if (localSubmit.value.oCategory !== '3') {
-        localSubmit.value.pmCategory = '';
-        pmCategoryName.value = '';
+        localSubmit.value.pmCategory = ''
+        pmCategoryName.value = ''
       }
 
-      console.log('After mapping - oCategory:', localSubmit.value.oCategory, 'type:', typeof localSubmit.value.oCategory);
-      console.log('After mapping - qCategory:', localSubmit.value.qCategory, 'type:', typeof localSubmit.value.qCategory);
-      console.log('After mapping - pmCategory:', localSubmit.value.pmCategory, 'type:', typeof localSubmit.value.pmCategory);
+      console.log(
+        'After mapping - oCategory:',
+        localSubmit.value.oCategory,
+        'type:',
+        typeof localSubmit.value.oCategory,
+      )
+      console.log(
+        'After mapping - qCategory:',
+        localSubmit.value.qCategory,
+        'type:',
+        typeof localSubmit.value.qCategory,
+      )
+      console.log(
+        'After mapping - pmCategory:',
+        localSubmit.value.pmCategory,
+        'type:',
+        typeof localSubmit.value.pmCategory,
+      )
 
-      localSubmit.value.tambahAnalysisTerjadi = parseTambahAnalysis(newVal?.tambahAnalysisTerjadi || '[]');
-      localSubmit.value.tambahAnalisisLama = parseTambahAnalysis(newVal?.tambahAnalisisLama || '[]');
-      localSubmit.value.stepRepair = stepRepairArray;
-      localSubmit.value.stepRepairNew = stepRepairNewArray;
-      console.log('Final localSubmit.stepRepairNew:', localSubmit.value.stepRepairNew)
-      localSubmit.value.fiveWhyTlApprove = newVal.fiveWhyTlApprove ?? 0;
-      localSubmit.value.fiveWhyLhApprove = newVal.fiveWhyLhApprove ?? 0;
-      localSubmit.value.fiveWhyShApprove = newVal.fiveWhyShApprove ?? 0;
-      localSubmit.value.fiveWhyLhFeedback = newVal.fiveWhyLhFeedback ?? '';
-      localSubmit.value.fiveWhyShFeedback = newVal.fiveWhyShFeedback ?? '';
-      localSubmit.value.cmLhApprove = newVal.cmLhApprove ?? 0;
-      localSubmit.value.cmShApprove = newVal.cmShApprove ?? 0;
-      localSubmit.value.cmTlApprove = newVal.cmTlApprove ?? 0;
-      localSubmit.value.cmDhApprove = newVal.cmDhApprove ?? 0;
-      localSubmit.value.cmLhFeedback = newVal.cmLhFeedback ?? '';
-      localSubmit.value.cmShFeedback = newVal.cmShFeedback ?? '';
-      localSubmit.value.cmTlFeedback = newVal.cmTlFeedback ?? '';
-      localSubmit.value.cmDhFeedback = newVal.cmDhFeedback ?? '';
+      localSubmit.value.tambahAnalysisTerjadi = parseTambahAnalysis(
+        newVal?.tambahAnalysisTerjadi || '[]',
+      )
+      localSubmit.value.tambahAnalisisLama = parseTambahAnalysis(
+        newVal?.tambahAnalisisLama || '[]',
+      )
+      localSubmit.value.stepRepair = stepRepairArray
+      localSubmit.value.stepRepairNew = stepRepairNewArray
+      console.log(
+        'Final localSubmit.stepRepairNew:',
+        localSubmit.value.stepRepairNew,
+      )
+      localSubmit.value.fiveWhyTlApprove = newVal.fiveWhyTlApprove ?? 0
+      localSubmit.value.fiveWhyLhApprove = newVal.fiveWhyLhApprove ?? 0
+      localSubmit.value.fiveWhyShApprove = newVal.fiveWhyShApprove ?? 0
+      localSubmit.value.fiveWhyLhFeedback = newVal.fiveWhyLhFeedback ?? ''
+      localSubmit.value.fiveWhyShFeedback = newVal.fiveWhyShFeedback ?? ''
+      localSubmit.value.cmLhApprove = newVal.cmLhApprove ?? 0
+      localSubmit.value.cmShApprove = newVal.cmShApprove ?? 0
+      localSubmit.value.cmTlApprove = newVal.cmTlApprove ?? 0
+      localSubmit.value.cmDhApprove = newVal.cmDhApprove ?? 0
+      localSubmit.value.cmLhFeedback = newVal.cmLhFeedback ?? ''
+      localSubmit.value.cmShFeedback = newVal.cmShFeedback ?? ''
+      localSubmit.value.cmTlFeedback = newVal.cmTlFeedback ?? ''
+      localSubmit.value.cmDhFeedback = newVal.cmDhFeedback ?? ''
 
       console.log(
         'Updated localSubmit:',
@@ -2328,81 +2873,89 @@ export default {
         ? newVal.countermeasureKenapaTerjadi
         : typeof newVal.countermeasureKenapaTerjadi === 'string' &&
           newVal.countermeasureKenapaTerjadi
-          ? JSON.parse(newVal.countermeasureKenapaTerjadi)
-          : []
+        ? JSON.parse(newVal.countermeasureKenapaTerjadi)
+        : []
       countermeasureKenapaLamaList.value = Array.isArray(
         newVal.countermeasureKenapaLama,
       )
         ? newVal.countermeasureKenapaLama
         : typeof newVal.countermeasureKenapaLama === 'string' &&
           newVal.countermeasureKenapaLama
-          ? JSON.parse(newVal.countermeasureKenapaLama)
-          : []
+        ? JSON.parse(newVal.countermeasureKenapaLama)
+        : []
       yokotenList.value = Array.isArray(submitData.value?.yokoten)
         ? submitData.value.yokoten
         : typeof submitData.value?.yokoten === 'string' &&
           submitData.value.yokoten
-          ? JSON.parse(submitData.value.yokoten)
-          : []
+        ? JSON.parse(submitData.value.yokoten)
+        : []
       sparepart_list.value = Array.isArray(submitData.value?.sparepart_list)
-        ? submitData.value.sparepart_list.map(item => ({
+        ? submitData.value.sparepart_list.map((item) => ({
             ...item,
             quantity: parseInt(item.quantity) || 1,
-            total: parseFloat(item.total) || 0
+            total: parseFloat(item.total) || 0,
           }))
         : typeof submitData.value?.sparepart_list === 'string' &&
           submitData.value.sparepart_list
-        ? JSON.parse(submitData.value.sparepart_list).map(item => ({
+        ? JSON.parse(submitData.value.sparepart_list).map((item) => ({
             ...item,
             quantity: parseInt(item.quantity) || 1,
-            total: parseFloat(item.total) || 0
+            total: parseFloat(item.total) || 0,
           }))
         : []
 
       // Populate missing fields for existing spareparts
-      let populatedCount = 0;
-      sparepart_list.value = sparepart_list.value.map(item => {
+      let populatedCount = 0
+      sparepart_list.value = sparepart_list.value.map((item) => {
         if (!item.material_number || !item.sparepart_id) {
-          const found = allSpareparts.value.find(sp => sp.sparepart_nm === item.sparepart?.label);
+          const found = allSpareparts.value.find(
+            (sp) => sp.sparepart_nm === item.sparepart?.label,
+          )
           if (found) {
-            populatedCount++;
+            populatedCount++
             return {
               ...item,
               material_number: item.material_number || found.material_number,
               sparepart_id: item.sparepart_id || found.sparepart_id,
-              sparepartTr: found.sparepartTr || item.sparepartTr || `${localSubmit.value.fidProblem}-${found.material_number}`,
+              sparepartTr:
+                found.sparepartTr ||
+                item.sparepartTr ||
+                `${localSubmit.value.fidProblem}-${found.material_number}`,
               price: item.price || found.price,
               vendor: item.vendor || found.vendor,
               status: item.status || found.status,
-            };
+            }
           }
         }
-        return item;
-      });
-      console.log(`Sparepart population: ${populatedCount} items populated, total ${sparepart_list.value.length} spareparts.`);
+        return item
+      })
+      console.log(
+        `Sparepart population: ${populatedCount} items populated, total ${sparepart_list.value.length} spareparts.`,
+      )
       if (populatedCount > 0) {
-        console.log('Population successful for existing spareparts.');
+        console.log('Population successful for existing spareparts.')
       }
 
       // Ensure sparepart object is properly formatted for new parts
-      sparepart_list.value = sparepart_list.value.map(item => {
+      sparepart_list.value = sparepart_list.value.map((item) => {
         if (item.newPart === '1' && typeof item.sparepart === 'string') {
           return {
             ...item,
-            sparepart: { label: item.sparepart, id: item.sparepart_id || null }
-          };
+            sparepart: { label: item.sparepart, id: item.sparepart_id || null },
+          }
         }
-        return item;
-      });
+        return item
+      })
 
       // Convert partSimilar from object to string if necessary
-      sparepart_list.value = sparepart_list.value.map(item => ({
+      sparepart_list.value = sparepart_list.value.map((item) => ({
         ...item,
-        partSimilar: item.partSimilar && typeof item.partSimilar === 'object' ? item.partSimilar.text || '' : item.partSimilar,
-      }));
+        partSimilar:
+          item.partSimilar && typeof item.partSimilar === 'object'
+            ? item.partSimilar.text || ''
+            : item.partSimilar,
+      }))
     })
-
-
 
     const onMachineInput = () => {
       console.log('Machine input changed:', localSubmit.value.machineName)
@@ -2423,12 +2976,12 @@ export default {
       const date = new Date(dateTimeStr)
       // Normalisasi untuk menghindari masalah timezone
       const offset = date.getTimezoneOffset()
-      const normalizedDate = new Date(date.getTime() + (offset * 60000))
+      const normalizedDate = new Date(date.getTime() + offset * 60000)
       return normalizedDate.toISOString().slice(0, 19).replace('T', ' ')
     }
     const saveSubmit = () => {
       try {
-        let avCategories = '';
+        let avCategories = ''
 
         avCategories = localSubmit.value.avCategory
 
@@ -2459,7 +3012,10 @@ export default {
           alert('You must agree to terms and conditions before submitting')
           return
         }
-        if (localSubmit.value.oCategory === '3' && !localSubmit.value.pmCategory) {
+        if (
+          localSubmit.value.oCategory === '3' &&
+          !localSubmit.value.pmCategory
+        ) {
           alert('Please select the PM Category.')
           return
         }
@@ -2483,7 +3039,9 @@ export default {
         // Helper: resolve PIC label dari ID
         const resolvePicLabel = (value) => {
           const found = Array.isArray(picOptions.value)
-            ? picOptions.value.find((opt) => String(opt.value) === String(value))
+            ? picOptions.value.find(
+                (opt) => String(opt.value) === String(value),
+              )
             : null
           return found?.label || (value ?? '')
         }
@@ -2507,16 +3065,18 @@ export default {
         localSubmit.value.yokotenList = mapPicToLabel(yokotenList.value)
         localSubmit.value.sparepart_list = sparepart_list.value
 
-
-
         // Prepare tambahAnalysis data - ensure we have valid arrays
-        const tambahAnalysisTerjadiData = convertTreeNodeToBackend(localSubmit.value.tambahAnalysisTerjadi || [])
-        const tambahAnalisisLamaData = convertTreeNodeToBackend(localSubmit.value.tambahAnalisisLama || [])
+        const tambahAnalysisTerjadiData = convertTreeNodeToBackend(
+          localSubmit.value.tambahAnalysisTerjadi || [],
+        )
+        const tambahAnalisisLamaData = convertTreeNodeToBackend(
+          localSubmit.value.tambahAnalisisLama || [],
+        )
 
         // Ensure pmCategory is set to null if oCategory is not '3' before submitting
-        let pmCategoryForSubmit = localSubmit.value.pmCategory;
+        let pmCategoryForSubmit = localSubmit.value.pmCategory
         if (localSubmit.value.oCategory !== '3') {
-          pmCategoryForSubmit = '0';
+          pmCategoryForSubmit = '0'
         }
 
         const submitDataFormatted = {
@@ -2544,7 +3104,13 @@ export default {
           problemCategory: localSubmit.value.problemCategory ?? '',
           itemTemporaryAction: localSubmit.value.itemTemporaryAction ?? '',
           rootcauses5Why: localSubmit.value.rootcauses5Why ?? [],
-          ...( (localSubmit.value.stepRepair ?? []).filter(item => item.stepDesc && item.stepDesc.trim().length > 0).length > 0 && { stepRepair: (localSubmit.value.stepRepair ?? []).filter(item => item.stepDesc && item.stepDesc.trim().length > 0) } ),
+          ...((localSubmit.value.stepRepair ?? []).filter(
+            (item) => item.stepDesc && item.stepDesc.trim().length > 0,
+          ).length > 0 && {
+            stepRepair: (localSubmit.value.stepRepair ?? []).filter(
+              (item) => item.stepDesc && item.stepDesc.trim().length > 0,
+            ),
+          }),
           stepRepairNew: localSubmit.value.stepRepairNew ?? [],
           partChange: localSubmit.value.partChange ?? '',
           countermeasureKenapaTerjadi:
@@ -2569,7 +3135,8 @@ export default {
           qCategory: localSubmit.value.qCategory ?? '',
           pmCategory: pmCategoryForSubmit,
           cmKenapaLama: localSubmit.value.countermeasureKenapaLamaList ?? [],
-          cmKenapaTerjadi: localSubmit.value.countermeasureKenapaTerjadiList ?? [],
+          cmKenapaTerjadi:
+            localSubmit.value.countermeasureKenapaTerjadiList ?? [],
           sparepart_list: localSubmit.value.sparepart_list ?? [],
           fiveWhyTlApprove: localSubmit.value.fiveWhyTlApprove ?? 0,
           fiveWhyLhApprove: localSubmit.value.fiveWhyLhApprove ?? 0,
@@ -2603,7 +3170,7 @@ export default {
 
         // const result = await response.json();
         // console.log('Data submitted successfully:', result);
-        
+
         emit('submit', submitDataFormatted)
       } catch (error) {
         alert('Error during submit: ' + error.message)
@@ -2652,7 +3219,7 @@ export default {
           1: 'Small',
           2: 'Repeat',
           3: 'LTR',
-          4: 'SLTR'
+          4: 'SLTR',
         }
         problemCategoryName.value = categoryMap[newCategory] || ''
         console.log(
@@ -2700,10 +3267,10 @@ export default {
       () => localSubmit.value.oCategory,
       (newO6) => {
         if (newO6 !== '3') {
-          localSubmit.value.pmCategory = '';
-          pmCategoryName.value = '';
+          localSubmit.value.pmCategory = ''
+          pmCategoryName.value = ''
         }
-      }
+      },
     )
     console.log('Local submit data: ' + localSubmit.value)
     console.log(
@@ -2751,36 +3318,53 @@ export default {
       [() => localSubmit.value.startDate, () => localSubmit.value.finishDate],
       ([startDate, finishDate]) => {
         if (startDate && finishDate) {
-          const start = new Date(startDate);
-          const finish = new Date(finishDate);
+          const start = new Date(startDate)
+          const finish = new Date(finishDate)
           if (!isNaN(start.getTime()) && !isNaN(finish.getTime())) {
-            const diffInMs = Math.abs(finish.getTime() - start.getTime());
-            const durationInMin = Math.floor(diffInMs / (1000 * 60));
-            localSubmit.value.durationMin = durationInMin.toString();
+            const diffInMs = Math.abs(finish.getTime() - start.getTime())
+            const durationInMin = Math.floor(diffInMs / (1000 * 60))
+            localSubmit.value.durationMin = durationInMin.toString()
           } else {
-            localSubmit.value.durationMin = '';
+            localSubmit.value.durationMin = ''
           }
         } else {
-          localSubmit.value.durationMin = '';
+          localSubmit.value.durationMin = ''
         }
       },
-      { immediate: true }
+      { immediate: true },
     )
 
     // Remove the deep watch on localSubmit to prevent recursive updates
     // Instead, use specific watchers for individual properties
 
-    watch(() => [localSubmit.value.tambahAnalysisTerjadi, localSubmit.value.tambahAnalisisLama], ([terjadi, lama]) => {
-      if (hasAnalysisContent(terjadi) && hasAnalysisContent(lama)) {
-        localSubmit.value.fiveWhyTlApprove = 1;
-      }
-    }, { deep: true });
+    watch(
+      () => [
+        localSubmit.value.tambahAnalysisTerjadi,
+        localSubmit.value.tambahAnalisisLama,
+      ],
+      ([terjadi, lama]) => {
+        if (hasAnalysisContent(terjadi) && hasAnalysisContent(lama)) {
+          localSubmit.value.fiveWhyTlApprove = 1
+        }
+      },
+      { deep: true },
+    )
 
-    watch(() => [countermeasureKenapaTerjadiList.value, countermeasureKenapaLamaList.value], ([terjadi, lama]) => {
-      if (hasCountermeasureContent(terjadi) && hasCountermeasureContent(lama)) {
-        localSubmit.value.cmTlApprove = 1;
-      }
-    }, { deep: true });
+    watch(
+      () => [
+        countermeasureKenapaTerjadiList.value,
+        countermeasureKenapaLamaList.value,
+      ],
+      ([terjadi, lama]) => {
+        if (
+          hasCountermeasureContent(terjadi) &&
+          hasCountermeasureContent(lama)
+        ) {
+          localSubmit.value.cmTlApprove = 1
+        }
+      },
+      { deep: true },
+    )
     const yokotenForm = ref({
       machine: '',
       pic: '',
@@ -2804,10 +3388,12 @@ export default {
     const editYokoten = (idx) => {
       const item = yokotenList.value[idx]
       if (item) {
-        const picOption = picOptions.value.find(opt => String(opt.value) === String(item.pic))
+        const picOption = picOptions.value.find(
+          (opt) => String(opt.value) === String(item.pic),
+        )
         yokotenForm.value = {
           ...item,
-          pic: picOption ? picOption.value : item.pic
+          pic: picOption ? picOption.value : item.pic,
         }
         showYokotenForm.value = true
         yokotenForm.value._editIdx = idx
@@ -2862,10 +3448,12 @@ export default {
     const editCountermeasureKenapaTerjadi = (idx) => {
       const item = countermeasureKenapaTerjadiList.value[idx]
       if (item) {
-        const picOption = picOptions.value.find(opt => String(opt.value) === String(item.pic))
+        const picOption = picOptions.value.find(
+          (opt) => String(opt.value) === String(item.pic),
+        )
         countermeasureKenapaTerjadiForm.value = {
           ...item,
-          pic: picOption ? picOption.value : item.pic
+          pic: picOption ? picOption.value : item.pic,
         }
         showCountermeasureKenapaTerjadiForm.value = true
         countermeasureKenapaTerjadiForm.value._editIdx = idx
@@ -2964,10 +3552,12 @@ export default {
     const editCountermeasureKenapaLama = (idx) => {
       const item = countermeasureKenapaLamaList.value[idx]
       if (item) {
-        const picOption = picOptions.value.find(opt => String(opt.value) === String(item.pic))
+        const picOption = picOptions.value.find(
+          (opt) => String(opt.value) === String(item.pic),
+        )
         countermeasureKenapaLamaForm.value = {
           ...item,
-          pic: picOption ? picOption.value : item.pic
+          pic: picOption ? picOption.value : item.pic,
         }
         showCountermeasureKenapaLamaForm.value = true
         countermeasureKenapaLamaForm.value._editIdx = idx
@@ -3008,7 +3598,7 @@ export default {
       quantity: 1,
       total: 0,
       isModify: 'NO',
-      description: ''
+      description: '',
     })
 
     // Dummy options for static test
@@ -3017,16 +3607,18 @@ export default {
       { value: 2, text: 'Dummy Sparepart 2' },
       { value: 3, text: 'Dummy Sparepart 3' },
       { value: 4, text: 'Dummy Sparepart 4' },
-      { value: 5, text: 'Dummy Sparepart 5' }
+      { value: 5, text: 'Dummy Sparepart 5' },
     ])
     const dummySelected = ref(null)
 
     watch(showSparepartForm, (newVal) => {
       if (newVal) {
-        console.log('Watcher triggered: showSparepartForm is true, loading initial sparepart options');
-        onSparepartSearch('');
+        console.log(
+          'Watcher triggered: showSparepartForm is true, loading initial sparepart options',
+        )
+        onSparepartSearch('')
       }
-    });
+    })
 
     const nameWithLang = (option) => {
       return `${option.label} — [${option.id}]`
@@ -3034,65 +3626,84 @@ export default {
 
     const getLastSparepartId = async () => {
       try {
-        console.log('Fetching last sparepart_id...');
-        const sparepartRes = await api.get('/smartandon/spareparts/last-id');
-        console.log('API response for last sparepart_id:', sparepartRes.status);
+        console.log('Fetching last sparepart_id...')
+        const sparepartRes = await api.get('/smartandon/spareparts/last-id')
+        console.log('API response for last sparepart_id:', sparepartRes.status)
 
         if (sparepartRes.status === 200) {
-          const maxId = sparepartRes.data.data || 0;
-          console.log('Found max sparepart_id:', maxId);
-          return maxId;
+          const maxId = sparepartRes.data.data || 0
+          console.log('Found max sparepart_id:', maxId)
+          return maxId
         }
-        throw new Error(`Failed to get last sparepart_id, status: ${sparepartRes.status}`);
+        throw new Error(
+          `Failed to get last sparepart_id, status: ${sparepartRes.status}`,
+        )
       } catch (e) {
-        console.error('Error getting last sparepart_id:', e);
-        return 0; // Return 0 as fallback
+        console.error('Error getting last sparepart_id:', e)
+        return 0 // Return 0 as fallback
       }
-    };
+    }
 
     const onSparepartSearch = async (searchQuery) => {
-      console.log('onSparepartSearch called with:', searchQuery);
+      console.log('onSparepartSearch called with:', searchQuery)
       try {
-        const params = { limit: 100 };
+        const params = { limit: 100 }
         if (searchQuery && searchQuery.trim() !== '') {
-          params.search = searchQuery.trim();
+          params.search = searchQuery.trim()
         }
-        console.log('Calling API with params:', params);
-        const sparepartRes = await api.get('/smartandon/spareparts', params);
-        console.log('API response status:', sparepartRes.status);
+        console.log('Calling API with params:', params)
+        const sparepartRes = await api.get('/smartandon/spareparts', params)
+        console.log('API response status:', sparepartRes.status)
         if (sparepartRes.status === 200) {
-          console.log('Sparepart options data for search:', searchQuery, sparepartRes.data);
+          console.log(
+            'Sparepart options data for search:',
+            searchQuery,
+            sparepartRes.data,
+          )
 
           // Handle both direct array and wrapped response
-          const spareparts = sparepartRes.data.data || sparepartRes.data;
+          const spareparts = sparepartRes.data.data || sparepartRes.data
           sparepartOptions.value = Array.isArray(spareparts)
-            ? spareparts.map((sp) => ({
-                value: sp.sparepart_id,
-                text: sp.sparepart_nm,
-                price: sp.price,
-                vendor: sp.vendor,
-                status: sp.status,
-                material_number: sp.material_number,
-                sparepart_id: sp.sparepart_id,
-              })).sort((a, b) => a.text.localeCompare(b.text))
-            : [];
-          console.log('Processed sparepart options length:', sparepartOptions.value.length);
-          console.log('First few sparepart options:', sparepartOptions.value.slice(0, 5));
-          console.log('ModelSelect should now have options:', sparepartOptions.value);
+            ? spareparts
+                .map((sp) => ({
+                  value: sp.sparepart_id,
+                  text: sp.sparepart_nm,
+                  price: sp.price,
+                  vendor: sp.vendor,
+                  status: sp.status,
+                  material_number: sp.material_number,
+                  sparepart_id: sp.sparepart_id,
+                }))
+                .sort((a, b) => a.text.localeCompare(b.text))
+            : []
+          console.log(
+            'Processed sparepart options length:',
+            sparepartOptions.value.length,
+          )
+          console.log(
+            'First few sparepart options:',
+            sparepartOptions.value.slice(0, 5),
+          )
+          console.log(
+            'ModelSelect should now have options:',
+            sparepartOptions.value,
+          )
         } else {
-          throw new Error(`Failed to load spareparts, status: ${sparepartRes.status}`);
+          throw new Error(
+            `Failed to load spareparts, status: ${sparepartRes.status}`,
+          )
         }
       } catch (e) {
-        console.error('Error loading spareparts for search:', e);
-        sparepartOptions.value = [];
-        console.log('Options set to empty due to error');
+        console.error('Error loading spareparts for search:', e)
+        sparepartOptions.value = []
+        console.log('Options set to empty due to error')
       }
-    };
+    }
 
     const handleSparepartSearch = (searchQuery) => {
-      console.log('handleSparepartSearch called with:', searchQuery);
-      onSparepartSearch(searchQuery);
-    };
+      console.log('handleSparepartSearch called with:', searchQuery)
+      onSparepartSearch(searchQuery)
+    }
 
     onMounted(async () => {
       try {
@@ -3102,9 +3713,11 @@ export default {
         console.log('Current user response:', userRes)
         let currentUserNoreg = ''
         if (userRes.status === 200 && userRes.data && userRes.data.user) {
-          currentUserNoreg = userRes.data.user.fnoreg || userRes.data.user.noreg || ''
+          currentUserNoreg =
+            userRes.data.user.fnoreg || userRes.data.user.noreg || ''
           currentUserRole.value = userRes.data.user.frole || ''
-          currentUserName.value = userRes.data.user.fname || userRes.data.user.name || ''
+          currentUserName.value =
+            userRes.data.user.fname || userRes.data.user.name || ''
           console.log('Current user noreg:', currentUserNoreg)
           console.log('Current user role:', currentUserRole.value)
           console.log('Current user name:', currentUserName.value)
@@ -3121,7 +3734,9 @@ export default {
           // Filter members by current user's noreg for PIC options (keep filtered for PIC)
           let filteredData = data
           if (currentUserNoreg) {
-            filteredData = data.filter(member => member.fnoreg === currentUserNoreg)
+            filteredData = data.filter(
+              (member) => member.fnoreg === currentUserNoreg,
+            )
             // console.log(`Filtered members by noreg ${currentUserNoreg}:`, filteredData.length, 'members found')
           } else {
             console.warn('No current user noreg available, showing all members')
@@ -3130,7 +3745,10 @@ export default {
           // Set current user role from filtered member data
           if (filteredData.length > 0) {
             currentUserRole.value = filteredData[0].frole || ''
-            console.log('Current user role from member data:', currentUserRole.value)
+            console.log(
+              'Current user role from member data:',
+              currentUserRole.value,
+            )
           } else {
             console.warn('No member data found for current user')
           }
@@ -3138,7 +3756,7 @@ export default {
           // Print detailed member data from tb_mt_member
           if (Array.isArray(filteredData)) {
             console.log('Filtered member data:')
-            filteredData.forEach(member => {
+            filteredData.forEach((member) => {
               console.log({
                 fid: member.fid,
                 fname: member.fname,
@@ -3158,20 +3776,23 @@ export default {
 
           picOptions.value = Array.isArray(data)
             ? data.map((m) => ({
-              id: m.fname,
-              label: m.fname,
-            }))
+                id: m.fname,
+                label: m.fname,
+              }))
             : []
           console.log('picOptions set to:', picOptions.value)
 
           // Set filteredMemberOption for operator selection to all members (not filtered)
           filteredMemberOption.value = Array.isArray(data)
             ? data.map((m) => ({
-              id: m.fid,
-              label: m.fname,
-            }))
+                id: m.fid,
+                label: m.fname,
+              }))
             : []
-          console.log('filteredMemberOption set to:', filteredMemberOption.value)
+          console.log(
+            'filteredMemberOption set to:',
+            filteredMemberOption.value,
+          )
         } else {
           throw new Error(`Failed to load members, status: ${res.status}`)
         }
@@ -3183,16 +3804,16 @@ export default {
 
       // Load all spareparts for populating existing data
       try {
-        const allSparepartRes = await api.get('/smartandon/spareparts');
-        allSpareparts.value = allSparepartRes.data.data || [];
-        console.log('All spareparts loaded:', allSpareparts.value.length);
+        const allSparepartRes = await api.get('/smartandon/spareparts')
+        allSpareparts.value = allSparepartRes.data.data || []
+        console.log('All spareparts loaded:', allSpareparts.value.length)
       } catch (e) {
-        console.error('Error loading all spareparts:', e);
-        allSpareparts.value = [];
+        console.error('Error loading all spareparts:', e)
+        allSpareparts.value = []
       }
 
       // Load initial sparepart options
-      await onSparepartSearch('');
+      await onSparepartSearch('')
     })
 
     const addRootcause = () => {
@@ -3202,8 +3823,8 @@ export default {
       if (localSubmit.value.rootcauses5Why.length < 5) {
         const newId = localSubmit.value.rootcauses5Why.length
           ? Math.max(
-            ...localSubmit.value.rootcauses5Why.map((item) => item.id),
-          ) + 1
+              ...localSubmit.value.rootcauses5Why.map((item) => item.id),
+            ) + 1
           : 1
         localSubmit.value.rootcauses5Why.push({ id: newId, description: '' })
       }
@@ -3251,64 +3872,86 @@ export default {
 
     const submitSparepart = async () => {
       try {
-        console.log('submitSparepart called');
-        console.log('sparepartForm entire state:', JSON.stringify(sparepartForm.value, null, 2));
+        console.log('submitSparepart called')
+        console.log(
+          'sparepartForm entire state:',
+          JSON.stringify(sparepartForm.value, null, 2),
+        )
 
-      const selectedSparepart = sparepartForm.value.sparepart;
-      const selectedPartSimilar = sparepartForm.value.partSimilar;
-      if (sparepartForm.value.newPart === '1') {
-        if (!selectedSparepart || selectedSparepart.trim() === '') {
-          alert('Please enter a valid sparepart name.');
-          console.log('Sparepart name is empty for new part, aborting submit');
-          return;
+        const selectedSparepart = sparepartForm.value.sparepart
+        const selectedPartSimilar = sparepartForm.value.partSimilar
+        if (sparepartForm.value.newPart === '1') {
+          if (!selectedSparepart || selectedSparepart.trim() === '') {
+            alert('Please enter a valid sparepart name.')
+            console.log('Sparepart name is empty for new part, aborting submit')
+            return
+          }
+        } else {
+          if (
+            !selectedSparepart ||
+            !selectedSparepart.text ||
+            selectedSparepart.text.trim() === ''
+          ) {
+            alert('Please select a sparepart with a valid name.')
+            console.log('Sparepart name is empty, aborting submit')
+            return
+          }
         }
-      } else {
-        if (!selectedSparepart || !selectedSparepart.text || selectedSparepart.text.trim() === '') {
-          alert('Please select a sparepart with a valid name.');
-          console.log('Sparepart name is empty, aborting submit');
-          return;
-        }
-      }
 
         if (!sparepartForm.value.status || sparepartForm.value.status === '') {
-          alert('Please select a status before submitting.');
-          return;
+          alert('Please select a status before submitting.')
+          return
         }
 
         if (!sparepartForm.value.quantity || sparepartForm.value.quantity < 1) {
-          alert('Please enter a valid quantity (at least 1) before submitting.');
-          return;
+          alert('Please enter a valid quantity (at least 1) before submitting.')
+          return
         }
 
-        console.log('selectedSparepart:', JSON.stringify(selectedSparepart, null, 2));
-        console.log('selectedPartSimilar:', JSON.stringify(selectedPartSimilar, null, 2));
+        console.log(
+          'selectedSparepart:',
+          JSON.stringify(selectedSparepart, null, 2),
+        )
+        console.log(
+          'selectedPartSimilar:',
+          JSON.stringify(selectedPartSimilar, null, 2),
+        )
 
-        let sparepartObj = {};
-        let price = '';
-        let vendor = '';
-        let material_number = '';
-        let sparepart_id = '';
+        let sparepartObj = {}
+        let price = ''
+        let vendor = ''
+        let material_number = ''
+        let sparepart_id = ''
 
         if (sparepartForm.value.newPart === '1') {
           // For new part, sparepart is a string (name)
-          sparepartObj = { label: selectedSparepart };
-          price = sparepartForm.value.price || '';
-          vendor = sparepartForm.value.vendor ? sparepartForm.value.vendor.toUpperCase() : '';
-          material_number = sparepartForm.value.materialNumber || '';
+          sparepartObj = { label: selectedSparepart }
+          price = sparepartForm.value.price || ''
+          vendor = sparepartForm.value.vendor
+            ? sparepartForm.value.vendor.toUpperCase()
+            : ''
+          material_number = sparepartForm.value.materialNumber || ''
           // Check if editing existing new part
           if (typeof sparepartForm.value._editIdx === 'number') {
             // Use existing sparepart_id if editing
-            sparepart_id = sparepart_list.value[sparepartForm.value._editIdx]?.sparepart_id || '';
-            console.log('Using existing sparepart_id for edit:', sparepart_id);
+            sparepart_id =
+              sparepart_list.value[sparepartForm.value._editIdx]
+                ?.sparepart_id || ''
+            console.log('Using existing sparepart_id for edit:', sparepart_id)
           }
-          if (!sparepart_id || sparepart_id === '' || sparepart_id === '0' || sparepart_id === null) {
+          if (
+            !sparepart_id ||
+            sparepart_id === '' ||
+            sparepart_id === '0' ||
+            sparepart_id === null
+          ) {
             // Generate new sparepart_id using local counter to avoid collision
             if (lastGeneratedSparepartId.value === 0) {
-              lastGeneratedSparepartId.value = await getLastSparepartId();
+              lastGeneratedSparepartId.value = await getLastSparepartId()
             }
-            lastGeneratedSparepartId.value += 1;
-            sparepart_id = lastGeneratedSparepartId.value.toString();
-            console.log('Generated new sparepart_id:', sparepart_id);
+            lastGeneratedSparepartId.value += 1
+            sparepart_id = lastGeneratedSparepartId.value.toString()
+            console.log('Generated new sparepart_id:', sparepart_id)
             // Create the new sparepart in the master table
             try {
               await api.post('/smartandon/spareparts', {
@@ -3316,49 +3959,65 @@ export default {
                 material_number: material_number,
                 sparepart_id: sparepart_id,
                 price: price,
-                vendor: vendor
-              });
-              console.log('New sparepart created in master table');
+                vendor: vendor,
+              })
+              console.log('New sparepart created in master table')
             } catch (createError) {
-              console.error('Error creating sparepart in master table:', createError);
+              console.error(
+                'Error creating sparepart in master table:',
+                createError,
+              )
               // Continue anyway, as the sparepart is still added to the problem
             }
           }
         } else {
-          sparepartObj = { id: selectedSparepart.value, label: selectedSparepart.text };
-          if (sparepartForm.value.status === '1' || sparepartForm.value.status === 1) {
+          sparepartObj = {
+            id: selectedSparepart.value,
+            label: selectedSparepart.text,
+          }
+          if (
+            sparepartForm.value.status === '1' ||
+            sparepartForm.value.status === 1
+          ) {
             // ORIGINAL PART
-            console.log('MASUK SPAREPART 1');
-            price = selectedSparepart.price || '';
-            vendor = selectedSparepart.vendor || '';
-            material_number = selectedSparepart.material_number || '';
-            sparepart_id = selectedSparepart.sparepart_id || '';
-          } else if (sparepartForm.value.status === '2' || sparepartForm.value.status === 2) {
-            console.log('MASUK SPAREPART 2');
+            console.log('MASUK SPAREPART 1')
+            price = selectedSparepart.price || ''
+            vendor = selectedSparepart.vendor || ''
+            material_number = selectedSparepart.material_number || ''
+            sparepart_id = selectedSparepart.sparepart_id || ''
+          } else if (
+            sparepartForm.value.status === '2' ||
+            sparepartForm.value.status === 2
+          ) {
+            console.log('MASUK SPAREPART 2')
             // SIMILAR PART
-            if (selectedPartSimilar && typeof selectedPartSimilar === 'object') {
-              console.log('MASUK SPAREPART 3');
-              price = selectedPartSimilar.price || '';
-              vendor = selectedPartSimilar.vendor || '';
-              material_number = selectedPartSimilar.material_number || '';
-              sparepart_id = selectedPartSimilar.sparepart_id || '';
+            if (
+              selectedPartSimilar &&
+              typeof selectedPartSimilar === 'object'
+            ) {
+              console.log('MASUK SPAREPART 3')
+              price = selectedPartSimilar.price || ''
+              vendor = selectedPartSimilar.vendor || ''
+              material_number = selectedPartSimilar.material_number || ''
+              sparepart_id = selectedPartSimilar.sparepart_id || ''
             } else {
-              console.log('MASUK SPAREPART 4');
-              price = selectedSparepart.price || '';
-              vendor = selectedSparepart.vendor || '';
-              material_number = selectedSparepart.material_number || '';
-              sparepart_id = selectedSparepart.sparepart_id || '';
+              console.log('MASUK SPAREPART 4')
+              price = selectedSparepart.price || ''
+              vendor = selectedSparepart.vendor || ''
+              material_number = selectedSparepart.material_number || ''
+              sparepart_id = selectedSparepart.sparepart_id || ''
             }
           }
         }
 
-        console.log('Hasil sparepart id:', sparepart_id);
+        console.log('Hasil sparepart id:', sparepart_id)
 
         const newItem = {
           sparepart: sparepartObj,
           partSimilar: sparepartForm.value.partSimilar?.text || null,
           price: price,
-          material_number: sparepartForm.value.materialNumber || material_number,
+          material_number:
+            sparepartForm.value.materialNumber || material_number,
           vendor: vendor,
           quantity: sparepartForm.value.quantity || 1,
           status: parseInt(sparepartForm.value.status) || 0,
@@ -3367,34 +4026,56 @@ export default {
           sparepart_id: sparepart_id,
           newPart: sparepartForm.value.newPart || 0,
           description: sparepartForm.value.description || '',
-          sparepartTr: `${localSubmit.value.fidProblem}-${material_number || Date.now()}`
-        };
-        newItem.sparepart_id = sparepart_id;
-        console.log('newItem created:', JSON.stringify(newItem, null, 2));
+          sparepartTr: `${localSubmit.value.fidProblem}-${
+            material_number || Date.now()
+          }`,
+        }
+        newItem.sparepart_id = sparepart_id
+        console.log('newItem created:', JSON.stringify(newItem, null, 2))
 
         // Console log name to total for each submit
-        console.log(`Submitting Sparepart: Name=${newItem.sparepart.label}, Price=${newItem.price}, Vendor=${newItem.vendor}, Quantity=${newItem.quantity}, Status=${newItem.status}, Total=${newItem.total}`);
+        console.log(
+          `Submitting Sparepart: Name=${newItem.sparepart.label}, Price=${newItem.price}, Vendor=${newItem.vendor}, Quantity=${newItem.quantity}, Status=${newItem.status}, Total=${newItem.total}`,
+        )
 
-        console.log('sparepart_list length before add:', sparepart_list.value.length);
-        console.log('Is editing? _editIdx:', sparepartForm.value._editIdx);
+        console.log(
+          'sparepart_list length before add:',
+          sparepart_list.value.length,
+        )
+        console.log('Is editing? _editIdx:', sparepartForm.value._editIdx)
 
         if (typeof sparepartForm.value._editIdx === 'number') {
-          sparepart_list.value[sparepartForm.value._editIdx] = newItem;
-          console.log('Updated item at index:', sparepartForm.value._editIdx);
+          sparepart_list.value[sparepartForm.value._editIdx] = newItem
+          console.log('Updated item at index:', sparepartForm.value._editIdx)
           delete sparepartForm.value._editIdx
         } else {
-          sparepart_list.value.push(newItem);
-          console.log('Pushed new item to list');
+          sparepart_list.value.push(newItem)
+          console.log('Pushed new item to list')
         }
 
-        console.log('sparepart_list length after add:', sparepart_list.value.length);
-        console.log('Updated sparepart_list:', JSON.stringify(sparepart_list.value, null, 2));
+        console.log(
+          'sparepart_list length after add:',
+          sparepart_list.value.length,
+        )
+        console.log(
+          'Updated sparepart_list:',
+          JSON.stringify(sparepart_list.value, null, 2),
+        )
 
         showSparepartForm.value = false
-        sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '1', quantity: 1, total: 0, newPart: 0, description: ''}
-        console.log('Form reset and hidden');
+        sparepartForm.value = {
+          sparepart: null,
+          price: '',
+          vendor: '',
+          status: '1',
+          quantity: 1,
+          total: 0,
+          newPart: 0,
+          description: '',
+        }
+        console.log('Form reset and hidden')
       } catch (error) {
-        console.error('Error in submitSparepart:', error);
+        console.error('Error in submitSparepart:', error)
       }
     }
 
@@ -3402,46 +4083,54 @@ export default {
       const item = sparepart_list.value[idx]
       if (item) {
         if (sparepartOptions.value.length === 0) {
-          await onSparepartSearch('');
+          await onSparepartSearch('')
         }
         // Find the matching sparepart option object by value to set for Multiselect
-        const matchedSparepartOption = sparepartOptions.value.find(
-          (opt) => opt.value === item?.sparepart?.value || opt.value === item?.sparepart?.id
-        ) || null;
+        const matchedSparepartOption =
+          sparepartOptions.value.find(
+            (opt) =>
+              opt.value === item?.sparepart?.value ||
+              opt.value === item?.sparepart?.id,
+          ) || null
 
         // Find the matching partSimilar option object by value or text to set for Multiselect
-        const matchedPartSimilarOption = sparepartOptions.value.find(
-          (opt) => {
+        const matchedPartSimilarOption =
+          sparepartOptions.value.find((opt) => {
             if (typeof item.partSimilar === 'string') {
-              return opt.text === item.partSimilar;
-            } else if (item.partSimilar && typeof item.partSimilar === 'object') {
-              return opt.value === item.partSimilar.value || opt.value === item.partSimilar.id;
+              return opt.text === item.partSimilar
+            } else if (
+              item.partSimilar &&
+              typeof item.partSimilar === 'object'
+            ) {
+              return (
+                opt.value === item.partSimilar.value ||
+                opt.value === item.partSimilar.id
+              )
             }
-            return false;
-          }
-        ) || null;
+            return false
+          }) || null
 
-        console.log("INI STATUS:", item.status);
+        console.log('INI STATUS:', item.status)
         // Map status string to number string
-        let statusValue = '1';
+        let statusValue = '1'
         if (item.status === '1') {
-          console.log("STATUS: 1");
-          statusValue = '1';
+          console.log('STATUS: 1')
+          statusValue = '1'
         } else if (item.status === '2') {
-          console.log("STATUS: 2");
-          statusValue = '2';
+          console.log('STATUS: 2')
+          statusValue = '2'
         }
 
         // Handle newPart: if '1', set sparepart as string (label), else as option object
-        let sparepartValue;
+        let sparepartValue
         if (item.newPart === '1') {
-          sparepartValue = item.sparepart?.label || '';
+          sparepartValue = item.sparepart?.label || ''
         } else {
-          sparepartValue = matchedSparepartOption;
+          sparepartValue = matchedSparepartOption
         }
 
-        console.log("NEW PART:", item.newPart);
-        console.log("SPAREPART VALUE 1:", sparepartValue);
+        console.log('NEW PART:', item.newPart)
+        console.log('SPAREPART VALUE 1:', sparepartValue)
 
         sparepartForm.value = {
           sparepart: sparepartValue,
@@ -3454,8 +4143,8 @@ export default {
           total: item.total || 0,
           newPart: item.newPart || '0',
           description: item.description || '',
-          materialNumber: item.material_number || ''
-        };
+          materialNumber: item.material_number || '',
+        }
         showSparepartForm.value = true
         sparepartForm.value._editIdx = idx
       }
@@ -3467,11 +4156,20 @@ export default {
 
     const cancelSparepart = () => {
       showSparepartForm.value = false
-      sparepartForm.value = { sparepart: null, price: '', vendor: '', status: '', quantity: 1, total: 0, newPart: 0, description: ''}
+      sparepartForm.value = {
+        sparepart: null,
+        price: '',
+        vendor: '',
+        status: '',
+        quantity: 1,
+        total: 0,
+        newPart: 0,
+        description: '',
+      }
     }
 
     const toggleSparepartForm = () => {
-      console.log('Tambah Sparepart clicked, showing form');
+      console.log('Tambah Sparepart clicked, showing form')
       // Reset the form to null/empty values except status defaults to '1'
       sparepartForm.value = {
         sparepart: null,
@@ -3482,32 +4180,31 @@ export default {
         total: 0,
         isModify: 'NO',
         newPart: 0,
-        description: ''
-      };
-      showSparepartForm.value = true;
+        description: '',
+      }
+      showSparepartForm.value = true
     }
 
-
-
     const getFeedbackField = (approveField) => {
-      return approveField.replace('Approve', 'Feedback');
+      return approveField.replace('Approve', 'Feedback')
     }
 
     const statusClass = (localSubmit, field) => {
-      const status = localSubmit?.[field] || 0;
-      const feedbackField = getFeedbackField(field);
-      const hasFeedback = localSubmit?.[feedbackField] && localSubmit[feedbackField].trim() !== '';
+      const status = localSubmit?.[field] || 0
+      const feedbackField = getFeedbackField(field)
+      const hasFeedback =
+        localSubmit?.[feedbackField] && localSubmit[feedbackField].trim() !== ''
 
       if (status === 1) {
-        return hasFeedback ? 'status-comment' : 'status-approved';
+        return hasFeedback ? 'status-comment' : 'status-approved'
       } else if (status === 2 || status === 'comment') {
-        return 'status-comment';
+        return 'status-comment'
       } else if (status === 0 || status === 'rejected') {
-        return 'status-rejected';
+        return 'status-rejected'
       } else if (status === 'delay') {
-        return 'status-delay';
+        return 'status-delay'
       } else {
-        return 'status-none';
+        return 'status-none'
       }
     }
 
@@ -3520,11 +4217,15 @@ export default {
       const userRole = currentUserRole.value.toLowerCase()
       const effectiveRole = userRole === 'admin' ? 'sh' : userRole
 
-    // Update approval status based on user's role
+      // Update approval status based on user's role
       if (section === '5why') {
         if (effectiveRole === 'tl') {
           localSubmit.value.fiveWhyTlApprove = 1
-        } else if (effectiveRole === 'gl' || effectiveRole === 'gh' || effectiveRole === 'lh') {
+        } else if (
+          effectiveRole === 'gl' ||
+          effectiveRole === 'gh' ||
+          effectiveRole === 'lh'
+        ) {
           localSubmit.value.fiveWhyLhApprove = 1
         } else if (effectiveRole === 'sh') {
           localSubmit.value.fiveWhyShApprove = 1
@@ -3532,7 +4233,11 @@ export default {
       } else if (section === 'counter') {
         if (effectiveRole === 'tl') {
           localSubmit.value.cmTlApprove = 1
-        } else if (effectiveRole === 'gl' || effectiveRole === 'gh' || effectiveRole === 'lh') {
+        } else if (
+          effectiveRole === 'gl' ||
+          effectiveRole === 'gh' ||
+          effectiveRole === 'lh'
+        ) {
           localSubmit.value.cmLhApprove = 1
         } else if (effectiveRole === 'sh') {
           localSubmit.value.cmShApprove = 1
@@ -3545,7 +4250,7 @@ export default {
         }
       }
     }
-    
+
     const getFeedbackAndApproveFields = (section, effectiveRole) => {
       let feedbackField = ''
       let approveField = ''
@@ -3589,7 +4294,11 @@ export default {
       const effectiveRole = userRole === 'admin' ? 'sh' : userRole
 
       // Check if only GL or SH can comment on 5why and counter sections
-      if ((section === '5why' || section === 'counter') && (effectiveRole !== 'gl' && effectiveRole !== 'sh')) {
+      if (
+        (section === '5why' || section === 'counter') &&
+        effectiveRole !== 'gl' &&
+        effectiveRole !== 'sh'
+      ) {
         alert('Only GL or SH users can comment on this section.')
         return
       }
@@ -3660,93 +4369,134 @@ export default {
     }
 
     const onSparepartSelect = (selected) => {
-      console.log('onSparepartSelect called with:', selected, 'Type:', typeof selected); // Enhanced: Log selected and its type
+      console.log(
+        'onSparepartSelect called with:',
+        selected,
+        'Type:',
+        typeof selected,
+      ) // Enhanced: Log selected and its type
 
       if (selected && typeof selected === 'object') {
-        console.log('Using selected object directly');
-        sparepartForm.value.price = selected.price || '';
-        sparepartForm.value.vendor = selected.vendor || '';
+        console.log('Using selected object directly')
+        sparepartForm.value.price = selected.price || ''
+        sparepartForm.value.vendor = selected.vendor || ''
         // Set status to '1' (ORIGINAL PART) by default
-        sparepartForm.value.status = '1';
-        console.log('Set price:', sparepartForm.value.price, 'vendor:', sparepartForm.value.vendor, 'status:', sparepartForm.value.status);
+        sparepartForm.value.status = '1'
+        console.log(
+          'Set price:',
+          sparepartForm.value.price,
+          'vendor:',
+          sparepartForm.value.vendor,
+          'status:',
+          sparepartForm.value.status,
+        )
       } else {
-        console.log('Clearing sparepart fields (no selection or invalid)');
-        sparepartForm.value.price = '';
-        sparepartForm.value.vendor = '';
-        sparepartForm.value.status = '1';
-        sparepartForm.value.quantity = 1;
-        sparepartForm.value.total = 0;
-        sparepartForm.value.newPart = 0;
-        sparepartForm.value.description = '';
+        console.log('Clearing sparepart fields (no selection or invalid)')
+        sparepartForm.value.price = ''
+        sparepartForm.value.vendor = ''
+        sparepartForm.value.status = '1'
+        sparepartForm.value.quantity = 1
+        sparepartForm.value.total = 0
+        sparepartForm.value.newPart = 0
+        sparepartForm.value.description = ''
       }
     }
 
     const onPartSimilarSelect = (selected) => {
-      console.log('onPartSimilarSelect called with:', selected);
+      console.log('onPartSimilarSelect called with:', selected)
       if (selected && typeof selected === 'object') {
-        console.log('Setting part similar fields');
-        sparepartForm.value.price = selected.price || '';
-        sparepartForm.value.vendor = selected.vendor || '';
+        console.log('Setting part similar fields')
+        sparepartForm.value.price = selected.price || ''
+        sparepartForm.value.vendor = selected.vendor || ''
         // Recalculate total based on new price
-        const p = parseFloat(selected.price) || 0;
-        const q = parseFloat(sparepartForm.value.quantity) || 1;
-        sparepartForm.value.total = (p * q).toFixed(2);
-        console.log('Set price:', sparepartForm.value.price, 'vendor:', sparepartForm.value.vendor, 'total:', sparepartForm.value.total);
+        const p = parseFloat(selected.price) || 0
+        const q = parseFloat(sparepartForm.value.quantity) || 1
+        sparepartForm.value.total = (p * q).toFixed(2)
+        console.log(
+          'Set price:',
+          sparepartForm.value.price,
+          'vendor:',
+          sparepartForm.value.vendor,
+          'total:',
+          sparepartForm.value.total,
+        )
       } else {
-        console.log('Clearing part similar fields');
-        sparepartForm.value.price = '';
-        sparepartForm.value.vendor = '';
-        sparepartForm.value.total = 0;
+        console.log('Clearing part similar fields')
+        sparepartForm.value.price = ''
+        sparepartForm.value.vendor = ''
+        sparepartForm.value.total = 0
       }
     }
 
     // Combined watch for sparepart, partSimilar, and status to populate price/vendor accordingly
     watch(
-      [() => sparepartForm.value.sparepart, () => sparepartForm.value.partSimilar, () => sparepartForm.value.status],
+      [
+        () => sparepartForm.value.sparepart,
+        () => sparepartForm.value.partSimilar,
+        () => sparepartForm.value.status,
+      ],
       ([newSparepart, newPartSimilar, newStatus]) => {
-        console.log('Combined watch triggered:', { newSparepart, newPartSimilar, newStatus });
+        console.log('Combined watch triggered:', {
+          newSparepart,
+          newPartSimilar,
+          newStatus,
+        })
         // For new parts, don't overwrite price/vendor, keep the values set in editSparepart
         if (sparepartForm.value.newPart === '1') {
-          return;
+          return
         }
         if (newStatus === '1' || newStatus === 1) {
           // ORIGINAL PART - populate from sparepart
           if (newSparepart && typeof newSparepart === 'object') {
-            sparepartForm.value.price = newSparepart.price || '';
-            sparepartForm.value.vendor = newSparepart.vendor || '';
-            console.log('Populated price/vendor from sparepart for ORIGINAL PART');
+            sparepartForm.value.price = newSparepart.price || ''
+            sparepartForm.value.vendor = newSparepart.vendor || ''
+            console.log(
+              'Populated price/vendor from sparepart for ORIGINAL PART',
+            )
           } else {
-            sparepartForm.value.price = '';
-            sparepartForm.value.vendor = '';
+            sparepartForm.value.price = ''
+            sparepartForm.value.vendor = ''
           }
         } else if (newStatus === '2' || newStatus === 2) {
           // SIMILAR PART - populate from partSimilar
           if (newPartSimilar && typeof newPartSimilar === 'object') {
-            sparepartForm.value.price = newPartSimilar.price || '';
-            sparepartForm.value.vendor = newPartSimilar.vendor || '';
-            console.log('Populated price/vendor from partSimilar for SIMILAR PART');
+            sparepartForm.value.price = newPartSimilar.price || ''
+            sparepartForm.value.vendor = newPartSimilar.vendor || ''
+            console.log(
+              'Populated price/vendor from partSimilar for SIMILAR PART',
+            )
           } else {
-            sparepartForm.value.price = '';
-            sparepartForm.value.vendor = '';
+            sparepartForm.value.price = ''
+            sparepartForm.value.vendor = ''
           }
         } else {
-          sparepartForm.value.price = '';
-          sparepartForm.value.vendor = '';
+          sparepartForm.value.price = ''
+          sparepartForm.value.vendor = ''
         }
       },
-      { immediate: true }
-    );
+      { immediate: true },
+    )
 
     // Watch price and quantity changes to auto-calculate total
-    watch([() => sparepartForm.value.price, () => sparepartForm.value.quantity], ([price, quantity]) => {
-      const p = parseFloat(price) || 0;
-      const q = parseFloat(quantity) || 1;
-      sparepartForm.value.total = (p * q).toFixed(2);
-      console.log('Total calculated:', sparepartForm.value.total, 'from price:', price, 'quantity:', quantity);
-    }, { immediate: true });
+    watch(
+      [() => sparepartForm.value.price, () => sparepartForm.value.quantity],
+      ([price, quantity]) => {
+        const p = parseFloat(price) || 0
+        const q = parseFloat(quantity) || 1
+        sparepartForm.value.total = (p * q).toFixed(2)
+        console.log(
+          'Total calculated:',
+          sparepartForm.value.total,
+          'from price:',
+          price,
+          'quantity:',
+          quantity,
+        )
+      },
+      { immediate: true },
+    )
 
     // Watch for changes to status to populate price/vendor based on selected sparepart and status
-    
 
     // Watch for newPart change to clear fields when YES
     // Removed watcher to prevent input reset when newPart is '1'
@@ -3843,21 +4593,21 @@ export default {
       totalSparepartCost,
     }
   },
-  
+
   computed: {
     pmCategoryDisabled() {
-      return this.localSubmit.oCategory !== '3';
+      return this.localSubmit.oCategory !== '3'
     },
     pmCategoryInvalid() {
-      return this.localSubmit.oCategory === '3' && !this.localSubmit.pmCategory;
+      return this.localSubmit.oCategory === '3' && !this.localSubmit.pmCategory
     },
     displayPrice: {
       get() {
-        return this.formatCurrency(this.sparepartForm.price);
+        return this.formatCurrency(this.sparepartForm.price)
       },
       set(value) {
-        this.sparepartForm.price = value.replace(/[^\d]/g, '');
-      }
+        this.sparepartForm.price = value.replace(/[^\d]/g, '')
+      },
     },
     displayImg_problem() {
       if (this.imagePreviews.whyImage) {
@@ -3934,7 +4684,7 @@ export default {
       // Handle array with items - check if any item has meaningful data
       if (Array.isArray(stepRepair) && stepRepair.length > 0) {
         // Check if any item has actual content (not just empty strings)
-        const hasMeaningfulData = stepRepair.some(item => {
+        const hasMeaningfulData = stepRepair.some((item) => {
           if (!item || typeof item !== 'object') return false
 
           // Check if stepDesc has content (main field for step repair)
@@ -3944,9 +4694,10 @@ export default {
           }
 
           // Check other fields that might indicate real data
-          const hasOtherData = item.actualTime > 0 ||
-                              item.idealTime > 0 ||
-                              (item.quick6 && item.quick6.trim() !== '')
+          const hasOtherData =
+            item.actualTime > 0 ||
+            item.idealTime > 0 ||
+            (item.quick6 && item.quick6.trim() !== '')
 
           return hasOtherData
         })
@@ -3960,7 +4711,7 @@ export default {
           const parsed = JSON.parse(stepRepair)
           if (Array.isArray(parsed) && parsed.length > 0) {
             // Apply the same meaningful data check to parsed array
-            const hasMeaningfulData = parsed.some(item => {
+            const hasMeaningfulData = parsed.some((item) => {
               if (!item || typeof item !== 'object') return false
 
               const stepDesc = item.stepDesc || item.description || ''
@@ -3968,9 +4719,10 @@ export default {
                 return true
               }
 
-              const hasOtherData = item.actualTime > 0 ||
-                                  item.idealTime > 0 ||
-                                  (item.quick6 && item.quick6.trim() !== '')
+              const hasOtherData =
+                item.actualTime > 0 ||
+                item.idealTime > 0 ||
+                (item.quick6 && item.quick6.trim() !== '')
 
               return hasOtherData
             })
@@ -4021,15 +4773,15 @@ export default {
       return statusMap[status] || ''
     },
     formatCurrency(value) {
-      if (value === null || value === undefined || value === '') return 'Rp 0';
-      const num = parseFloat(value);
-      if (isNaN(num)) return 'Rp 0';
+      if (value === null || value === undefined || value === '') return 'Rp 0'
+      const num = parseFloat(value)
+      if (isNaN(num)) return 'Rp 0'
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
         minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }).format(num);
+        maximumFractionDigits: 0,
+      }).format(num)
     },
     onFileChange(event, field) {
       const file = event.target.files[0]
@@ -4053,7 +4805,9 @@ export default {
         this.localSubmit.fidProblem &&
         this.localSubmit.problems
       ) {
-        let url = `${process.env.VUE_APP_API_URL}/smartandon/download-report?fid=${encodeURIComponent(
+        let url = `${
+          process.env.VUE_APP_API_URL
+        }/smartandon/download-report?fid=${encodeURIComponent(
           this.localSubmit.fidProblem,
         )}&problem=${encodeURIComponent(this.localSubmit.problems)}`
         console.log('Download URL:', url)
@@ -4075,7 +4829,9 @@ export default {
     },
     downloadTemplateFile() {
       if (this.localSubmit.fidProblem) {
-        const url = `${process.env.VUE_APP_API_URL}/smartandon/download-template?fid=${encodeURIComponent(
+        const url = `${
+          process.env.VUE_APP_API_URL
+        }/smartandon/download-template?fid=${encodeURIComponent(
           this.localSubmit.fidProblem,
         )}`
         window.open(url, '_blank')
@@ -4175,5 +4931,4 @@ export default {
   background-color: #007bff !important; /* Bootstrap primary blue */
   color: white !important;
 }
-
 </style>

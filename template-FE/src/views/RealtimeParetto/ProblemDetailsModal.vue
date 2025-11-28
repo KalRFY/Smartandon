@@ -16,7 +16,9 @@
         <CTableBody>
           <CTableRow v-for="(row, index) in problemData" :key="index">
             <CTableHeaderCell scope="row">{{ index + 1 }}</CTableHeaderCell>
-            <CTableDataCell>{{ formatDateTime(row.fstart_time) }}</CTableDataCell>
+            <CTableDataCell>{{
+              formatDateTime(row.fstart_time)
+            }}</CTableDataCell>
             <CTableDataCell>{{ row.metric }}</CTableDataCell>
             <CTableDataCell>{{ row.fdur }} min</CTableDataCell>
           </CTableRow>
@@ -54,9 +56,19 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-watch(() => props.visible, (newVal) => {
-  console.log('ProblemDetailsModal visible changed:', newVal, 'problemName:', props.problemName, 'problemData length:', props.problemData.length)
-})
+watch(
+  () => props.visible,
+  (newVal) => {
+    console.log(
+      'ProblemDetailsModal visible changed:',
+      newVal,
+      'problemName:',
+      props.problemName,
+      'problemData length:',
+      props.problemData.length,
+    )
+  },
+)
 
 const formatDateTime = (dateStr) => {
   if (!dateStr) return ''
@@ -72,5 +84,4 @@ const formatDateTime = (dateStr) => {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

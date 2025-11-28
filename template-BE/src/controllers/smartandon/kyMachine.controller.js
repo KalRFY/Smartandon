@@ -48,21 +48,28 @@ exports.getMachines = async (req, res, next) => {
 };
 
 exports.getKYMachineData = async (req, res, next) => {
+  let querySQL = '';
   try {
     const { fline } = req.query;
 
-    const [rows] = await sequelize.query(
-      `
+    querySQL = `
       SELECT m.fid AS machine_id, m.fline AS line_nm, m.fmc_name AS machine_nm,
              k.id, k.details, k.created_by, k.created_dt, k.stop6_category, k.ilustration
       FROM tb_mc m
       LEFT JOIN tb_ky k ON k.machine_id = m.fid
       WHERE (m.is_deleted = 0 OR m.is_deleted IS NULL)
-      ${fline && fline !== '-1' ? `AND UPPER(m.fline) = UPPER(:fline)` : ''}
-      ORDER BY m.fid, k.created_dt DESC
-    `,
-      { replacements: { fline } }
-    );
+    `;
+
+    const replacements = {};
+
+    if (fline && fline !== '-1' && fline !== '') {
+      querySQL += ` AND UPPER(m.fline) = UPPER(:fline)`;
+      replacements.fline = fline;
+    }
+
+    querySQL += ` ORDER BY m.fid, k.created_dt DESC`;
+
+    const [rows] = await sequelize.query(querySQL, { replacements });
 
     const grouped = {};
     for (const row of rows) {
@@ -97,6 +104,8 @@ exports.getKYMachineData = async (req, res, next) => {
       data: [result],
     });
   } catch (error) {
+    console.error('SQL EXECUTION ERROR:', error.message);
+    console.error('QUERY YANG DIGUNAKAN:', querySQL);
     logger.error(error);
     next(error);
   }

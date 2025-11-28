@@ -2,7 +2,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 
 const cmAxios = axios.create({
-  baseURL: 'https://mt-system.id'
+  baseURL: 'https://mt-system.id',
 })
 
 export async function getCMFollowup(filters) {
@@ -38,7 +38,9 @@ export async function getCMFollowup(filters) {
       no: idx + 1,
       line: item.fline || '-',
       machine: item.fmc_name || '-',
-      date: item.fstart_time ? dayjs(item.fstart_time).format('YYYY-MM-DD') : '-',
+      date: item.fstart_time
+        ? dayjs(item.fstart_time).format('YYYY-MM-DD')
+        : '-',
       problem: item.ferror_name || '-',
       duration: item.fdur || '-',
       rootcause: first.cmCategory || '-',

@@ -1,19 +1,18 @@
 <template>
-  
-  <CModal 
-  :visible="visible"
-  @close="$emit('close')"
-  fullscreen
-  aria-labelledby="LiveDemoExampleLabel"
+  <CModal
+    :visible="visible"
+    @close="$emit('close')"
+    fullscreen
+    aria-labelledby="LiveDemoExampleLabel"
   >
     <CModalHeader>
       <CModalTitle id="LiveDemoExampleLabel">Edit Problem</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <CForm 
-        class="row g-3 needs-validation" 
-        novalidate 
-        :validated="validatedCustom01" 
+      <CForm
+        class="row g-3 needs-validation"
+        novalidate
+        :validated="validatedCustom01"
         @submit="handleSubmitCustom01"
       >
         <!-- <CCol md="8">
@@ -36,9 +35,9 @@
             :children="false"
             placeholder="Select or input machine"
             @input="onMachineInput"
-          :value-consists-of="['id']"
-          :value-key="'id'"
-          :label-key="'label'"
+            :value-consists-of="['id']"
+            :value-key="'id'"
+            :label-key="'label'"
           />
         </CCol>
         <CCol md="6">
@@ -72,7 +71,7 @@
             </CFormSelect>
         </CCol> -->
         <CCol md="6">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Operation No."
             id="Problems"
             label="Operation No."
@@ -81,7 +80,7 @@
           />
         </CCol>
         <CCol md="6">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Maker"
             id="Problems"
             label="Maker"
@@ -90,7 +89,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Problems"
@@ -99,7 +98,7 @@
           />
         </CCol>
         <CCol md="8">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Uraian Kejadian"
@@ -108,7 +107,7 @@
           />
         </CCol>
         <CCol md="4">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Upload Image"
@@ -117,7 +116,7 @@
           />
         </CCol>
         <CCol md="8">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Ilustrasi Standart"
@@ -126,7 +125,7 @@
           />
         </CCol>
         <CCol md="4">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Standart Image"
@@ -135,7 +134,7 @@
           />
         </CCol>
         <CCol md="8">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Ilustrasi Actual"
@@ -144,7 +143,7 @@
           />
         </CCol>
         <CCol md="4">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Actual Image"
@@ -153,7 +152,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Gap Between Standar and Actual"
@@ -162,7 +161,7 @@
           />
         </CCol>
         <CCol md="8">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Pilih Focus Thema Member"
@@ -171,7 +170,7 @@
           />
         </CCol>
         <CCol md="4">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Pilih Taskforce"
@@ -198,41 +197,43 @@
         </CCol>
         <CCol md="6">
           <CFormSelect
-              aria-describedby="avCategory"
-              feedbackInvalid="Please select the AV Category."
-              id="avCategorySelect"
-              label="AV Category"
-              required
-              v-model="avCategory"
-            >
-              <option :value="avCategory" selected>{{ avCategory }}</option>
-              <option disabled value="">Choose AV Category...</option>
-              <option value="1">MESIN</option>
-              <option value="2">DIES</option>
-              <option value="3">TOOL</option>
-              <option value="4">COOLANT</option>
+            aria-describedby="avCategory"
+            feedbackInvalid="Please select the AV Category."
+            id="avCategorySelect"
+            label="AV Category"
+            required
+            v-model="avCategory"
+          >
+            <option :value="avCategory" selected>{{ avCategory }}</option>
+            <option disabled value="">Choose AV Category...</option>
+            <option value="1">MESIN</option>
+            <option value="2">DIES</option>
+            <option value="3">TOOL</option>
+            <option value="4">COOLANT</option>
           </CFormSelect>
         </CCol>
         <CCol md="6">
           <CFormSelect
-              aria-describedby="shift"
-              feedbackInvalid="Please select the shift."
-              id="shiftSelect"
-              label="O6 Category:"
-              required
-              v-model="fshift"
-            >
-              <option :value="shift" selected>{{ shiftName }}</option>
-              <option disabled value="">Choose shift</option>
-              <option value="r">Red</option>
-              <option value="w">White</option>
-              <option value="">No Shift</option>
+            aria-describedby="shift"
+            feedbackInvalid="Please select the shift."
+            id="shiftSelect"
+            label="O6 Category:"
+            required
+            v-model="fshift"
+          >
+            <option :value="shift" selected>{{ shiftName }}</option>
+            <option disabled value="">Choose shift</option>
+            <option value="r">Red</option>
+            <option value="w">White</option>
+            <option value="">No Shift</option>
           </CFormSelect>
         </CCol>
         <CCol md="6">
           <label for="startDateModal" class="form-label">Start Date</label>
           <CInputGroup>
-            <CInputGroupText id="basic-addon1"><Clock size="16" /></CInputGroupText>
+            <CInputGroupText id="basic-addon1"
+              ><Clock size="16"
+            /></CInputGroupText>
             <CFormInput
               id="startDateModal"
               type="date"
@@ -246,7 +247,9 @@
         <CCol md="6">
           <label for="finishDateModal" class="form-label">Finish Date</label>
           <CInputGroup>
-            <CInputGroupText id="basic-addon2"><Clock size="16" /></CInputGroupText>
+            <CInputGroupText id="basic-addon2"
+              ><Clock size="16"
+            /></CInputGroupText>
             <CFormInput
               id="finishDateModal"
               type="date"
@@ -258,7 +261,7 @@
           </CInputGroup>
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Duration (min)"
@@ -269,23 +272,25 @@
 
         <CCol md="12">
           <CFormSelect
-              aria-describedby="problemCategory"
-              feedbackInvalid="Please select the problem category."
-              id="problemCategorySelect"
-              label="Problem Category:"
-              required
-              v-model="problemCategory"
-            >
-              <option :value="problemCategory" selected>{{ problemCategoryName }}</option>
-              <option disabled value="">Choose problem Category...</option>
-              <option :value="1">Small</option>
-              <option :value="2">Chokotei</option>
-              <option :value="3">LTB</option>
+            aria-describedby="problemCategory"
+            feedbackInvalid="Please select the problem category."
+            id="problemCategorySelect"
+            label="Problem Category:"
+            required
+            v-model="problemCategory"
+          >
+            <option :value="problemCategory" selected>
+              {{ problemCategoryName }}
+            </option>
+            <option disabled value="">Choose problem Category...</option>
+            <option :value="1">Small</option>
+            <option :value="2">Chokotei</option>
+            <option :value="3">LTB</option>
           </CFormSelect>
         </CCol>
 
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Item Temporary Action"
@@ -294,7 +299,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Rootcauses 5 Why (Kenapa Terjadi)"
@@ -303,7 +308,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Tambah Analysis TERJADI"
@@ -312,7 +317,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="5 Why (Kenapa Terjadi) Image"
@@ -322,25 +327,40 @@
         </CCol>
         <CCol md="12">
           <CFormSelect
-              aria-describedby="O6 Category"
-              feedbackInvalid="Please select the O6 Category."
-              id="o6CategorySelect"
-              label="O6 Category:"
-              required
-              v-model="oCategory"
-            >
-              <option :value="oCategory" selected>{{ oCategoryName }}</option>
-              <option disabled value="">Choose problem 06 Category...</option>
-              <option :value="1">O1: Design & Installation (Design / Installation Not Good (Refers to Function Check / Eng. Memo))</option>
-              <option :value="2">O2: Henkaten Issue (No Enough Trial, No Confirm (others team))</option>
-              <option :value="3">O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible, Out of Periode, No Have Time, Lack of Skill)</option>
-              <option :value="4">O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)</option>
-              <option :value="5">O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible Area, Unpredictable (water leak / crush))</option>
-              <option :value="6">O6: Lifetime Issue (Out of Standard Running, Over Capacity)</option>
+            aria-describedby="O6 Category"
+            feedbackInvalid="Please select the O6 Category."
+            id="o6CategorySelect"
+            label="O6 Category:"
+            required
+            v-model="oCategory"
+          >
+            <option :value="oCategory" selected>{{ oCategoryName }}</option>
+            <option disabled value="">Choose problem 06 Category...</option>
+            <option :value="1">
+              O1: Design & Installation (Design / Installation Not Good (Refers
+              to Function Check / Eng. Memo))
+            </option>
+            <option :value="2">
+              O2: Henkaten Issue (No Enough Trial, No Confirm (others team))
+            </option>
+            <option :value="3">
+              O3: PM Issue (No Have/Unclear, Unclear Methode, Confine/Invisible,
+              Out of Periode, No Have Time, Lack of Skill)
+            </option>
+            <option :value="4">
+              O4: Symptom (No Have Symptom, Have Symptom but Unfollow Activity)
+            </option>
+            <option :value="5">
+              O5: Environment & 3rd Factor (Dirty, Confine Space, Invisible
+              Area, Unpredictable (water leak / crush))
+            </option>
+            <option :value="6">
+              O6: Lifetime Issue (Out of Standard Running, Over Capacity)
+            </option>
           </CFormSelect>
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Step Repair"
@@ -349,7 +369,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Part Change"
@@ -358,7 +378,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Countermeasure (kenapa terjadi)"
@@ -367,7 +387,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Yokoten"
@@ -376,7 +396,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Rootcause 5 Why (kenapa lama)"
@@ -385,7 +405,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Tambah Analisis LAMA"
@@ -395,25 +415,42 @@
         </CCol>
         <CCol md="12">
           <CFormSelect
-              aria-describedby="Q6 Category"
-              feedbackInvalid="Please select the Q6 Category."
-              id="q6CategorySelect"
-              label="Q6 Category:"
-              required
-              v-model="qCategory"
-            >
-              <option :value="qCategory" selected>{{ qCategoryName }}</option>
-              <option disabled value="">Choose problem Q6 Category...</option>
-              <option :value="1">Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))</option>
-              <option :value="2">Q2: Sparepart (Part preparation, fabrication of part, repair of damage part due to unavailability at SPW)</option>
-              <option :value="3">Q3: Tool (Special tools preparation, change of tools, personal tool, change dresser, safety tool)</option>
-              <option :value="4">Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)</option>
-              <option :value="5">Q5: Setting Ability (Quality checking, program adjustment, program zeroing, position memory set, autosizer setting & amp, PSW set, backlash adjustment (slide gib / kamisori, parameter set, centering, etc))</option>
-              <option :value="6">Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)</option>
+            aria-describedby="Q6 Category"
+            feedbackInvalid="Please select the Q6 Category."
+            id="q6CategorySelect"
+            label="Q6 Category:"
+            required
+            v-model="qCategory"
+          >
+            <option :value="qCategory" selected>{{ qCategoryName }}</option>
+            <option disabled value="">Choose problem Q6 Category...</option>
+            <option :value="1">
+              Q1: Diagnose (Meeting, accuracy check (run-out, backlash, etc))
+            </option>
+            <option :value="2">
+              Q2: Sparepart (Part preparation, fabrication of part, repair of
+              damage part due to unavailability at SPW)
+            </option>
+            <option :value="3">
+              Q3: Tool (Special tools preparation, change of tools, personal
+              tool, change dresser, safety tool)
+            </option>
+            <option :value="4">
+              Q4: Maint. Ability (Repair, overhaul, part replace, tomoken, 5S)
+            </option>
+            <option :value="5">
+              Q5: Setting Ability (Quality checking, program adjustment, program
+              zeroing, position memory set, autosizer setting & amp, PSW set,
+              backlash adjustment (slide gib / kamisori, parameter set,
+              centering, etc))
+            </option>
+            <option :value="6">
+              Q6: Back-Up (Back-Up MC's Preparation, Back-Up MC's dandori)
+            </option>
           </CFormSelect>
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="5 Why (Kenapa Lama) Image"
@@ -422,7 +459,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Countermeasure (kenapa Lama)"
@@ -431,7 +468,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Attachment Meeting"
@@ -440,7 +477,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Comments 5 Why"
@@ -449,7 +486,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Comments Countermeasure"
@@ -458,7 +495,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Last Report File"
@@ -467,7 +504,7 @@
           />
         </CCol>
         <CCol md="12">
-          <CFormInput 
+          <CFormInput
             feedbackInvalid="Please input the problems"
             id="Problems"
             label="Upload File"
@@ -488,7 +525,14 @@
       </CForm>
     </CModalBody>
     <CModalFooter>
-      <CButton color="secondary" @click="() => { visibleLiveDemo = false }">
+      <CButton
+        color="secondary"
+        @click="
+          () => {
+            visibleLiveDemo = false
+          }
+        "
+      >
         Close
       </CButton>
 
@@ -499,7 +543,18 @@
 
 <script>
 import { ref, watch, toRefs } from 'vue'
-import { CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter, CForm, CCol, CFormInput, CFormCheck, CButton } from '@coreui/vue'
+import {
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
+  CForm,
+  CCol,
+  CFormInput,
+  CFormCheck,
+  CButton,
+} from '@coreui/vue'
 import Treeselect from 'vue3-treeselect'
 
 export default {
@@ -515,34 +570,34 @@ export default {
     CFormInput,
     CFormCheck,
     CButton,
-    Treeselect
+    Treeselect,
   },
   props: {
     visible: {
       type: Boolean,
-      required: true
+      required: true,
     },
     submitData: {
       type: Object,
       required: false,
-      default: () => ({})
+      default: () => ({}),
     },
     machineOptions: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     lineOptions: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
-setup(props, { emit }) {
+  setup(props, { emit }) {
     const { submitData } = toRefs(props)
     // Defensive initialization to avoid undefined errors
-    const localSubmit = ref({ ...submitData.value || {} })
+    const localSubmit = ref({ ...(submitData.value || {}) })
 
     watch(submitData, (newVal) => {
-      localSubmit.value = { ...newVal || {} }
+      localSubmit.value = { ...(newVal || {}) }
     })
 
     const validatedCustom01 = ref(false)
@@ -557,21 +612,21 @@ setup(props, { emit }) {
     }
 
     const saveSubmit = () => {
-      if(!localSubmit.value || !localSubmit.value.machineName){
-        alert("Please input machine name");
-        return;
+      if (!localSubmit.value || !localSubmit.value.machineName) {
+        alert('Please input machine name')
+        return
       }
-      if(!localSubmit.value.line){
-        alert("Please input line");
-        return;
+      if (!localSubmit.value.line) {
+        alert('Please input line')
+        return
       }
-      if(!localSubmit.value.problems){
-        alert("Please input problems");
-        return;
+      if (!localSubmit.value.problems) {
+        alert('Please input problems')
+        return
       }
-      if(!localSubmit.value.agreeTerms){
-        alert("You must agree to terms and conditions before submitting");
-        return;
+      if (!localSubmit.value.agreeTerms) {
+        alert('You must agree to terms and conditions before submitting')
+        return
       }
       emit('submit', localSubmit.value)
     }
@@ -581,8 +636,8 @@ setup(props, { emit }) {
       validatedCustom01,
       onMachineInput,
       handleSubmit,
-      saveSubmit
+      saveSubmit,
     }
-  }
+  },
 }
 </script>

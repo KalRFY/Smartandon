@@ -26,7 +26,9 @@
       aria-labelledby="modalSelectLabel"
     >
       <CModalHeader>
-        <CModalTitle id="modalSelectLabel">{{ title || 'Select Items' }}</CModalTitle>
+        <CModalTitle id="modalSelectLabel">{{
+          title || 'Select Items'
+        }}</CModalTitle>
       </CModalHeader>
 
       <CModalBody>
@@ -49,12 +51,16 @@
           <div class="text-muted">No items found</div>
         </div>
 
-        <div v-else class="modal-select-options" style="max-height: 400px; overflow-y: auto;">
+        <div
+          v-else
+          class="modal-select-options"
+          style="max-height: 400px; overflow-y: auto"
+        >
           <div
             v-for="option in filteredOptions"
             :key="option.id"
             class="modal-select-option"
-            :class="{ 'selected': isSelected(option) }"
+            :class="{ selected: isSelected(option) }"
             @click="toggleSelection(option)"
           >
             <div class="d-flex align-items-center">
@@ -83,7 +89,10 @@
       <CModalFooter>
         <div class="d-flex justify-content-between align-items-center w-100">
           <div class="text-muted">
-            {{ selectedItems.length }} item{{ selectedItems.length !== 1 ? 's' : '' }} selected
+            {{ selectedItems.length }} item{{
+              selectedItems.length !== 1 ? 's' : ''
+            }}
+            selected
           </div>
           <div>
             <CButton color="secondary" @click="closeModal" class="me-2">
@@ -157,10 +166,12 @@ export default {
     const initializeSelection = () => {
       if (props.multiple) {
         if (Array.isArray(props.modelValue)) {
-          selectedItems.value = props.modelValue.map(item => {
-            if (typeof item === 'object') return item
-            return props.options.find(opt => opt[props.valueKey] === item)
-          }).filter(Boolean)
+          selectedItems.value = props.modelValue
+            .map((item) => {
+              if (typeof item === 'object') return item
+              return props.options.find((opt) => opt[props.valueKey] === item)
+            })
+            .filter(Boolean)
         } else {
           selectedItems.value = []
         }
@@ -168,7 +179,9 @@ export default {
         if (props.modelValue && typeof props.modelValue === 'object') {
           selectedItems.value = [props.modelValue]
         } else if (props.modelValue) {
-          const found = props.options.find(opt => opt[props.valueKey] === props.modelValue)
+          const found = props.options.find(
+            (opt) => opt[props.valueKey] === props.modelValue,
+          )
           selectedItems.value = found ? [found] : []
         } else {
           selectedItems.value = []
@@ -180,18 +193,24 @@ export default {
     const filteredOptions = computed(() => {
       if (!searchQuery.value) return props.options
       const query = searchQuery.value.toLowerCase()
-      return props.options.filter(option => {
+      return props.options.filter((option) => {
         const label = (option[props.labelKey] || '').toLowerCase()
         const description = (option[props.descriptionKey] || '').toLowerCase()
         const materialNumber = (option.material_number || '').toLowerCase()
-        return label.includes(query) || description.includes(query) || materialNumber.includes(query)
+        return (
+          label.includes(query) ||
+          description.includes(query) ||
+          materialNumber.includes(query)
+        )
       })
     })
 
     const displayValue = computed(() => {
       if (selectedItems.value.length === 0) return ''
       if (selectedItems.value.length === 1) {
-        return selectedItems.value[0][props.labelKey] || selectedItems.value[0].label
+        return (
+          selectedItems.value[0][props.labelKey] || selectedItems.value[0].label
+        )
       }
       return `${selectedItems.value.length} items selected`
     })
@@ -209,12 +228,16 @@ export default {
     }
 
     const isSelected = (option) => {
-      return selectedItems.value.some(item => item[props.valueKey] === option[props.valueKey])
+      return selectedItems.value.some(
+        (item) => item[props.valueKey] === option[props.valueKey],
+      )
     }
 
     const toggleSelection = (option) => {
       if (props.multiple) {
-        const index = selectedItems.value.findIndex(item => item[props.valueKey] === option[props.valueKey])
+        const index = selectedItems.value.findIndex(
+          (item) => item[props.valueKey] === option[props.valueKey],
+        )
         if (index > -1) {
           selectedItems.value.splice(index, 1)
         } else {
@@ -227,7 +250,7 @@ export default {
 
     const confirmSelection = () => {
       if (props.multiple) {
-        const values = selectedItems.value.map(item => item[props.valueKey])
+        const values = selectedItems.value.map((item) => item[props.valueKey])
         emit('update:modelValue', values)
         emit('change', selectedItems.value)
       } else {
@@ -244,14 +267,20 @@ export default {
     }
 
     // Watch for external changes to modelValue
-    watch(() => props.modelValue, () => {
-      initializeSelection()
-    })
+    watch(
+      () => props.modelValue,
+      () => {
+        initializeSelection()
+      },
+    )
 
     // Watch for changes to options
-    watch(() => props.options, () => {
-      initializeSelection()
-    })
+    watch(
+      () => props.options,
+      () => {
+        initializeSelection()
+      },
+    )
 
     return {
       showModal,

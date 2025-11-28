@@ -1,97 +1,135 @@
 <template>
-  <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" :class="sidebarClass" @visible-change="
-    (event) =>
-      $store.commit({
-        type: 'updateSidebarVisible',
-        value: event,
-      })
-  ">
+  <CSidebar
+    position="fixed"
+    :unfoldable="sidebarUnfoldable"
+    :visible="sidebarVisible"
+    :class="sidebarClass"
+    @visible-change="
+      (event) =>
+        $store.commit({
+          type: 'updateSidebarVisible',
+          value: event,
+        })
+    "
+  >
     <CSidebarBrand>
       <template v-if="showAndonText">
         <div class="sidebar-brand-text sidebar-andon-text">ANDON</div>
       </template>
       <template v-else>
-        <img src="../assets/brand/Toyota_logo.png" class="img-fluid sidebar-brand-full" width="200" height="200" />
-        <img src="../assets/brand/Toyota_logo.png" class="sidebar-brand-narrow" width="36" height="10" />
+        <img
+          src="../assets/brand/Toyota_logo.png"
+          class="img-fluid sidebar-brand-full"
+          width="200"
+          height="200"
+        />
+        <img
+          src="../assets/brand/Toyota_logo.png"
+          class="sidebar-brand-narrow"
+          width="36"
+          height="10"
+        />
       </template>
     </CSidebarBrand>
     <AppSidebarNav v-bind:nav="nav" />
-    <CSidebarToggler id="SidebarToggler" class="d-none d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
+    <CSidebarToggler
+      id="SidebarToggler"
+      class="d-none d-lg-flex"
+      @click="$store.commit('toggleUnfoldable')"
+    />
   </CSidebar>
 </template>
 
-  <script>
-  import { computed } from 'vue'
-  import { useStore } from 'vuex'
-  import { AppSidebarNav } from './AppSidebarNav'
-  import { logoNegative } from '@/standalone/assets/brand/logo-negative'
-  import { sygnet } from '@/standalone/assets/brand/sygnet'
-  import utils from "@/utils/CommonUtils"
-  import api from "@/apis/CommonAPI"
-  import navtemplate from '@/_nav.js'
+<script>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { AppSidebarNav } from './AppSidebarNav'
+import { logoNegative } from '@/standalone/assets/brand/logo-negative'
+import { sygnet } from '@/standalone/assets/brand/sygnet'
+import utils from '@/utils/CommonUtils'
+import api from '@/apis/CommonAPI'
+import navtemplate from '@/_nav.js'
 
-  var strAuthorizedNav = '';
-  var appAuthorized = {};
-  const generateNav = async (newAuthorizedData, isChild) => {
-    strAuthorizedNav += '[';
-    let newAuthorizedDataLength = (newAuthorizedData.length)
-    for (var i = 0; i < newAuthorizedDataLength; i++) {
-      let currentNewAuthorizedData = newAuthorizedData[i];
-      if (currentNewAuthorizedData.children && currentNewAuthorizedData.children.length > 0) {
-        strAuthorizedNav += '{';
-        strAuthorizedNav += ' "component": "CNavGroup",';
-        strAuthorizedNav += ' "name": "' + (isChild ? '' : '') + currentNewAuthorizedData.displayText + '",';
-        strAuthorizedNav += ' "to": "' + currentNewAuthorizedData.path + '",';
-        strAuthorizedNav += ' "icon": "' + (currentNewAuthorizedData.icon) + '",';
-        strAuthorizedNav += ' "parentId": "' + currentNewAuthorizedData.parentId + '",';
-        strAuthorizedNav += ' "items": '
-        generateNav(currentNewAuthorizedData.children, true);
-        strAuthorizedNav += '},';
-      } else {
-        strAuthorizedNav += '{';
-        strAuthorizedNav += ' "component": "CNavItem",';
-        strAuthorizedNav += ' "name": "' + (isChild ? '' : '') + currentNewAuthorizedData.displayText + '",';
-        strAuthorizedNav += ' "to": "' + currentNewAuthorizedData.path + '",';
-        strAuthorizedNav += ' "icon": "' + (currentNewAuthorizedData.icon) + '",';
-        strAuthorizedNav += ' "parentId": "' + currentNewAuthorizedData.parentId + '",';
-        strAuthorizedNav += ' "applicationId": "' + currentNewAuthorizedData.applicationId + '",';
-        strAuthorizedNav += ' "linkProps": { "queryParams": { "applicationId": "' + currentNewAuthorizedData.applicationId
-          + '", "functionId": "' + currentNewAuthorizedData.functionId + '" } }';
-        strAuthorizedNav += '},';
-      }
+var strAuthorizedNav = ''
+var appAuthorized = {}
+const generateNav = async (newAuthorizedData, isChild) => {
+  strAuthorizedNav += '['
+  let newAuthorizedDataLength = newAuthorizedData.length
+  for (var i = 0; i < newAuthorizedDataLength; i++) {
+    let currentNewAuthorizedData = newAuthorizedData[i]
+    if (
+      currentNewAuthorizedData.children &&
+      currentNewAuthorizedData.children.length > 0
+    ) {
+      strAuthorizedNav += '{'
+      strAuthorizedNav += ' "component": "CNavGroup",'
+      strAuthorizedNav +=
+        ' "name": "' +
+        (isChild ? '' : '') +
+        currentNewAuthorizedData.displayText +
+        '",'
+      strAuthorizedNav += ' "to": "' + currentNewAuthorizedData.path + '",'
+      strAuthorizedNav += ' "icon": "' + currentNewAuthorizedData.icon + '",'
+      strAuthorizedNav +=
+        ' "parentId": "' + currentNewAuthorizedData.parentId + '",'
+      strAuthorizedNav += ' "items": '
+      generateNav(currentNewAuthorizedData.children, true)
+      strAuthorizedNav += '},'
+    } else {
+      strAuthorizedNav += '{'
+      strAuthorizedNav += ' "component": "CNavItem",'
+      strAuthorizedNav +=
+        ' "name": "' +
+        (isChild ? '' : '') +
+        currentNewAuthorizedData.displayText +
+        '",'
+      strAuthorizedNav += ' "to": "' + currentNewAuthorizedData.path + '",'
+      strAuthorizedNav += ' "icon": "' + currentNewAuthorizedData.icon + '",'
+      strAuthorizedNav +=
+        ' "parentId": "' + currentNewAuthorizedData.parentId + '",'
+      strAuthorizedNav +=
+        ' "applicationId": "' + currentNewAuthorizedData.applicationId + '",'
+      strAuthorizedNav +=
+        ' "linkProps": { "queryParams": { "applicationId": "' +
+        currentNewAuthorizedData.applicationId +
+        '", "functionId": "' +
+        currentNewAuthorizedData.functionId +
+        '" } }'
+      strAuthorizedNav += '},'
     }
-    strAuthorizedNav += ']';
   }
+  strAuthorizedNav += ']'
+}
 
-  export default {
-    name: 'AppSidebar',
-    components: {
-      AppSidebarNav,
+export default {
+  name: 'AppSidebar',
+  components: {
+    AppSidebarNav,
+  },
+  computed: {
+    sidebarClass() {
+      // Check if device is mobile
+      const isMobile = window.innerWidth <= 768
+      return isMobile ? 'custom-mobile-bg' : ''
     },
-    computed: {
-      sidebarClass() {
-        // Check if device is mobile
-        const isMobile = window.innerWidth <= 768;
-        return isMobile ? 'custom-mobile-bg' : '';
-      }
-    },
-    data() {
-      return {
-        showAndonText: false,
-        nav: [
-          {
-            component: 'CNavItem',
-            name: 'Home',
-            to: '/app/dashboard',
-            icon: 'cilHome',
-            parentId: 'ROOT',
-          },
-          {
-            component: 'CNavItem',
-            to: '/app/Smartandon',
-            name: 'Smartandon',
-            icon: 'cilFactory',
-            parentId: 'ROOT',
+  },
+  data() {
+    return {
+      showAndonText: false,
+      nav: [
+        {
+          component: 'CNavItem',
+          name: 'Home',
+          to: '/app/dashboard',
+          icon: 'cilHome',
+          parentId: 'ROOT',
+        },
+        {
+          component: 'CNavItem',
+          to: '/app/Smartandon',
+          name: 'Smartandon',
+          icon: 'cilFactory',
+          parentId: 'ROOT',
 
           items: [
             // {
@@ -185,7 +223,7 @@
               icon: 'cilFolderOpen',
               parentId: 'ROOT',
             },
-          ]
+          ],
         },
         {
           component: 'CNavItem',
@@ -194,200 +232,216 @@
           icon: 'cilApps',
           parentId: 'ROOT',
 
-            items: [
-              {
-                component: 'CNavItem',
-                to: '/app/FocusThema',
-                name: 'Focus Thema',
-                icon: 'cilBlurCircular',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/EditDataSmartandon',
-                name: 'Edit Data Smartandon',
-                icon: 'cilClipboard',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/order-spareparts-redirect',
-                name: 'Order Spareparts',
-                icon: 'cilCart',
-                parentId: 'ROOT',
-              },
-              {
-                component: 'CNavItem',
-                to: '/app/tpm-redirect',
-                name: 'TPM System',
-                icon: 'cilMemory',
-                parentId: 'ROOT',
-              },
-              // {
-              //   component: 'CNavItem',
-              //   to: '/app/RobotInspection',
-              //   name: 'Robot Inspection',
-              //   icon: 'cilJustifyLeft',
-              //   parentId: 'ROOT',
-              // },
-            ]
-          }
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/calibration-item/:idGauge',
-          //   name: 'Calibration Item',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/calibration-item/add/:idGauge',
-          //   name: 'Calibration Item Add',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/calibration-item/edit/:id',
-          //   name: 'Calibration Item Edit',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/monthly-planning',
-          //   name: 'Monthly Planning',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/daily-management',
-          //   name: 'Daily Management',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/monthly-planning-holiday',
-          //   name: 'Monthly Planning Holiday',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/monthly-planning-holiday/add',
-          //   name: 'Monthly Planning Holiday Add',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/monthly-planning-holiday/edit/:id',
-          //   name: 'Monthly Planning Holiday Edit',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/custom-planning',
-          //   name: 'Custom Planning',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/custom-planning/add',
-          //   name: 'Custom Planning',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // },
-          // {
-          //   component: 'CNavItem',
-          //   to: '/qdc/custom-planning/edit/:id',
-          //   name: 'Custom Planning',
-          //   icon: '',
-          //   parentId: 'ROOT',
-          // }
+          items: [
+            {
+              component: 'CNavItem',
+              to: '/app/FocusThema',
+              name: 'Focus Thema',
+              icon: 'cilBlurCircular',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/EditDataSmartandon',
+              name: 'Edit Data Smartandon',
+              icon: 'cilClipboard',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/order-spareparts-redirect',
+              name: 'Order Spareparts',
+              icon: 'cilCart',
+              parentId: 'ROOT',
+            },
+            {
+              component: 'CNavItem',
+              to: '/app/tpm-redirect',
+              name: 'TPM System',
+              icon: 'cilMemory',
+              parentId: 'ROOT',
+            },
+            // {
+            //   component: 'CNavItem',
+            //   to: '/app/RobotInspection',
+            //   name: 'Robot Inspection',
+            //   icon: 'cilJustifyLeft',
+            //   parentId: 'ROOT',
+            // },
+          ],
+        },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/calibration-item/:idGauge',
+        //   name: 'Calibration Item',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/calibration-item/add/:idGauge',
+        //   name: 'Calibration Item Add',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/calibration-item/edit/:id',
+        //   name: 'Calibration Item Edit',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/monthly-planning',
+        //   name: 'Monthly Planning',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/daily-management',
+        //   name: 'Daily Management',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/monthly-planning-holiday',
+        //   name: 'Monthly Planning Holiday',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/monthly-planning-holiday/add',
+        //   name: 'Monthly Planning Holiday Add',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/monthly-planning-holiday/edit/:id',
+        //   name: 'Monthly Planning Holiday Edit',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/custom-planning',
+        //   name: 'Custom Planning',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/custom-planning/add',
+        //   name: 'Custom Planning',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // },
+        // {
+        //   component: 'CNavItem',
+        //   to: '/qdc/custom-planning/edit/:id',
+        //   name: 'Custom Planning',
+        //   icon: '',
+        //   parentId: 'ROOT',
+        // }
 
-          /*define other in here*/
-        ],
-      }
-    },
-    setup() {
-      const store = useStore()
-      return {
-        logoNegative,
-        sygnet,
-        sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
-        sidebarVisible: computed(() => store.state.sidebarVisible),
-      }
-    },
-    // async created() {
-    //   let authorizedView = await api.scQueryApi('/api/common/menu-authorized', 'POST', '');
-    //   strAuthorizedNav = '';
-    //   if (authorizedView.data) {
-    //     await generateNav(authorizedView.data.children)
-    //     let jsonAuthorizedNavJSON = JSON.parse('{"value": ' + strAuthorizedNav.replaceAll('},]', '}]') + '}');
+        /*define other in here*/
+      ],
+    }
+  },
+  setup() {
+    const store = useStore()
+    return {
+      logoNegative,
+      sygnet,
+      sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
+      sidebarVisible: computed(() => store.state.sidebarVisible),
+    }
+  },
+  // async created() {
+  //   let authorizedView = await api.scQueryApi('/api/common/menu-authorized', 'POST', '');
+  //   strAuthorizedNav = '';
+  //   if (authorizedView.data) {
+  //     await generateNav(authorizedView.data.children)
+  //     let jsonAuthorizedNavJSON = JSON.parse('{"value": ' + strAuthorizedNav.replaceAll('},]', '}]') + '}');
 
-    //     //this.nav = this.nav.concat(jsonAuthorizedNavJSON.value);
-    //     // this.nav=navtemplate;
-    //   }
-    //   setInterval(async () => {
-    //     let authorizedView = await api.scQueryApi('/api/common/user-info', 'POST', '');
-    //   }, 60 * 1000);
+  //     //this.nav = this.nav.concat(jsonAuthorizedNavJSON.value);
+  //     // this.nav=navtemplate;
+  //   }
+  //   setInterval(async () => {
+  //     let authorizedView = await api.scQueryApi('/api/common/user-info', 'POST', '');
+  //   }, 60 * 1000);
 
-    //   //this.$router.push('/dc/dashboard');
-    // }
-    methods: {
-      async fetchDataFrontend() {
-        try {
+  //   //this.$router.push('/dc/dashboard');
+  // }
+  methods: {
+    async fetchDataFrontend() {
+      try {
+        console.log('[FE fetchDataFrontend1] Starting API call...')
+        const frontendResponse = await api.get('/smartandon/frontend')
 
-          console.log('[FE fetchDataFrontend1] Starting API call...');
-          const frontendResponse = await api.get('/smartandon/frontend');
+        console.log(
+          '[FE fetchDataFrontend1] API response received:',
+          frontendResponse.data,
+        )
 
-          console.log('[FE fetchDataFrontend1] API response received:', frontendResponse.data);
+        if (
+          frontendResponse.data &&
+          Array.isArray(frontendResponse.data) &&
+          frontendResponse.data.length > 0
+        ) {
+          console.log(
+            '[FE fetchDataFrontend1] First item of frontend data:',
+            frontendResponse.data[0],
+          )
 
-          if (frontendResponse.data && Array.isArray(frontendResponse.data) && frontendResponse.data.length > 0) {
-            console.log('[FE fetchDataFrontend1] First item of frontend data:', frontendResponse.data[0]);
-
-            if (frontendResponse.data[0].frontend === 1) {
-              this.showAndonText = true;
-            } else {
-              this.showAndonText = false;
-            }
+          if (frontendResponse.data[0].frontend === 1) {
+            this.showAndonText = true
           } else {
-            
-            console.warn('[FE fetchDataFrontend1] No valid data array in response');
-            this.showAndonText = false;
+            this.showAndonText = false
           }
-        } catch (error) {
-          console.error('[FE fetchDataFrontend1] Error fetching frontend data:', error);
-          console.error('[FE fetchDataFrontend1] Error details:', error.response?.data || error.message);
-          this.showAndonText = false;
+        } else {
+          console.warn(
+            '[FE fetchDataFrontend1] No valid data array in response',
+          )
+          this.showAndonText = false
         }
-      },
-    },
-    mounted() {
-      this.fetchDataFrontend();
-      this.fetchInterval = setInterval(() => {
-        this.fetchDataFrontend();
-      }, 20 * 60 * 1000); // 20 minutes interval
-    },
-    beforeUnmount() {
-      if (this.fetchInterval) {
-        clearInterval(this.fetchInterval);
+      } catch (error) {
+        console.error(
+          '[FE fetchDataFrontend1] Error fetching frontend data:',
+          error,
+        )
+        console.error(
+          '[FE fetchDataFrontend1] Error details:',
+          error.response?.data || error.message,
+        )
+        this.showAndonText = false
       }
     },
-  }
-  </script>
+  },
+  mounted() {
+    this.fetchDataFrontend()
+    this.fetchInterval = setInterval(() => {
+      this.fetchDataFrontend()
+    }, 20 * 60 * 1000) // 20 minutes interval
+  },
+  beforeUnmount() {
+    if (this.fetchInterval) {
+      clearInterval(this.fetchInterval)
+    }
+  },
+}
+</script>
 
 <style scoped>
-  .sidebar-andon-text {
-    font-size: 50px;
-    font-weight: 800;
-    font-family: 'Inter', sans-serif;
-    padding-left: 15px;
-    width: 100%;
-  }
+.sidebar-andon-text {
+  font-size: 50px;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  padding-left: 15px;
+  width: 100%;
+}
 </style>

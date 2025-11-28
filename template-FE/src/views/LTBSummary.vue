@@ -7,7 +7,9 @@
   </CRow>
 
   <CCard class="mb-3 custom-card">
-    <CCardBody class="d-flex justify-content-between align-items-center custom-card p-2">
+    <CCardBody
+      class="d-flex justify-content-between align-items-center custom-card p-2"
+    >
       <CNav variant="tabs">
         <CNavItem>
           <CNavLink :active="currentTab === 0" @click="selectTab(0)">
@@ -35,21 +37,29 @@
           <LegendStatus class="mb-4" />
 
           <CRow class="mb-3 align-items-center">
-            <CCol class="d-flex align-items-center" style="gap: 0.5rem;">
+            <CCol class="d-flex align-items-center" style="gap: 0.5rem">
               <CCol class="flex-grow-1">
                 <CInputGroup>
                   <CInputGroupText id="search-icon">
                     <Search size="16" />
                   </CInputGroupText>
-                  <CFormInput v-model="searchKeyword" placeholder="Search machine or problem" />
+                  <CFormInput
+                    v-model="searchKeyword"
+                    placeholder="Search machine or problem"
+                  />
                 </CInputGroup>
               </CCol>
-              <CFormSelect v-model="selectedFilter" style="width: 100px;">
+              <CFormSelect v-model="selectedFilter" style="width: 100px">
                 <option value="">All</option>
                 <option value="LTR">LTR</option>
                 <option value="SLTR">SLTR</option>
               </CFormSelect>
-              <CButton v-if="monthlyDetails.length > 0" color="secondary" @click="clearMonthlyFilter" size="sm">
+              <CButton
+                v-if="monthlyDetails.length > 0"
+                color="secondary"
+                @click="clearMonthlyFilter"
+                size="sm"
+              >
                 Clear Filter
               </CButton>
             </CCol>
@@ -71,36 +81,61 @@
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                <CTableRow v-for="(item, index) in (monthlyDetails.length > 0 ? monthlyDetails : filteredProblems)" :key="item.fid || index">
+                <CTableRow
+                  v-for="(item, index) in monthlyDetails.length > 0
+                    ? monthlyDetails
+                    : filteredProblems"
+                  :key="item.fid || index"
+                >
                   <CTableDataCell>{{ index + 1 }}</CTableDataCell>
-                  <CTableDataCell>{{ formatDate(item.fstart_time) }}</CTableDataCell>
+                  <CTableDataCell>{{
+                    formatDate(item.fstart_time)
+                  }}</CTableDataCell>
                   <CTableDataCell>{{ item.fmc_name }}</CTableDataCell>
-                  <CTableDataCell class="text-left">{{ item.ferror_name }}</CTableDataCell>
+                  <CTableDataCell class="text-left">{{
+                    item.ferror_name
+                  }}</CTableDataCell>
                   <CTableDataCell>{{ item.fdur }} min</CTableDataCell>
-                  <CTableDataCell><span :class="['indicator', item.tlCheck]" /></CTableDataCell>
-                  <CTableDataCell><span :class="['indicator', item.lhCheck]" /></CTableDataCell>
-                  <CTableDataCell><span :class="['indicator', item.shCheck]" /></CTableDataCell>
-                  <CTableDataCell><span :class="['indicator', item.dhCheck]" /></CTableDataCell>
+                  <CTableDataCell
+                    ><span :class="['indicator', item.tlCheck]"
+                  /></CTableDataCell>
+                  <CTableDataCell
+                    ><span :class="['indicator', item.lhCheck]"
+                  /></CTableDataCell>
+                  <CTableDataCell
+                    ><span :class="['indicator', item.shCheck]"
+                  /></CTableDataCell>
+                  <CTableDataCell
+                    ><span :class="['indicator', item.dhCheck]"
+                  /></CTableDataCell>
                 </CTableRow>
               </CTableBody>
             </CTable>
           </CCol>
 
           <CRow v-if="isLoading" class="text-center mt-3">
-            <CCol>
-              <CSpinner /> Loading...
-            </CCol>
+            <CCol> <CSpinner /> Loading... </CCol>
           </CRow>
         </CCol>
       </CRow>
 
       <CRow v-show="currentTab === 1">
         <CCol>
-          <div style="border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2); background-color: transparent;">
+          <div
+            style="
+              border-radius: 9px;
+              height: 100%;
+              box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+              background-color: transparent;
+            "
+          >
             <CCardBody>
               <CRow class="mb-3">
                 <CCol>
-                  <CCardTitle style="font-size: medium; height: 35px; color: black;">LTB Summary Chart</CCardTitle>
+                  <CCardTitle
+                    style="font-size: medium; height: 35px; color: black"
+                    >LTB Summary Chart</CCardTitle
+                  >
                 </CCol>
               </CRow>
               <CRow>
@@ -120,8 +155,18 @@
                 <CCol>
                   <CCard>
                     <CCardHeader>
-                      <strong>{{ selectedMonthName ? `Details for ${selectedMonthName} ${selectedYear}` : 'Monthly Details' }}</strong>
-                      <CButton v-if="selectedMonthName" color="secondary" size="sm" @click="clearMonthlyFilter" class="float-end">
+                      <strong>{{
+                        selectedMonthName
+                          ? `Details for ${selectedMonthName} ${selectedYear}`
+                          : 'Monthly Details'
+                      }}</strong>
+                      <CButton
+                        v-if="selectedMonthName"
+                        color="secondary"
+                        size="sm"
+                        @click="clearMonthlyFilter"
+                        class="float-end"
+                      >
                         Clear
                       </CButton>
                     </CCardHeader>
@@ -133,7 +178,9 @@
                               <CTableHeaderCell>No</CTableHeaderCell>
                               <CTableHeaderCell>Date</CTableHeaderCell>
                               <CTableHeaderCell>Machine</CTableHeaderCell>
-                              <CTableHeaderCell>Problem Description</CTableHeaderCell>
+                              <CTableHeaderCell
+                                >Problem Description</CTableHeaderCell
+                              >
                               <CTableHeaderCell>Duration</CTableHeaderCell>
                               <CTableHeaderCell>TL Check</CTableHeaderCell>
                               <CTableHeaderCell>GL Check</CTableHeaderCell>
@@ -142,22 +189,45 @@
                             </CTableRow>
                           </CTableHead>
                           <CTableBody>
-                            <CTableRow v-for="(item, index) in monthlyDetails" :key="item.fid || index">
+                            <CTableRow
+                              v-for="(item, index) in monthlyDetails"
+                              :key="item.fid || index"
+                            >
                               <CTableDataCell>{{ index + 1 }}</CTableDataCell>
-                              <CTableDataCell>{{ formatDate(item.fstart_time) }}</CTableDataCell>
-                              <CTableDataCell>{{ item.fmc_name }}</CTableDataCell>
-                              <CTableDataCell class="text-left">{{ item.ferror_name }}</CTableDataCell>
-                              <CTableDataCell>{{ item.fdur }} min</CTableDataCell>
-                              <CTableDataCell><span :class="['indicator', item.tlCheck]" /></CTableDataCell>
-                              <CTableDataCell><span :class="['indicator', item.lhCheck]" /></CTableDataCell>
-                              <CTableDataCell><span :class="['indicator', item.shCheck]" /></CTableDataCell>
-                              <CTableDataCell><span :class="['indicator', item.dhCheck]" /></CTableDataCell>
+                              <CTableDataCell>{{
+                                formatDate(item.fstart_time)
+                              }}</CTableDataCell>
+                              <CTableDataCell>{{
+                                item.fmc_name
+                              }}</CTableDataCell>
+                              <CTableDataCell class="text-left">{{
+                                item.ferror_name
+                              }}</CTableDataCell>
+                              <CTableDataCell
+                                >{{ item.fdur }} min</CTableDataCell
+                              >
+                              <CTableDataCell
+                                ><span :class="['indicator', item.tlCheck]"
+                              /></CTableDataCell>
+                              <CTableDataCell
+                                ><span :class="['indicator', item.lhCheck]"
+                              /></CTableDataCell>
+                              <CTableDataCell
+                                ><span :class="['indicator', item.shCheck]"
+                              /></CTableDataCell>
+                              <CTableDataCell
+                                ><span :class="['indicator', item.dhCheck]"
+                              /></CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                         </CTable>
                       </div>
                       <div v-else class="text-center">
-                        {{ selectedMonthName ? 'No data available for this month.' : 'Click on a bar in the chart to view monthly details.' }}
+                        {{
+                          selectedMonthName
+                            ? 'No data available for this month.'
+                            : 'Click on a bar in the chart to view monthly details.'
+                        }}
                       </div>
                     </CCardBody>
                   </CCard>
@@ -192,7 +262,7 @@ import {
   CTableBody,
   CTableRow,
   CTableHeaderCell,
-  CTableDataCell
+  CTableDataCell,
 } from '@coreui/vue'
 import { Search } from 'lucide-vue-next'
 import LegendStatus from '@/components/LTBSummary/LegendStatus.vue'
@@ -202,7 +272,7 @@ import ApexCharts from 'vue3-apexcharts'
 const LINE_MAP = {
   hpdc: 'casting',
   cnc: 'machining',
-  assy: 'assy'
+  assy: 'assy',
 }
 
 export default {
@@ -245,67 +315,82 @@ export default {
       selectedMonthName: '',
       graphData: {
         labels: [],
-        datasets: []
+        datasets: [],
       },
       chartOptions: {
         chart: {
           type: 'bar',
           height: 350,
           toolbar: {
-            show: true
+            show: true,
           },
           events: {
             dataPointSelection: (event, chartContext, config) => {
-              const monthIndex = config.dataPointIndex;
-              this.showMonthlyDetails(monthIndex);
-            }
-          }
+              const monthIndex = config.dataPointIndex
+              this.showMonthlyDetails(monthIndex)
+            },
+          },
         },
         plotOptions: {
           bar: {
             borderRadius: 4,
             horizontal: false,
             columnWidth: '55%',
-            endingShape: 'rounded'
-          }
+            endingShape: 'rounded',
+          },
         },
         dataLabels: {
           enabled: true,
-          enabledOnSeries: [0]
+          enabledOnSeries: [0],
         },
         stroke: {
           show: true,
           width: 2,
-          colors: ['transparent']
+          colors: ['transparent'],
         },
         xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          categories: [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
+          ],
           title: {
-            text: 'Month'
-          }
+            text: 'Month',
+          },
         },
         yaxis: {
           title: {
-            text: 'LTB Total'
+            text: 'LTB Total',
           },
-          min: 0
+          min: 0,
         },
         fill: {
-          opacity: 1
+          opacity: 1,
         },
         colors: ['#007bff'],
         title: {
           align: 'left',
           style: {
             fontSize: '16px',
-            color: '#666'
-          }
-        }
+            color: '#666',
+          },
+        },
       },
-      chartSeries: [{
-        name: 'LTB Total',
-        data: []
-      }]
+      chartSeries: [
+        {
+          name: 'LTB Total',
+          data: [],
+        },
+      ],
     }
   },
   computed: {
@@ -314,7 +399,7 @@ export default {
 
       if (this.searchKeyword) {
         const keyword = this.searchKeyword.toLowerCase().trim()
-        list = list.filter(item => {
+        list = list.filter((item) => {
           const machineName = (item.fmc_name || '').toLowerCase()
           const problemName = (item.ferror_name || '').toLowerCase()
           return machineName.includes(keyword) || problemName.includes(keyword)
@@ -324,7 +409,9 @@ export default {
       return list
     },
     yearOptions() {
-      const years = this.problems.map(item => new Date(item.fstart_time).getFullYear())
+      const years = this.problems.map((item) =>
+        new Date(item.fstart_time).getFullYear(),
+      )
       const uniqueYears = Array.from(new Set(years))
       uniqueYears.sort((a, b) => b - a)
       return uniqueYears
@@ -337,7 +424,7 @@ export default {
         return this.graphData
       }
       const monthlyCounts = {}
-      this.problems.forEach(item => {
+      this.problems.forEach((item) => {
         const date = new Date(item.fstart_time)
         const year = date.getFullYear()
         const month = date.getMonth()
@@ -348,14 +435,35 @@ export default {
           monthlyCounts[month] += 1
         }
       })
-      const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      const monthlyData = monthLabels.map((_, index) => monthlyCounts[index] || 0)
+      const monthLabels = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ]
+      const monthlyData = monthLabels.map(
+        (_, index) => monthlyCounts[index] || 0,
+      )
 
       return {
         labels: monthLabels,
-        datasets: [{ label: 'LTB Total in ' + this.selectedYear, backgroundColor: '#007bff', data: monthlyData }]
+        datasets: [
+          {
+            label: 'LTB Total in ' + this.selectedYear,
+            backgroundColor: '#007bff',
+            data: monthlyData,
+          },
+        ],
       }
-    }
+    },
   },
   methods: {
     selectTab(tabIndex) {
@@ -396,36 +504,53 @@ export default {
       }
     },
     prepareProblems(raw) {
-      return raw.map(item => {
+      return raw.map((item) => {
         const processedItem = {
           ...item,
-          tlCheck: this.getTlIndicator(item.fpermanet_cm, item.fpermanet_cm_lama),
+          tlCheck: this.getTlIndicator(
+            item.fpermanet_cm,
+            item.fpermanet_cm_lama,
+          ),
           lhCheck: this.getClass(Number(item.cmLhApprove), item.cmLhFeedback),
           shCheck: this.getClass(Number(item.cmShApprove), item.cmShFeedback),
-          dhCheck: this.getClass(Number(item.cmDhApprove), item.cmDhFeedback)
+          dhCheck: this.getClass(Number(item.cmDhApprove), item.cmDhFeedback),
         }
         return processedItem
       })
     },
     prepareGraphData(list) {
       const counts = {}
-      list.forEach(item => {
+      list.forEach((item) => {
         const date = new Date(item.fstart_time)
-        const key = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0')
+        const key =
+          date.getFullYear() +
+          '-' +
+          String(date.getMonth() + 1).padStart(2, '0')
         if (!counts[key]) {
           counts[key] = 0
         }
         counts[key] += 1
       })
       const sortedKeys = Object.keys(counts).sort()
-      return { labels: sortedKeys, datasets: [{ label: 'Total LTB', backgroundColor: '#007bff', data: sortedKeys.map(key => counts[key]) }] }
+      return {
+        labels: sortedKeys,
+        datasets: [
+          {
+            label: 'Total LTB',
+            backgroundColor: '#007bff',
+            data: sortedKeys.map((key) => counts[key]),
+          },
+        ],
+      }
     },
     async fetchData() {
       this.isLoading = true
       try {
         const response = await api.get('/summary/ltb-summary')
         if (response.status !== 200) {
-          throw new Error('Failed to fetch LTB summary, status: ' + response.status)
+          throw new Error(
+            'Failed to fetch LTB summary, status: ' + response.status,
+          )
         }
         let raw = response.data.data.delayProblems
         raw = Array.isArray(raw[0]) ? raw[0] : raw
@@ -456,7 +581,9 @@ export default {
       try {
         const response = await api.get(`/summary/ltr-sltr-summary?type=${type}`)
         if (response.status !== 200) {
-          throw new Error('Failed to fetch filtered LTB summary, status: ' + response.status)
+          throw new Error(
+            'Failed to fetch filtered LTB summary, status: ' + response.status,
+          )
         }
         let raw = response.data.data.delayProblems
         raw = Array.isArray(raw[0]) ? raw[0] : raw
@@ -488,7 +615,7 @@ export default {
       }
 
       const monthlyCounts = {}
-      this.problems.forEach(item => {
+      this.problems.forEach((item) => {
         const date = new Date(item.fstart_time)
         const year = date.getFullYear()
         const month = date.getMonth()
@@ -500,32 +627,54 @@ export default {
         }
       })
 
-      const monthlyData = Array.from({ length: 12 }, (_, index) => monthlyCounts[index] || 0)
+      const monthlyData = Array.from(
+        { length: 12 },
+        (_, index) => monthlyCounts[index] || 0,
+      )
       this.chartSeries[0].data = monthlyData
 
       console.log('📊 Chart series updated:', {
         selectedYear: this.selectedYear,
         monthlyData: monthlyData,
-        chartSeries: this.chartSeries[0].data
+        chartSeries: this.chartSeries[0].data,
       })
     },
     showMonthlyDetails(monthIndex) {
-      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      this.selectedMonthName = monthNames[monthIndex];
-      const year = this.selectedYear;
+      const monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ]
+      this.selectedMonthName = monthNames[monthIndex]
+      const year = this.selectedYear
 
       // Filter problems for the selected month and year
-      this.monthlyDetails = this.problems.filter(item => {
-        const date = new Date(item.fstart_time);
-        return date.getFullYear() === Number(year) && date.getMonth() === monthIndex;
-      });
+      this.monthlyDetails = this.problems.filter((item) => {
+        const date = new Date(item.fstart_time)
+        return (
+          date.getFullYear() === Number(year) && date.getMonth() === monthIndex
+        )
+      })
 
-      console.log(`Showing details for ${this.selectedMonthName} ${year}:`, this.monthlyDetails.length, 'problems');
+      console.log(
+        `Showing details for ${this.selectedMonthName} ${year}:`,
+        this.monthlyDetails.length,
+        'problems',
+      )
     },
     clearMonthlyFilter() {
-      this.monthlyDetails = [];
-      this.selectedMonthName = '';
-    }
+      this.monthlyDetails = []
+      this.selectedMonthName = ''
+    },
   },
   watch: {
     selectedFilter(newValue) {
@@ -534,11 +683,11 @@ export default {
     selectedYear() {
       console.log('Selected year changed to:', this.selectedYear)
       this.updateChartSeries()
-    }
+    },
   },
   mounted() {
     this.fetchData()
-  }
+  },
 }
 </script>
 

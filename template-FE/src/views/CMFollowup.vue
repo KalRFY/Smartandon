@@ -6,32 +6,36 @@
     </CCol>
   </CRow>
 
-  <SearchFilters 
-    :filterStartDate="filters.start_date" 
+  <SearchFilters
+    :filterStartDate="filters.start_date"
     :filterFinishDate="filters.end_date"
-    :selectedLine="filters.line" 
-    :selectedMachineName="filters.machine" 
+    :selectedLine="filters.line"
+    :selectedMachineName="filters.machine"
     :searchKeyword="filters.keyword"
-    :selectedCategory="filters.category" 
-    :selectedShift="filters.shift" 
+    :selectedCategory="filters.category"
+    :selectedShift="filters.shift"
     :lineOptions="lineOptions"
-    :machineOptions="machineOptions" 
+    :machineOptions="machineOptions"
     :loading="loading"
-    @update:filterStartDate="val => filters.start_date = val"
-    @update:filterFinishDate="val => filters.end_date = val" 
-    @update:selectedLine="val => filters.line = val"
-    @update:selectedMachineName="val => filters.machine = val"
-    @update:searchKeyword="val => filters.keyword = val"
-    @update:selectedCategory="val => filters.category = val" 
-    @update:selectedShift="val => filters.shift = val"
-    @search="fetchCMFollowup" 
-    @reset="resetFilters" 
+    @update:filterStartDate="(val) => (filters.start_date = val)"
+    @update:filterFinishDate="(val) => (filters.end_date = val)"
+    @update:selectedLine="(val) => (filters.line = val)"
+    @update:selectedMachineName="(val) => (filters.machine = val)"
+    @update:searchKeyword="(val) => (filters.keyword = val)"
+    @update:selectedCategory="(val) => (filters.category = val)"
+    @update:selectedShift="(val) => (filters.shift = val)"
+    @search="fetchCMFollowup"
+    @reset="resetFilters"
   />
 
   <Container>
     <CRow>
       <CCol>
-        <LoadingState v-if="loading" :progress="progress" :trigger="triggerKey" />
+        <LoadingState
+          v-if="loading"
+          :progress="progress"
+          :trigger="triggerKey"
+        />
         <template v-else>
           <CMIndicator :data="filteredData" />
           <ProblemsTable :data="filteredData" :loading="loading" />
@@ -59,7 +63,7 @@ const filters = ref({
   end_date: dayjs().format('YYYY-MM-DD'),
   keyword: '',
   category: '',
-  shift: ''
+  shift: '',
 })
 
 const loading = ref(false)
@@ -69,29 +73,35 @@ const tableData = ref([])
 const lineOptions = ref([])
 const machineOptions = ref([])
 
-const getLineLabel = id => lineOptions.value.find(l => l.id === id)?.label
-const getMachineLabel = id => machineOptions.value.find(m => m.id === id)?.label
+const getLineLabel = (id) => lineOptions.value.find((l) => l.id === id)?.label
+const getMachineLabel = (id) =>
+  machineOptions.value.find((m) => m.id === id)?.label
 
 const filteredData = computed(() => {
-  if (filters.value.category === "Thema") {
+  if (filters.value.category === 'Thema') {
     return []
   }
 
-  return tableData.value.filter(item => {
-    const lineMatch = filters.value.line ? item.line === getLineLabel(filters.value.line) : true
-    const machineMatch = filters.value.machine ? item.machine === getMachineLabel(filters.value.machine) : true
+  return tableData.value.filter((item) => {
+    const lineMatch = filters.value.line
+      ? item.line === getLineLabel(filters.value.line)
+      : true
+    const machineMatch = filters.value.machine
+      ? item.machine === getMachineLabel(filters.value.machine)
+      : true
 
     const keyword = filters.value.keyword?.toLowerCase() || ''
-    const searchMatch = !keyword || 
+    const searchMatch =
+      !keyword ||
       item.machine.toLowerCase().includes(keyword) ||
       item.problem.toLowerCase().includes(keyword) ||
       item.countermeasure.toLowerCase().includes(keyword) ||
       item.pic.toLowerCase().includes(keyword)
 
-      let categoryMatch = true
-      if (filters.value.category === "Taskforce") {
-        categoryMatch = item.problem?.toLowerCase().includes("taskforce")
-      }
+    let categoryMatch = true
+    if (filters.value.category === 'Taskforce') {
+      categoryMatch = item.problem?.toLowerCase().includes('taskforce')
+    }
 
     return lineMatch && machineMatch && searchMatch && categoryMatch
   })
@@ -102,20 +112,20 @@ async function loadInitialData() {
   try {
     const [machineResponse, lineResponse] = await Promise.all([
       api.get('/smartandon/machine'),
-      api.get('/smartandon/line')
+      api.get('/smartandon/line'),
     ])
 
     if (machineResponse.status !== 200 || lineResponse.status !== 200) {
       throw new Error('Failed to load line/machine data')
     }
 
-    machineOptions.value = (machineResponse.data || []).map(m => ({
+    machineOptions.value = (machineResponse.data || []).map((m) => ({
       id: m.fid,
-      label: m.fmc_name
+      label: m.fmc_name,
     }))
-    lineOptions.value = (lineResponse.data || []).map(l => ({
+    lineOptions.value = (lineResponse.data || []).map((l) => ({
       id: l.fid,
-      label: l.fline
+      label: l.fline,
     }))
   } catch (error) {
     console.error('Failed to load line/machine data:', error)
@@ -129,12 +139,12 @@ async function fetchCMFollowup() {
   triggerKey.value++
   progress.value = 0
   let internalProgress = 0
-  const step = () => { 
-    if (internalProgress < 100) { 
-      internalProgress += 1; 
-      progress.value = internalProgress; 
-      setTimeout(step, 15) 
-    } 
+  const step = () => {
+    if (internalProgress < 100) {
+      internalProgress += 1
+      progress.value = internalProgress
+      setTimeout(step, 15)
+    }
   }
   step()
 
@@ -142,8 +152,8 @@ async function fetchCMFollowup() {
     const apiFilters = { ...filters.value }
     const rawData = await getCMFollowup(apiFilters)
 
-    if (filters.value.category === "Thema") {
-      console.log("Filtering for Thema category")
+    if (filters.value.category === 'Thema') {
+      console.log('Filtering for Thema category')
       rawData = []
     }
 
@@ -152,7 +162,7 @@ async function fetchCMFollowup() {
     console.error('Error fetching CMFollowup data:', err)
     tableData.value = []
   } finally {
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       const check = () => {
         if (progress.value >= 100) resolve()
         else setTimeout(check, 30)

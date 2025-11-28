@@ -1,8 +1,6 @@
 <template>
   <div>
-    <CCol class="text-center">
-      Loading data...
-    </CCol>
+    <CCol class="text-center"> Loading data... </CCol>
     <CCol class="text-center">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>

@@ -5,7 +5,7 @@
       href="#"
       :disabled="currentPage === 1"
       @click.prevent="handlePageChange(1)"
-      style="font-size: 0.8em;"
+      style="font-size: 0.8em"
     >
       First
     </CPaginationItem>
@@ -38,7 +38,7 @@
       href="#"
       :disabled="currentPage === totalPages"
       @click.prevent="handlePageChange(totalPages)"
-      style="font-size: 0.8em;"
+      style="font-size: 0.8em"
     >
       Last
     </CPaginationItem>

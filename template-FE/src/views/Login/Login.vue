@@ -1,7 +1,8 @@
 <template>
-  <div class="login-page d-flex align-items-center justify-content-center min-vh-100 bg-light bg-blurred">
-    <div class="login-header text-center mb-4">
-    </div>
+  <div
+    class="login-page d-flex align-items-center justify-content-center min-vh-100 bg-light bg-blurred"
+  >
+    <div class="login-header text-center mb-4"></div>
 
     <div class="login-card card shadow">
       <div class="card-content d-flex">
@@ -21,7 +22,7 @@
                   placeholder="Enter your noreg"
                   required
                 />
-              </div>  
+              </div>
             </div>
 
             <div class="mb-4">
@@ -36,16 +37,18 @@
                   required
                 />
               </div>
-              <label style="font-size: xx-small;" class="ms-3">(Pass 4 digit awal nomor hp yang terdaftar)</label>
+              <label style="font-size: xx-small" class="ms-3"
+                >(Pass 4 digit awal nomor hp yang terdaftar)</label
+              >
             </div>
 
             <button
-              type="submit" 
-              class="btn btn-accent w-100 ms-3" 
+              type="submit"
+              class="btn btn-accent w-100 ms-3"
               :disabled="isLoading"
             >
-              <span 
-                v-if="isLoading" 
+              <span
+                v-if="isLoading"
                 class="spinner-border spinner-border-sm me-2"
               ></span>
               <span v-else>Login</span>
@@ -54,21 +57,14 @@
 
           <div class="text-center mt-3 ms-4">
             <span>Don't have an account?</span>
-            <a 
-              href="./#/auth/register/" 
-              class="register-link ms-1"
-            >Register</a>
+            <a href="./#/auth/register/" class="register-link ms-1">Register</a>
           </div>
         </div>
 
         <div v-if="showElements" class="image-side">
-           <div class="image-wrapper">
-            <img 
-              :src="loginPhoto" 
-              alt="Plant 1" 
-              class="login-image" 
-            />
-           </div>
+          <div class="image-wrapper">
+            <img :src="loginPhoto" alt="Plant 1" class="login-image" />
+          </div>
         </div>
       </div>
     </div>
@@ -87,7 +83,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import loginPhoto from '@/assets/images/plant_1.jpg';
+import loginPhoto from '@/assets/images/plant_1.jpg'
 import api from '@/apis/CommonAPI'
 const password = ref('')
 const isLoading = ref(false)
@@ -100,7 +96,12 @@ const fetchFrontendFlag = async () => {
   try {
     const response = await api.get('/smartandon/frontend')
     const data = response.data
-    if (data && Array.isArray(data) && data.length > 0 && data[0].frontend === 1) {
+    if (
+      data &&
+      Array.isArray(data) &&
+      data.length > 0 &&
+      data[0].frontend === 1
+    ) {
       showElements.value = false
     } else {
       showElements.value = true
@@ -132,18 +133,20 @@ const onLogin = async () => {
       password: password.value,
     })
     if (response?.status === 200) {
-        success.value = 'Login successful!'
-        setTimeout(() => {
-          success.value = ''
-          window.location.href = '/#/app/dashboard'
-        }, 3000)
-        const data = response.data
-        console.log('Login data:', data)
-        localStorage.setItem('token', data.token)
-        noreg.value = ''
-        password.value = ''
+      success.value = 'Login successful!'
+      setTimeout(() => {
+        success.value = ''
+        window.location.href = '/#/app/dashboard'
+      }, 3000)
+      const data = response.data
+      console.log('Login data:', data)
+      localStorage.setItem('token', data.token)
+      noreg.value = ''
+      password.value = ''
     } else {
-      throw new Error(response?.response?.data?.message || 'Login failed. Please try again.')
+      throw new Error(
+        response?.response?.data?.message || 'Login failed. Please try again.',
+      )
     }
   } catch (e) {
     error.value = e.message || 'Login failed. Please try again.'
@@ -386,7 +389,8 @@ const onLogin = async () => {
     opacity: 0;
     transform: translateX(-50%) translateY(20px);
   }
-  10%, 90% {
+  10%,
+  90% {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }

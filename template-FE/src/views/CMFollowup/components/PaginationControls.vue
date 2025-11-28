@@ -6,28 +6,46 @@
       </span>
     </div>
 
-    <CPagination v-if="totalPages > 1" :pages="totalPages" :active-page="currentPage"
-      @update:active-page="handlePageChange" align="center" size="sm">
+    <CPagination
+      v-if="totalPages > 1"
+      :pages="totalPages"
+      :active-page="currentPage"
+      @update:active-page="handlePageChange"
+      align="center"
+      size="sm"
+    >
       <template #first>
-        <CPaginationItem :disabled="currentPage === 1" @click="handlePageChange(1)">
+        <CPaginationItem
+          :disabled="currentPage === 1"
+          @click="handlePageChange(1)"
+        >
           First
         </CPaginationItem>
       </template>
 
       <template #prev>
-        <CPaginationItem :disabled="currentPage === 1" @click="handlePageChange(currentPage - 1)">
+        <CPaginationItem
+          :disabled="currentPage === 1"
+          @click="handlePageChange(currentPage - 1)"
+        >
           Previous
         </CPaginationItem>
       </template>
 
       <template #next>
-        <CPaginationItem :disabled="currentPage === totalPages" @click="handlePageChange(currentPage + 1)">
+        <CPaginationItem
+          :disabled="currentPage === totalPages"
+          @click="handlePageChange(currentPage + 1)"
+        >
           Next
         </CPaginationItem>
       </template>
 
       <template #last>
-        <CPaginationItem :disabled="currentPage === totalPages" @click="handlePageChange(totalPages)">
+        <CPaginationItem
+          :disabled="currentPage === totalPages"
+          @click="handlePageChange(totalPages)"
+        >
           Last
         </CPaginationItem>
       </template>

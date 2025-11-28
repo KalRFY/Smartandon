@@ -1,9 +1,19 @@
 <template>
   <CDropdown variant="nav-item">
-    <CDropdownToggle placement="bottom-end" class="py-0" href="javascript:void(0);">
+    <CDropdownToggle
+      placement="bottom-end"
+      class="py-0"
+      href="javascript:void(0);"
+    >
       {{ userName }}&ensp;
-      <img v-if="photo" :src="photo" class="rounded-circle" style="width: 36px; height: 36px;" />
-      <CAvatar v-else color="danger" text-color="white">{{ initials }}
+      <img
+        v-if="photo"
+        :src="photo"
+        class="rounded-circle"
+        style="width: 36px; height: 36px"
+      />
+      <CAvatar v-else color="danger" text-color="white"
+        >{{ initials }}
       </CAvatar>
     </CDropdownToggle>
     <CDropdownMenu class="pt-0 mt-2">
@@ -23,7 +33,7 @@
 
 <script>
 import avatar from '@/standalone/assets/images/avatars/8.jpg'
-import api from "@/apis/CommonAPI"
+import api from '@/apis/CommonAPI'
 import { ref, onMounted, computed } from 'vue'
 
 export default {
@@ -36,7 +46,7 @@ export default {
       try {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`
         const response = await api.get('/user/user')
-        console.log("User data:", response)
+        console.log('User data:', response)
         if (response.status !== 200) throw new Error('Failed to fetch user')
         const data = response.data
         userName.value = data.user.name || userName.value
@@ -53,16 +63,16 @@ export default {
 
     const logout = () => {
       localStorage.removeItem('token')
-      window.location.href = "/#/auth/login"
+      window.location.href = '/#/auth/login'
     }
 
     return {
       photo,
       userName,
       initials,
-      logout
+      logout,
     }
-  }
+  },
 }
 </script>
 

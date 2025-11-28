@@ -1,17 +1,27 @@
 <template>
   <CRow>
     <CCol class="mb-1">
-      <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
+      <div
+        class="border-secondary"
+        style="
+          background-color: white;
+          border-radius: 9px;
+          height: 100%;
+          box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+        "
+      >
         <CCardBody>
           <CRow>
-            <CFormLabel style="font-weight: bold; font-size: medium;">Filters</CFormLabel>
+            <CFormLabel style="font-weight: bold; font-size: medium"
+              >Filters</CFormLabel
+            >
           </CRow>
           <CRow>
             <CButtonGroup size="md">
               <CButton
                 color="primary"
                 variant="outline"
-                style="width: 10;"
+                style="width: 10"
                 :active="selectedCategory === 0"
                 :disabled="isLoading"
                 @click="onClickFilter(0)"
@@ -21,7 +31,7 @@
               <CButton
                 color="primary"
                 variant="outline"
-                style="width: 10;"
+                style="width: 10"
                 :active="selectedCategory === 1"
                 :disabled="isLoading"
                 @click="onClickFilter(1)"
@@ -31,7 +41,7 @@
               <CButton
                 color="primary"
                 variant="outline"
-                style="width: 10;"
+                style="width: 10"
                 :active="selectedCategory === 2"
                 :disabled="isLoading"
                 @click="onClickFilter(2)"
@@ -41,7 +51,7 @@
               <CButton
                 color="primary"
                 variant="outline"
-                style="width: 10;"
+                style="width: 10"
                 :active="selectedCategory === 3"
                 :disabled="isLoading"
                 @click="onClickFilter(3)"
@@ -51,7 +61,7 @@
               <CButton
                 color="primary"
                 variant="outline"
-                style="width: 10;"
+                style="width: 10"
                 :active="selectedCategory === 4"
                 :disabled="isLoading"
                 @click="onClickFilter(4)"
@@ -88,10 +98,20 @@
       </CRow>
     </CCol> -->
     <CCol sm="2" class="mb-1">
-      <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
+      <div
+        class="border-secondary"
+        style="
+          background-color: white;
+          border-radius: 9px;
+          height: 100%;
+          box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+        "
+      >
         <CCardBody>
           <CRow>
-            <CFormLabel style="font-weight: bold; font-size: medium;">Download Excel</CFormLabel>
+            <CFormLabel style="font-weight: bold; font-size: medium"
+              >Download Excel</CFormLabel
+            >
           </CRow>
           <CRow>
             <CCol>
@@ -109,21 +129,46 @@
       </div>
     </CCol>
     <CCol sm="2" class="mb-1">
-      <div class="border-secondary" style="background-color: white; border-radius: 9px; height: 100%; box-shadow: 5px 5px 5px rgba(0,0,0,0.2);">
+      <div
+        class="border-secondary"
+        style="
+          background-color: white;
+          border-radius: 9px;
+          height: 100%;
+          box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+        "
+      >
         <CCardBody>
           <!-- <CRow>
             <CFormLabel style="font-weight: bold; font-size: medium;">Legend</CFormLabel>
           </CRow> -->
           <CRow class="mb-2">
             <CCol>
-              <CButton style="width: 100%; font-size: x-small; font-weight: bold; background-color: #FF7F7F; color: white;" @click="onClickFilterWhyCm(1)">
+              <CButton
+                style="
+                  width: 100%;
+                  font-size: x-small;
+                  font-weight: bold;
+                  background-color: #ff7f7f;
+                  color: white;
+                "
+                @click="onClickFilterWhyCm(1)"
+              >
                 <label>5 Why Belum di isi</label>
               </CButton>
             </CCol>
           </CRow>
           <CRow>
             <CCoL>
-              <CButton style="width: 100%; font-size: x-small; font-weight: bold; background-color: #FFFFA0;" @click="onClickFilterWhyCm(2)">
+              <CButton
+                style="
+                  width: 100%;
+                  font-size: x-small;
+                  font-weight: bold;
+                  background-color: #ffffa0;
+                "
+                @click="onClickFilterWhyCm(2)"
+              >
                 <label>C/M Belum di isi</label>
               </CButton>
             </CCoL>
@@ -133,10 +178,8 @@
     </CCol>
   </CRow>
   <CRow>
-    <CCol>
-    </CCol>
+    <CCol> </CCol>
   </CRow>
-  
 </template>
 
 <script>
@@ -160,32 +203,32 @@ export default {
     },
     filterStartDate: {
       type: String,
-      default: ''
+      default: '',
     },
     filterFinishDate: {
       type: String,
-      default: ''
+      default: '',
     },
     selectedLine: {
       type: [String, Number],
-      default: null
+      default: null,
     },
     selectedMachineName: {
       type: [String, Number],
-      default: null
+      default: null,
     },
     selectedProblem: {
       type: String,
-      default: ''
+      default: '',
     },
     selectedProblemCategory: {
       type: [String, Number],
-      default: null
+      default: null,
     },
     problemsData: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -197,7 +240,9 @@ export default {
     onClickFilter(category) {
       if (!this.isLoading) {
         this.selectedCategory = category
-        console.log(`[RepeatFlowChecker] TableActions button clicked with category: ${category}`)
+        console.log(
+          `[RepeatFlowChecker] TableActions button clicked with category: ${category}`,
+        )
         this.$emit('filterCategory', category)
       }
     },

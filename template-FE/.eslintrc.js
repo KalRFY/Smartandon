@@ -10,27 +10,29 @@ module.exports = {
   ],
   parserOptions: {
     parser: '@babel/eslint-parser',
+    requireConfigFile: false,
+    ecmaVersion: 2020,
+    sourceType: 'module',
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'vue/multi-word-component-names': 'off',
-    "prettier/prettier": [
-      "error",
+    'no-unused-vars': 'off',
+    'no-console': 'off',
+    'no-debugger': 'off',
+    'prettier/prettier': [
+      'warn',
       {
-        "endOfLine": "auto"
-      }
-    ]
-  },
-  overrides: [
-    {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
-      ],
-      env: {
-        jest: true,
+        endOfLine: 'auto',
       },
-    },
-  ],
+    ],
+    'vue/multi-word-component-names': 'off',
+    'vue/no-mutating-props': 'off',
+  },
+  globals: {
+    defineProps: 'readonly',
+    defineEmits: 'readonly',
+    defineExpose: 'readonly',
+    withDefaults: 'readonly',
+    api: 'readonly',
+    $toast: 'readonly',
+  },
 }

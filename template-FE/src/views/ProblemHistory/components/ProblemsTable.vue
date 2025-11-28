@@ -20,37 +20,61 @@
                 <CTableHead color="dark">
                   <CTableRow>
                     <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col" @click="sortBy('fend_time')" style="cursor: pointer;">
+                    <CTableHeaderCell
+                      scope="col"
+                      @click="sortBy('fend_time')"
+                      style="cursor: pointer"
+                    >
                       Date
                       <span v-if="sortColumn === 'fend_time'">
                         {{ sortDirection === 'asc' ? '↑' : '↓' }}
                       </span>
                     </CTableHeaderCell>
-                    <CTableHeaderCell scope="col" @click="sortBy('fmc_name')" style="cursor: pointer;">
+                    <CTableHeaderCell
+                      scope="col"
+                      @click="sortBy('fmc_name')"
+                      style="cursor: pointer"
+                    >
                       Machine
                       <span v-if="sortColumn === 'fmc_name'">
                         {{ sortDirection === 'asc' ? '↑' : '↓' }}
                       </span>
                     </CTableHeaderCell>
-                    <CTableHeaderCell scope="col" @click="sortBy('ferror_name')" style="cursor: pointer;">
+                    <CTableHeaderCell
+                      scope="col"
+                      @click="sortBy('ferror_name')"
+                      style="cursor: pointer"
+                    >
                       Problem
                       <span v-if="sortColumn === 'ferror_name'">
                         {{ sortDirection === 'asc' ? '↑' : '↓' }}
                       </span>
                     </CTableHeaderCell>
-                    <CTableHeaderCell scope="col" @click="sortBy('foperator')" style="cursor: pointer;">
+                    <CTableHeaderCell
+                      scope="col"
+                      @click="sortBy('foperator')"
+                      style="cursor: pointer"
+                    >
                       PIC
                       <span v-if="sortColumn === 'foperator'">
                         {{ sortDirection === 'asc' ? '↑' : '↓' }}
                       </span>
                     </CTableHeaderCell>
-                    <CTableHeaderCell scope="col" @click="sortBy('fline')" style="cursor: pointer;">
+                    <CTableHeaderCell
+                      scope="col"
+                      @click="sortBy('fline')"
+                      style="cursor: pointer"
+                    >
                       Line
                       <span v-if="sortColumn === 'fline'">
                         {{ sortDirection === 'asc' ? '↑' : '↓' }}
                       </span>
                     </CTableHeaderCell>
-                    <CTableHeaderCell scope="col" @click="sortBy('fdur')" style="cursor: pointer;">
+                    <CTableHeaderCell
+                      scope="col"
+                      @click="sortBy('fdur')"
+                      style="cursor: pointer"
+                    >
                       Duration
                       <span v-if="sortColumn === 'fdur'">
                         {{ sortDirection === 'asc' ? '↑' : '↓' }}
@@ -64,16 +88,14 @@
                     <CTableHeaderCell scope="col">Lama</CTableHeaderCell>
                     <CTableHeaderCell scope="col">CM</CTableHeaderCell>
                     <CTableHeaderCell scope="col">CM Lama</CTableHeaderCell> -->
-
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  
-                <CTableRow
-                  v-for="(problem, index) in sortedProblems"
-                  :key="problem.fid"
-                  :color="getRowColor(problem)"
-                >
+                  <CTableRow
+                    v-for="(problem, index) in sortedProblems"
+                    :key="problem.fid"
+                    :color="getRowColor(problem)"
+                  >
                     <CTableDataCell>{{
                       (currentPage - 1) * pageSize + index + 1
                     }}</CTableDataCell>
@@ -91,7 +113,7 @@
                     }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fline }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fdur || '' }}</CTableDataCell>
-                    <CTableDataCell style="width: 10%;">
+                    <CTableDataCell style="width: 10%">
                       <CButton
                         class="mb-3"
                         shape="rounded-pill"
@@ -106,9 +128,12 @@
                         Edit Problem
                       </CButton>
                     </CTableDataCell>
-                    <CTableDataCell style="width: 15%;">
+                    <CTableDataCell style="width: 15%">
                       <CButton
-                        v-if="!problem.file_report && (isLtrProblem(problem) || isSltrProblem(problem))"
+                        v-if="
+                          !problem.file_report &&
+                          (isLtrProblem(problem) || isSltrProblem(problem))
+                        "
                         class="mb-3"
                         shape="rounded-pill"
                         color="primary"
@@ -121,7 +146,12 @@
                       >
                         Belum Upload Report
                       </CButton>
-                      <div v-if="problem.file_report && (isLtrProblem(problem) || isSltrProblem(problem))">
+                      <div
+                        v-if="
+                          problem.file_report &&
+                          (isLtrProblem(problem) || isSltrProblem(problem))
+                        "
+                      >
                         <CButton
                           class="mb-2"
                           shape="rounded-pill"
@@ -139,7 +169,7 @@
                       </div>
                     </CTableDataCell>
 
-                    <CTableDataCell style="width: 5%;">
+                    <CTableDataCell style="width: 5%">
                       <CButton
                         class="mb-3"
                         shape="rounded-pill"
@@ -159,7 +189,6 @@
                     <CTableDataCell>{{ problem.lamaAnalysis || '' }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fpermanet_cm || '' }}</CTableDataCell>
                     <CTableDataCell>{{ problem.fpermanet_cm_lama || '' }}</CTableDataCell> -->
-                    
                   </CTableRow>
                 </CTableBody>
               </CTable>
@@ -292,7 +321,10 @@ export default {
         this.sortColumn = column
         this.sortDirection = 'asc'
       }
-      this.$emit('sort', { column: this.sortColumn, direction: this.sortDirection })
+      this.$emit('sort', {
+        column: this.sortColumn,
+        direction: this.sortDirection,
+      })
     },
 
     formatDate(dateString) {
@@ -304,7 +336,9 @@ export default {
       return `${year}-${month}-${day}`
     },
     onFilterCategory(category) {
-      console.log(`ProblemsTable emitted filterCategory with category: ${category}`)
+      console.log(
+        `ProblemsTable emitted filterCategory with category: ${category}`,
+      )
       this.$emit('filterCategory', category)
     },
     onFilterCategoryWhycm(filtered) {
@@ -317,10 +351,18 @@ export default {
         return ''
       }
 
-      const analysisArray = Array.isArray(problem.terjadiAnalysis) ? problem.terjadiAnalysis : []
-      const hasTerjadi = analysisArray.some(item => item.id_problem === problem.fid)
-      const analysisArrayLama = Array.isArray(problem.lamaAnalysis) ? problem.lamaAnalysis : []
-      const hasLama = analysisArrayLama.some(item => item.id_problem === problem.fid)
+      const analysisArray = Array.isArray(problem.terjadiAnalysis)
+        ? problem.terjadiAnalysis
+        : []
+      const hasTerjadi = analysisArray.some(
+        (item) => item.id_problem === problem.fid,
+      )
+      const analysisArrayLama = Array.isArray(problem.lamaAnalysis)
+        ? problem.lamaAnalysis
+        : []
+      const hasLama = analysisArrayLama.some(
+        (item) => item.id_problem === problem.fid,
+      )
       if (!hasTerjadi && !hasLama) {
         console.log('Row color: danger (Five Why missing)')
         return 'danger'
@@ -335,8 +377,10 @@ export default {
       //   return isCmEmpty
       // })
       if (
-        (problem.fpermanet_cm != '[]' && problem.fpermanet_cm.length !== 0) || 
-        (problem.fpermanet_cm_lama != '[]' && problem.fpermanet_cm_lama.length !== 0)) {
+        (problem.fpermanet_cm != '[]' && problem.fpermanet_cm.length !== 0) ||
+        (problem.fpermanet_cm_lama != '[]' &&
+          problem.fpermanet_cm_lama.length !== 0)
+      ) {
         return ''
       }
       return 'warning'
@@ -345,11 +389,12 @@ export default {
     isLtrProblem(problem) {
       const duration = parseInt(problem.fdur) || 0
       const lineId = parseInt(problem.line_id) || 0
-      
+
       // LTR criteria based on the SQL query
       return (
-        (problem.problemCategory == 3) || ((duration >= 120 && duration < 659) && (lineId === 1 || lineId === 2)) ||
-        ((duration >= 120 && duration < 359) && [3, 4, 5, 6].includes(lineId)) ||
+        problem.problemCategory == 3 ||
+        (duration >= 120 && duration < 659 && (lineId === 1 || lineId === 2)) ||
+        (duration >= 120 && duration < 359 && [3, 4, 5, 6].includes(lineId)) ||
         (duration >= 15 && duration < 179 && lineId === 7)
       )
     },
@@ -357,16 +402,16 @@ export default {
     isSltrProblem(problem) {
       const duration = parseInt(problem.fdur) || 0
       const lineId = parseInt(problem.line_id) || 0
-      
+
       // SLTR criteria (opposite of LTR)
       return (
-        (problem.problemCategory == 4) || (duration >= 659 && (lineId === 1 || lineId === 2)) ||
+        problem.problemCategory == 4 ||
+        (duration >= 659 && (lineId === 1 || lineId === 2)) ||
         (duration >= 359 && [3, 4, 5, 6].includes(lineId)) ||
         (duration >= 179 && lineId === 7)
       )
     },
   },
-
 }
 </script>
 

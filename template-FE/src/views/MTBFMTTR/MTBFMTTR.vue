@@ -158,7 +158,7 @@ const filterTypes = [
 
 const currentTime = ref('')
 const now = new Date()
-const days = [  
+const days = [
   'Sunday',
   'Monday',
   'Tuesday',
@@ -259,8 +259,12 @@ const fetchAllData = async () => {
           if (!Array.isArray(mapped[id])) mapped[id] = []
           mapped[id].push({
             machine: item.fmc_name,
-            mtbf: item.mtbf ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5)) : 0,
-            mttr: item.mttr ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5)) : 0,
+            mtbf: item.mtbf
+              ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5))
+              : 0,
+            mttr: item.mttr
+              ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5))
+              : 0,
           })
         })
         // Sort each machine array by selected metric descending using the new function
@@ -279,13 +283,21 @@ const fetchAllData = async () => {
             if (!Array.isArray(mapped[id])) mapped[id] = []
             mapped[id].push({
               date: item.date,
-              mtbf: item.mtbf ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5)) : 0,
-              mttr: item.mttr ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5)) : 0,
+              mtbf: item.mtbf
+                ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5))
+                : 0,
+              mttr: item.mttr
+                ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5))
+                : 0,
             })
           } else if (filterType.value === 'total') {
             mapped[id] = {
-              mtbf: item.mtbf ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5)) : 0,
-              mttr: item.mttr ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5)) : 0,
+              mtbf: item.mtbf
+                ? parseFloat((parseFloat(item.mtbf) / 60).toFixed(5))
+                : 0,
+              mttr: item.mttr
+                ? parseFloat((parseFloat(item.mttr) / 60).toFixed(5))
+                : 0,
             }
           }
         })
@@ -293,7 +305,9 @@ const fetchAllData = async () => {
       apiData.value = mapped
     } else {
       apiData.value = {}
-      throw new Error('Failed to fetch MTBF/MTTR data, status: ' + response.status)
+      throw new Error(
+        'Failed to fetch MTBF/MTTR data, status: ' + response.status,
+      )
     }
   } catch (e) {
     apiData.value = {}
@@ -349,7 +363,7 @@ const getChartOptions = (lineId) => {
   const title = getLineTitle(lineId)
 
   if (filterType.value === 'machines') {
-    const isComparison = chartViewMode.value === 'comparison';
+    const isComparison = chartViewMode.value === 'comparison'
     return {
       chart: {
         background: chartBg,
@@ -381,16 +395,24 @@ const getChartOptions = (lineId) => {
           borderWidth: 0,
           borderColor: '#fff',
         },
-        style: { fontSize: '14px', colors: ['#333']},
+        style: { fontSize: '14px', colors: ['#333'] },
       },
       title: { text: title, align: 'left' },
       xaxis: { categories: data.map((d) => d.machine ?? '') },
       yaxis: {
-        title: { text: isComparison ? 'Value' : chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
+        title: {
+          text: isComparison
+            ? 'Value'
+            : chartViewMode.value === 'mtbf'
+            ? 'MTBF (Hours)'
+            : 'MTTR (Hours)',
+        },
         min: 0,
       },
       tooltip: { theme: 'dark' },
-      colors: isComparison ? [colorMTBFBar, colorMTTRBar] : [chartViewMode.value === 'mtbf' ? colorMTBFBar : colorMTTRBar],
+      colors: isComparison
+        ? [colorMTBFBar, colorMTTRBar]
+        : [chartViewMode.value === 'mtbf' ? colorMTBFBar : colorMTTRBar],
       plotOptions: {
         bar: {
           columnWidth: isComparison ? '50%' : '50%',
@@ -432,7 +454,10 @@ const getChartOptions = (lineId) => {
       title: { text: title, align: 'left' },
       xaxis: { categories: [chartViewMode.value.toUpperCase()] },
       yaxis: {
-        title: { text: chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
+        title: {
+          text:
+            chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)',
+        },
         min: 0,
       },
       tooltip: { theme: 'dark' },
@@ -535,7 +560,10 @@ const getChartOptions = (lineId) => {
       xaxis: { categories: data.map((d) => d.date ?? '') },
       yaxis: [
         {
-          title: { text: chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)' },
+          title: {
+            text:
+              chartViewMode.value === 'mtbf' ? 'MTBF (Hours)' : 'MTTR (Hours)',
+          },
           min: 0,
         },
       ],

@@ -72,12 +72,20 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <CModal :visible="showDeleteModal" @close="closeDeleteModal" aria-labelledby="DeleteModalLabel">
+    <CModal
+      :visible="showDeleteModal"
+      @close="closeDeleteModal"
+      aria-labelledby="DeleteModalLabel"
+    >
       <CModalHeader>
         <CModalTitle id="DeleteModalLabel">Confirm Delete</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <p>Are you sure you want to delete the problem <strong>{{ problemToDelete?.ferror_name }}</strong>?</p>
+        <p>
+          Are you sure you want to delete the problem
+          <strong>{{ problemToDelete?.ferror_name }}</strong
+          >?
+        </p>
         <p class="text-danger">This action cannot be undone.</p>
       </CModalBody>
       <CModalFooter>
@@ -92,7 +100,13 @@
 import api from '../../apis/CommonAPI'
 import moment from 'moment'
 import { useRouter } from 'vue-router'
-import { CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter } from '@coreui/vue'
+import {
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
+} from '@coreui/vue'
 import EditProblemModal from './EditProblemModal.vue'
 import SearchFilters from './components/SearchFilters.vue'
 import ProblemsTable from './components/ProblemsTable.vue'
@@ -417,12 +431,27 @@ export default {
         const params = {
           page,
           limit,
-          startDate: filters.filterStartDate && filters.filterStartDate !== '' ? filters.filterStartDate : undefined,
-          finishDate: filters.filterFinishDate && filters.filterFinishDate !== '' ? filters.filterFinishDate : undefined,
-          line: filters.selectedLine && filters.selectedLine !== null ? filters.selectedLine : undefined,
+          startDate:
+            filters.filterStartDate && filters.filterStartDate !== ''
+              ? filters.filterStartDate
+              : undefined,
+          finishDate:
+            filters.filterFinishDate && filters.filterFinishDate !== ''
+              ? filters.filterFinishDate
+              : undefined,
+          line:
+            filters.selectedLine && filters.selectedLine !== null
+              ? filters.selectedLine
+              : undefined,
           machineName: machineLabel || undefined,
-          problem: filters.selectedProblem && filters.selectedProblem !== '' ? filters.selectedProblem : undefined,
-          problemCategory: filters.problemCategory !== null ? filters.problemCategory : undefined,
+          problem:
+            filters.selectedProblem && filters.selectedProblem !== ''
+              ? filters.selectedProblem
+              : undefined,
+          problemCategory:
+            filters.problemCategory !== null
+              ? filters.problemCategory
+              : undefined,
           sortColumn: filters.sortColumn || undefined,
           sortDirection: filters.sortDirection || undefined,
         }
@@ -433,13 +462,18 @@ export default {
         )
 
         console.log('[FE Debug] ProblemHistory params to send:', params)
-        console.log('[DATE FILTER DEBUG] Sending params:', JSON.stringify(params, null, 2));
+        console.log(
+          '[DATE FILTER DEBUG] Sending params:',
+          JSON.stringify(params, null, 2),
+        )
 
         const response = await api.get('/smartandon/problemView', {
           search: JSON.stringify(params),
         })
         if (response.status !== 200) {
-          throw new Error('Failed to fetch problems, status: ' + response.status)
+          throw new Error(
+            'Failed to fetch problems, status: ' + response.status,
+          )
         }
         console.log('[RepeatFlowChecker] API response:', response)
         console.log(
@@ -465,7 +499,7 @@ export default {
 
         this.tambahAnalysisData = analysisResponse.data
         const allAnalysis = analysisResponse.data
-        console.log('Filtered Analysis:', allAnalysis);
+        console.log('Filtered Analysis:', allAnalysis)
         // console.log('Filter Analysis All:', this.filteredAnalysis);
 
         // Mapping berdasarkan analisys_category "TERJADI" dan "LAMA"
@@ -477,15 +511,19 @@ export default {
         )
 
         // Merge terjadiAnalysis and lamaAnalysis into each problem in problemsView
-        this.problemsView = this.problemsView.map(problem => {
+        this.problemsView = this.problemsView.map((problem) => {
           return {
             ...problem,
-            terjadiAnalysis: this.terjadiAnalysis.filter(item => item.id_problem === problem.fid),
-            lamaAnalysis: this.lamaAnalysis.filter(item => item.id_problem === problem.fid),
+            terjadiAnalysis: this.terjadiAnalysis.filter(
+              (item) => item.id_problem === problem.fid,
+            ),
+            lamaAnalysis: this.lamaAnalysis.filter(
+              (item) => item.id_problem === problem.fid,
+            ),
           }
         })
 
-        console.log('Problems with merged analysis:', this.problemsView);
+        console.log('Problems with merged analysis:', this.problemsView)
 
         this.tambahAnalysisData = {
           terjadi: this.terjadiAnalysis,
@@ -527,7 +565,10 @@ export default {
       const stored = localStorage.getItem('problemHistoryFilters')
       if (stored) {
         const filters = JSON.parse(stored)
-        console.log('[Filter Persistence] Loaded filters from storage:', filters)
+        console.log(
+          '[Filter Persistence] Loaded filters from storage:',
+          filters,
+        )
         this.filterStartDate = filters.filterStartDate || ''
         this.filterFinishDate = filters.filterFinishDate || ''
         this.selectedLine = filters.selectedLine || null
@@ -556,9 +597,7 @@ export default {
       try {
         this.tableLoading = true
         this.modalLoading = true
-        const response = await api.get(
-          `/smartandon/problemId/${problem.fid}`,
-        )
+        const response = await api.get(`/smartandon/problemId/${problem.fid}`)
         if (response.status !== 200) {
           throw new Error('Failed to fetch problem, status: ' + response.status)
         }
@@ -570,9 +609,7 @@ export default {
           JSON.stringify(this.submit, null, 2),
         )
 
-        const analysisResponse = await api.get(
-          '/smartandon/tambahAnalysis',
-        )
+        const analysisResponse = await api.get('/smartandon/tambahAnalysis')
         if (analysisResponse.status !== 200) {
           throw new Error(
             'Failed to fetch tambahAnalysis, status: ' +
@@ -589,7 +626,7 @@ export default {
         const terjadiAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'TERJADI',
         )
-        
+
         const lamaAnalysis = filteredAnalysis.filter(
           (item) => item.analisys_category === 'LAMA',
         )
@@ -598,14 +635,14 @@ export default {
           terjadi: terjadiAnalysis,
           lama: lamaAnalysis,
         }
-        
+
         console.log('Mapped tambahAnalysis data:', this.tambahAnalysisData)
         console.log('Tambah Analisis Terjadi:', terjadiAnalysis)
         console.log('Tambah Analisis Lama:', lamaAnalysis)
 
         this.tambahAnalysisTerjadi = terjadiAnalysis
         this.tambahAnalysisLama = lamaAnalysis
-        
+
         this.filteredTambahAnalisis = terjadiAnalysis
         this.filteredTambahAnalisisLama = lamaAnalysis
 
@@ -662,7 +699,7 @@ export default {
       }
 
       const terjadiRaw = problemData?.analysis?.TERJADI
-      const lamaRaw    = problemData?.analysis?.LAMA
+      const lamaRaw = problemData?.analysis?.LAMA
 
       return {
         machineName: problemData.fmc_name || '',
@@ -677,8 +714,7 @@ export default {
         standartImage: problemData.uraianResult.standard || '',
         ilustrasiActual: problemData.descResult.actual || '',
         actualImage: problemData.uraianResult.actual || '',
-        gapBetweenStandarAndActual:
-          problemData.gapIlustrasi || '',
+        gapBetweenStandarAndActual: problemData.gapIlustrasi || '',
         pilihFocusThemaMember: problemData.pilihFocusThemaMember || '',
         pilihTaskforce: problemData.pilihTaskforce || '',
         operator: problemData.foperator
@@ -696,7 +732,12 @@ export default {
         tambahAnalysisTerjadi: (() => {
           if (Array.isArray(terjadiRaw)) return terjadiRaw
           if (typeof terjadiRaw === 'string') {
-            try { const v = JSON.parse(terjadiRaw); return Array.isArray(v) ? v : [] } catch { return [] }
+            try {
+              const v = JSON.parse(terjadiRaw)
+              return Array.isArray(v) ? v : []
+            } catch {
+              return []
+            }
           }
           return []
         })(),
@@ -704,7 +745,12 @@ export default {
         tambahAnalisisLama: (() => {
           if (Array.isArray(lamaRaw)) return lamaRaw
           if (typeof lamaRaw === 'string') {
-            try { const v = JSON.parse(lamaRaw); return Array.isArray(v) ? v : [] } catch { return [] }
+            try {
+              const v = JSON.parse(lamaRaw)
+              return Array.isArray(v) ? v : []
+            } catch {
+              return []
+            }
           }
           return []
         })(),
@@ -714,8 +760,7 @@ export default {
         stepRepair: problemData.fstep_repair || '',
         stepRepairNew: problemData.fstep_new || '',
         partChange: problemData.fpart_change || '',
-        countermeasureKenapaTerjadi:
-          problemData.fpermanet_cm || '',
+        countermeasureKenapaTerjadi: problemData.fpermanet_cm || '',
         yokoten: problemData.fyokoten || '',
         rootcause5WhyKenapaLama: problemData.rootcause5WhyKenapaLama || '',
         pilihQ6: problemData.qCategory || '',
@@ -742,9 +787,14 @@ export default {
         cmTlFeedback: problemData.cmTlFeedback,
         cmDhFeedback: problemData.cmDhFeedback,
         sparepart_list: (() => {
-          if (Array.isArray(problemData.sparepart_list)) return problemData.sparepart_list
+          if (Array.isArray(problemData.sparepart_list))
+            return problemData.sparepart_list
           if (typeof problemData.sparepart_list === 'string') {
-            try { return JSON.parse(problemData.sparepart_list) } catch { return [] }
+            try {
+              return JSON.parse(problemData.sparepart_list)
+            } catch {
+              return []
+            }
           }
           return []
         })(),
@@ -774,30 +824,32 @@ export default {
         return
       }
 
-      let machineId = submitData.machineName;
-      let lineId = submitData.line;
+      let machineId = submitData.machineName
+      let lineId = submitData.line
 
       if (typeof machineId === 'string') {
-        const machineObj = this.machineOptions.find(m => m.label === machineId);
-        if (machineObj) machineId = machineObj.id;
+        const machineObj = this.machineOptions.find(
+          (m) => m.label === machineId,
+        )
+        if (machineObj) machineId = machineObj.id
       }
       // Jika line berupa label, cari id-nya dari lineOptions
       if (typeof lineId === 'string') {
-        const lineObj = this.lineOptions.find(l => l.label === lineId);
-        if (lineObj) lineId = lineObj.id;
+        const lineObj = this.lineOptions.find((l) => l.label === lineId)
+        if (lineObj) lineId = lineObj.id
       }
 
       let operatorNames = Array.isArray(submitData.operator)
-        ? submitData.operator.map(op => {
+        ? submitData.operator.map((op) => {
             if (typeof op === 'string') {
               // Jika sudah nama, langsung pakai
-              return op;
+              return op
             }
             // Jika id, cari labelnya
-            const memberObj = this.memberOption.find(m => m.id === op);
-            return memberObj ? memberObj.label : op;
+            const memberObj = this.memberOption.find((m) => m.id === op)
+            return memberObj ? memberObj.label : op
           })
-        : [];
+        : []
 
       try {
         const payload = {
@@ -825,8 +877,12 @@ export default {
           countermeasureKenapaLama: JSON.stringify(submitData.cmKenapaLama),
           yokoten: JSON.stringify(submitData.yokoten),
           rootcause5WhyKenapaLama: submitData.rootcause5WhyKenapaLama,
-          tambahAnalisisLama: JSON.stringify(submitData.tambahAnalisisLama || []),
-          tambahAnalysisTerjadi: JSON.stringify(submitData.tambahAnalysisTerjadi || []),
+          tambahAnalisisLama: JSON.stringify(
+            submitData.tambahAnalisisLama || [],
+          ),
+          tambahAnalysisTerjadi: JSON.stringify(
+            submitData.tambahAnalysisTerjadi || [],
+          ),
 
           whyImage: submitData.whyImage,
           whyLamaImage: submitData.whyLamaImage,
@@ -916,7 +972,11 @@ export default {
         return
       }
       try {
-        const url = `${process.env.VUE_APP_API_URL}/smartandon/download-report?fid=${encodeURIComponent(problem.fid)}&problem=${encodeURIComponent(problem.ferror_name)}`
+        const url = `${
+          process.env.VUE_APP_API_URL
+        }/smartandon/download-report?fid=${encodeURIComponent(
+          problem.fid,
+        )}&problem=${encodeURIComponent(problem.ferror_name)}`
         console.log('Download URL:', url)
         const link = document.createElement('a')
         link.href = url
@@ -984,11 +1044,19 @@ export default {
         this.selectedProblemCategory = null
       } else if (category === 5) {
         // Filter problems where "5 Why" belum diisi (empty terjadiAnalysis or lamaAnalysis)
-        this.problemsView = this.allProblems.filter(problem => {
-          const analysisArray = Array.isArray(problem.terjadiAnalysis) ? problem.terjadiAnalysis : []
-          const hasTerjadi = analysisArray.some(item => item.id_problem === problem.fid)
-          const analysisArrayLama = Array.isArray(problem.lamaAnalysis) ? problem.lamaAnalysis : []
-          const hasLama = analysisArrayLama.some(item => item.id_problem === problem.fid)
+        this.problemsView = this.allProblems.filter((problem) => {
+          const analysisArray = Array.isArray(problem.terjadiAnalysis)
+            ? problem.terjadiAnalysis
+            : []
+          const hasTerjadi = analysisArray.some(
+            (item) => item.id_problem === problem.fid,
+          )
+          const analysisArrayLama = Array.isArray(problem.lamaAnalysis)
+            ? problem.lamaAnalysis
+            : []
+          const hasLama = analysisArrayLama.some(
+            (item) => item.id_problem === problem.fid,
+          )
           return !hasTerjadi && !hasLama
         })
         this.selectedProblemCategory = category
@@ -998,11 +1066,12 @@ export default {
         return
       } else if (category === 6) {
         // Filter problems where "cm" belum diisi (empty fpermanet_cm and fpermanet_cm_lama)
-        this.problemsView = this.allProblems.filter(problem => {
+        this.problemsView = this.allProblems.filter((problem) => {
           const cm = problem.fpermanet_cm
           const cmLama = problem.fpermanet_cm_lama
           const isCmEmpty = !cm || (Array.isArray(cm) && cm.length === 0)
-          const isCmLamaEmpty = !cmLama || (Array.isArray(cmLama) && cmLama.length === 0)
+          const isCmLamaEmpty =
+            !cmLama || (Array.isArray(cmLama) && cmLama.length === 0)
           return isCmEmpty && isCmLamaEmpty
         })
         this.selectedProblemCategory = category
@@ -1052,83 +1121,110 @@ export default {
     },
 
     async fetchAllProblemsForExport() {
-      this.tableLoading = true; // Show loading indicator for export
+      this.tableLoading = true // Show loading indicator for export
       try {
         const params = {
           limitView: 0,
           startDate: this.filterStartDate || undefined,
           finishDate: this.filterFinishDate || undefined,
           line: this.selectedLine || undefined,
-          machineName: this.selectedMachineName ? this.machineOptions.find(m => m.id === this.selectedMachineName)?.label : undefined,
+          machineName: this.selectedMachineName
+            ? this.machineOptions.find((m) => m.id === this.selectedMachineName)
+                ?.label
+            : undefined,
           problem: this.selectedProblem || undefined,
           problemCategory: this.selectedProblemCategory || undefined,
           sortColumn: this.sortColumn || undefined,
           sortDirection: this.sortDirection || undefined,
-        };
-
-        console.log('[Export] Fetching all problems with params:', params);
-        const response = await api.get('/smartandon/problemView', { search: JSON.stringify(params) });
-        if (response.status !== 200) {
-          throw new Error('Failed to fetch problems for export, status: ' + response.status);
         }
-        console.log('[Export] Received data for export:', response.data.data);
+
+        console.log('[Export] Fetching all problems with params:', params)
+        const response = await api.get('/smartandon/problemView', {
+          search: JSON.stringify(params),
+        })
+        if (response.status !== 200) {
+          throw new Error(
+            'Failed to fetch problems for export, status: ' + response.status,
+          )
+        }
+        console.log('[Export] Received data for export:', response.data.data)
 
         // Fetch tambahAnalysis data and merge it, similar to fetchProblems
-        const analysisResponse = await api.get('/smartandon/tambahAnalysis');
+        const analysisResponse = await api.get('/smartandon/tambahAnalysis')
         if (analysisResponse.status !== 200) {
-          throw new Error('Failed to fetch tambahAnalysis, status: ' + analysisResponse.status);
+          throw new Error(
+            'Failed to fetch tambahAnalysis, status: ' +
+              analysisResponse.status,
+          )
         }
-        const allAnalysis = analysisResponse.data;
-        console.log("ALL ANALYSIS: ", allAnalysis);
+        const allAnalysis = analysisResponse.data
+        console.log('ALL ANALYSIS: ', allAnalysis)
 
-        const terjadiAnalysis = allAnalysis.filter(item => item.analisys_category === 'TERJADI');
-        const lamaAnalysis = allAnalysis.filter(item => item.analisys_category === 'LAMA');
+        const terjadiAnalysis = allAnalysis.filter(
+          (item) => item.analisys_category === 'TERJADI',
+        )
+        const lamaAnalysis = allAnalysis.filter(
+          (item) => item.analisys_category === 'LAMA',
+        )
 
-        const problemsWithAnalysis = response.data.data.map(problem => {
+        const problemsWithAnalysis = response.data.data.map((problem) => {
           return {
             ...problem,
-            terjadiAnalysis: terjadiAnalysis.filter(item => item.id_problem === problem.fid),
-            lamaAnalysis: lamaAnalysis.filter(item => item.id_problem === problem.fid),
-          };
-        });
+            terjadiAnalysis: terjadiAnalysis.filter(
+              (item) => item.id_problem === problem.fid,
+            ),
+            lamaAnalysis: lamaAnalysis.filter(
+              (item) => item.id_problem === problem.fid,
+            ),
+          }
+        })
 
-        return problemsWithAnalysis;
+        return problemsWithAnalysis
       } catch (error) {
-        console.error('Error fetching all problems for export:', error);
-        alert('Error fetching data for export: ' + error.message);
-        return [];
+        console.error('Error fetching all problems for export:', error)
+        alert('Error fetching data for export: ' + error.message)
+        return []
       } finally {
-        this.tableLoading = false; // Hide loading indicator
+        this.tableLoading = false // Hide loading indicator
       }
     },
 
     async downloadExcel() {
       try {
-        const XLSX = await import('xlsx');
-        console.log('XLSX object:', XLSX);
+        const XLSX = await import('xlsx')
+        console.log('XLSX object:', XLSX)
 
-        const problemsToExport = await this.fetchAllProblemsForExport();
+        const problemsToExport = await this.fetchAllProblemsForExport()
 
         if (problemsToExport.length === 0) {
-          console.log('No data to download after fetching.');
-          alert('Tidak ada data untuk diunduh');
-          return;
+          console.log('No data to download after fetching.')
+          alert('Tidak ada data untuk diunduh')
+          return
         }
-        console.log('Problems to export:', problemsToExport, 'length:', problemsToExport.length);
+        console.log(
+          'Problems to export:',
+          problemsToExport,
+          'length:',
+          problemsToExport.length,
+        )
 
         // Prepare data for Excel - only include specific columns
-        const formattedData = problemsToExport.map(problem => ({
-          Date: problem.fend_time ? new Date(problem.fend_time).toLocaleDateString() : '',
+        const formattedData = problemsToExport.map((problem) => ({
+          Date: problem.fend_time
+            ? new Date(problem.fend_time).toLocaleDateString()
+            : '',
           Machine: problem.fmc_name || '',
           Problem: problem.ferror_name || '',
           PIC: problem.foperator || '',
           Line: problem.fline || '',
           Duration: problem.fdur || '',
-          ProblemCategory: this.getProblemCategoryLabel(problem.problemCategory)
-        }));
+          ProblemCategory: this.getProblemCategoryLabel(
+            problem.problemCategory,
+          ),
+        }))
 
         // Create worksheet with formatted data
-        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+        const worksheet = XLSX.utils.json_to_sheet(formattedData)
 
         // Set column widths for better readability
         const columnWidths = [
@@ -1138,68 +1234,79 @@ export default {
           { wch: 20 }, // PIC
           { wch: 10 }, // Line
           { wch: 10 }, // Duration
-          { wch: 15 }  // ProblemCategory
-        ];
-        worksheet['!cols'] = columnWidths;
+          { wch: 15 }, // ProblemCategory
+        ]
+        worksheet['!cols'] = columnWidths
 
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Problems Data');
+        const workbook = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Problems Data')
 
         // Generate Excel file
-        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const excelBuffer = XLSX.write(workbook, {
+          bookType: 'xlsx',
+          type: 'array',
+        })
+        const blob = new Blob([excelBuffer], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
 
         // Trigger download
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `problems_export_${new Date().toISOString().split('T')[0]}.xlsx`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        console.log('Excel file generated and download triggered.');
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute(
+          'download',
+          `problems_export_${new Date().toISOString().split('T')[0]}.xlsx`,
+        )
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        console.log('Excel file generated and download triggered.')
       } catch (error) {
-        console.error('Error generating Excel file:', error);
-        alert('Error generating Excel file: ' + error.message);
+        console.error('Error generating Excel file:', error)
+        alert('Error generating Excel file: ' + error.message)
       }
     },
     getProblemCategoryLabel(categoryId) {
       const categories = {
         1: 'Small',
-        2: 'Chokotei', 
+        2: 'Chokotei',
         3: 'LTB',
         4: 'SLTR',
-      };
-      return categories[categoryId] || 'Unknown';
+      }
+      return categories[categoryId] || 'Unknown'
     },
 
     async onDeleteProblem(problemFid) {
-      this.problemToDelete = this.problemsView.find(p => p.fid === problemFid);
+      this.problemToDelete = this.problemsView.find((p) => p.fid === problemFid)
       if (!this.problemToDelete) {
-        alert('Problem not found.');
-        return;
+        alert('Problem not found.')
+        return
       }
-      this.showDeleteModal = true;
+      this.showDeleteModal = true
     },
 
     closeDeleteModal() {
-      this.showDeleteModal = false;
-      this.problemToDelete = null;
+      this.showDeleteModal = false
+      this.problemToDelete = null
     },
 
     async confirmDeleteProblem() {
       if (!this.problemToDelete) {
-        alert('No problem selected for deletion.');
-        return;
+        alert('No problem selected for deletion.')
+        return
       }
       try {
-        this.loading = true;
-        const response = await api.delete('/smartandon/problem', this.problemToDelete.fid);
+        this.loading = true
+        const response = await api.delete(
+          '/smartandon/problem',
+          this.problemToDelete.fid,
+        )
         if (response.status === 200) {
-          alert('Problem deleted successfully.');
-          this.showDeleteModal = false;
-          this.problemToDelete = null;
+          alert('Problem deleted successfully.')
+          this.showDeleteModal = false
+          this.problemToDelete = null
           this.fetchProblems(this.currentPage, {
             filterStartDate: this.filterStartDate,
             filterFinishDate: this.filterFinishDate,
@@ -1207,14 +1314,14 @@ export default {
             selectedMachineName: this.selectedMachineName,
             selectedProblem: this.selectedProblem,
             problemCategory: this.selectedProblemCategory,
-          });
+          })
         } else {
-          alert('Failed to delete problem. Status: ' + response.status);
+          alert('Failed to delete problem. Status: ' + response.status)
         }
       } catch (error) {
-        alert('Error deleting problem: ' + error.message);
+        alert('Error deleting problem: ' + error.message)
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
 
@@ -1251,7 +1358,7 @@ export default {
             'Failed to fetch members, status: ' + memberResponse.status,
           )
         }
-        
+
         console.log('RAW machineResponse:', machineResponse.data)
         console.log('RAW lineResponse:', lineResponse.data)
 

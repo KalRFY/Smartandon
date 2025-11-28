@@ -78,9 +78,7 @@ const appRoutes = [
     path: '/app/SparepartAnalysis',
     name: 'Sparepart Analysis',
     component: () =>
-      import(
-        /* webpackChunkName: "reports" */ '@/views/SparepartAnalysis.vue'
-      ),
+      import(/* webpackChunkName: "reports" */ '@/views/SparepartAnalysis.vue'),
     meta: {
       requiresAuth: true,
       title: 'Sparepart Analysis',
@@ -91,9 +89,7 @@ const appRoutes = [
     path: '/app/JobAnalysis',
     name: 'Job Analysis',
     component: () =>
-      import(
-        /* webpackChunkName: "reports" */ '@/views/JobAnalysis.vue'
-      ),
+      import(/* webpackChunkName: "reports" */ '@/views/JobAnalysis.vue'),
     meta: {
       requiresAuth: true,
       title: 'Job Analysis',
@@ -124,7 +120,9 @@ const appRoutes = [
     path: '/app/Q6-Analysis',
     name: 'Q6Analysis',
     component: () =>
-      import(/* webpackChunkName: "reports" */ '@/views/q6analysis/Q6Analysis.vue'),
+      import(
+        /* webpackChunkName: "reports" */ '@/views/q6analysis/Q6Analysis.vue'
+      ),
     meta: {
       requiresAuth: true,
       title: 'Q6 Analysis',
@@ -172,9 +170,7 @@ const appRoutes = [
     path: '/app/RobotInspection',
     name: 'Robot Inspection',
     component: () =>
-      import(
-        /* webpackChunkName: "reports" */ '@/views/RobotInspection.vue'
-      ),
+      import(/* webpackChunkName: "reports" */ '@/views/RobotInspection.vue'),
     meta: {
       requiresAuth: true,
       title: 'Robot Inspection',
@@ -185,15 +181,13 @@ const appRoutes = [
     path: '/app/FocusThema',
     name: 'Focus Thema',
     component: () =>
-      import(
-        /* webpackChunkName: "reports" */ '@/views/FocusThema.vue'
-      ),
+      import(/* webpackChunkName: "reports" */ '@/views/FocusThema.vue'),
     meta: {
       requiresAuth: true,
       title: 'Focus Thema',
     },
   },
-  
+
   {
     path: '/app/LTBSummary',
     name: 'LTB Summary',
@@ -238,12 +232,14 @@ const appRoutes = [
     path: '/app/order-spareparts-redirect',
     name: 'Redirect Order Spareparts',
     component: () =>
-      import(/* webpackChunkName: "redirect-order-spareparts" */ '@/views/RedirectOrderSpareparts.vue'),
+      import(
+        /* webpackChunkName: "redirect-order-spareparts" */ '@/views/RedirectOrderSpareparts.vue'
+      ),
     meta: {
       requiresAuth: false,
       title: 'Redirect Order Spareparts',
     },
-  }
+  },
 ]
 
 const authRoutes = [
